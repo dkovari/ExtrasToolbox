@@ -31,3 +31,4 @@ If you need to update to use the latest version of MATextras then run:
 ```
 git submodule update --init --recursive
 ```
+## Contents
