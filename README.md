@@ -16,3 +16,7 @@ git read-tree --prefix=+extras/ -u MATextras/master
 # Commit the changes
 git commit -m "Subtree merged MATextras to +extras"
 ```
+To update the subtree to use the latest commit you need to manually pull changes.
+```
+git pull -s subtree MATextras master
+```
