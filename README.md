@@ -1,5 +1,5 @@
 # MATextras
-Useful data manipulation (non-ui) functions for MATLAB
+Useful functions and classes for MATLAB
 ## Including MATextras in a project
 MATextras should be included in a MATLAB project as a package named "+extras".
 ### Adding as a subtree

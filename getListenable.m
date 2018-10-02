@@ -1,4 +1,4 @@
-function [observable,nonObservable] = getListenable(hndl)
+function [observable,nonObservable,eventNames] = getListenable(hndl)
 % Return an alphabetical list of Observable properties in handle HNDL
 %
 % Brett Shoelson, PhD
@@ -24,6 +24,10 @@ names = {properties(:).Name}';
 observability = {properties(:).SetObservable}';
 observability = [observability{:}]';
 observable = sort(names(observability));
+
+evts = tmp.EventList;
+eventNames = {evts(:).Name}';
+
 if nargout > 1
 nonObservable = sort(names(~observability));
 end
