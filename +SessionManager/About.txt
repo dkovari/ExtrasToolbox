@@ -1,0 +1,1 @@
+This package contains the MATLAB and C++ code for creating MEX functions that contain objects that can be interfaced with MATLAB.
