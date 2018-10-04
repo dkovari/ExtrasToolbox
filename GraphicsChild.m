@@ -1,5 +1,5 @@
 classdef GraphicsChild < matlab.mixin.SetGet
-% Derivable class for graphics objects that are the children of figures,
+%% Derivable class for graphics objects that are the children of figures,
 % panels, or axes
 %Usage:
 %
@@ -34,25 +34,22 @@ classdef GraphicsChild < matlab.mixin.SetGet
 %   CheckParentInput can only be called once
 
     properties
-        Parent;
+        Parent; %handle to the parent graphical container (e.g. figure, axes, panel, etc.)
     end
     
     properties (SetAccess=protected)
-        ParentFigure;
+        ParentFigure; %handle to figure that contains (or is) the parent
     end
     
     properties (Access=protected)
         ParentDeleteListener;
         DefaultParentType = 'figure';
-    end
-    
-    properties(Access=protected)
         ParentInitialized = false;
         CreatedParent = false;
     end
     
     events
-        ParentChanged;
+        ParentChanged; %event signaled when parent is changed
     end
     
     %% internal methods
@@ -204,7 +201,7 @@ classdef GraphicsChild < matlab.mixin.SetGet
     
     %% overloadable function called when parent is changed
     methods(Access=protected)
-        function ChangedParent(this)
+        function ChangedParent(this) % overloadable function called when parent is changed
         end
     end
     

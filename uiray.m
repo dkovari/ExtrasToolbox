@@ -1,5 +1,5 @@
 classdef uiray < extras.GraphicsChild
-%UIRAY - A draggable ray, fixed at a given origin
+%% UIRAY - A draggable ray, fixed at a given origin
     
     properties (SetAccess=private)
         ArrowLine;
@@ -24,22 +24,22 @@ classdef uiray < extras.GraphicsChild
     end
     
     properties (SetObservable, AbortSet)
-        Radius=1;
-        Angle=0;
+        Radius=1; %Radius of the Ray
+        Angle=0; %angle of the Ray  (in Radians)
         
-        RadiusDragable=true;
-        AngleDragable=true;
-        XOrigin=0;
-        YOrigin=0;
+        RadiusDragable=true; %boolean if Radius can be dragged
+        AngleDragable=true; %boolean if angle can be dragged
+        XOrigin=0; %x-axis origin of the radius
+        YOrigin=0; %y-axis origin of the radius
         
-        RadiusLim = [0,Inf];
-        AngleLim = [0,2*pi];
+        RadiusLim = [0,Inf]; %limits on the radius
+        AngleLim = [0,2*pi]; %limits on the angle (in radians)
         
-        UIeditCallback
+        UIeditCallback %function to be executed when user drags the ray
     end
     
     events
-        UIeditcomplete;
+        UIeditcomplete; %event notifying user has dragged the ray
     end
     
     properties (Dependent=true,SetObservable=true, AbortSet=true)
