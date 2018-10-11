@@ -1,0 +1,37 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras\doc\extras_contents/helpwin.css">
+      <title>MATLAB File Help: extras.docgenerator</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">MATLAB File Help: extras.docgenerator</td>
+            <td class="subheader-left"><a href="matlab:edit extras.docgenerator">View code for extras.docgenerator</a></td>
+            <td class="subheader-right"><a href="matlab:helpwin">Default Topics</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.docgenerator</div>
+      <div class="helptext"><pre><!--helptext -->  extras.docgenerator(topic,outputdir)
+ 
+  Recursively Generate HTML Help files for a given topic
+  Help files are generated using MATLAB's built-in help system
+  If your functions have been documented using MATLAB's prefered
+  documentation methods then those comments should automatically be
+  incorporated in the help files
+ 
+  Example:
+    To generate HTML help files for the extras package run:
+        &gt;&gt; extras.docgenerator('extras','OUTPUT_DOC_DIR');
+    Documentation for all of the classes and functions inside the +extras
+    package will automatically be generated and stored in "OUTPUT_DOC_DIR".
+ 
+  Note: This function will only generate help pages that have not yet been
+  created. If you update your toolbox/functions then you should delete or 
+  empty the output director before calling extras.docgenerator(...) again.
+  Otherwise, the documentation will not be re-generated.</pre></div><!--after help -->
+   </body>
+</html>

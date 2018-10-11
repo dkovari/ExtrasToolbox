@@ -1,0 +1,35 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras\doc\extras_contents/helpwin.css">
+      <title>MATLAB File Help: extras.CallbackQueue/CallbackQueue</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">MATLAB File Help: extras.CallbackQueue/CallbackQueue</td>
+            <td class="subheader-left"><a href="matlab:edit extras.CallbackQueue/CallbackQueue">View code for extras.CallbackQueue/CallbackQueue</a></td>
+            <td class="subheader-right"><a href="matlab:helpwin">Default Topics</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.CallbackQueue/CallbackQueue</div>
+      <div class="helptext"><pre><!--helptext -->  extras.<span class="helptopic">CallbackQueue</span>
+ 
+  A Queue class, similar to parallel.pool.DataQueue
+ 
+  This class is derived from extras.Queue and implements the sendData
+  functionality, which allows arbitraty data to be added to a queue.
+ 
+  When data is added every function registered with afterEach is called,
+  with the most recent data supplied as the argument.
+  Data in the queue cannot be handled directly.
+ 
+  Functions:
+ =============================
+    afterEach(CQ,fcn)
+        registeres the function_handle to be executed when
+        data is added to the queue.</pre></div><!--after help -->
+   </body>
+</html>

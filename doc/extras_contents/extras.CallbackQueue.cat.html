@@ -1,0 +1,60 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras\doc\extras_contents/helpwin.css">
+      <title>MATLAB File Help: extras.CallbackQueue/cat</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">MATLAB File Help: extras.CallbackQueue/cat</td>
+            <td class="subheader-left"><a href="matlab:edit extras.CallbackQueue/cat">View code for extras.CallbackQueue/cat</a></td>
+            <td class="subheader-left"><a href="matlab:doc extras.CallbackQueue/cat">Go to online doc for extras.CallbackQueue/cat</a></td>
+            <td class="subheader-right"><a href="matlab:helpwin">Default Topics</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.CallbackQueue/cat</div>
+      <div class="helptext"><pre><!--helptext -->  cat    Concatenation for heterogeneous arrays
+     <span class="helptopic">cat</span>(DIM,A,B) concatenates objects A and B along the dimension DIM.
+     The class of object arrays A and B must be derived from the same root
+     class, which must be a direct subclass of matlab.mixin.Heterogeneous.
+ 
+     If A and B are of the same class, the class of the resulting array
+     is unchanged.  If A and B are of different subclasses of a common
+     root superclass derived from matlab.mixin.Heterogeneous, then the
+     result is a heterogeneous array and its class is that of the most 
+     specific superclass shared by A and B.  If B is not a member of the 
+     same hierarchy as A, MATLAB will automatically call the convertObject
+     method if defined in the root class, and will error if the method is 
+     not defined.
+ 
+     The <span class="helptopic">cat</span> method is sealed in the matlab.mixin.Heterogeneous class and
+     cannot be overridden by subclasses.
+ 
+     
+
+Help for <span class="helptopic">extras.CallbackQueue/cat</span> is inherited from superclass <a href="matlab:helpwin matlab.mixin.Heterogeneous">matlab.mixin.Heterogeneous</a></pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="matlab:helpwin cat">cat</a>, <a href="matlab:helpwin extras.CallbackQueue">extras.CallbackQueue</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Defining Class</td>
+            <td>matlab.mixin.Heterogeneous</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>true</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>
