@@ -44,6 +44,7 @@ classdef GraphicsChild < matlab.mixin.SetGet
     properties (Access=protected)
         ParentDeleteListener;
         DefaultParentType = 'figure';
+        AllowableParentType = 'Any'; %Type of parent handle allowed. If passed parent is not this type, GraphicsChild will throw an error
         ParentInitialized = false;
         CreatedParent = false;
     end
@@ -74,20 +75,6 @@ classdef GraphicsChild < matlab.mixin.SetGet
                 error('Unknown Default Parent Type');
             end
             this.ParentFigure = ancestor(this.Parent,'figure');
-            
-        end
-    end
-    
-    %% Public methods
-    methods
-        function this = GraphicsChild(DefaultParentType)
-            if nargin<1
-                this.DefaultParentType = 'figure';
-            elseif ischar(DefaultParentType)
-                this.DefaultParentType = lower(DefaultParentType);
-            else
-                this.DefaultParentType = DefaultParentType;
-            end
             
         end
         
@@ -155,6 +142,34 @@ classdef GraphicsChild < matlab.mixin.SetGet
                     
                 end
                 
+                %check against allowed types
+                if found_parent && ~strcmpi(this.AllowableParentType,'Any')
+                    switch(lower(this.AllowableParentType))
+                        case 'axes'
+                            if ~strcmpi(this.Parent.Type,'axes')
+                                if strcmpi(this.Parent.Type,'figure') %use gca for figure
+                                    figure(this.Parent);
+                                    cp=false;
+                                    if isempty(this.Parent.CurrentAxes)
+                                        cp = true;
+                                    end
+                                    this.Parent = gca;
+                                    this.CreatedParent = cp;
+                                else %otherwise create new axes
+                                    error('Axes parent required');
+                                end
+                            end
+                        case 'figure'
+                            if ~strcmpi(this.Parent.Type,'axes')
+                                this.Parent = ancestor(this.Parent,'figure');
+                            end
+                        otherwise
+                            if ~strcmpi(this.Parent.Type,this.AllowableParentType)
+                                error('required parent type %s, but %s was specified',this.AllowableParentType,this.Parent.Type)
+                            end
+                    end
+                end
+                
                 if ~found_parent
                     this.CreateParent();
                 end
@@ -166,6 +181,21 @@ classdef GraphicsChild < matlab.mixin.SetGet
                         
         end
         
+    end
+    
+    %% Public methods
+    methods
+        function this = GraphicsChild(DefaultParentType)
+            if nargin<1
+                this.DefaultParentType = 'figure';
+            elseif ischar(DefaultParentType)
+                this.DefaultParentType = lower(DefaultParentType);
+            else
+                this.DefaultParentType = DefaultParentType;
+            end
+            
+        end
+
         function delete(this) %called when object is deleted
             delete(this.ParentDeleteListener);
             
