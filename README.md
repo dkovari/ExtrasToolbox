@@ -29,6 +29,6 @@ git submodule update --init --recursive
 ```
 If you need to update to use the latest version of MATextras then run:
 ```
-git submodule update --init --recursive
+git submodule foreach git pull origin master
 ```
 ## Contents
