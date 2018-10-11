@@ -1,7 +1,5 @@
 classdef MercuryHub < extras.hardware.SerialDevice
-% extras.hardware.PI.MercuryHub
-%
-% Object for communicating with PI Mercury Controllers via serial port
+%% Object for communicating with PI Mercury Controllers via serial port
 %
 % The constructor for this class is protected, so you cannot create an
 % instance directly.
@@ -30,6 +28,9 @@ classdef MercuryHub < extras.hardware.SerialDevice
 %       or
 %   > newHub = extras.hardware.PI.MercuryHub.findHub('Port','COM6',PropName,Value,...)
 %
+% *************************************************************************
+% Developer Notes:
+% *************************************************************************
 % Automatic Hub deletion
 % =============================
 % if you no longer need a reference to a Hub object (returned by findHub)

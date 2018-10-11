@@ -15,13 +15,16 @@
          </tr>
       </table>
       <div class="title">extras.docgenerator</div>
-      <div class="helptext"><pre><!--helptext -->  extras.docgenerator(topic,outputdir)
+      <div class="helptext"><pre><!--helptext -->  Recursively Generate HTML Help files for a given topic
  
-  Recursively Generate HTML Help files for a given topic
   Help files are generated using MATLAB's built-in help system
   If your functions have been documented using MATLAB's prefered
   documentation methods then those comments should automatically be
   incorporated in the help files
+ 
+  Usage:
+    extras.docgenerator(topic,outputdir)
+    extras.docgenerator(topic)
  
   Example:
     To generate HTML help files for the extras package run:

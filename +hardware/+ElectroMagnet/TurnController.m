@@ -1,5 +1,9 @@
 classdef TurnController < matlab.mixin.SetGet
-    
+% Class for controlling number of turns gerenated by the 4-pole
+% electromagnet
+%
+% Used with MagnetController
+
     properties(SetAccess=protected)
         MagnetController
         TurnMonitor

@@ -1,4 +1,8 @@
 classdef MagnetController < extras.GraphicsChild
+% UI for controllng the 4-pole electro magnet
+% This class add an extra controll layer on top of the VNH_Controller
+% hardware interface 
+    
     properties (SetAccess=protected)
         Controller
         ControlUI

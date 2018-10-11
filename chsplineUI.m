@@ -1,12 +1,12 @@
 classdef chsplineUI < extras.GraphicsChild
-    %User interface for dynamically editing cubic hermite spline in an
-    %interactive plot
-    %
-    % usage:
-    % obj = extras.chsplineUI(x,y)
-    % obj = extras.chsplineUI(x,y,'Parent',parent)
-    % obj = extras.chsplineUI(parent,___)
-    % obj = extras.chsplineUI(Name,value,...)
+%User interface for dynamically editing cubic hermite spline in an
+%interactive plot
+%
+% usage:
+% obj = extras.chsplineUI(x,y)
+% obj = extras.chsplineUI(x,y,'Parent',parent)
+% obj = extras.chsplineUI(parent,___)
+% obj = extras.chsplineUI(Name,value,...)
     
     properties (SetObservable=true,AbortSet=true)
         Interactive = true;

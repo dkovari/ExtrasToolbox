@@ -1,5 +1,10 @@
 classdef TurnMonitor < matlab.mixin.SetGet
-    
+% Class for monitoring the total number of turns applied by the
+% electromanget
+%
+% This class watches the magnet output and determines the number of
+% rotations applied to a sample.
+
     properties (Access=protected)
         Controller
         

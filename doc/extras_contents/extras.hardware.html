@@ -16,11 +16,14 @@
       <div class="title">extras.hardware</div>
       <div class="helptext"><pre><!--helptext -->Contents of extras.hardware:
 
-<a href="extras.hardware.PI_E665_Piezo.html">PI_E665_Piezo</a>                  - redefine TargetValue here because we want a custom set method
-<a href="extras.hardware.ComSelectorUI.html">ComSelectorUI</a>                  - extras.hardware.ComSelectorUI(...)
-<a href="extras.hardware.JenaPiezo.html">JenaPiezo</a>                      - redefine TargetValue here because we want a custom set method
+<a href="extras.hardware.PI_E665_Piezo.html">PI_E665_Piezo</a>                  - Class for interfacing with a PI E-665 Piezo controller via PI's C API
+<a href="extras.hardware.ComSelectorUI.html">ComSelectorUI</a>                  - UI for managing the com port for extras.hardware.SerialDevice objects
+<a href="extras.hardware.JenaPiezo.html">JenaPiezo</a>                      - Class for interactfacing with a JenaSystems Piezo Objective scanner
 <a href="extras.hardware.SerialDevice.html">SerialDevice</a>                   - simple class for managing a single serial device
-<a href="extras.hardware.TargetValueDeviceUI.html">TargetValueDeviceUI</a>            - Internal Set</pre></div><!--after help -->
+<a href="extras.hardware.TargetValueDevice.html">TargetValueDevice</a>              - Generic Class for devices which have a "Taret" set point &amp; actual "Value"
+<a href="extras.hardware.TargetValueDeviceUI.html">TargetValueDeviceUI</a>            - UI for controlling extras.TargetValueDevice objects
+<a href="extras.hardware.TargetValueItemUI.html">TargetValueItemUI</a>              - Helper class for building TargetValueDevice UI elements
+<a href="extras.hardware.serialevent.html">serialevent</a>                    - Event object passed by extras.SerialDevice when data is recieved</pre></div><!--after help -->
    
 <div class="subpackages"><h2>Sub-packages</h2><pre>
 <a href="extras.hardware.ElectroMagnet.html">extras.hardware.ElectroMagnet</a>

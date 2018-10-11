@@ -1,7 +1,5 @@
 classdef CallbackQueue < extras.Queue
-% extras.CallbackQueue
-%
-% A Queue class, similar to parallel.pool.DataQueue
+%% A Queue class, similar to parallel.pool.DataQueue
 %
 % This class is derived from extras.Queue and implements the sendData
 % functionality, which allows arbitraty data to be added to a queue.

@@ -1,7 +1,6 @@
 classdef Queue <handle & matlab.mixin.Heterogeneous
-% extras.Queue (Abstract)
+%% (Abstract) A simple que, similar to parallel.pool.DataQueue and parallel.pool.Queue
 %
-% A simple que, similar to parallel.pool.DataQueue and parallel.pool.Queue
 % This is an abstract class.
 % To create a queue use extras.CallbackQueue or extras.PollQueue
 %

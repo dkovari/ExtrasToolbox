@@ -1,4 +1,7 @@
 classdef JenaPiezo < extras.hardware.TargetValueDevice & extras.hardware.SerialDevice
+%% Class for interactfacing with a JenaSystems Piezo Objective scanner
+% Communication with the device is handeled entirely by MATLAB via the
+% serial port
     
     %% redefine TargetValue here because we want a custom set method
     properties (SetObservable=true) %allow setting Target to same Target, that way wr message gets sent again

@@ -1,8 +1,6 @@
 classdef QueueDispatcher < handle
-% extras.QueueDispatcher
+%% Manage and distribute data to a list of extras.Queues
 %
-% Manages a list of Queues and can distribute data to all the queues in
-% it's list.
 % When queues are deleted, they are automatically removed from the list.
 %
 % List Management

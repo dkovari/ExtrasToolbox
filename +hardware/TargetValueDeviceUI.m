@@ -1,4 +1,8 @@
 classdef TargetValueDeviceUI < extras.GraphicsChild
+%% UI for controlling extras.TargetValueDevice objects
+% Target values can be manipulated with auto-generated sliders and edit
+% boxes.
+% Actual "Values" can be viewed in generated edits
     
     %% Internal Set
     properties (SetAccess=protected)

@@ -1,6 +1,5 @@
 classdef stackviewer < extras.GraphicsChild
-% stackviewer(...)
-% Interactive viewer for displaying image stacks or video clips
+%% Interactive viewer for displaying image stacks or video clips
 %
 % Usage:
 % stackviewer([HxWxN])

@@ -1,4 +1,6 @@
 classdef (ConstructOnLoad) serialevent < event.EventData
+% Event object passed by extras.SerialDevice when data is recieved
+    
     properties
         SerialObject
         SerialEvent

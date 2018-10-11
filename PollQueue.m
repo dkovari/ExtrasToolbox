@@ -1,7 +1,5 @@
 classdef PollQueue < extras.Queue
-% extras.PollQueue
-%
-% A pollable Queue class, similar to parallel.pool.PollableDataQueue
+%% A pollable Queue class, similar to parallel.pool.PollableDataQueue
 %
 % This class is derived from extras.Queue and implements the sendData
 % functionality, which allows arbitraty data to be added to a queue.

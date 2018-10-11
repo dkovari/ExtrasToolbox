@@ -1,4 +1,6 @@
 classdef MercuryDevice < extras.hardware.TargetValueDevice
+%% Class implementing an interface to a PI Mercury Motor Controller
+% This should be used in conjunction with extras.PI.MercuryHub
     
     %% Inherited from TargetValueDevice
     properties (SetObservable=true) %allow setting Target to same Target, that way message gets sent again

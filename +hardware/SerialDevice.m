@@ -1,7 +1,8 @@
 classdef SerialDevice < matlab.mixin.SetGet
-    % simple class for managing a single serial device
-    % extend this class to add functionality
-    
+%% simple class for managing a single serial device
+% extend this class to add functionality
+
+    %% Properties
     properties (SetAccess=protected)
         Port = '';
     end

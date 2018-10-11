@@ -1,4 +1,5 @@
 classdef TargetValueItemUI < extras.GraphicsChild & extras.uixDerivative
+% Helper class for building TargetValueDevice UI elements
     
     properties (AbortSet=true)
         Value;

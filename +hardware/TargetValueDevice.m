@@ -1,4 +1,7 @@
 classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous
+% Generic Class for devices which have a "Taret" set point & actual "Value"
+%
+    
     properties (Abstract=true,SetAccess=protected,SetObservable=true,AbortSet=true)
         Value;
     end

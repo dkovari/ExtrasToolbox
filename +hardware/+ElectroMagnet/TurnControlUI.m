@@ -1,5 +1,6 @@
 classdef TurnControlUI < extras.GraphicsChild
-    
+% User interface for controlling a TurnController object
+
     properties(SetAccess=protected)
         TurnController
     end

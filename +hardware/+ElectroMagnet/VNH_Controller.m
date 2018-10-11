@@ -1,4 +1,6 @@
 classdef VNH_Controller < extras.hardware.TargetValueDevice & extras.hardware.SerialDevice
+%% Class Interface for communicating with the VHN Current Controller
+% Communication is managed by MATLAB using the serial port.
     
     %% redefine TargetValue here because we want a custom set method
     properties (SetObservable=true) %allow setting Target to same Target, that way wr message gets sent again

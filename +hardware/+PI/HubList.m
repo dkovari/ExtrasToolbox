@@ -1,4 +1,6 @@
 classdef HubList < handle
+%% Helper class for managing lists of extras.PI.MercuryHub objects
+    
     properties (SetAccess=protected)
         List = extras.hardware.PI.MercuryHub.empty
         

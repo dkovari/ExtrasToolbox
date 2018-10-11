@@ -1,4 +1,7 @@
 classdef PI_E665_Piezo < extras.hardware.TargetValueDevice & extras.hardware.SerialDevice
+%% Class for interfacing with a PI E-665 Piezo controller via PI's C API
+% Calls to the API are made using MATLAB's legacy calllib() functions
+    
     %% redefine TargetValue here because we want a custom set method
     properties (SetObservable=true) %allow setting Target to same Target, that way the command gets sent again
         Target = 0;

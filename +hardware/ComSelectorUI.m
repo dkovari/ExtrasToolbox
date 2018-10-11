@@ -1,4 +1,6 @@
 classdef ComSelectorUI < extras.GraphicsChild & extras.uixDerivative
+%% UI for managing the com port for extras.hardware.SerialDevice objects
+%
 % extras.hardware.ComSelectorUI(...)
 %==========================================================================
 %   obj = ComSelectorUI(serialdevice)
@@ -7,8 +9,7 @@ classdef ComSelectorUI < extras.GraphicsChild & extras.uixDerivative
 %   obj = ComSelectorUI(serialdevice,'Parent',parent)
 %   obj =ComSelectorUI('SerialDevice',serialdevice,'Parent',parent)
 %==========================================================================
-% User interface for managing the com connection for
-% extras.hardware.SerialDevice type objects
+
     
     properties (SetAccess=protected)
         serialdevice
