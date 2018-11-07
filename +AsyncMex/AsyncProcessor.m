@@ -82,11 +82,11 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
             this.StartStopTimers();
         end
 
-        function tf = errorThrown(this)
-            tf = this.runMethod('errorThrown');
+        function tf = wasErrorThrown(this)
+            tf = this.runMethod('wasErrorThrown');
         end
         function err = getLastErrorMessage(this)
-            err = this.runMethod('checkError');
+            err = this.runMethod('getError');
         end
     end
 
