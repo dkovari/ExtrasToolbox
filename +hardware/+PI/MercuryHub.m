@@ -243,9 +243,13 @@ classdef MercuryHub < extras.hardware.SerialDevice
                 drawnow limitrate;
                 pause(0.002);
             end
+            %msg1 = [1,dec2hex(BoardID),'xx,TB'];
+            %fprintf(this.scom,msg1);
+            %msg2 = sprintf([1,dec2hex(BoardID),'xx,',cmd],varargin{:});
+            %fprintf(this.scom,msg2);
             fprintf(this.scom,[1,dec2hex(BoardID),'xx,TB,',cmd],varargin{:});
-            
-            %disp([1,dec2hex(BoardID),'xx,TB,',cmd])
+            %disp('sent')
+            %disp(sprintf([1,dec2hex(BoardID),'xx,TB,',cmd],varargin{:}));
             
             LastSend = now;
         end
@@ -254,6 +258,7 @@ classdef MercuryHub < extras.hardware.SerialDevice
     %% Process Serial Buffer
     methods (Hidden)
         function ProcessSerialBuffer(this) %called whenever a terminator is read in the serial buffer
+            %disp('in proc function');
             persistent LastBoard; %fallback incase board could not be interpreted
             if isempty(LastBoard)
                 LastBoard = 0;
