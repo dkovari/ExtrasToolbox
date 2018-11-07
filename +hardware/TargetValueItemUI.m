@@ -52,10 +52,12 @@ classdef TargetValueItemUI < extras.GraphicsChild & extras.uixDerivative
         UnitLabelWidth = 20
         ValueEditHeight = 20;
         
-        IsHorizontal = false;
-        
         UIeditListner;
         
+    end
+    
+    properties(SetAccess=protected)
+        IsHorizontal = false; %t/f if gui element is horizontal (true) or vertical (false)
     end
     
     properties (Dependent,Hidden)
