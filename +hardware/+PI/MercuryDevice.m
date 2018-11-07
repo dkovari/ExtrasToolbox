@@ -29,8 +29,8 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
         LastPositionReadTime = -Inf;
     end
     properties (Constant, Access=protected)
-        ValueTimerPeriod = 0.1;
-        PositionMinimumPeriod = 0.09;
+        ValueTimerPeriod = 0.75;
+        PositionMinimumPeriod = 0.15;
     end
 
     %% Device Properties
@@ -56,7 +56,21 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
     
     %% create/delete
     methods
-        function this = MercuryDevice(HubPort,BoardID,AxisType)
+        function this = MercuryDevice(HubPort,BoardID,AxisType,varargin)
+        % Create Mercury Motor Device
+        %   HubPort: com port string (e.g. 'COM3')
+        %            or handle to MercuryHub object
+        %   BoardID: ##, 0-15 specifying the device board id
+        %   AxisType: type string (e.g. 'M-126.PD2')
+        %           used to automatically specify device characteristics
+        %           like limits and scale
+        %   
+        % Optional Parameters
+        %   'DeviceName': string specifying human-readable device name
+        %                 default='MercuryMotor: ##', where ## = BoardID
+        %   'ValueLabels': string specifying human-readable label for the
+        %                  axis default=''
+            
             if isa(HubPort,'extras.hardware.PI.MercuryHub')
                 this.Hub = HubPort;
             else
@@ -103,6 +117,12 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             if exist('AxisType','var')
                 this.AxisType = AxisType;
             end
+            
+            
+            this.DeviceName = sprintf('MercuryMotor: %d',this.BoardID);
+            
+            %% Set other parameters
+            set(this,varargin{:});
         end
         
         function delete(this)
@@ -223,7 +243,10 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             
             this.Target = max(this.Limits(1),min(val,this.Limits(2)));
             if this.Hub.connected
-                this.Hub.sendCommand(this.BoardID,[sprintf('MA%0.0f',this.Target*this.MotorScale),',TT']);
+                %disp('about to send MA')
+                %disp([sprintf('MA%0.0f',this.Target*this.MotorScale),',TT'])
+                %pause()
+                this.Hub.sendCommand(this.BoardID,[sprintf('MA%0.0f',this.Target*this.MotorScale),',TT,TP']);
             end
         end
         function set.Velocity(this,val)
@@ -280,7 +303,7 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             end
             
             if ~ismember(this.BoardID,this.Hub.BoardList)
-                error('Board: % is not listed in the BoardList for MercuryHub connected to %s. OnTarget will never change. Aborting Wait',this.BoardID,this.Hub.Port);
+                error('Board: %d is not listed in the BoardList for MercuryHub connected to %s. OnTarget will never change. Aborting Wait',this.BoardID,this.Hub.Port);
             end
             
             %stop ValueTimer
@@ -303,11 +326,30 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             if ~this.Hub.connected
                 return;
             end
+            hProg = [];
             if this.HasLimitSwitch
-                this.Hub.sendCommand(this.BoardID,'FE1');
+                
+                qdlg = questdlg(sprintf('About to reference %s\n VERIFY PATH IS CLEAR!',this.DeviceName),sprintf('Referencing %s',this.DeviceName),'OK','Cancel','OK');
+                if strcmpi(qdlg,'Cancel')
+                    return
+                end
+                hProg = warndlg(sprintf('Referencing %s in progress',this.DeviceName),sprintf('Referencing %s',this.DeviceName),'non-modal');
+                stop(this.ValueTimer);
+                this.Hub.sendCommand(this.BoardID,'FE2');
+                pause(1);
+                this.Hub.sendCommand(this.BoardID,'FE3');
+                pause(1);
+            end
+            if isempty(hProg)||~isgraphics(hProg)
+                hProg = warndlg(sprintf('Referencing %s in progress',this.DeviceName),sprintf('Referencing %s',this.DeviceName),'non-modal');
             end
             this.WaitForOnTarget;
             this.Hub.sendCommand(this.BoardID,'DH');
+            this.Hub.sendCommand(this.BoardID,'TT,TP');
+            try
+                delete(hProg)
+            catch
+            end
         end
         function StopMotor(this)
             if ~this.Hub.connected
