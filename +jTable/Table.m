@@ -1,16 +1,16 @@
 classdef Table < matlab.mixin.SetGet
 % NOTE: This uses a java class dynamically added to the path. If using
 % with other dynamic java classes, you need to call
-% uiextras.jTable.loadJavaCustomizations() BEFORE instantiating any java objects,
+% extras.jTable.loadJavaCustomizations() BEFORE instantiating any java objects,
 % otherwise it will not load
-%% uiextras.jTable.Table - Class definition for Table
+%% extras.jTable.Table - Class definition for Table
 %   The Table object places a Java table control within a figure or
 %   container.
 %% Syntax:
-%   t = uiextras.jTable.Table
-%   t = uiextras.jTable.Table('Property','Value',...)
+%   t = extras.jTable.Table
+%   t = extras.jTable.Table('Property','Value',...)
 %
-%% uiextras.jTable.Table Properties:
+%% extras.jTable.Table Properties:
 %
 %   BackgroundColor - controls background color of the table
 %
@@ -127,7 +127,7 @@ classdef Table < matlab.mixin.SetGet
 %
 %   Visible - controls visibility of the control
 %
-%% uiextras.jTable.Table Methods:
+%% extras.jTable.Table Methods:
 %
 %   getCell - get a value from a single cell
 %
@@ -135,11 +135,11 @@ classdef Table < matlab.mixin.SetGet
 %
 %   sizeColumnsToData - autosize column widths to best fit the data
 %
-%% uiextras.jTable.Table Example:
+%% extras.jTable.Table Example:
 %
 %   % Create the figure and display the table
 %   f = figure;
-%   t = uiextras.jTable.Table('Parent',f);
+%   t = extras.jTable.Table('Parent',f);
 %   t.Data = num2cell(magic(5));
 %
 %% Known Issues:
@@ -293,22 +293,22 @@ classdef Table < matlab.mixin.SetGet
     %% Constructor and Destructor
     methods
         function obj = Table(varargin)
-            %  uiextras.jTable.Table - Constructor for Table
+            %  extras.jTable.Table - Constructor for Table
             % -------------------------------------------------------------------------
             % Abstract: Constructs a new Table object.
             %
             % Syntax:
-            %           obj = uiextras.jTable.Table('p1',v1,...)
+            %           obj = extras.jTable.Table('p1',v1,...)
             %
             % Inputs:
             %           Property-value pairs
             %
             % Outputs:
-            %           obj - uiextras.jTable.Table object
+            %           obj - extras.jTable.Table object
             %
             % Examples:
             %           hFig = figure;
-            %           obj =  uiextras.jTable.Table('Parent',hFig)
+            %           obj =  extras.jTable.Table('Parent',hFig)
             %
             
             %----- Parse Inputs -----%
@@ -355,7 +355,7 @@ classdef Table < matlab.mixin.SetGet
             p.parse(varargin{:});
             
             % Add customizations to Java path
-            uiextras.jTable.loadJavaCustomizations();
+            extras.jTable.loadJavaCustomizations();
             
             % Which parameters are not at defaults and need setting?
             ParamsToSet = rmfield(p.Results, p.UsingDefaults);
@@ -619,7 +619,7 @@ classdef Table < matlab.mixin.SetGet
         function refreshRenderers(obj)
             % Get the table renderers object, which contains all the java
             % renderers.
-            rObj = uiextras.jTable.TableRenderers.getRenderers();
+            rObj = extras.jTable.TableRenderers.getRenderers();
             
             % Get the column formats and associated data
             Formats = obj.ColumnFormat;
@@ -745,7 +745,7 @@ classdef Table < matlab.mixin.SetGet
             catch e
                 jTableModel = java(obj.JTableModel); % remove UDD wrapper
                 jEditable = jTableModel.isEditable().toArray();
-                warning('uiextras:Table:UnknownError', e.message)
+                warning('extras:Table:UnknownError', e.message)
             end
             value = com.mathworks.consulting.swing.table.Utilities.object2logical(jEditable)';
             
@@ -779,7 +779,7 @@ classdef Table < matlab.mixin.SetGet
         % ColumnFormat
         function set.ColumnFormat(obj, value)
             % Validate the input
-            [StatusOk, Message] = uiextras.jTable.TableRenderers.validateColumnFormat(value);
+            [StatusOk, Message] = extras.jTable.TableRenderers.validateColumnFormat(value);
             if ~StatusOk
                 error(Message);
             end
@@ -1047,7 +1047,7 @@ classdef Table < matlab.mixin.SetGet
 
             % Check
             assert(iscell(value) && ndims(value) == 2, ...
-                'uiextras:Table:InvalidArgument', ...
+                'extras:Table:InvalidArgument', ...
                 'Property ''Data'' must be a cell array.') %#ok<ISMAT>
             
             % Retrieve table model
@@ -1119,7 +1119,7 @@ classdef Table < matlab.mixin.SetGet
             
             % Check
             assert(ischar(value) && any(strcmp(value, {'on','off'})), ...
-                'uiextras:Table:InvalidArgument', ...
+                'extras:Table:InvalidArgument', ...
                 'Property ''Editable'' must be ''on'' or ''off''.')
             
             % Set
@@ -1176,11 +1176,11 @@ classdef Table < matlab.mixin.SetGet
                     jStyle = java.awt.Font.BOLD * jFont.isBold() + ...
                         java.awt.Font.ITALIC;
                 case 'oblique'
-                    error('uiextras:Table:InvalidArgument', ...
+                    error('extras:Table:InvalidArgument', ...
                         'Value ''%s'' is not supported for property ''%s''.', ...
                         value, 'FontAngle')
                 otherwise
-                    error('uiextras:Table:InvalidArgument', ...
+                    error('extras:Table:InvalidArgument', ...
                         'Property ''FontAngle'' must be %s.', ...
                         '''normal'' or ''italic''')
             end
@@ -1257,11 +1257,11 @@ classdef Table < matlab.mixin.SetGet
                     jStyle = jFont.isItalic() * java.awt.Font.ITALIC + ...
                         java.awt.Font.BOLD;
                 case {'light','demi'}
-                    error('uiextras:Table:InvalidArgument', ...
+                    error('extras:Table:InvalidArgument', ...
                         'Value ''%s'' is not supported for property ''%s''.', ...
                         value, 'FontWeight')
                 otherwise
-                    error('uiextras:Table:InvalidArgument', ...
+                    error('extras:Table:InvalidArgument', ...
                         'Property ''FontWeight'' must be %s.', ...
                         '''normal'' or ''bold''')
             end
@@ -1385,7 +1385,7 @@ classdef Table < matlab.mixin.SetGet
             % Check
             if ~isempty(value) && ( ~ishghandle(value) || ~isscalar(value) || ...
                     ~strcmp(get(value, 'Type'), 'uicontextmenu') )
-                error('uiextras:Table:InvalidArgument', ...
+                error('extras:Table:InvalidArgument', ...
                     'Property ''UIContextMenu'' must be a handle to a context menu.')
             end
             % Set

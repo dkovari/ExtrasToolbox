@@ -1,5 +1,5 @@
 classdef TableRenderers < handle
-%% uiextras.jTable.TableRenderers - Class definition for TableRenderers
+%% extras.jTable.TableRenderers - Class definition for TableRenderers
 %   The TableRenderers object sets up reusable column renderers for the
 %   Java-based table
 %   
@@ -58,7 +58,7 @@ classdef TableRenderers < handle
             
             % Does the object need to be instantiated?
             if isempty(sObj) || ~isvalid(sObj)
-                sObj = uiextras.jTable.TableRenderers;
+                sObj = extras.jTable.TableRenderers;
             end
             
             % Output the object
@@ -71,7 +71,7 @@ classdef TableRenderers < handle
             Message = '';
             
             % Get the singleton object
-            obj = uiextras.jTable.TableRenderers.getRenderers();
+            obj = extras.jTable.TableRenderers.getRenderers();
             
             % Check the validity
             ValidNames = obj.Formats(:,1);
@@ -86,7 +86,7 @@ classdef TableRenderers < handle
         end %function
         function [Renderer, Editor] = getRenderer(type,data)
             % Get the singleton object
-            obj = uiextras.jTable.TableRenderers.getRenderers();
+            obj = extras.jTable.TableRenderers.getRenderers();
             
             % Which renderer is selected?
             idx = strcmp(type,obj.Formats(:,1));
