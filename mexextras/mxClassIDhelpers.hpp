@@ -110,6 +110,8 @@ const char* classname(mxClassID ClassID) {
 		return "logical";
 	case mxCHAR_CLASS:
 		return "char";
+	case mxSTRUCT_CLASS:
+		return "struct";
 	default:
 		return "unknown";
 	}
