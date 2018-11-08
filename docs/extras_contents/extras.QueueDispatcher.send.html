@@ -2,7 +2,7 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    
-      <link rel="stylesheet" href="+extras\doc\extras_contents/helpwin.css">
+      <link rel="stylesheet" href="+extras\docs\extras_contents/helpwin.css">
       <title>MATLAB File Help: extras.QueueDispatcher/send</title>
    </head>
    <body>
@@ -15,8 +15,10 @@
          </tr>
       </table>
       <div class="title">extras.QueueDispatcher/send</div>
-      <div class="helptext"><pre><!--helptext --><span class="helptopic">extras.QueueDispatcher/send</span> is a function.
-    send(this, data)</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->    send(QD,data)
+    Sends data to the queues in the list
+        alias of send(QD.QueueList,data)
+  will use the native Send command for each object in the queue list</pre></div><!--after help -->
       <!--Method-->
       <div class="sectiontitle">Method Details</div>
       <table class="class-details">

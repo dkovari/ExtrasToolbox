@@ -30,6 +30,11 @@ classdef QueueDispatcher < handle
     
     methods
         function send(this,data)
+        %   send(QD,data)
+        %   Sends data to the queues in the list
+        %       alias of send(QD.QueueList,data)
+        % will use the native Send command for each object in the queue list 
+
             send(this.QueueList,data);
         end
         
@@ -37,6 +42,9 @@ classdef QueueDispatcher < handle
             delete(this.DeleteListeners)
         end
         function registerQueue(this,queues)
+        %   deregisterQueue(QD,queuesToRemove)
+        %       Look through array queuesToRemove and remove any that are present
+        %       in QueueList
             this.QueueList = union(this.QueueList,queues);
             this.QueueList(~isvalid(this.QueueList)) = [];
             
@@ -46,6 +54,9 @@ classdef QueueDispatcher < handle
             
         end
         function deregisterQueue(this,queues)
+        %   registerQueue(QD, queuesToAdd)
+        %       This will look through the array queuesToAdd and add queues that
+        %       are not already in the list.
             this.QueueList = setdiff(this.QueueList,queues);
             this.QueueList(~isvalid(this.QueueList)) = [];
             

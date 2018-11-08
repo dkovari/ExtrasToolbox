@@ -1,2 +1,3 @@
 -std=c++14
 -I/Applications/MATLAB_R2017b.app/extern/include
+-I%MATLAB_ROOT%/extern/include

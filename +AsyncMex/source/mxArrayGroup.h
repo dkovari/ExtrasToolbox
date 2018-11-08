@@ -101,8 +101,32 @@ public:
         return *this;
     }
 
-    mxArrayGroup(const mxArrayGroup& B) = delete; //don't allow copy by value
-    mxArrayGroup& operator=(const mxArrayGroup& B) = delete;//don't allow copy by value
+    /// Copy by value
+    mxArrayGroup(const mxArrayGroup& B){
+        nArrays = B.nArrays;
+        pArray = new mxArray* [nArrays];
+        for(size_t n=0;n<nArrays;++n){
+            pArray[n] = mxDuplicateArray(B.pArray[n]);
+            mexMakeArrayPersistent(pArray[n]);
+        }
+    }
+    mxArrayGroup& operator=(const mxArrayGroup& B){
+        for(size_t n=0;n<nArrays;++n){
+            mxDestroyArray(pArray[n]);
+        }
+        if(pArray!=nullptr)
+        {
+            delete[] pArray;
+        }
+
+        nArrays = B.nArrays;
+        pArray = new mxArray* [nArrays];
+        for(size_t n=0;n<nArrays;++n){
+            pArray[n] = mxDuplicateArray(B.pArray[n]);
+            mexMakeArrayPersistent(pArray[n]);
+        }
+        return *this;
+    }
 
     ~mxArrayGroup(){
         for(size_t n=0;n<nArrays;++n){

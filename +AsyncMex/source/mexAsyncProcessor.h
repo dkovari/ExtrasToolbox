@@ -17,7 +17,8 @@ namespace mex{
         std::atomic<bool> ProcessRunning;
 
         std::atomic<bool> ErrorFlag;
-        std::exception_ptr LastError;
+        std::mutex LastErrorMutex;
+        std::exception_ptr LastError=nullptr;
 
         std::mutex TaskListMutex;///mutex lock for accessing TaskList
         std::list<mxArrayGroup> TaskList; //list of remaining tasks
@@ -57,8 +58,9 @@ namespace mex{
 
             }catch (...){
                 ProcessRunning = false;
-                LastError = std::current_exception();
                 ErrorFlag = true;
+                std::lock_guard<std::mutex> lock(LastErrorMutex);
+                LastError = std::current_exception();
                 return;
             }
         }
@@ -116,8 +118,12 @@ namespace mex{
 
         void cancelRemainingTasks(){
             StopProcessor();
+
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
             TaskList.clear();
+
+            mexPrintf("\t\t Remaining tasks cleared.\n");
+            mexEvalString("pause(0.2)");
         }
 
         size_t remainingTasks() const {return TaskList.size();}
@@ -147,6 +153,11 @@ namespace mex{
             return out;
         }
 
+        virtual void clearResults(){
+            std::lock_guard<std::mutex> lock(ResultsListMutex); //lock list
+            ResultsList.clear();
+        }
+
         /// number of results output arguments for next result
         virtual size_t numResultOutputArgs() const{
             if(ResultsList.size()<1){
@@ -159,6 +170,14 @@ namespace mex{
         /// true if there was an error
         virtual bool wasErrorThrown() const{
             return ErrorFlag;
+        }
+
+        /// Clears the error pointer and error flag.
+        /// After calling ErroFlag=false and LastError=nullptr
+        virtual void clearError() {
+            ErrorFlag = false;
+            std::lock_guard<std::mutex> lock(LastErrorMutex);
+            LastError = nullptr;
         }
 
         ///check for errors thrown within the processing loop
