@@ -1,0 +1,39 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras\docs\extras_contents/helpwin.css">
+      <title>MATLAB File Help: extras.ImageProcessing.imflatten</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">MATLAB File Help: extras.ImageProcessing.imflatten</td>
+            <td class="subheader-left"><a href="matlab:edit extras.ImageProcessing.imflatten">View code for extras.ImageProcessing.imflatten</a></td>
+            <td class="subheader-right"><a href="matlab:helpwin">Default Topics</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.ImageProcessing.imflatten</div>
+      <div class="helptext"><pre><!--helptext -->  Flatten grayscale image background using polynomial fit
+ 
+  The supplied image is fit to a polynomial function and then the value of
+  that polynomial at each pixel location is subtracted from the image.
+ 
+  Input:
+    im: grayscale image to flatten
+ 
+  Parameters:
+    'Order',p: order of the ploynomial to fit the data to
+    'Method',
+        'WholeImage': Fits the entire image to a 2D polynomial
+                        f(x,y) = Ax^n + By^n + ...
+        'Columns': fits each column to independent polynomials p(y)=...
+        'Rows': fits each row to independent polynomials p(x)=...
+ 
+  Output:
+    im_flat: the flattened image
+ % Copyright 2018 Daniel Kovari, Emory University
+    All rights reserved</pre></div><!--after help -->
+   </body>
+</html>
