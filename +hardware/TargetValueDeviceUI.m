@@ -224,7 +224,6 @@ classdef TargetValueDeviceUI < extras.GraphicsChild & extras.uixDerivative
             end
             
             for n = 1:NumVals
-                
                 if numel(this.UIcontrols) < n %create
                     
                     %% Get Label

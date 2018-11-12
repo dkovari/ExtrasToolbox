@@ -15,8 +15,8 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
     
     %% Mercury Device Communication
     properties (SetAccess=protected)
-        BoardID
-        Hub
+        BoardID %ID of the controller, set be dip switches
+        Hub %MATLAB Serial Hub object
     end
     properties (Access=protected)
         HubConnectedListener
@@ -45,13 +45,57 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
         Acceleration = 1;
     end
     properties (Access=protected)
-        Internal_setVelocity = false;
-        Internal_setAcceleration = false;
+        Internal_setVelocity = false; %flag indicating internal function is setting value
+        Internal_setAcceleration = false;%flag indicating internal function is setting value
+        
+
     end
     properties (SetAccess=protected,SetObservable=true,AbortSet = true)
         IsRotary = false;
         HasLimitSwitch = false;
         MotorScale = 1; %steps/unit
+    end
+    
+    %% Status Bits
+    properties(Access=protected) %internal set flaggs
+        Internal_MotorOn = false; %flag indicating internal function is setting value
+        Internal_BrakeOn = false; %flag indicating internal function is setting value
+    end
+    properties(SetObservable=true,AbortSet = true)
+        MotorOn = false; % T/F if motor is enabled
+        BrakeOn = false; % T/F if brake is enabled
+    end
+    methods
+        function set.MotorOn(this,TF)
+           % 'in MotorOn'
+            if this.Internal_MotorOn
+                %'internal MotorOn'
+                %TF
+                this.MotorOn = TF;
+            else
+                assert(isscalar(TF),'MotorOn must be scalar and convertable to logical');
+                TF = logical(TF);
+                if TF
+                    %'here'
+                    this.Hub.sendCommand(this.BoardID,'MN,TS');
+                else
+                    this.Hub.sendCommand(this.BoardID,'MF,TS');
+                end
+            end
+        end
+        function set.BrakeOn(this,TF)
+            if this.Internal_BrakeOn
+                this.BrakeOn = TF;
+            else
+                assert(isscalar(TF),'MotorOn must be scalar and convertable to logical');
+                TF = logical(TF);
+                if TF
+                    this.Hub.sendCommand(this.BoardID,'BN,TS');
+                else
+                    this.Hub.sendCommand(this.BoardID,'BF,TS');
+                end
+            end
+        end
     end
     
     %% create/delete
@@ -123,6 +167,10 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             
             %% Set other parameters
             set(this,varargin{:});
+            
+            %% Turn Motor and break on by default
+            this.MotorOn = true;
+            this.BrakeOn = false;
         end
         
         function delete(this)
@@ -167,22 +215,28 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             assert(numel(status)==6,'status must have 6 byte codes specified as hex chars');
             
             %% 1F LM629 Status
-            %Bit 0
+            %Bit 0 
             %Bit 1
             %Bit 2: Trajectory Complete
-            %ontarget = bitget(hex2dec(status{1}),3)
-                this.OnTarget = bitget(hex2dec(status{1}),3); %appears to be OnTarget signal
+                this.OnTarget = logical(bitget(hex2dec(status{1}),3)); %appears to be OnTarget signal
             %Bit 3: Index Pulse recieved   
             %Bit 4
             %Bit 5
             %Bit 6
-            %Bit 7
+            %Bit 7 Motor OFF
+                this.Internal_MotorOn = true;
+                this.MotorOn = ~logical(bitget(hex2dec(status{1}),8));
+                this.Internal_MotorOn = false;
             
             %% 2F Internal operation flags
             
             %% 3F Motor Loop Flags
             
             %% 4F Signal Lines Status
+            %bit 3 Brake ON
+                this.Internal_BrakeOn = true;
+                this.BrakeOn = logical(bitget(hex2dec(status{4}),4));
+                this.Internal_BrakeOn = false;
             
             %% 5F Signal Lines Inputs
             
@@ -333,6 +387,8 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
                 if strcmpi(qdlg,'Cancel')
                     return
                 end
+                this.MotorOn = true;
+                this.BrakeOn = false;
                 hProg = warndlg(sprintf('Referencing %s in progress',this.DeviceName),sprintf('Referencing %s',this.DeviceName),'non-modal');
                 stop(this.ValueTimer);
                 this.Hub.sendCommand(this.BoardID,'FE2');
