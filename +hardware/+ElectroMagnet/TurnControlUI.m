@@ -1,4 +1,4 @@
-classdef TurnControlUI < extras.GraphicsChild
+classdef TurnControlUI < extras.GraphicsChild & extras.uixDerivative
 % User interface for controlling a TurnController object
 
     properties(SetAccess=protected)

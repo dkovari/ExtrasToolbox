@@ -38,7 +38,9 @@ classdef VNH_Controller < extras.hardware.TargetValueDevice & extras.hardware.Se
             %default serialdevice construction (do not connect yet)
             this@extras.hardware.SerialDevice();
             
-            this.Port = Port;
+            if ~isempty(Port)
+                this.Port = Port;
+            end
             %% Device Info
             this.DeviceName = 'VNHx';
             this.Units = '';
@@ -113,8 +115,8 @@ classdef VNH_Controller < extras.hardware.TargetValueDevice & extras.hardware.Se
         
         function ConnectChange(this)
             if ~this.connected %not connected
-                this.Value = NaN;
-                this.Target = NaN;
+                this.Value = NaN(this.ValueSize);
+                this.Target = NaN(this.ValueSize);
                 
                 try
                     stop(this.ValueTimer)
@@ -136,7 +138,7 @@ classdef VNH_Controller < extras.hardware.TargetValueDevice & extras.hardware.Se
         function set.Target(this,val)
             
             if ~this.connected
-                this.Target = NaN;
+                this.Target = NaN(this.ValueSize);
                 return;
             end
             

@@ -1,6 +1,6 @@
-classdef MagnetController < extras.GraphicsChild
+classdef MagnetController < extras.GraphicsChild & extras.uixDerivative
 % UI for controllng the 4-pole electro magnet
-% This class add an extra controll layer on top of the VNH_Controller
+% This class adds an extra controll layer on top of the VNH_Controller
 % hardware interface 
     
     properties (SetAccess=protected)
@@ -42,33 +42,20 @@ classdef MagnetController < extras.GraphicsChild
             %look for parent specified in arguments
             varargin = this.CheckParentInput(varargin{:});
             
-            %% Com Port
+            
+            
+            %% VNH_Controller/Com Port
 
-            persistent LastCOM;
-            if isempty(LastCOM)
-                LastCOM = '';
-            end
-            if numel(varargin)<1
-                answer = {-1};
-                while ~ischar(answer{1})
-                    answer = inputdlg('COM Port (e.g. COM5)','COM Port',1,{LastCOM});
-                    if isempty(answer)
-                        if this.CreatedParent
-                            delete(this.Parent);
-                        end
-                        error('No COM Port specified');
-                    end
-                end
-                COMPORT = answer{1};
+            if numel(varargin)<1 %no args specified, use com selector gui
+                this.Controller = extras.hardware.ElectroMagnet.VNH_Controller();
+                extras.hardware.ComSelectorUI(this.Controller);
+            elseif isa('extras.hardware.ElectroMagnet.VNH_Controller',varargin{1})
+                this.Controller = varargin{1};
             else
                 assert(ischar(varargin{1}),'Com port must be specified by a char array');
                 COMPORT = varargin{1};
+                this.Controller = extras.hardware.ElectroMagnet.VNH_Controller(COMPORT);
             end
-                
-                
-            this.Controller = extras.hardware.ElectroMagnet.VNH_Controller(COMPORT);
-            
-            LastCOM = COMPORT;
             
             %% GUIS
             
