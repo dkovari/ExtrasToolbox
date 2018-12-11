@@ -2,16 +2,15 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    
-      <link rel="stylesheet" href="+extras\docs\extras_contents/helpwin.css">
-      <title>MATLAB File Help: extras.getListenable</title>
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>extras.getListenable - MATLAB File Help</title>
    </head>
    <body>
       <!--Single-page help-->
       <table border="0" cellspacing="0" width="100%">
          <tr class="subheader">
-            <td class="headertitle">MATLAB File Help: extras.getListenable</td>
-            <td class="subheader-left"><a href="matlab:edit extras.getListenable">View code for extras.getListenable</a></td>
-            <td class="subheader-right"><a href="matlab:helpwin">Default Topics</a></td>
+            <td class="headertitle">extras.getListenable - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.getListenable">View code for extras.getListenable</a></td>
          </tr>
       </table>
       <div class="title">extras.getListenable</div>
@@ -24,12 +23,12 @@
  %% EXAMPLE Property Listener:
   f = figure;
   d = dir;
-  a = addlistener(f,&#x2026;
-  &#x2018;ApplicationData&#x2019;,&#x2019;PostSet&#x2019;,&#x2026;
-  @(~,~) disp(&#x2018;appdatachanged&#x2019;));
+  a = addlistener(f,&#x85;
+  &#x91;ApplicationData&#x92;,&#x92;PostSet&#x92;,&#x85;
+  @(~,~) disp(&#x91;appdatachanged&#x92;));
  %% This triggers the callback:
   f.ApplicationData.test = d;
  %% This does not. WHY?
-  setappdata(f,&#x2019;test&#x2019;,d)</pre></div><!--after help -->
+  setappdata(f,&#x92;test&#x92;,d)</pre></div><!--after help -->
    </body>
 </html>

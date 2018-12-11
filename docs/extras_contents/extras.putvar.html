@@ -1,0 +1,94 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>extras.putvar - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.putvar - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.putvar">View code for extras.putvar</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.putvar</div>
+      <div class="helptext"><pre><!--helptext -->  Assigns variables from the current workspace down into the base MATLAB workspace
+  usage: putvar(var1)
+  usage: putvar(var1,var2, ...)
+ 
+  putvar moves variables from the current matlab
+  workspace down to the base matlab workspace.
+  putvar is something that can be used while
+  in a debugging session, to retain the value
+  of a variable, saving it into the base matlab
+  workspace. putvar is also a way to return a
+  specific variable, avoiding the use of a
+  return argument (for whatever reason you might
+  have.)
+ 
+  putvar cannot assign variables that are not
+  already in existence in the caller workspace.
+ 
+ 
+  arguments: (input)
+   var1, var2 ... - Matlab variables in the
+        current workspace, that will then be
+        assigned into the base matlab workspace.
+ 
+        Alternatively, you can supply the names
+        of these variables, as strings.
+ 
+        If a variable with that name already
+        exists in the base workspace, it will
+        be overwritten, with a warning message
+        generated. That warning message can be
+        disabled by the advance command:
+ 
+        warning('off','<span class="helptopic">putvar</span>:overwrite')
+ 
+ 
+  Example:
+  % First, save the function testputvar.m on your search path.
+  % in MATLAB itself, try this.
+ 
+  ==================
+  function testputvar
+  A = 3;
+  B = 23;
+  C = pi/2;
+  D = 'The quick brown fox';
+  putvar(A,'C',D)
+  ==================
+  
+  % Next, clear your workspace. Clear ensures that no
+  % variables exist initially in the base workspace. Then
+  % run the function testputvar, and finally execute the
+  % who command, all at the command line.
+ 
+  &gt;&gt; clear
+  &gt;&gt; testputvar
+  &gt;&gt; who
+  
+  % Your variables are:
+  % A  C  D
+ 
+  % The output from who tells it all. Inside the function
+  % testputvar, we had defined four variables, A, B, C and D.
+  % But after testputvar terminates, its variables will fall
+  % into the bit bucket, disappearing into limbo. The putvar
+  % call inside testputvar ensures that the variables A, C
+  % and D are returned into the base workspace, yet no return
+  % arguments were provided.
+ 
+ 
+  
+ 
+ 
+  Author: John D'Errico
+  e-mail: woodchips@rochester.rr.com
+  Release: 2.0
+  Release date: 4/08/2010</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> uigetvar, <a href="matlab:helpwin uigetdir">uigetdir</a>, <a href="matlab:helpwin uigetfile">uigetfile</a>, <a href="matlab:helpwin who">who</a>, <a href="matlab:helpwin whos">whos</a></div>
+   </body>
+</html>

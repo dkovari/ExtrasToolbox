@@ -9,6 +9,12 @@ classdef DraggableLine < extras.GraphicsChild
         Color
         LineStyle
         LineWidth
+        Marker
+        MarkerSize
+        MarkerEdgeColor
+        MarkerFaceColor
+        
+        UserData; %variable to hold user data
     end
     methods
         function set.X(this,val)
@@ -42,6 +48,28 @@ classdef DraggableLine < extras.GraphicsChild
             set(this.LineHandle,'LineWidth',val);
             this.LineWidth = this.LineHandle.LineWidth;
         end
+        
+        function set.Marker(this,val)
+            set(this.LineHandle,'Marker',val);
+            this.Marker = this.LineHandle.Marker;
+        end
+        
+        function set.MarkerSize(this,val)
+            set(this.LineHandle,'MarkerSize',val);
+            this.MarkerSize = this.LineHandle.MarkerSize;
+        end
+        
+        function set.MarkerEdgeColor(this,val)
+            set(this.LineHandle,'MarkerEdgeColor',val);
+            this.MarkerEdgeColor = this.LineHandle.MarkerEdgeColor;
+        end
+        
+        function set.MarkerFaceColor(this,val)
+            set(this.LineHandle,'MarkerFaceColor',val);
+            this.MarkerFaceColor = this.LineHandle.MarkerFaceColor;
+        end
+        
+        
     end
     
     properties (Access=protected)
@@ -89,6 +117,11 @@ classdef DraggableLine < extras.GraphicsChild
             this.Color = this.LineHandle.Color;
             this.LineStyle = this.LineHandle.LineStyle;
             this.LineWidth = this.LineHandle.LineWidth;
+            this.Marker = this.LineHandle.Marker;
+            this.MarkerSize = this.LineHandle.MarkerSize;
+            this.MarkerEdgeColor = this.LineHandle.MarkerEdgeColor;
+            this.MarkerFaceColor = this.LineHandle.MarkerFaceColor;
+
             
             %% Get X and Y locations
             assert(numel(varargin)>=2,'X and Y line coordinates must be specified');
@@ -136,6 +169,9 @@ classdef DraggableLine < extras.GraphicsChild
     
     methods
         function UpdateLine(this)
+            if ~isvalid(this)
+                return
+            end
             x = this.X;
             y = this.Y;
             if isnan(this.X(1))
@@ -189,13 +225,15 @@ classdef DraggableLine < extras.GraphicsChild
             this.ParentFigure.WindowButtonUpFcn = this.Orig_MouseUp;
             this.ParentFigure.WindowButtonMotionFcn = this.Orig_MouseMove;
             
+            this.UpdateLine();
+            
             %fire uieditcallback
             hgfeval(this.UIeditCallback,this,struct('Event','DragDone'));
             
             %notify event listeners
             notify(this,'UIeditcomplete');
             
-            this.UpdateLine();
+            
         end
     end
 end
