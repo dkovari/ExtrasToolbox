@@ -90,6 +90,8 @@ classdef colormapUI < extras.GraphicsChild & extras.uixDerivative & extras.Requi
         
         ValueLabel = 'Value'; %string specifying label for values
         ValueUnit = ''; %string specifying unit for value (empty means no unit)
+        
+        Title
     end
     methods (Access=protected)
         function updateValueLabel(this)
@@ -113,6 +115,10 @@ classdef colormapUI < extras.GraphicsChild & extras.uixDerivative & extras.Requi
         end
     end
     methods
+        function set.Title(this,str)
+            set(this.ParentFigure,'Name',str);
+            this.Title=str;
+        end
         function set.ValueLabel(this,str)
             assert(ischar(str),'ValueLabel must be a char array');
             this.ValueLabel = str;

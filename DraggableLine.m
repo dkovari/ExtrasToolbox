@@ -15,6 +15,8 @@ classdef DraggableLine < extras.GraphicsChild
         MarkerFaceColor
         
         UserData; %variable to hold user data
+        
+        DragEnabled = true; %t/f if line is movable
     end
     methods
         function set.X(this,val)
@@ -69,7 +71,30 @@ classdef DraggableLine < extras.GraphicsChild
             this.MarkerFaceColor = this.LineHandle.MarkerFaceColor;
         end
         
+        function set.DragEnabled(this,val)
+            assert(isscalar(val),'DragEnabled must be scalar and convertable to logical');
+            this.DragEnabled = logical(val);
+        end
         
+    end
+    
+    properties(Dependent)
+        Visible
+        UIContextMenu
+    end
+    methods
+        function v = get.Visible(this)
+            v = this.LineHadle.Visible;
+        end
+        function set.Visible(this,v)
+            this.LineHadle.Visible = v;
+        end
+        function set.UIContextMenu(this,v)
+            this.LineHandle.UIContextMenu = v;
+        end
+        function v = get.UIContextMenu(this)
+            v = this.LineHandle.UIContextMenu;
+        end
     end
     
     properties (Access=protected)
@@ -121,7 +146,6 @@ classdef DraggableLine < extras.GraphicsChild
             this.MarkerSize = this.LineHandle.MarkerSize;
             this.MarkerEdgeColor = this.LineHandle.MarkerEdgeColor;
             this.MarkerFaceColor = this.LineHandle.MarkerFaceColor;
-
             
             %% Get X and Y locations
             assert(numel(varargin)>=2,'X and Y line coordinates must be specified');
@@ -151,13 +175,12 @@ classdef DraggableLine < extras.GraphicsChild
             elseif all(isnan(this.Y))
                 this.DragAxis = 'X';
             else
-                this.DragAxes = 'Parallel';
+                this.DragAxis = 'Parallel';
             end
             
             %% Set other parameters
             set(this,varargin{3:end});
-            
-            
+                  
         end
         
         function delete(this)
@@ -167,6 +190,14 @@ classdef DraggableLine < extras.GraphicsChild
         end
     end
     
+    %% overloads
+    methods
+        function uistack(this,varargin)
+            uistack(this.LineHandle,varargin{:});
+        end
+    end
+    
+    %% other
     methods
         function UpdateLine(this)
             if ~isvalid(this)
@@ -193,8 +224,12 @@ classdef DraggableLine < extras.GraphicsChild
     end
     
     %% Callbacks
-    methods(Hidden)
+    methods(Hidden) %these are hidden, but if you know abou them you can use them. It's a good way for external classes to trigger the drag callbacks
         function MouseClick_Line(this)
+            
+            if ~this.DragEnabled
+                return;
+            end
             
             this.ClickPoint = get(this.Parent, 'CurrentPoint');
             this.X_orig = this.X;
@@ -208,6 +243,10 @@ classdef DraggableLine < extras.GraphicsChild
             
         end
         function MouseMove(this,~,~)
+            if ~this.DragEnabled
+                return;
+            end
+            
             pt = get(this.Parent, 'CurrentPoint');
             
             dPt = pt-this.ClickPoint;
@@ -217,13 +256,18 @@ classdef DraggableLine < extras.GraphicsChild
                 case 'Y'
                     this.Y = this.Y_orig + dPt(1,2);
                 case 'Parallel'
-                    disp('Parallel drag not yet implemented')
+                    this.X = this.X_orig + dPt(1,1);
+                    this.Y = this.Y_orig + dPt(1,2);
             end
             %this.UpdateLine();
         end
-        function MouseUp(this,~,~)
+        function MouseUp(this,~,~)            
             this.ParentFigure.WindowButtonUpFcn = this.Orig_MouseUp;
             this.ParentFigure.WindowButtonMotionFcn = this.Orig_MouseMove;
+            
+            if ~this.DragEnabled
+                return;
+            end
             
             this.UpdateLine();
             
