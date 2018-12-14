@@ -101,9 +101,9 @@ namespace rcdefs {
 
 	// structure used for optional parameters of radial center
 	struct RCparams {
-		std::shared_ptr<TypedArrayI<double>> RadiusFilter = std::make_shared<NativeArray<double>>(0);
+		std::shared_ptr<TypedArray<double>> RadiusFilter = std::make_shared<NativeArray<double>>(0);
 		COM_METHOD COMmethod = MEAN_ABS; //method used for estimating center of mass
-		std::shared_ptr<TypedArrayI<double>> XYc = std::make_shared<NativeArray<double>>(0); //initial centroid guess
+		std::shared_ptr<TypedArray<double>> XYc = std::make_shared<NativeArray<double>>(0); //initial centroid guess
 		double DistanceFactor = INFINITY; //radius filter weighting factor
 	};
 };
@@ -126,9 +126,9 @@ namespace rcdefs {
 //	RWR/N - the weighted-average distance between the estimated center and all the graident vectors in the sub-image
 //
 template<typename T=double, class C=NativeArray<T>,typename M>
-std::vector<C> radialcenter(const TypedArrayI<M>& I, //input image
-											const TypedArrayI<double>& WIND, //subwindows to use for finding particles: [X1,X2,Y1,Y2]
-											const TypedArrayI<double>& GP, //gradient noise-sensitivity exponent
+std::vector<C> radialcenter(const TypedArray<M>& I, //input image
+											const TypedArray<double>& WIND, //subwindows to use for finding particles: [X1,X2,Y1,Y2]
+											const TypedArray<double>& GP, //gradient noise-sensitivity exponent
 											const rcdefs::RCparams& params=rcdefs::RCparams(),//parameters
 											size_t nargout = 4)
 {
@@ -182,10 +182,10 @@ std::vector<C> radialcenter(const TypedArrayI<M>& I, //input image
 		return out;
 	}
 	out.resize(4);
-	TypedArrayI<T>& x = out[0];
-	TypedArrayI<T>& y = out[1];
-	TypedArrayI<T>& varXY = out[2];
-	TypedArrayI<T>& RWR_N = out[3];
+	TypedArray<T>& x = out[0];
+	TypedArray<T>& y = out[1];
+	TypedArray<T>& varXY = out[2];
+	TypedArray<T>& RWR_N = out[3];
 
 
 	//mexPrintf("about to resize output\n");

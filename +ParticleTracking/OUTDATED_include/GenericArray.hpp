@@ -4,9 +4,9 @@
 #include <stdexcept>
 
 //Interface to TypedArray
-template<typename T> class TypedArrayI {
+template<typename T> class TypedArray {
 public:
-	virtual ~TypedArrayI(){};
+	virtual ~TypedArray(){};
 	
 	virtual size_t numel() const = 0;
 	virtual bool isempty() const = 0;
@@ -32,25 +32,25 @@ public:
 	virtual void resize_nocpy(size_t nRows, size_t nCols) = 0;
 	virtual void resize_clear(size_t rows, size_t cols) = 0;
 
-	virtual TypedArrayI& operator+=(double val){
+	virtual TypedArray& operator+=(double val){
 		for(size_t n=0;n<numel();++n){
 			(*this)[n] += val;
 		}
 		return *this;
 	}
-	virtual TypedArrayI& operator-=(double val){
+	virtual TypedArray& operator-=(double val){
 		for(size_t n=0;n<numel();++n){
 			(*this)[n] -= val;
 		}
 		return *this;
 	}
-	virtual TypedArrayI& operator/=(double val){
+	virtual TypedArray& operator/=(double val){
 		for(size_t n=0;n<numel();++n){
 			(*this)[n] /= val;
 		}
 		return *this;
 	}
-	virtual TypedArrayI& operator*=(double val){
+	virtual TypedArray& operator*=(double val){
 		for(size_t n=0;n<numel();++n){
 			(*this)[n] *= val;
 		}
@@ -58,14 +58,14 @@ public:
 	}
 };
 
-template<typename T> size_t numel(const TypedArrayI<T>& obj){return obj.numel();}
-template<typename T> bool isempty(const TypedArrayI<T>& obj){return obj.isempty();}
-template<typename T> size_t nRows(const TypedArrayI<T>& obj){return obj.nRows();}
-template<typename T> size_t nCols(const TypedArrayI<T>& obj){return obj.nCols();}
+template<typename T> size_t numel(const TypedArray<T>& obj){return obj.numel();}
+template<typename T> bool isempty(const TypedArray<T>& obj){return obj.isempty();}
+template<typename T> size_t nRows(const TypedArray<T>& obj){return obj.nRows();}
+template<typename T> size_t nCols(const TypedArray<T>& obj){return obj.nCols();}
 
 //C++ Native TypedArray with self-managed memory
 //with column-major data storage
-template<typename T> class NativeArray: public TypedArrayI<T> {
+template<typename T> class NativeArray: public TypedArray<T> {
 protected:
 	T* _data=nullptr;
 	bool _managedata = true;

@@ -1,4 +1,4 @@
-% Test radialcenter mex function
+% Test extras.ParticleTracking.radialcenter mex function
 
 %% Generate Test Image
 Nx = 5;
@@ -41,28 +41,32 @@ for n=1:numel(Xc)
     rectangle('Position',[WIND(n,1),WIND(n,3),WIND(n,2)-WIND(n,1),WIND(n,4)-WIND(n,3)]);
 end
 
-[X,Y,varXY,d2] = radialcenter(I,WIND);
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,WIND);
 
-plot(X,Y,'+r');
+plot(X,Y,'+r','DisplayName','From Windows');
 
 %% Test again using XYc estimates
 XYc = [Xc,Yc];
 XYc = XYc + randn(size(XYc));
-
-[X,Y,varXY,d2] = radialcenter(I,'XYc',XYc);
-plot(X,Y,'xc');
+plot(XYc(:,1),XYc(:,2),'sc','DisplayName','Guess Point');
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,'XYc',XYc);
+plot(X,Y,'xc','DisplayName','From Guess Point');
 
 
 %% 
 XYc = [Xc,Yc];
 XYc = XYc + 10*randn(size(XYc));
-[X,Y,varXY,d2] = radialcenter(I,[],3,'XYc',XYc,'RadiusFilter',20);
-plot(X,Y,'xg');
-plot(XYc(:,1),XYc(:,2),'+m');
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,[],3,'XYc',XYc,'RadiusFilter',20);
+plot(XYc(:,1),XYc(:,2),'+m','DisplayName','Guess2');
+plot(X,Y,'xg','DisplayName','From Guess2 with RadiusFilter');
+
 
 %% Test other types
 typename = 'uint8';
 Ityp = cast(double(intmax(typename))*mat2gray(I),typename);
-[X,Y,varXY,d2] = radialcenter(Ityp,[],3,'XYc',XYc,'RadiusFilter',20);
-plot(X,Y,'og');
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(Ityp,[],3,'XYc',XYc,'RadiusFilter',20);
+plot(X,Y,'og','DisplayName','From Guess2 with RF, typecast');
 %plot(XYc(:,1),XYc(:,2),'om');
+
+%% END
+legend show

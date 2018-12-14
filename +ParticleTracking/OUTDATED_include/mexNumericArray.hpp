@@ -10,11 +10,11 @@ namespace mex {
 	// Typed NumericArray Wrapper for MxObjects
 	// Implements the TypedArraI<T> interface
 	//
-	// TypedArrayI<T> objects provide element access as if the
+	// TypedArray<T> objects provide element access as if the
 	// array was a 2d Matrix (with column-major data).
 	// See GenericArray.hpp for details
 	template<typename T>
-	class NumericArray : public MxObject, public TypedArrayI<T> {
+	class NumericArray : public MxObject, public TypedArray<T> {
 	public:
 		//Constructors
 		NumericArray() {};
@@ -87,7 +87,7 @@ namespace mex {
 		// Construct from NativeArray
 
 		//Copy From native array with same type
-		void copyFrom(const TypedArrayI<T>& src) {
+		void copyFrom(const TypedArray<T>& src) {
 			bool wasPersistent = IsPersistent();
 			deletemxptr();
 
@@ -102,7 +102,7 @@ namespace mex {
 		}
 
 		//copy from native with different type
-		template<typename M> void copyFrom(const TypedArrayI<M>& src) {
+		template<typename M> void copyFrom(const TypedArray<M>& src) {
 			bool wasPersistent = IsPersistent();
 			deletemxptr();
 			if (src.getdata() !=nullptr) { //copy with type conversion
@@ -131,7 +131,7 @@ namespace mex {
 		}
 
 		//=================================================
-		// Inherited from TypedArrayI
+		// Inherited from TypedArray
 
 		virtual size_t numel() const { return MxObject::numel(); }
 		virtual bool isempty() const { return MxObject::isempty(); }
