@@ -503,7 +503,7 @@ namespace extras{namespace cmex {
 			if(ndims()<=2){
 				for(size_t r=0;r<nRows();++r){
 					for(size_t c=0;c<nCols();++c){
-						mexPrintf("\t%g",(*this)(r,c));
+						mexPrintf("\t%g",(double)(*this)(r,c));
 					}
 					mexPrintf("\n");
 				}

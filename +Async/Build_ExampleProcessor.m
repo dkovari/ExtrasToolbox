@@ -1,8 +1,10 @@
-% Build Radial Center
+% Build ExampleProcessor
+clear mex;
+clear all;
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
-OUTNAME = 'radialcenter'; %output function name
-OUTDIR = fullfile(THIS_PATH,'..'); %output to .../+extras/+ParticleTracking
+OUTNAME = 'ExampleProcessorMex'; %output function name
+OUTDIR = THIS_PATH; %output to .../+extras/+ParticleTracking
 
 
 %% Compiler options
@@ -10,13 +12,11 @@ compiler_options ='-std=c++14';
 
 %% Setup Source Path
 [pth,~,~] = fileparts(mfilename('fullpath'));
-src = fullfile(pth,'..','radialcenter','source','radialcenter.cpp'); %SOURCE FILE NAME
+src = fullfile(pth,'ExampleProcessor.cpp'); %SOURCE FILE NAME
 
 %% Setup Include
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
-
-PATH_TO_EXTRASINCLUDE = fullfile(THIS_PATH,'..','..','include'); %include .../+extras/include
-
+PATH_TO_EXTRASINCLUDE = fullfile(THIS_PATH,'..','include'); %include .../+extras/include
 INCLUDE = ['-I',PATH_TO_EXTRASINCLUDE];
 
 %% BUILD

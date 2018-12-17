@@ -18,3 +18,7 @@ All of the header in this directory define classes and functions in the extras::
     - returns true if type corresponds to type required by mxClassID
   * bool sametype<type>(const mxArray* mA)
     - returns true if type corresponds to type required by the mxArray*
+* mxArrayGroup.hpp
+  * extras::cmex::mxArrayGroup()
+    * class that manages arrays of mxArray*
+    * each pointer in the array of pointers is converted to persistent so that it can be accessed after a mexFunction call ends.

@@ -1,4 +1,4 @@
-EP = extras.AsyncMex.ExampleProcessor; %create processor
+EP = extras.Async.ExampleProcessor; %create processor
 CBQ = extras.CallbackQueue; %create callback queue to listen to results from processor
 
 afterEach(CBQ,@CB) %assign callback to the callback queue

@@ -6,9 +6,11 @@
 #include <mutex>
 #include <list>
 
-#include "mxArrayGroup.h"
+#include <extras/cmex/mxArrayGroup.hpp>
 
-namespace mex{
+namespace extras{namespace async{
+
+    /// Abstract class defining an Asynchronous Processor object
     class AsyncProcessor{
     protected:
         std::thread mThread;
@@ -21,13 +23,13 @@ namespace mex{
         std::exception_ptr LastError=nullptr;
 
         std::mutex TaskListMutex;///mutex lock for accessing TaskList
-        std::list<mxArrayGroup> TaskList; //list of remaining tasks
+        std::list<cmex::mxArrayGroup> TaskList; //list of remaining tasks
 
         std::mutex ResultsListMutex; ///mutex lock for accessing ResultsList
-        std::list<mxArrayGroup> ResultsList; ///results list
+        std::list<cmex::mxArrayGroup> ResultsList; ///results list
 
 		///Overloadable virtual method for Processing Tasks in the task list
-        virtual mxArrayGroup ProcessTask(const mxArrayGroup& args) = 0;
+        virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) = 0;
 
         /// Method called in processing thread to execute tasks
         virtual void ProcessLoop(){
@@ -116,7 +118,7 @@ namespace mex{
             }
         }
 
-        void cancelRemainingTasks(){
+        virtual void cancelRemainingTasks(){
             StopProcessor();
 
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
@@ -126,14 +128,14 @@ namespace mex{
             mexEvalString("pause(0.2)");
         }
 
-        size_t remainingTasks() const {return TaskList.size();}
+        virtual size_t remainingTasks() const {return TaskList.size();}
         size_t availableResults() const {return ResultsList.size();}
         bool running() const {return ProcessRunning;}
 
         virtual void pushTask(size_t nrhs, const mxArray* prhs[])
         {
             //Convert mxArray list to array group
-            mxArrayGroup AG(nrhs,prhs);
+            cmex::mxArrayGroup AG(nrhs,prhs);
 
             // add task to the TaskList
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
@@ -141,14 +143,14 @@ namespace mex{
             TaskList.emplace_back(std::move(AG)); //move task to back of task list
         }
 
-        virtual mxArrayGroup popResult(){
+        virtual cmex::mxArrayGroup popResult(){
             if(ResultsList.size()<1){
                 throw(std::runtime_error("No results in the ResultsList, cannot popResult()"));
             }
 
             //pop results
             std::lock_guard<std::mutex> lock(ResultsListMutex); //lock list
-			mxArrayGroup out = std::move(ResultsList.back());
+			cmex::mxArrayGroup out = std::move(ResultsList.back());
             ResultsList.pop_back();
             return out;
         }
@@ -195,4 +197,4 @@ namespace mex{
 		}
 
     };
-}
+}}

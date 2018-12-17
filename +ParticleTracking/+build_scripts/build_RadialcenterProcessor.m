@@ -1,7 +1,7 @@
 % Build Radial Center
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
-OUTNAME = 'radialcenter'; %output function name
+OUTNAME = 'radialcenterAsync'; %output function name
 OUTDIR = fullfile(THIS_PATH,'..'); %output to .../+extras/+ParticleTracking
 
 
@@ -10,7 +10,7 @@ compiler_options ='-std=c++14';
 
 %% Setup Source Path
 [pth,~,~] = fileparts(mfilename('fullpath'));
-src = fullfile(pth,'..','radialcenter','source','radialcenter.cpp'); %SOURCE FILE NAME
+src = fullfile(pth,'..','radialcenter','radialcenterAsync.cpp'); %SOURCE FILE NAME
 
 %% Setup Include
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));

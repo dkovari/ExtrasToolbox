@@ -1,6 +1,6 @@
 -std=c++14
--I/Applications/MATLAB_R2017b.app/extern/include
+-I/Applications/MATLAB_R2018a.app/extern/include
 -I./source
 -I../+SessionManager/source
--I../../mexextras
+-I../include
 -I%MATLAB_ROOT%/extern/include

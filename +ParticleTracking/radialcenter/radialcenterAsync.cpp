@@ -1,29 +1,42 @@
 /*
-    Example AsyncProcessor Object
+    radialcenterAsync Object
 
-    This mex file creates a dummy processor which simply copies the task inputs
-    provided via pushTask(Arg1,Arg2,...) to the results queue
-    yielding a result
-        [Arg1,Arg2,...] = popResult();
+    This mex file creates a processor which applies the radialcenter routine asynchrounously.
+
+    Usage:
+
+    >> rcA = radialcenterAsync(); %create async processor
+    >> rcA.pushTask(IMAGE,...Other Args...); %process IMAGE using specified arguments
+    >> ... %do other things and wait for processor
+    >> [x,y,varXY,d2] = popResults();
+    >> rcA.setPersistentArgs(WIND,GP); %sets persistent arguments
+    >> rcA.pushTask(IMAGE2); %push IMAGE and persistent WIND,GP
+    >> rcA.pushTask(IMAGE3); %push another image, also using persistent Args
+    >> rcA.pushTask(IMAGE4,WIND4,GP4); %causes error since persisten arguements are set
 */
 
-#include <mex.h>
-#include "source/mexAsyncProcessor.h"
+#include <extras/async/ProcessorPersistentArgs.hpp>
+//#include <extras/async/AsyncProcessor.hpp>
+#include "source/radialcenter_mex.hpp"
 
-#include <ObjectManager.h> // Object manager includes
-#include <mexDispatch.h>
+#include <extras/SessionManager/ObjectManager.h> // Object manager includes
+#include <extras/SessionManager/mexDispatch.h>
 
-class ExampleProcessor: public mex::AsyncProcessor{
+class rcProc:public extras::async::ProcessorWithPersistentArgs{//extras::async::AsyncProcessor{//
 protected:
     /// method for Processing Tasks in the task list
-    virtual mxArrayGroup ProcessTask(const mxArrayGroup& args){
-        mxArrayGroup out = args;
-        std::this_thread::sleep_for(std::chrono::milliseconds(500)); //let some time pass
+    virtual extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& args){
+        extras::cmex::mxArrayGroup out(4);
+
+        extras::ParticleTracking::radialcenter_mex(4, out, args.size(), args);
+
         return out;
     }
 };
 
-ObjectManager<ExampleProcessor> manager; //global object manager, template type should be changed to your class implementation
+
+
+extras::SessionManager::ObjectManager<rcProc> manager; //global object manager, template type should be changed to your class implementation
 
 //////////////////////////////
 // Required NEW function
@@ -34,7 +47,7 @@ ObjectManager<ExampleProcessor> manager; //global object manager, template type 
 MEX_DEFINE(new) (int nlhs,mxArray* plhs[],
                 int nrhs, const mxArray* prhs[])
 {
-    int64_t val = manager.create(new ExampleProcessor); //CHANGE THIS LINE
+    int64_t val = manager.create(new rcProc); //CHANGE THIS LINE
 
     plhs[0] = mxCreateNumericMatrix(1, 1, mxINT64_CLASS, mxREAL);
     *(((int64_t*)mxGetData(plhs[0]))) = val;
@@ -209,6 +222,28 @@ MEX_DEFINE(clearError)(int nlhs, mxArray* plhs[],
 	}
 	manager.get(prhs[0])->clearError();
 }
+
+
+//setPersistentArgs
+MEX_DEFINE(setPersistentArgs) (int nlhs,mxArray* plhs[],
+                int nrhs, const mxArray* prhs[])
+{
+    if (nrhs < 1) {
+        throw(std::runtime_error("requires intptr argument specifying object"));
+    }
+    manager.get(prhs[0])->setPersistentArgs(nrhs-1,&(prhs[1]));
+}
+
+//clear Persistent Args
+MEX_DEFINE(clearPersistentArgs) (int nlhs,mxArray* plhs[],
+                int nrhs, const mxArray* prhs[])
+{
+    if (nrhs < 1) {
+        throw(std::runtime_error("requires intptr argument specifying object"));
+    }
+    manager.get(prhs[0])->clearPersistentArgs();
+}
+
 
 /////////////////////
 // END of Code, assemble mex function below

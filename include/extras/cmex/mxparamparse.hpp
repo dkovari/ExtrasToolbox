@@ -4,13 +4,9 @@
 #include "mxobject.hpp"
 #include <unordered_map>
 #include <string>
+#include "../string_extras.hpp"
 
 namespace extras{namespace cmex{
-
-    std::string toUpper(std::string str){
-        for (auto & c:str) c=toupper(c);
-        return str;
-    }
 
 	///MEX argument parser, similar to MATLAB's inputParser
 	//
@@ -26,7 +22,7 @@ namespace extras{namespace cmex{
 
         ///Add Parameter, empty
         void AddParameter(std::string key){
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
             Parameter.emplace(key,MxObject());
         }
 
@@ -35,7 +31,7 @@ namespace extras{namespace cmex{
 
             //mexPrintf("Move add\n");
             //Convert to upper case if not case sensitive
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
             Parameter.emplace(key,std::move(MxObj));
         }
         ///Add Parameter, Copy Constructor
@@ -44,14 +40,14 @@ namespace extras{namespace cmex{
             //mexPrintf("copy add\n");
 
             //Convert to upper case if not case sensitive
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,MxObj);
         }
         ///Add Parameter, Create value from const mxArray*
         void AddParameter(std::string key, const mxArray* mxptr){
             //Convert to upper case if not case sensitive
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,mxptr);
         }
@@ -59,14 +55,14 @@ namespace extras{namespace cmex{
         ///AddParameter, Double scalar (also in with typecast)
         void AddParameter(std::string key, double val){
             //Convert to upper case if not case sensitive
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,val);
 
         }
         void AddParameter(std::string key, int val){
             //Convert to upper case if not case sensitive
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,(double)val);
 
@@ -75,7 +71,7 @@ namespace extras{namespace cmex{
         ///AddParameter, string
         void AddParameter(std::string key, const std::string & val){
             //Convert to upper case if not case sensitive
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,val);
         }
@@ -98,7 +94,7 @@ namespace extras{namespace cmex{
                 std::string key = getstring(pargs[n]);
 
                 //Convert to upper case if not case sensitive
-                if(!_CaseSensitive) key = toUpper(key);
+                if(!_CaseSensitive) key = toupper(key);
 
                 try{
                     Parameter.at(key) = pargs[n+1];
@@ -119,7 +115,7 @@ namespace extras{namespace cmex{
         /// Return parameter, throws
         const mxArray* operator() (std::string key) const{
             //Convert to upper case if not case sensitive
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
             try{
                 return Parameter.at(key).getmxarray();
             }catch(std::out_of_range e){
@@ -136,7 +132,7 @@ namespace extras{namespace cmex{
         const mxArray* operator() (const char* cstr) const{
             std::string key(cstr);
             //Convert to upper case if not case sensitive
-            if(!_CaseSensitive) key = toUpper(key);
+            if(!_CaseSensitive) key = toupper(key);
             try{
                 return Parameter.at(key).getmxarray();
             }catch(std::out_of_range e){

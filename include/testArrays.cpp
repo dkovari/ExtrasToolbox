@@ -30,6 +30,17 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray* prhs[]){
     mexPrintf("NativeArray numel: %d\n",NatArray.numel());
     mexPrintf("mexArray[1]=%g, NatArray[1]=%g\n",array1[1],(float)NatArray[1]);
 
+    mexPrintf("NatArray\n");
+    NatArray.disp();
+
+    try{
+        mexPrintf("NatArray[10]: %g\n",NatArray[10]);
+    }catch(std::exception& e){
+        mexPrintf("Error!!!\n");
+        mexPrintf("\t What(): %s\n",e.what());
+    }
+
+
     mexPrintf("create outarray\n");
     mexEvalString("pause(0.1);");
     NumericArray<int16_t> outarray(NatArray);

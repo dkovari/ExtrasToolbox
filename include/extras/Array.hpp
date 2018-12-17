@@ -7,6 +7,7 @@ Array.hpp - Classes for storing 2D data arrays
 #include <vector>
 #include <stdexcept>
 #include <cstring>
+#include <string>
 
 // if mex.h is included, mexPrintf is just an alias of printf
 //if not included, include cstdio so that we can use printf()
@@ -47,7 +48,7 @@ namespace extras{
 				_data = nullptr;
 			}
 		}
-		
+
 		void mallocdata(size_t sz){
 			_data = (T*)malloc(sz*sizeof(T));
 			_numel = sz;
@@ -109,7 +110,7 @@ namespace extras{
 			}
 		}
 
-		size_t computeCols(const std::vector<size_t>& dim){
+		void computeCols(const std::vector<size_t>& dim){
 			if(dim.empty()){
 				_cols = 0;
 			}else if(dim.size()==1){
@@ -159,21 +160,23 @@ namespace extras{
     	virtual const T* getdata() const {return _data;} ///< get pointer to raw data array
     	virtual T* getdata() {return _data;} ///< get pointer to raw data array
     	virtual T& operator[](size_t index) {
+			using namespace std;
 			if(index>=_numel){
-				throw(std::runtime_error("Array::operator[] index exceeds numel"));
+				throw(runtime_error(string("Array::operator[")+to_string(index)+string("] index exceeds numel=")+to_string(_numel)));
 			}
 			return _data[index];
 		} ///< set n-th element
     	virtual const T& operator[](size_t index) const {
+			using namespace std;
 			if(index>=_numel){
-				throw(std::runtime_error("Array::operator[] index exceeds numel"));
+				throw(runtime_error(string("Array::operator[")+to_string(index)+string("] index exceeds numel=")+to_string(_numel)));
 			}
 			return _data[index];
 		} ///< get n-th element
-    	virtual T& operator()(size_t index) {return *this[index];} ///< set n-th element
-    	virtual const T& operator()(size_t index) const {return *this[index];} ///< get n-th element
-    	virtual T& operator()(size_t row, size_t col) {return *this[row+col*_rows];} ///< set element [m,n]
-    	virtual const T& operator()(size_t row, size_t col) const {return *this[row+col*_rows];} ///< get element [m,n]
+    	virtual T& operator()(size_t index) {return (*this)[index];} ///< set n-th element
+    	virtual const T& operator()(size_t index) const {return (*this)[index];} ///< get n-th element
+    	virtual T& operator()(size_t row, size_t col) {return (*this)[row+col*_rows];} ///< set element [m,n]
+    	virtual const T& operator()(size_t row, size_t col) const {return (*this)[row+col*_rows];} ///< get element [m,n]
 
 		///< set element at coordinate [x,y,z,...] specified by the vector elementCoord
 		virtual T& operator()(const std::vector<size_t>& el){
@@ -184,7 +187,7 @@ namespace extras{
 			for(size_t n=1;n<el.size();++n){
 				idx+=_dimOffset[n]*el[n];
 			}
-			return *this[idx];
+			return (*this)[idx];
 		}
 
 		///< get element at coordinate [x,y,z,...] specified by the vector elementCoord
@@ -196,7 +199,7 @@ namespace extras{
 			for(size_t n=1;n<el.size();++n){
 				idx+=_dimOffset[n]*el[n];
 			}
-			return *this[idx];
+			return (*this)[idx];
 		}
 
 		///< resize to hold n elements, keep old data, new data set to zeros
@@ -311,7 +314,7 @@ namespace extras{
 			if(ndims()<=2){
 				for(size_t r=0;r<nRows();++r){
 					for(size_t c=0;c<nCols();++c){
-						printf("\t%g",(*this)(r,c));
+						printf("\t%g",(double)(*this)(r,c));
 					}
 					printf("\n");
 				}
