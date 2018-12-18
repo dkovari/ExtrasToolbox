@@ -31,7 +31,7 @@ xlabel('Radius [px]');
 ylabel('Intensity');
 
 %% Compute Radial Avg
-[Ravg,Loc,Cnt] = imradialavg(I,Xc,Yc,WIDTH/2,0,0.3);
+[Ravg,Loc,Cnt] = extras.ParticleTracking.imradialavg(I,Xc,Yc,WIDTH/2,0,0.3);
 
 hold on;
 plot(Loc,Ravg,'.');
@@ -49,14 +49,14 @@ end
 
 tic
 for n=1:nRep
-    [Ravg,Loc,Cnt] = imradialavg(I{n},XXc(n),YYc(n),WIDTH/2,0,1);
+    [Ravg,Loc,Cnt] = extras.ParticleTracking.imradialavg(I{n},XXc(n),YYc(n),WIDTH/2,0,1);
 end
 t = toc;
 fprintf('\tAvg time: %f\n',t/nRep);
 
 %% Test Multiple Locations
 disp('test multiple locations')
-[Ra,Lc,Ct] = imradialavg(I{n},[20:20:100],[20:20:100],WIDTH/2,0,1);
+[Ra,Lc,Ct] = extras.ParticleTracking.imradialavg(I{n},[20:20:100],[20:20:100],WIDTH/2,0,1);
 
 figure(2);clf;
 for n=1:numel(Ra)

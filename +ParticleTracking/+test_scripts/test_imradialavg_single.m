@@ -31,7 +31,7 @@ xlabel('Radius [px]');
 ylabel('Intensity');
 
 %% Compute Radial Avg
-[Ravg,Loc,Cnt] = imradialavg(I,Xc,Yc,WIDTH/2,25,0.3);
+[Ravg,Loc,Cnt] = extras.ParticleTracking.imradialavg(I,Xc,Yc,WIDTH/2,25,0.3);
 
 hold on;
 plot(Loc,Ravg,'.');

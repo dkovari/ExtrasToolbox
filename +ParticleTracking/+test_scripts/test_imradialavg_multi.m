@@ -22,7 +22,7 @@ plot((20:20:100),(20:20:100),'+r');
 
 %% run
 disp('test multiple locations')
-[Ra,Lc,Ct] = imradialavg(I,(20:20:100),(20:20:100),WIDTH/2,0,1);
+[Ra,Lc,Ct] = extras.ParticleTracking.imradialavg(I,(20:20:100),(20:20:100),WIDTH/2,0,1);
 
 disp('plot');
 figure();
