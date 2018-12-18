@@ -130,6 +130,7 @@ namespace extras{namespace cmex{
         }
 
         /// Construct and assign from mxarray
+        /// assume mxArray* is not persistent
         MxObject(mxArray* mxptr){
             //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
             _mxptr = mxptr;

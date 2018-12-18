@@ -31,6 +31,9 @@ namespace extras{namespace cmex{
             return *this;
         }*/
 
+        /// create empty array group
+        mxArrayGroup(){}; //nothing needed
+
         /// create arrag group with nA elements
         /// all mxArray elements will be nullptr
         mxArrayGroup(size_t nA){
@@ -45,7 +48,7 @@ namespace extras{namespace cmex{
             }
         }
 
-        /*// set a specific element of the array group
+        /// set a specific element of the array group
         /// NOTE: the previous array at element n will be destroyed
         /// *A will also be converted to a persistent array
         /// *A should not be deleted by any other functions after associating with
@@ -58,6 +61,10 @@ namespace extras{namespace cmex{
             mxDestroyArray(pArray[n]);
             pArray[n] = A;
         }
+
+        /// set a specific element of the array group
+        /// NOTE: the previous array at element n will be destroyed
+        /// *A will also be copied to a new persistent array
         void setArray(size_t n, const mxArray* A){
             if(n>=nArrays){
                 throw(std::runtime_error("index exceeds ArrayGroup size"));
@@ -66,7 +73,7 @@ namespace extras{namespace cmex{
             pArray[n] = mxDuplicateArray(A);
             mexMakeArrayPersistent(pArray[n]);
         }
-        */
+
 
         /// number of arrays in the group
         size_t size() const{return nArrays;}

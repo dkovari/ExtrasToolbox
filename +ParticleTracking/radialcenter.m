@@ -40,7 +40,7 @@
 %       If RadiusFilter==0 DistanceFactor is the exponent of the inverse
 %       distance function use to weight the pixels:
 %           w = w/r^DF
-%       where r is the distance of a pixel from the extimated com or the
+%       where r is the distance of a pixel from the estimated com or the
 %       specified XYc(n,:) coordinate
 
 %This file is a stub for a MEX function
