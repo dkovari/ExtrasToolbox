@@ -62,21 +62,21 @@ rcp.registerQueue(CBQ); %register the callback queue
 'windows 1'
 rcp.pushTask(I,WIND(1,:));
 
-pause
+%pause
 
 %% window 2
 'window 2'
 rcp.pushTask(I,WIND(2,:));
 
-pause
+%pause
 %% window 3 via persistent args
 'setPersistent'
 rcp.setPersistentArgs(WIND(3:4,:));
-pause
+%pause
 'push'
 rcp.pushTask(I);
 rcp.pushTask(I);
-pause
+%pause
 
 %% clear persisten args
 'clear'

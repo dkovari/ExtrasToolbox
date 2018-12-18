@@ -4,7 +4,12 @@
 #include <extras/SessionManager/mexDispatch.h>
 
 /// Define DiffractionTracker Class
-class diffProc:public extras::async::ProcessorWithPersistentArgs{//extras::async::AsyncProcessor{//
+class diffProc:
+	public extras::async::ProcessorWithPersistentArgs<extras::cmex::mxArrayGroup, extras::cmex::mxArrayGroup, extras::cmex::mxArrayGroup, std::pair<extras::cmex::mxArrayGroup, std::shared_ptr<extras::cmex::mxArrayGroup>>>
+{
+	typedef extras::async::ProcessorWithPersistentArgs::OutT OutT;
+	typedef extras::async::ProcessorWithPersistentArgs::ArgsT ArgsT;
+
 protected:
 
     std::shared_ptr<extras::cmex::mxObject> ROIstruct;

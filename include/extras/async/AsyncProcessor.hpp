@@ -10,9 +10,11 @@
 
 namespace extras{namespace async{
 
+	typedef cmex::mxArrayGroup mxGroup;
+
     /// Abstract class defining an Asynchronous Processor object
-    template<class ResultsType=extras::cmex::mxArrayGroup, class TaskArgType=extras::cmex::mxArrayGroup>
     class AsyncProcessor{
+	public:
     protected:
         std::thread mThread;
         std::atomic<bool> ProcessAndEnd;
@@ -24,13 +26,13 @@ namespace extras{namespace async{
         std::exception_ptr LastError=nullptr;
 
         std::mutex TaskListMutex;///mutex lock for accessing TaskList
-        std::list<TaskArgType> TaskList; //list of remaining tasks
+        std::list<mxGroup> TaskList; //list of remaining tasks
 
         std::mutex ResultsListMutex; ///mutex lock for accessing ResultsList
-        std::list<ResultsType> ResultsList; ///results list
+        std::list<mxGroup> ResultsList; ///results list
 
 		///Overloadable virtual method for Processing Tasks in the task list
-        virtual ResultsType ProcessTask(const ArgT& args) = 0;
+        virtual mxGroup ProcessTask(const mxGroup& args) = 0;
 
         /// Method called in processing thread to execute tasks
         virtual void ProcessLoop(){
@@ -138,17 +140,17 @@ namespace extras{namespace async{
             // add task to the TaskList
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
 
-            TaskList.emplace_back(nrhs,prhs); //Convert mxArray list to array group and place at back of task queue
+            TaskList.emplace_back(std::move(mxGroup(nrhs, prhs))); //Convert mxArray list to array group and place at back of task queue
         }
 
-        virtual ResultsType popResult(){
+        virtual mxGroup popResult(){
             if(ResultsList.size()<1){
                 throw(std::runtime_error("No results in the ResultsList, cannot popResult()"));
             }
 
             //pop results
             std::lock_guard<std::mutex> lock(ResultsListMutex); //lock list
-			ResultsType out = std::move(ResultsList.back());
+			mxGroup out = std::move(ResultsList.back());
             ResultsList.pop_back();
             return out;
         }

@@ -24,13 +24,14 @@
 #include <extras/SessionManager/ObjectManager.h> // Object manager includes
 #include <extras/SessionManager/mexDispatch.h>
 
-class rcProc:public extras::async::ProcessorWithPersistentArgs{//extras::async::AsyncProcessor{//
+class rcProc:public extras::async::ProcessorWithPersistentArgs{
 protected:
     /// method for Processing Tasks in the task list
-    virtual extras::cmex::mxArrayGroup ProcessTask(const std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<extras::cmex::mxArrayGroup>>& args){
+    virtual extras::async::mxGroup ProcessTask(const extras::async::mxGroupPair& args){
         using namespace std;
-        extras::cmex::mxArrayGroup out(4);
+		extras::async::mxGroup out(4);
 
+		// Merge Pushed Arg and Persistent Arg into a single array group
 
         const mxArray* *pA;
         size_t sz = args.first.size()+args.second->size();

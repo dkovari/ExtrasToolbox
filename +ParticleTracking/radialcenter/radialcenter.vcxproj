@@ -10,6 +10,13 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\radialcenter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\radialcenter.hpp" />
+    <ClInclude Include="source\radialcenter_mex.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B0E8B823-46CE-4F13-A21D-0F603105ACB3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -46,13 +53,13 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(ProjectDir)..\..\mexextras;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(ProjectDir)..\..\mexextras;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -91,12 +98,6 @@
       <AdditionalLibraryDirectories>$(MATLAB_ROOT)\extern\lib\win64\microsoft;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="source\radialcenter.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="source\mexFunction_radialcenter.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
