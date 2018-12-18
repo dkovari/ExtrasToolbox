@@ -8,7 +8,7 @@ classdef AsyncProcessorError < event.EventData
     methods
         function this = AsyncProcessorError(errMsg)
             this.identifier = errMsg.identifier;
-            this.message = errMsg.message
+            this.message = errMsg.message;
         end
     end
 

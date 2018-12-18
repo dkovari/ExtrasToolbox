@@ -15,6 +15,8 @@
     >> rcA.pushTask(IMAGE4,WIND4,GP4); %causes error since persisten arguements are set
 */
 
+#include <extras/cmex/NumericArray.hpp>
+
 #include <extras/async/ProcessorPersistentArgs.hpp>
 //#include <extras/async/AsyncProcessor.hpp>
 #include "source/radialcenter_mex.hpp"
@@ -25,10 +27,37 @@
 class rcProc:public extras::async::ProcessorWithPersistentArgs{//extras::async::AsyncProcessor{//
 protected:
     /// method for Processing Tasks in the task list
-    virtual extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& args){
+    virtual extras::cmex::mxArrayGroup ProcessTask(const std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<extras::cmex::mxArrayGroup>>& args){
+        using namespace std;
         extras::cmex::mxArrayGroup out(4);
 
-        extras::ParticleTracking::radialcenter_mex(4, out, args.size(), args);
+
+        const mxArray* *pA;
+        size_t sz = args.first.size()+args.second->size();
+        pA = new const mxArray* [sz];
+
+        for(size_t n=0;n<args.first.size();++n){
+            try{
+                pA[n] = args.first.getArray(n);
+            }catch(const exception& e){
+                throw(runtime_error(
+                    string(e.what())+string(" sz:")+to_string(sz)+string(" Arg1: ")+to_string(n)
+                ));
+            }
+        }
+        for(size_t n=0;n<args.second->size();++n){
+            try{
+                pA[n+args.first.size()] = args.second->getArray(n);
+            }catch(const exception& e){
+                throw(runtime_error(
+                    string(e.what())+string(" sz:")+to_string(sz)+string(" Arg2: ")+to_string(n)
+                ));
+            }
+        }
+
+        extras::ParticleTracking::radialcenter_mex(4, out, sz, pA);
+
+        delete[] pA;
 
         return out;
     }
@@ -52,7 +81,6 @@ MEX_DEFINE(new) (int nlhs,mxArray* plhs[],
     plhs[0] = mxCreateNumericMatrix(1, 1, mxINT64_CLASS, mxREAL);
     *(((int64_t*)mxGetData(plhs[0]))) = val;
 }
-
 
 ////////////////////////////////
 // Required Standard interface functions
@@ -194,20 +222,30 @@ MEX_DEFINE(getError)(int nlhs, mxArray* plhs[],
 
 	std::exception_ptr err = manager.get(prhs[0])->getError();
 
+    mexPrintf("In getError\n");
+    mexEvalString("pause(0.2)");
+
 	if (err == nullptr) { //no errors, return empty
 		plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
 		return;
 	}
+
+
 
 	//convert exception ptr to struct
 	try {
 		rethrow_exception(err);
 	}
 	catch (const std::exception& e) {
+
+        mexPrintf("error: what: %s\n",e.what());
+        mexEvalString("pause(0.2)");
+
+
 		const char* fields[] = { "identifier","message" };
 		mxArray* out = mxCreateStructMatrix(1, 1, 2, fields);
-		mxSetField(out, 1, "identifier", mxCreateString("ProcessingError"));
-		mxSetField(out, 1, "message", mxCreateString(e.what()));
+		mxSetFieldByNumber(out, 0, 0, mxCreateString("ProcessingError"));
+		mxSetFieldByNumber(out, 0, 1, mxCreateString(e.what()));
 
 		plhs[0] = out;
 	}

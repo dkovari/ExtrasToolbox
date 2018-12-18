@@ -2,6 +2,7 @@
 
 #include <mex.h>
 #include <stdexcept>
+#include <string>
 
 namespace extras{namespace cmex{
 
@@ -12,7 +13,7 @@ namespace extras{namespace cmex{
         mxArray ** pArray=nullptr;
     public:
 
-        /// concetenate with another array group
+        /*// concetenate with another array group
         mxArrayGroup& cat(const mxArrayGroup& other){
             size_t nA2 = nArrays + other.nArrays;
             mxArray ** p2 = new mxArray* [nA2];
@@ -20,15 +21,15 @@ namespace extras{namespace cmex{
                 p2[n] = pArray[n];
             }
             for(size_t n=0;n<other.nArrays;++n){
-                p2[n+nArrays] = other.pArray[n];
+                p2[n+nArrays] = mxDuplicateArray(other.pArray[n]);
+                mexMakeArrayPersistent(p2[n+nArrays]);
             }
             delete[] pArray;
             pArray = p2;
             nArrays = nA2;
 
             return *this;
-        }
-
+        }*/
 
         /// create arrag group with nA elements
         /// all mxArray elements will be nullptr
@@ -44,7 +45,7 @@ namespace extras{namespace cmex{
             }
         }
 
-        /// set a specific element of the array group
+        /*// set a specific element of the array group
         /// NOTE: the previous array at element n will be destroyed
         /// *A will also be converted to a persistent array
         /// *A should not be deleted by any other functions after associating with
@@ -57,22 +58,31 @@ namespace extras{namespace cmex{
             mxDestroyArray(pArray[n]);
             pArray[n] = A;
         }
+        void setArray(size_t n, const mxArray* A){
+            if(n>=nArrays){
+                throw(std::runtime_error("index exceeds ArrayGroup size"));
+            }
+            mxDestroyArray(pArray[n]);
+            pArray[n] = mxDuplicateArray(A);
+            mexMakeArrayPersistent(pArray[n]);
+        }
+        */
 
         /// number of arrays in the group
-        size_t size() const{
-            return nArrays;
-        }
+        size_t size() const{return nArrays;}
 
         /// return array of mxArray*
         operator mxArray**() {return pArray;}
 
         /// return array of const mxArray*
-        operator const mxArray**() const {return const_cast<const mxArray**>(pArray);}        
+        operator const mxArray**() const {return const_cast<const mxArray**>(pArray);}
 
         /// get array at index n
         const mxArray* getArray(size_t n) const{
             if(n>=nArrays){
-                throw(std::runtime_error("index exceeds ArrayGroup size"));
+                throw(std::runtime_error(
+                    std::string("index exceeds ArrayGroup size n=")+std::to_string(n)
+                ));
             }
             return pArray[n];
         }
@@ -89,7 +99,7 @@ namespace extras{namespace cmex{
             }
         }
 
-        // create array group from standard array of mxArray pointers
+        /// create array group from standard array of mxArray pointers
         mxArrayGroup(size_t nA, const mxArray** pA){
             nArrays = nA;
 
@@ -165,10 +175,10 @@ namespace extras{namespace cmex{
         }
     };
 
-    /// concatenate two arrays
+    /*// concatenate two arrays
     mxArrayGroup cat(mxArrayGroup A, const mxArrayGroup& B){
         A.cat(B);
         return A;
-    }
+    }*/
 
 }}

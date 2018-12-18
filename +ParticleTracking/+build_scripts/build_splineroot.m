@@ -2,7 +2,7 @@
 clear mex;
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
-OUTNAME = 'radialcenter'; %output function name
+OUTNAME = 'splineroot'; %output function name
 OUTDIR = fullfile(THIS_PATH,'..'); %output to .../+extras/+ParticleTracking
 
 
@@ -11,7 +11,7 @@ compiler_options ='-std=c++14';
 
 %% Setup Source Path
 [pth,~,~] = fileparts(mfilename('fullpath'));
-src = fullfile(pth,'..','radialcenter','source','radialcenter.cpp'); %SOURCE FILE NAME
+src = fullfile(pth,'..','splineroot','source','splineroot.cpp'); %SOURCE FILE NAME
 
 %% Setup Include
 INCLUDE = ['-I',extras.IncludePath()]; %include .../+extras/include

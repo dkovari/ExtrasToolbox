@@ -14,14 +14,19 @@ namespace extras{namespace async{
     ///
     /// This class is abstract, you need to implement ProcessTask()
     class ProcessorWithPersistentArgs: public extras::async::AsyncProcessor{
+    private:
+        cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) {return 0;} ///< don't use ProcessTask(mxArrayGroup&)
+
     protected:
         std::list<std::pair<cmex::mxArrayGroup,std::shared_ptr<cmex::mxArrayGroup>>> TaskList; ///< hide TaskList inherited from AsyncProcessor
 
-        std::shared_ptr<cmex::mxArrayGroup> CurrentArgs;
+        std::shared_ptr<cmex::mxArrayGroup> CurrentArgs = std::make_shared<cmex::mxArrayGroup>(0);
+
+        virtual cmex::mxArrayGroup ProcessTask(const std::pair<cmex::mxArrayGroup,std::shared_ptr<cmex::mxArrayGroup>>&) = 0; ///< must define ProcessTask for working with pushed task and persistent args
 
         /// Method called in processing thread to execute tasks
         /// redefined here so that it uses the re-defined version of TaskList
-        virtual void ProcessLoop(){
+        virtual void ProcessLoop() {
             try
             {
                 while(!ProcessAndEnd && !StopProcessingNow){
@@ -29,19 +34,17 @@ namespace extras{namespace async{
                     while (keep_proc && !StopProcessingNow){
                         std::lock_guard<std::mutex> lock(TaskListMutex);
                         if(TaskList.size() > 0){
-                            auto& taskPair = TaskList.front();
-                            auto& task = taskPair.first;
-                            task.cat(*(taskPair.second.get()));
-                            
+                            auto& taskPair = TaskList.front(); //get ref to front element
+
                             //DO Task
-                            auto res = ProcessTask(task);
+                            auto res = ProcessTask(taskPair);
                             std::lock_guard<std::mutex> rlock(ResultsListMutex);
 
                             if(res.size()>0){
                                 ResultsList.push_front( std::move(res) );
                             }
 
-                            TaskList.pop_front();
+                            TaskList.pop_front(); //erase front element
                         }
 
                         if(TaskList.size() < 1){
@@ -77,18 +80,30 @@ namespace extras{namespace async{
             // add task to the TaskList
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
 
+            mexPrintf("\tPush pair to list\n");
+            mexEvalString("pause(0.2)");
+
             TaskList.emplace_back(
                 std::make_pair(
                     std::move(AG),
                     CurrentArgs
                 )
             );
+
+            mexPrintf("\tPast push pair\n");
+            mexEvalString("pause(0.2)");
         }
 
         /// set the persistent arguments
         /// these arguments will be appended to the arguments past using pushTask
         virtual void setPersistentArgs(size_t nrhs, const mxArray* prhs[]){
+            //mexPrintf("use_count: %d\nCurrentArgs =...\n",CurrentArgs.use_count());
+            //mexEvalString("pause(0.2)");
+
             CurrentArgs = std::make_shared<cmex::mxArrayGroup>(nrhs,prhs);
+
+            //mexPrintf("after set\nuse_count: %d\n",CurrentArgs.use_count());
+            //mexEvalString("pause(0.2)");
         }
 
         virtual void clearPersistentArgs(){

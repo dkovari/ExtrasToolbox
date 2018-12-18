@@ -1,11 +1,12 @@
 % Test extras.ParticleTracking.radialcenter mex function
 
-extras.ParticleTracking.build_scripts.build_RadialcenterProcessor;
+%extras.ParticleTracking.build_scripts.build_RadialcenterProcessor;
 
 %% Generate Test Image
 close all;
 clear all;
 clear mex;
+clc;
 
 Nx = 5;
 Ny = 2;
@@ -58,20 +59,29 @@ lst = addlistener(rcp,'ErrorOccured',@(~,err) disp(err)); %add listener for erro
 rcp.registerQueue(CBQ); %register the callback queue
 
 %% window 1
+'windows 1'
 rcp.pushTask(I,WIND(1,:));
 
+pause
+
 %% window 2
+'window 2'
 rcp.pushTask(I,WIND(2,:));
 
+pause
 %% window 3 via persistent args
+'setPersistent'
 rcp.setPersistentArgs(WIND(3:4,:));
+pause
+'push'
 rcp.pushTask(I);
 rcp.pushTask(I);
+pause
 
 %% clear persisten args
+'clear'
 rcp.clearPersistentArgs();
 rcp.pushTask(I,WIND(6,:));
-
 
 %% define callback function
 function CB(data)

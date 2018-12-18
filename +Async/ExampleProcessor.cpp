@@ -193,8 +193,8 @@ MEX_DEFINE(getError)(int nlhs, mxArray* plhs[],
 	catch (const std::exception& e) {
 		const char* fields[] = { "identifier","message" };
 		mxArray* out = mxCreateStructMatrix(1, 1, 2, fields);
-		mxSetField(out, 1, "identifier", mxCreateString("ProcessingError"));
-		mxSetField(out, 1, "message", mxCreateString(e.what()));
+		mxSetField(out, 0, "identifier", mxCreateString("ProcessingError"));
+		mxSetField(out, 0, "message", mxCreateString(e.what()));
 
 		plhs[0] = out;
 	}

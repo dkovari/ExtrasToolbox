@@ -20,7 +20,7 @@ Xn=[X,X,X];
 Yn = [Y + data_noise*randn(size(Y)),Y + data_noise*randn(size(Y)),Y + data_noise*randn(size(Y))];
 
 %% Construct smoothing spline
-ph = smoothpchip(Xn,Yn);
+ph = extras.ParticleTracking.smoothpchip(Xn,Yn);
 
 %% Plot Spline Results
 figure(1);clf;
@@ -56,7 +56,7 @@ end
 plot(repmat(xc,nD,1),YYn,'.k','MarkerSize',10);
 
 %% Test splineroot
-[z,varz] = splineroot(YYn,ph);
+[z,varz] = extras.ParticleTracking.splineroot(YYn,ph);
 
 plot([z,z],YLIM,'-r');
 plot([z,z]-2*sqrt(varz),YLIM,'-.r');

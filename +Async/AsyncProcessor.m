@@ -1,5 +1,5 @@
 classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.QueueDispatcher
-%% extras.SessionManager.AsyncMexProcessor
+%% extras.SessionManager.AsyncProcessor
 % Interface to Mex-based Asynchronous data processor
 %   This class creates the interface to a MEX SessionManager object
 %   providing the thread processor.
@@ -93,7 +93,7 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
             errMsg = this.getError();
             if ~isempty(errMsg)
                 this.LastErrorMessage = errMsg;
-                notify(this,'ErrorOccured',extras.AsyncMex.AsyncProcessorError(errMsg));
+                notify(this,'ErrorOccured',extras.Async.AsyncProcessorError(errMsg));
             end
             this.clearError();
         end
