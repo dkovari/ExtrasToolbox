@@ -37,9 +37,9 @@ namespace extras{namespace async{
                         if(TaskList.size() > 0){
                             auto& taskPair = TaskList.front(); //get ref to front element
 
-							throw(runtime_error(string("in Persistent...:ProcessLoop ") +
+							/*throw(runtime_error(string("in Persistent...:ProcessLoop ") +
 								string("nTaskArgs: ") + to_string(taskPair.first.size()) + string(" ParamArgs:") + to_string(taskPair.second->size())
-							));
+							));*/
 
                             //DO Task
                             auto res = ProcessTask(taskPair);

@@ -57,32 +57,28 @@ afterEach(CBQ,@CB) %assign callback to the callback queue
 lst = addlistener(rcp,'ErrorOccured',@(~,err) disp(err)); %add listener for errors
 
 rcp.registerQueue(CBQ); %register the callback queue
-
-%% window 1
-'windows 1'
-rcp.pushTask(I,WIND(1,:));
-
-'press a key'
+%% pause
+disp('press a key to continue');
 pause
 
-%% window 2
-'window 2'
-rcp.pushTask(I,WIND(2,:));
-
-%pause
 %% window 3 via persistent args
 'setPersistent'
-rcp.setPersistentArgs(WIND(3:4,:));
+rcp.setPersistentArgs(WIND(1:3,:));
 %pause
 'push'
 rcp.pushTask(I);
+
+'setPersist again and push'
+rcp.setPersistentArgs(WIND(4:6,:));
 rcp.pushTask(I);
 %pause
 
 %% clear persisten args
+disp('press a key to continue');
+pause
 'clear'
 rcp.clearPersistentArgs();
-rcp.pushTask(I,WIND(6,:));
+rcp.pushTask(I,WIND(7,:));
 
 delete(rcp);
 %% define callback function

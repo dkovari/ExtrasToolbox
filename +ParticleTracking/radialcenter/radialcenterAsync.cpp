@@ -32,9 +32,9 @@ protected:
         extras::cmex::mxArrayGroup out(4);
 
 		// DEBUG
-		throw(runtime_error(string("in ProcessTask")+
+		/*throw(runtime_error(string("in ProcessTask  ")+
 			string("nTaskArgs: ") + to_string(args.first.size())+string(" ParamArgs:")+to_string(args.second->size())
-		));
+		));*/
 
         const mxArray* *pA;
         size_t sz = args.first.size()+args.second->size();
