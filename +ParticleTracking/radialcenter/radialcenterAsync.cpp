@@ -24,17 +24,19 @@
 #include <extras/SessionManager/ObjectManager.h> // Object manager includes
 #include <extras/SessionManager/mexDispatch.h>
 
-class rcProc:public extras::async::ProcessorWithPersistentArgs{//extras::async::AsyncProcessor{//
+class rcProc:public extras::async::AsyncProcessor {//extras::async::ProcessorWithPersistentArgs{//
 protected:
     /// method for Processing Tasks in the task list
-    virtual extras::cmex::mxArrayGroup ProcessTask(const std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<extras::cmex::mxArrayGroup>>& args){
+    virtual extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& args)//const std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<extras::cmex::mxArrayGroup>>& args)
+	{
         using namespace std;
         extras::cmex::mxArrayGroup out(4);
 
+		/*
 		// DEBUG
-		/*throw(runtime_error(string("in ProcessTask  ")+
+		throw(runtime_error(string("in ProcessTask  ")+
 			string("nTaskArgs: ") + to_string(args.first.size())+string(" ParamArgs:")+to_string(args.second->size())
-		));*/
+		));
 
         const mxArray* *pA;
         size_t sz = args.first.size()+args.second->size();
@@ -62,6 +64,10 @@ protected:
         extras::ParticleTracking::radialcenter_mex(4, out, sz, pA);
 
         delete[] pA;
+		*/
+
+		extras::ParticleTracking::radialcenter_mex(4, out, args.size(), args);
+
 
         return out;
     }
@@ -266,7 +272,7 @@ MEX_DEFINE(clearError)(int nlhs, mxArray* plhs[],
 }
 
 
-//setPersistentArgs
+/*/setPersistentArgs
 MEX_DEFINE(setPersistentArgs) (int nlhs,mxArray* plhs[],
                 int nrhs, const mxArray* prhs[])
 {
@@ -285,7 +291,7 @@ MEX_DEFINE(clearPersistentArgs) (int nlhs,mxArray* plhs[],
     }
     manager.get(prhs[0])->clearPersistentArgs();
 }
-
+*/
 
 /////////////////////
 // END of Code, assemble mex function below

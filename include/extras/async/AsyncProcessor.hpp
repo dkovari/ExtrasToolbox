@@ -14,9 +14,9 @@ namespace extras{namespace async{
     class AsyncProcessor{
     protected:
         std::thread mThread;
-        std::atomic<bool> ProcessAndEnd;
-        std::atomic<bool> StopProcessingNow;
-        std::atomic<bool> ProcessRunning;
+        std::atomic<bool> ProcessAndEnd; //flag specifying that all remaining processes should be run
+        std::atomic<bool> StopProcessingNow; //flag specifying that thread should stop immediately
+        std::atomic<bool> ProcessRunning; //flag if thread is running
 
         std::atomic<bool> ErrorFlag;
         std::mutex LastErrorMutex;
@@ -36,16 +36,16 @@ namespace extras{namespace async{
 			using namespace std;
             try
             {
-                while(!ProcessAndEnd && !StopProcessingNow){
+				while(!ProcessAndEnd && !StopProcessingNow){ //enter thread loop, unless thread is stopped and restared, we won't re-enter this loop
                     bool keep_proc = true;
                     while (keep_proc && !StopProcessingNow){
                         std::lock_guard<std::mutex> lock(TaskListMutex);
                         if(TaskList.size() > 0){
                             auto& task = TaskList.front();
 
-							/*throw(runtime_error(string("in Async...:pushTask ") +
+							throw(runtime_error(string("in Async...:pushTask ") +
 								string("nTaskArgs: ") + to_string(task.size())
-							));*/
+							));
 
                             //DO Task
                             auto res = ProcessTask(task);

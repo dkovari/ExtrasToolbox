@@ -57,6 +57,11 @@ afterEach(CBQ,@CB) %assign callback to the callback queue
 lst = addlistener(rcp,'ErrorOccured',@(~,err) disp(err)); %add listener for errors
 
 rcp.registerQueue(CBQ); %register the callback queue
+%% push classic
+rcp.pushTask(I,WIND);
+delete(rcp)
+return
+
 %% pause
 disp('press a key to continue');
 pause
