@@ -7,6 +7,7 @@
 #include <list>
 
 #include <extras/cmex/mxArrayGroup.hpp>
+#include <extras/SessionManager/mexInterface.hpp>
 
 namespace extras{namespace async{
 
@@ -203,4 +204,85 @@ namespace extras{namespace async{
 		}
 
     };
+
+    /// Implement mexInterface for AsyncProcessor
+    template<class ObjClass> /*ObjClass should be a derivative of AsyncProcessor*/
+    class AsyncInterface: public extras::SessionManager::mexInterface<ObjClass>{
+    protected:
+        void remainingTasks(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            plhs[0] = mxCreateDoubleScalar(getObjectPtr(nrhs,prhs)->remainingTasks());
+        }
+        void availableResults(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            plhs[0] = mxCreateDoubleScalar(getObjectPtr(nrhs,prhs)->availableResults());
+        }
+        void running(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            plhs[0] = mxCreateLogicalScalar(getObjectPtr(nrhs,prhs)->running());
+        }
+        void cancelRemainingTasks(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            getObjectPtr(nrhs,prhs)->cancelRemainingTasks();
+        }
+        void pushTask(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            getObjectPtr(nrhs,prhs)->>pushTask(nrhs-1,&(prhs[1]));
+        }
+        void numResultOutputArgs(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            plhs[0] = mxCreateDoubleScalar(getObjectPtr(nrhs,prhs)->numResultOutputArgs());
+        }
+        void popResult(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            getObjectPtr(nrhs,prhs)->popResult().copyTo(nlhs,plhs);
+        }
+        void clearResults(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            getObjectPtr(nrhs,prhs)->clearResults();
+        }
+        void pause(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            getObjectPtr(nrhs,prhs)->pause();
+        }
+        void resume(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            getObjectPtr(nrhs,prhs)->resume();
+        }
+        void wasErrorThrown(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            plhs[0] = mxCreateLogicalScalar(getObjectPtr(nrhs,prhs)->wasErrorThrown());
+        }
+        void getError(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            std::exception_ptr err = getObjectPtr(nrhs,prhs)->getError();
+
+            if (err == nullptr) { //no errors, return empty
+        		plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
+        		return;
+        	}
+
+        	//convert exception ptr to struct
+        	try {
+        		rethrow_exception(err);
+        	}
+        	catch (const std::exception& e) {
+        		const char* fields[] = { "identifier","message" };
+        		mxArray* out = mxCreateStructMatrix(1, 1, 2, fields);
+        		mxSetField(out, 0, "identifier", mxCreateString("ProcessingError"));
+        		mxSetField(out, 0, "message", mxCreateString(e.what()));
+
+        		plhs[0] = out;
+        	}
+        }
+        void clearError(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+            getObjectPtr(nrhs,prhs)->clearError();
+        }
+    public:
+        AsyncInterface(){
+            using namespace std::placeholders;
+            addFunction("remainingTasks",std::bind(&AsyncInterface::remainingTasks,*this,_1,_2,_3,_4));
+            addFunction("availableResults",std::bind(&AsyncInterface::availableResults,*this,_1,_2,_3,_4));
+            addFunction("running",std::bind(&AsyncInterface::running,*this,_1,_2,_3,_4));
+            addFunction("cancelRemainingTasks",std::bind(&AsyncInterface::cancelRemainingTasks,*this,_1,_2,_3,_4));
+            addFunction("pushTask",std::bind(&AsyncInterface::pushTask,*this,_1,_2,_3,_4));
+            addFunction("numResultOutputArgs",std::bind(&AsyncInterface::numResultOutputArgs,*this,_1,_2,_3,_4));
+            addFunction("popResult",std::bind(&AsyncInterface::popResult,*this,_1,_2,_3,_4));
+            addFunction("clearResults",std::bind(&AsyncInterface::clearResults,*this,_1,_2,_3,_4));
+            addFunction("pause",std::bind(&AsyncInterface::pause,*this,_1,_2,_3,_4));
+            addFunction("resume",std::bind(&AsyncInterface::resume,*this,_1,_2,_3,_4));
+            addFunction("wasErrorThrown",std::bind(&AsyncInterface::wasErrorThrown,*this,_1,_2,_3,_4));
+            addFunction("getError",std::bind(&AsyncInterface::getError,*this,_1,_2,_3,_4));
+            addFunction("clearError",std::bind(&AsyncInterface::clearError,*this,_1,_2,_3,_4));
+        }
+    };
+
 }}

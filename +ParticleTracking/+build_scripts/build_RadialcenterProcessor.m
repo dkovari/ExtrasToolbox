@@ -1,7 +1,7 @@
 % Build Radial Center
 clear mex;
 
-DEBUG = true; %specify if building with debug symbols
+DEBUG = false; %specify if building with debug symbols
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
 OUTNAME = 'radialcenterAsync'; %output function name

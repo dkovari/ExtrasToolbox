@@ -34,7 +34,7 @@ namespace extras{ namespace cmex{
 	///convert mxArray* with ClassID=mxCHAR_CLASS to a std::string
     std::string getstring(const mxArray* mxptr){
 		if (!mxIsChar(mxptr)) {
-			throw(std::runtime_error("mex::getstring(): cannot return string from mxArray that is not mxCHAR type."));
+			throw(std::runtime_error("extras::cmex::getstring(): cannot return string from mxArray that is not mxCHAR type."));
 		}
 		char* ca = mxArrayToString(mxptr);
         std::string out(ca);
