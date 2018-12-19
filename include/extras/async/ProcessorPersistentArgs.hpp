@@ -15,7 +15,7 @@ namespace extras{namespace async{
     /// This class is abstract, you need to implement ProcessTask()
     class ProcessorWithPersistentArgs: public extras::async::AsyncProcessor{
     private:
-        cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) {return 0;} ///< don't use ProcessTask(mxArrayGroup&)
+        cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) {return cmex::mxArrayGroup();} ///< don't use ProcessTask(mxArrayGroup&)
 
     protected:
         std::list<std::pair<cmex::mxArrayGroup,std::shared_ptr<cmex::mxArrayGroup>>> TaskList; ///< hide TaskList inherited from AsyncProcessor
@@ -27,6 +27,7 @@ namespace extras{namespace async{
         /// Method called in processing thread to execute tasks
         /// redefined here so that it uses the re-defined version of TaskList
         virtual void ProcessLoop() {
+			using namespace std;
             try
             {
                 while(!ProcessAndEnd && !StopProcessingNow){
@@ -35,6 +36,10 @@ namespace extras{namespace async{
                         std::lock_guard<std::mutex> lock(TaskListMutex);
                         if(TaskList.size() > 0){
                             auto& taskPair = TaskList.front(); //get ref to front element
+
+							throw(runtime_error(string("in Persistent...:ProcessLoop ") +
+								string("nTaskArgs: ") + to_string(taskPair.first.size()) + string(" ParamArgs:") + to_string(taskPair.second->size())
+							));
 
                             //DO Task
                             auto res = ProcessTask(taskPair);

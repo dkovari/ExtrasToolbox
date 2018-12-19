@@ -62,6 +62,7 @@ rcp.registerQueue(CBQ); %register the callback queue
 'windows 1'
 rcp.pushTask(I,WIND(1,:));
 
+'press a key'
 pause
 
 %% window 2
@@ -83,6 +84,7 @@ rcp.pushTask(I);
 rcp.clearPersistentArgs();
 rcp.pushTask(I,WIND(6,:));
 
+delete(rcp);
 %% define callback function
 function CB(data)
 persistent n;
