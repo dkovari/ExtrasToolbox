@@ -1,23 +1,20 @@
-% Build Radial Center
+% Build ExampleProcessor
 clear mex;
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
-OUTNAME = 'radialcenterAsync'; %output function name
-OUTDIR = fullfile(THIS_PATH,'..'); %output to .../+extras/+ParticleTracking
+OUTNAME = 'ExampleProcessor_PersistArgsMex'; %output function name
+OUTDIR = THIS_PATH; %output to .../+extras/+ParticleTracking
 
 
 %% Compiler options
-if ispc
-compiler_options ='/std:c++17';
-else
-compiler_options ='-std=c++17';
-end
+compiler_options ='-std=c++14';
 
 %% Setup Source Path
 [pth,~,~] = fileparts(mfilename('fullpath'));
-src = fullfile(pth,'..','radialcenter','radialcenterAsync.cpp'); %SOURCE FILE NAME
+src = fullfile(pth,'ExampleProcessor_PersistArgs.cpp'); %SOURCE FILE NAME
 
 %% Setup Include
+[THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
 INCLUDE = ['-I',extras.IncludePath];
 
 %% BUILD
@@ -26,4 +23,3 @@ mex(['COMPFLAGS="$COMPFLAGS ' compiler_options '"'],...
     '-outdir',OUTDIR,...
     '-output',OUTNAME,...
     src);
-

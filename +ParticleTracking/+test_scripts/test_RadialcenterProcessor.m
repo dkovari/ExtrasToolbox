@@ -61,10 +61,10 @@ rcp.registerQueue(CBQ); %register the callback queue
 'push without persistent args'
 rcp.pushTask(I,WIND);
 
-%% tmp
-'delete'
-delete(rcp)
-return
+% %% tmp
+% 'delete'
+% delete(rcp)
+% return
 
 %% pause
 disp('press a key to continue');

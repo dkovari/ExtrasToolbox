@@ -17,6 +17,7 @@ namespace extras{namespace async{
     ///
     /// This class is abstract, you need to implement ProcessTask()
     class PersistentArgsProcessor: public extras::async::AsyncProcessor{
+
     private:
 		cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) { throw(std::runtime_error("in ProcTask(mxAG)..shouldn't be here")); return cmex::mxArrayGroup(); } ///< don't use ProcessTask(mxArrayGroup&)
 
@@ -125,18 +126,19 @@ namespace extras{namespace async{
 	// Extend the AsyncInterface
 	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of PersistentArgsProcessor*/
 	class PersistentArgsProcessorInterface :public AsyncMexInterface<ObjType, ObjManager> {
+		typedef AsyncMexInterface<ObjType, ObjManager> ParentType;
 	protected:
 		void setPersistentArgs(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			getObjectPtr(nrhs, prhs)->setPersistentArgs(nrhs - 1, &(prhs[1]));
+			ParentType::getObjectPtr(nrhs, prhs)->setPersistentArgs(nrhs - 1, &(prhs[1]));
 		}
 		void clearPersistentArgs(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			getObjectPtr(nrhs, prhs)->clearPersistentArgs();
+			ParentType::getObjectPtr(nrhs, prhs)->clearPersistentArgs();
 		}
 	public:
 		PersistentArgsProcessorInterface() {
 			using namespace std::placeholders;
-			addFunction("setPersistentArgs", std::bind(&PersistentArgsProcessorInterface::setPersistentArgs, *this, _1, _2, _3, _4));
-			addFunction("clearPersistentArgs", std::bind(&PersistentArgsProcessorInterface::clearPersistentArgs, *this, _1, _2, _3, _4));
+			ParentType::addFunction("setPersistentArgs", std::bind(&PersistentArgsProcessorInterface::setPersistentArgs, *this, _1, _2, _3, _4));
+			ParentType::addFunction("clearPersistentArgs", std::bind(&PersistentArgsProcessorInterface::clearPersistentArgs, *this, _1, _2, _3, _4));
 		}
 	};
 
