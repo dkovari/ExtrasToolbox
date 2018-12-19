@@ -3,7 +3,6 @@
 #include "AsyncProcessor.hpp"
 #include <memory>
 #include <utility>
-#include <tuple>
 
 namespace extras{namespace async{
     /// Async Processor with optional Persistent Arguments
@@ -14,27 +13,69 @@ namespace extras{namespace async{
     /// this will add prhs[...] to any future task arguments (created by pushTask)
     ///
     /// This class is abstract, you need to implement ProcessTask()
+    class ProcessorWithPersistentArgs: public extras::async::AsyncProcessor{
+    private:
+        cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) {return 0;} ///< don't use ProcessTask(mxArrayGroup&)
 
-	typedef std::pair<mxGroup, std::shared_ptr<mxGroup>> mxGroupPair;
-	typedef std::shared_ptr<mxGroup> PersistType;
-
-    class ProcessorWithPersistentArgs: public AsyncProcessor
-    {
-	private:
-		virtual mxGroup ProcessTask(const mxGroup& args) { return mxGroup(); }; //hide ProcessTask(mxGroup& args);
     protected:
-		std::list<mxGroupPair> TaskList; //list of remaining tasks, note: hiding  AsyncProcessor::TaskList
-		PersistType PersistentArgs = std::make_shared<mxGroup>();
-		virtual mxGroup ProcessTask(const mxGroupPair& args) = 0;/// method for processing task and persistent arguments
+        std::list<std::pair<cmex::mxArrayGroup,std::shared_ptr<cmex::mxArrayGroup>>> TaskList; ///< hide TaskList inherited from AsyncProcessor
+
+        std::shared_ptr<cmex::mxArrayGroup> CurrentArgs = std::make_shared<cmex::mxArrayGroup>(0);
+
+        virtual cmex::mxArrayGroup ProcessTask(const std::pair<cmex::mxArrayGroup,std::shared_ptr<cmex::mxArrayGroup>>&) = 0; ///< must define ProcessTask for working with pushed task and persistent args
+
+        /// Method called in processing thread to execute tasks
+        /// redefined here so that it uses the re-defined version of TaskList
+        virtual void ProcessLoop() {
+            try
+            {
+                while(!ProcessAndEnd && !StopProcessingNow){
+                    bool keep_proc = true;
+                    while (keep_proc && !StopProcessingNow){
+                        std::lock_guard<std::mutex> lock(TaskListMutex);
+                        if(TaskList.size() > 0){
+                            auto& taskPair = TaskList.front(); //get ref to front element
+
+                            //DO Task
+                            auto res = ProcessTask(taskPair);
+                            std::lock_guard<std::mutex> rlock(ResultsListMutex);
+
+                            if(res.size()>0){
+                                ResultsList.push_front( std::move(res) );
+                            }
+
+                            TaskList.pop_front(); //erase front element
+                        }
+
+                        if(TaskList.size() < 1){
+                            keep_proc = false;
+                        }
+                    }
+                }
+
+            }catch (...){
+                ProcessRunning = false;
+                ErrorFlag = true;
+                std::lock_guard<std::mutex> lock(LastErrorMutex);
+                LastError = std::current_exception();
+                return;
+            }
+        }
 
     public:
+        //////////
+        // Task related
+
         /// push arguments to the task list.
         /// Each call to ProcessTask by the task thread will pop the "pushed" arguments
         /// off the stack and use them as arguments for ProcessTask(___)
+        ///
         /// Note: if there are persistentArguments set at the time of pushTask()
         /// those will also be appended to the task Arguments.
         virtual void pushTask(size_t nrhs, const mxArray* prhs[])
         {
+            //Convert mxArray list to array group
+            cmex::mxArrayGroup AG(nrhs,prhs);
 
             // add task to the TaskList
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
@@ -43,8 +84,10 @@ namespace extras{namespace async{
             mexEvalString("pause(0.2)");
 
             TaskList.emplace_back(
-                 std::move(mxGroup(nrhs,prhs)),
-                 PersistentArgs
+                std::make_pair(
+                    std::move(AG),
+                    CurrentArgs
+                )
             );
 
             mexPrintf("\tPast push pair\n");
@@ -57,17 +100,15 @@ namespace extras{namespace async{
             //mexPrintf("use_count: %d\nCurrentArgs =...\n",CurrentArgs.use_count());
             //mexEvalString("pause(0.2)");
 
-            PersistentArgs = std::make_shared<mxGroup>(nrhs,prhs);
+            CurrentArgs = std::make_shared<cmex::mxArrayGroup>(nrhs,prhs);
 
             //mexPrintf("after set\nuse_count: %d\n",CurrentArgs.use_count());
             //mexEvalString("pause(0.2)");
         }
 
         virtual void clearPersistentArgs(){
-            PersistentArgs = std::make_shared<mxGroup>();
+            CurrentArgs = std::make_shared<cmex::mxArrayGroup>(0);
         }
-
-		virtual mxGroup getPersistentArgs() const {return *PersistentArgs;}
 
     };
 

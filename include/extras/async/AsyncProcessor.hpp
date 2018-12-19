@@ -10,11 +10,8 @@
 
 namespace extras{namespace async{
 
-	typedef cmex::mxArrayGroup mxGroup;
-
     /// Abstract class defining an Asynchronous Processor object
     class AsyncProcessor{
-	public:
     protected:
         std::thread mThread;
         std::atomic<bool> ProcessAndEnd;
@@ -26,13 +23,13 @@ namespace extras{namespace async{
         std::exception_ptr LastError=nullptr;
 
         std::mutex TaskListMutex;///mutex lock for accessing TaskList
-        std::list<mxGroup> TaskList; //list of remaining tasks
+        std::list<cmex::mxArrayGroup> TaskList; //list of remaining tasks
 
         std::mutex ResultsListMutex; ///mutex lock for accessing ResultsList
-        std::list<mxGroup> ResultsList; ///results list
+        std::list<cmex::mxArrayGroup> ResultsList; ///results list
 
 		///Overloadable virtual method for Processing Tasks in the task list
-        virtual mxGroup ProcessTask(const mxGroup& args) = 0;
+        virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) = 0;
 
         /// Method called in processing thread to execute tasks
         virtual void ProcessLoop(){
@@ -137,20 +134,23 @@ namespace extras{namespace async{
 
         virtual void pushTask(size_t nrhs, const mxArray* prhs[])
         {
+            //Convert mxArray list to array group
+            cmex::mxArrayGroup AG(nrhs,prhs);
+
             // add task to the TaskList
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
 
-            TaskList.emplace_back(std::move(mxGroup(nrhs, prhs))); //Convert mxArray list to array group and place at back of task queue
+            TaskList.emplace_back(std::move(AG)); //move task to back of task list
         }
 
-        virtual mxGroup popResult(){
+        virtual cmex::mxArrayGroup popResult(){
             if(ResultsList.size()<1){
                 throw(std::runtime_error("No results in the ResultsList, cannot popResult()"));
             }
 
             //pop results
             std::lock_guard<std::mutex> lock(ResultsListMutex); //lock list
-			mxGroup out = std::move(ResultsList.back());
+			cmex::mxArrayGroup out = std::move(ResultsList.back());
             ResultsList.pop_back();
             return out;
         }

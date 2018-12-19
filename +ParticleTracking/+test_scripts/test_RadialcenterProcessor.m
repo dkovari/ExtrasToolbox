@@ -62,7 +62,7 @@ rcp.registerQueue(CBQ); %register the callback queue
 'windows 1'
 rcp.pushTask(I,WIND(1,:));
 
-%pause
+pause
 
 %% window 2
 'window 2'
