@@ -31,7 +31,14 @@ namespace extras{namespace SessionManager{
 
 	public:
 		ObjectManager() = default; //default constructor
-		~ObjectManager() = default;//TO DO
+		~ObjectManager(){
+			mexPrintf("Destroying ObjectManager<%s>\n",typeid(Obj).name());
+			size_t nObj = ObjectMap.size(); //number of objects created
+			ObjectMap.clear(); //erase all objects
+			for(size_t n=0;n<nObj;++n){
+				mexUnlock(); //decrement mex lock counter.
+			}
+		}
 
 		//Add object to map, creates a shared_ptr from the pointer
 		// call using something like objman.create(new YourObj());

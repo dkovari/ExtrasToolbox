@@ -43,9 +43,9 @@ namespace extras{namespace async{
                         if(TaskList.size() > 0){
                             auto& task = TaskList.front();
 
-							throw(runtime_error(string("in Async...:pushTask ") +
+							/*throw(runtime_error(string("in Async...:pushTask ") +
 								string("nTaskArgs: ") + to_string(task.size())
-							));
+							));*/
 
                             //DO Task
                             auto res = ProcessTask(task);
