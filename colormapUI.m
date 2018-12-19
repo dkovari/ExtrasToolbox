@@ -182,7 +182,7 @@ classdef colormapUI < extras.GraphicsChild & extras.uixDerivative & extras.Requi
                 
             %% Validate Parent
             %look for parent specified in arguments
-            if isnumeric(varargin{1}) %skip number as first input
+            if nargin>0&&isnumeric(varargin{1}) %skip number as first input
                 v2 = this.CheckParentInput(varargin{2:end});
                 varargin = [varargin{1},v2];
             else
