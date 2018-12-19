@@ -1,2 +1,2 @@
-#TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
-Release|x64|C:\Users\dkovari\Dropbox\Research\00_FinziLab\Papers\LUT Tracking Paper\Code\Implementations\|
+#TargetFrameworkVersion=v4.0:PlatformToolSet=v141:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0.17134.0
+Release|x64|C:\Users\dkovari\Documents\GitHub\+extras\msvc\|

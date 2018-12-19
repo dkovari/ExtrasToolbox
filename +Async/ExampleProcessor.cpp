@@ -7,11 +7,7 @@
         [Arg1,Arg2,...] = popResult();
 */
 
-#include <mex.h>
 #include <extras/async/AsyncProcessor.hpp>
-
-#include <extras/SessionManager/ObjectManager.h> // Object manager includes
-#include <extras/SessionManager/mexDispatch.h>
 
 class ExampleProcessor: public extras::async::AsyncProcessor{
 protected:
@@ -23,7 +19,8 @@ protected:
     }
 };
 
-extras::async::AsyncInterface<ExampleProcessor> ep_interface; //create interface manager for the ExampleProcessor
+extras::SessionManager::ObjectManager<ExampleProcessor> manager;
+extras::async::AsyncMexInterface<ExampleProcessor,manager> ep_interface; //create interface manager for the ExampleProcessor
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     ep_interface.mexFunction(nlhs,plhs,nrhs,prhs);

@@ -1,6 +1,5 @@
 % Build ExampleProcessor
 clear mex;
-clear all;
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
 OUTNAME = 'ExampleProcessorMex'; %output function name

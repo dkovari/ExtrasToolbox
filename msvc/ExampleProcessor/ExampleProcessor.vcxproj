@@ -26,6 +26,7 @@
     <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
     <ClInclude Include="..\..\include\extras\string_extras.hpp" />
   </ItemGroup>
@@ -63,15 +64,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)</OutDir>
+    <OutDir>..\..\+Async</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <TargetName>ExampleProcessorMex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)</OutDir>
+    <OutDir>..\..\+Async</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <TargetName>ExampleProcessorMex</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

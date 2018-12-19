@@ -77,5 +77,8 @@
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
       <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
