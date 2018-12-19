@@ -65,6 +65,9 @@ namespace extras{namespace SessionManager{
         /// implement 'delete' function interface
         void delete_object(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[])
         {
+#ifdef _DEBUG
+			mexPrintf("mexInterface<%s>::delete_object\n", typeid(ObjType).name());
+#endif
             if (nrhs < 1) {
                 throw(std::runtime_error("requires intptr argument specifying object to destruct"));
             }
@@ -128,6 +131,9 @@ namespace extras{namespace SessionManager{
 #endif
                 auto search = functionMap.find(funcName);
                 if (search != functionMap.end()) {
+#ifdef _DEBUG
+					mexPrintf("\t  Entering Function\n");
+#endif
                     (search->second)(nlhs,plhs,nrhs-1,&(prhs[1])); //execute command
                 }
                 else {

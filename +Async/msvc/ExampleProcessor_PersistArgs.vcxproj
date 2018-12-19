@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\+Async\ExampleProcessor.cpp" />
+    <ClCompile Include="..\ExampleProcessor_PersistArgs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\extras\Array.hpp" />
@@ -31,9 +31,9 @@
     <ClInclude Include="..\..\include\extras\string_extras.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{564f1c90-b517-49ab-8832-5eabaa7c797c}</ProjectGuid>
+    <ProjectGuid>{318dc0c4-d1f3-48ab-be70-82b2d9e4d7cf}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ExampleProcessor</RootNamespace>
+    <RootNamespace>ExampleProcessor_PersistArgs</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -64,17 +64,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\+Async</OutDir>
+    <OutDir>$(ProjectDir)..\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
-    <TargetName>ExampleProcessorMex</TargetName>
+    <TargetName>ExampleProcessor_PersistArgsMex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\+Async</OutDir>
+    <OutDir>$(ProjectDir)..\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
-    <TargetName>ExampleProcessorMex</TargetName>
+    <TargetName>ExampleProcessor_PersistArgsMex</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

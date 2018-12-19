@@ -32,6 +32,32 @@ namespace extras{namespace async{
 		///Overloadable virtual method for Processing Tasks in the task list
         virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) = 0;
 
+		/// core method called by ProcessLoop() to handle tasks.
+		/// this function is responsible for getting the top element from the TaskList and calling ProcessTask
+		/// it should return a bool specifying if there are more tasks to process
+		/// this function is responsible for handling the TaskListMutex lock
+		virtual bool ProcessLoopCore() {
+			std::lock_guard<std::mutex> lock(TaskListMutex);
+			if (TaskList.size() > 0) {
+				auto& task = TaskList.front();
+
+				//DO Task
+				auto res = ProcessTask(task);
+				std::lock_guard<std::mutex> rlock(ResultsListMutex);
+
+				if (res.size()>0) {
+					ResultsList.push_front(std::move(res));
+				}
+
+				TaskList.pop_front();
+			}
+
+			if (TaskList.size() < 1) {
+				return false;
+			}
+			return true;
+		}
+
         /// Method called in processing thread to execute tasks
         virtual void ProcessLoop(){
 			using namespace std;
@@ -40,28 +66,7 @@ namespace extras{namespace async{
 				while(!ProcessAndEnd && !StopProcessingNow){ //enter thread loop, unless thread is stopped and restared, we won't re-enter this loop
                     bool keep_proc = true;
                     while (keep_proc && !StopProcessingNow){
-                        std::lock_guard<std::mutex> lock(TaskListMutex);
-                        if(TaskList.size() > 0){
-                            auto& task = TaskList.front();
-
-							/*throw(runtime_error(string("in Async...:pushTask ") +
-								string("nTaskArgs: ") + to_string(task.size())
-							));*/
-
-                            //DO Task
-                            auto res = ProcessTask(task);
-                            std::lock_guard<std::mutex> rlock(ResultsListMutex);
-
-                            if(res.size()>0){
-                                ResultsList.push_front( std::move(res) );
-                            }
-
-                            TaskList.pop_front();
-                        }
-
-                        if(TaskList.size() < 1){
-                            keep_proc = false;
-                        }
+						keep_proc = ProcessLoopCore();
                     }
                 }
 
@@ -105,7 +110,10 @@ namespace extras{namespace async{
 
     public:
         // Destructor
-        ~AsyncProcessor(){
+        virtual ~AsyncProcessor(){
+#ifdef _DEBUG
+			mexPrintf("~AsyncProcessor()\n");
+#endif
             ProcessTasksAndEnd();
         }
 
@@ -136,8 +144,10 @@ namespace extras{namespace async{
         }
 
         virtual size_t remainingTasks() const {return TaskList.size();}
-        size_t availableResults() const {return ResultsList.size();}
-        bool running() const {return ProcessRunning;}
+        
+		size_t availableResults() const {return ResultsList.size();}
+        
+		bool running() const {return ProcessRunning;}
 
         virtual void pushTask(size_t nrhs, const mxArray* prhs[])
         {

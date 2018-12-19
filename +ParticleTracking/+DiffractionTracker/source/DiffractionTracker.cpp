@@ -5,10 +5,10 @@
 
 /// Define DiffractionTracker Class
 class diffProc:
-	public extras::async::ProcessorWithPersistentArgs<extras::cmex::mxArrayGroup, extras::cmex::mxArrayGroup, extras::cmex::mxArrayGroup, std::pair<extras::cmex::mxArrayGroup, std::shared_ptr<extras::cmex::mxArrayGroup>>>
+	public extras::async::PersistentArgsProcessor<extras::cmex::mxArrayGroup, extras::cmex::mxArrayGroup, extras::cmex::mxArrayGroup, std::pair<extras::cmex::mxArrayGroup, std::shared_ptr<extras::cmex::mxArrayGroup>>>
 {
-	typedef extras::async::ProcessorWithPersistentArgs::OutT OutT;
-	typedef extras::async::ProcessorWithPersistentArgs::ArgsT ArgsT;
+	typedef extras::async::PersistentArgsProcessor::OutT OutT;
+	typedef extras::async::PersistentArgsProcessor::ArgsT ArgsT;
 
 protected:
 

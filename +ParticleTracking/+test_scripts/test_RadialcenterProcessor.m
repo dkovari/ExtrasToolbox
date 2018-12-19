@@ -58,7 +58,11 @@ lst = addlistener(rcp,'ErrorOccured',@(~,err) disp(err)); %add listener for erro
 
 rcp.registerQueue(CBQ); %register the callback queue
 %% push classic
+'push without persistent args'
 rcp.pushTask(I,WIND);
+
+%% tmp
+'delete'
 delete(rcp)
 return
 

@@ -17,58 +17,79 @@
 
 #include <extras/cmex/NumericArray.hpp>
 
-#include <extras/async/ProcessorPersistentArgs.hpp>
+#include <extras/async/PersistentArgsProcessor.hpp>
 //#include <extras/async/AsyncProcessor.hpp>
 #include "source/radialcenter_mex.hpp"
 
 #include <extras/SessionManager/ObjectManager.h> // Object manager includes
 #include <extras/SessionManager/mexDispatch.h>
 
-class rcProc:public extras::async::AsyncProcessor {//extras::async::ProcessorWithPersistentArgs{//
+#include <vector>
+
+class rcProc:public extras::async::PersistentArgsProcessor {//extras::async::PersistentArgsProcessor{//
 protected:
     /// method for Processing Tasks in the task list
-    virtual extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& args)//const std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<extras::cmex::mxArrayGroup>>& args)
+    virtual extras::cmex::mxArrayGroup ProcessTask(const extras::async::TaskPairType& argPair)
 	{
         using namespace std;
-        extras::cmex::mxArrayGroup out(4);
+        
 
-		/*
-		// DEBUG
-		throw(runtime_error(string("in ProcessTask  ")+
-			string("nTaskArgs: ") + to_string(args.first.size())+string(" ParamArgs:")+to_string(args.second->size())
-		));
 
-        const mxArray* *pA;
-        size_t sz = args.first.size()+args.second->size();
-        pA = new const mxArray* [sz];
+		size_t sz = argPair.first.size() + argPair.second->size();
 
-        for(size_t n=0;n<args.first.size();++n){
-            try{
-                pA[n] = args.first.getArray(n);
-            }catch(const exception& e){
-                throw(runtime_error(
-                    string(e.what())+string(" sz:")+to_string(sz)+string(" Arg1: ")+to_string(n)
-                ));
-            }
+		std::vector<const mxArray*> vA;
+		vA.reserve(sz);
+
+#ifdef _DEBUG
+		mexPrintf("rcProc::ProcessTask()\n");
+		mexPrintf("\t argPair.first.size(): %d\n", argPair.first.size());
+		mexPrintf("\t argPair.second->size(): %d\n", argPair.second->size());
+#endif
+        
+        for(size_t n=0;n<argPair.first.size();++n){
+#ifdef _DEBUG
+			mexPrintf("\t arg1.getArray(%d): %p\n", n, argPair.first.getArray(n));
+#endif
+			vA.push_back(argPair.first.getArray(n));
+#ifdef _DEBUG
+			mexPrintf("\t vA.back(): %p\n", vA.back());
+#endif
         }
-        for(size_t n=0;n<args.second->size();++n){
-            try{
-                pA[n+args.first.size()] = args.second->getArray(n);
-            }catch(const exception& e){
-                throw(runtime_error(
-                    string(e.what())+string(" sz:")+to_string(sz)+string(" Arg2: ")+to_string(n)
-                ));
-            }
+        for(size_t n=0;n<argPair.second->size();++n){
+#ifdef _DEBUG
+			mexPrintf("\t argPair.second->getArray(%d): %p\n", n, argPair.second->getArray(n));
+#endif
+			vA.push_back(argPair.second->getArray(n));
+#ifdef _DEBUG
+			mexPrintf("\t vA.back(): %p\n", vA.back());
+#endif
         }
 
-        extras::ParticleTracking::radialcenter_mex(4, out, sz, pA);
+#ifdef _DEBUG
+		mexPrintf("\tentering radialcenter\n");
+#endif
 
-        delete[] pA;
-		*/
+		mxArray* plhs[4] = { nullptr,nullptr,nullptr,nullptr};
+		extras::ParticleTracking::radialcenter_mex(4, plhs, sz, vA.data());
+#ifdef _DEBUG
+		mexPrintf("\tfinished radialcenter\n");
+#endif
 
-		extras::ParticleTracking::radialcenter_mex(4, out, args.size(), args);
-
-
-        return out;
+        return extras::cmex::mxArrayGroup(4,plhs);
     }
+
+#ifdef _DEBUG
+public:
+	virtual ~rcProc() {
+		mexPrintf("~rcProc()\n");
+	}
+#endif
 };
+
+
+extras::SessionManager::ObjectManager<rcProc> manager;
+extras::async::PersistentArgsProcessorInterface<rcProc, manager> rcProc_interface; //create interface manager for the ExampleProcessor
+
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
+	rcProc_interface.mexFunction(nlhs, plhs, nrhs, prhs);
+}

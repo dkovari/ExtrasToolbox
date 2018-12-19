@@ -68,9 +68,6 @@
     <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp">
       <Filter>Includes\extras\async</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\extras\async\ProcessorPersistentArgs.hpp">
-      <Filter>Includes\extras\async</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h">
       <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
@@ -79,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
       <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
+      <Filter>Includes\extras\async</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

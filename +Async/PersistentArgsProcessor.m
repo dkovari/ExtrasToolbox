@@ -13,9 +13,7 @@ classdef PersistentArgsProcessor < extras.Async.AsyncProcessor
         function setPersistentArgs(this,varargin)
         % set persistent arguments
         % those arguments will be appended to the arguments passed by pushTask
-
             this.runMethod('setPersistentArgs',varargin{:});
-
         end
 
         function clearPersistentArgs(this)

@@ -64,6 +64,9 @@ namespace extras{namespace SessionManager{
 
 		//destroy instance
 		void destroy(intptr_t id) {
+#ifdef _DEBUG
+			mexPrintf("ObjectManager<%s>::destroy(intptr_t id)\n", typeid(Obj).name());
+#endif
 			if (!ObjectMap.empty())
 			{
 				ObjectMap.erase(id);
@@ -78,7 +81,7 @@ namespace extras{namespace SessionManager{
 
 		std::shared_ptr<Obj> get(intptr_t id) {
 #ifdef _DEBUG
-			mexPrintf("ObjectManager<%s>::get()\n\tnum obj=%d", typeid(Obj).name(),ObjectMap.size());
+			mexPrintf("ObjectManager<%s>::get()\n\tnObjects=%d\n", typeid(Obj).name(),ObjectMap.size());
 #endif
 			auto search = ObjectMap.find(id);
 			if (search != ObjectMap.end()) {
@@ -92,7 +95,7 @@ namespace extras{namespace SessionManager{
 		std::shared_ptr<Obj> get(const mxArray* in) {
 			intptr_t id = getIntPointer(in);
 #ifdef _DEBUG
-			mexPrintf("ObjectManager<%s>::get()  ptr=%d\n", typeid(Obj).name(),id);
+			mexPrintf("\t ptr=%d\n", typeid(Obj).name(),id);
 #endif
 			return get(id);
 		}

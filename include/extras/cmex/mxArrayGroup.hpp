@@ -13,24 +13,6 @@ namespace extras{namespace cmex{
         mxArray ** pArray=nullptr;
     public:
 
-        /*// concetenate with another array group
-        mxArrayGroup& cat(const mxArrayGroup& other){
-            size_t nA2 = nArrays + other.nArrays;
-            mxArray ** p2 = new mxArray* [nA2];
-            for(size_t n=0;n<nArrays;++n){
-                p2[n] = pArray[n];
-            }
-            for(size_t n=0;n<other.nArrays;++n){
-                p2[n+nArrays] = mxDuplicateArray(other.pArray[n]);
-                mexMakeArrayPersistent(p2[n+nArrays]);
-            }
-            delete[] pArray;
-            pArray = p2;
-            nArrays = nA2;
-
-            return *this;
-        }*/
-
         /// create empty array group
         mxArrayGroup(){}; //nothing needed
 
@@ -74,12 +56,40 @@ namespace extras{namespace cmex{
             mexMakeArrayPersistent(pArray[n]);
         }
 
+		/// reset using non-const mxArray**
+		/// takes ownwership of array and makes all of the mxArray* persistent
+		void setFrom(size_t nA, mxArray** pA) {
+			for (size_t n = 0; n < nArrays; ++n) {
+				mxDestroyArray(pArray[n]);
+			}
+			delete[] pArray;
+			pArray = new mxArray*[nA];
+			nArrays = nA;
+			for (size_t n = 0; n < nArrays; ++n) {
+				pArray[n] = pA[n];
+				mexMakeArrayPersistent(pArray[n]);
+			}
+		}
+
+		/// construct fron non-const mxArray**
+		/// takes ownwership of array and makes all of the mxArray* persistent
+		mxArrayGroup(size_t nA, mxArray** pA) {
+			nArrays = nA;
+
+			if (nA == 0) {
+				pArray = nullptr;
+				return;
+			}
+
+			pArray = new mxArray*[nA];
+			for (size_t n = 0; n<nA; ++n) {
+				pArray[n] =pA[n];
+				mexMakeArrayPersistent(pArray[n]);
+			}
+		}
 
         /// number of arrays in the group
         size_t size() const{return nArrays;}
-
-        /// return array of mxArray*
-        operator mxArray**() {return pArray;}
 
         /// return array of const mxArray*
         operator const mxArray**() const {return const_cast<const mxArray**>(pArray);}
