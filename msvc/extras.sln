@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "radialcenter", "..\+ParticleTracking\radialcenter\radialcenter.vcxproj", "{B0E8B823-46CE-4F13-A21D-0F603105ACB3}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "radialcenterAsync", "..\+ParticleTracking\radialcenter\radialcenterAsync.vcxproj", "{526DA091-FD51-4CB3-A9A0-6AF98347E757}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCode", "TestCode\TestCode.vcxproj", "{227F1D92-9ECF-4058-85E9-4CEB8B229047}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleProcessor", "ExampleProcessor\ExampleProcessor.vcxproj", "{564F1C90-B517-49AB-8832-5EABAA7C797C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,8 +63,17 @@ Global
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Release|x64.Build.0 = Release|x64
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Release|x86.ActiveCfg = Release|Win32
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Release|x86.Build.0 = Release|Win32
+		{564F1C90-B517-49AB-8832-5EABAA7C797C}.Debug|x64.ActiveCfg = Debug|x64
+		{564F1C90-B517-49AB-8832-5EABAA7C797C}.Debug|x64.Build.0 = Debug|x64
+		{564F1C90-B517-49AB-8832-5EABAA7C797C}.Debug|x86.ActiveCfg = Debug|x64
+		{564F1C90-B517-49AB-8832-5EABAA7C797C}.Release|x64.ActiveCfg = Release|x64
+		{564F1C90-B517-49AB-8832-5EABAA7C797C}.Release|x64.Build.0 = Release|x64
+		{564F1C90-B517-49AB-8832-5EABAA7C797C}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {369328D6-3293-4195-8D50-C8983D8AC3BA}
 	EndGlobalSection
 EndGlobal

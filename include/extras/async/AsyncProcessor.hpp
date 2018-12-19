@@ -33,6 +33,7 @@ namespace extras{namespace async{
 
         /// Method called in processing thread to execute tasks
         virtual void ProcessLoop(){
+			using namespace std;
             try
             {
                 while(!ProcessAndEnd && !StopProcessingNow){
@@ -41,6 +42,11 @@ namespace extras{namespace async{
                         std::lock_guard<std::mutex> lock(TaskListMutex);
                         if(TaskList.size() > 0){
                             auto& task = TaskList.front();
+
+							throw(runtime_error(string("in Async...:pushTask ") +
+								string("nTaskArgs: ") + to_string(task.size())
+							));
+
                             //DO Task
                             auto res = ProcessTask(task);
                             std::lock_guard<std::mutex> rlock(ResultsListMutex);

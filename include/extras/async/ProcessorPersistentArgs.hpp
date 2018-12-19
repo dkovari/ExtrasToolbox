@@ -79,6 +79,7 @@ namespace extras{namespace async{
         /// those will also be appended to the task Arguments.
         virtual void pushTask(size_t nrhs, const mxArray* prhs[])
         {
+			using namespace std;
             //Convert mxArray list to array group
             cmex::mxArrayGroup AG(nrhs,prhs);
 
@@ -97,6 +98,12 @@ namespace extras{namespace async{
 
             mexPrintf("\tPast push pair\n");
             mexEvalString("pause(0.2)");
+
+			/*auto& taskPair = TaskList.front();
+
+			throw(runtime_error(string("in Persistent...:pushTask ") +
+				string("nTaskArgs: ") + to_string(taskPair.first.size()) + string(" ParamArgs:") + to_string(taskPair.second->size())
+			));*/
         }
 
         /// set the persistent arguments
