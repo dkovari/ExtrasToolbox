@@ -1,5 +1,4 @@
 % Build Radial Center
-clear mex;
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
 OUTNAME = 'radialcenterAsync'; %output function name

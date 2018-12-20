@@ -17,7 +17,7 @@
     <ClInclude Include="..\..\include\extras\Array.hpp" />
     <ClInclude Include="..\..\include\extras\ArrayBase.hpp" />
     <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp" />
-    <ClInclude Include="..\..\include\extras\async\ProcessorPersistentArgs.hpp" />
+    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp" />
@@ -26,6 +26,7 @@
     <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
     <ClInclude Include="..\..\include\extras\string_extras.hpp" />
   </ItemGroup>

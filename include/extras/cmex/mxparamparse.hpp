@@ -15,6 +15,7 @@ namespace extras{namespace cmex{
         bool _CaseSensitive;
     public:
         std::unordered_map<std::string,MxObject> Parameter;
+		std::unordered_map<std::string, bool>	ParameterFound;
 
         /// Create Parser with Case-sensitivity turned on
         MxInputParser():_CaseSensitive(true){};
@@ -24,6 +25,7 @@ namespace extras{namespace cmex{
         void AddParameter(std::string key){
             if(!_CaseSensitive) key = toupper(key);
             Parameter.emplace(key,MxObject());
+			ParameterFound.emplace(key, false);
         }
 
         ///Add Parameter, Move contructor
@@ -33,6 +35,7 @@ namespace extras{namespace cmex{
             //Convert to upper case if not case sensitive
             if(!_CaseSensitive) key = toupper(key);
             Parameter.emplace(key,std::move(MxObj));
+			ParameterFound.emplace(key, false);
         }
         ///Add Parameter, Copy Constructor
         void AddParameter(std::string key, const MxObject & MxObj){
@@ -43,6 +46,7 @@ namespace extras{namespace cmex{
             if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,MxObj);
+			ParameterFound.emplace(key, false);
         }
         ///Add Parameter, Create value from const mxArray*
         void AddParameter(std::string key, const mxArray* mxptr){
@@ -50,22 +54,23 @@ namespace extras{namespace cmex{
             if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,mxptr);
+			ParameterFound.emplace(key, false);
         }
 
-        ///AddParameter, Double scalar (also in with typecast)
+        ///AddParameter, Double scalar (also int with typecast)
         void AddParameter(std::string key, double val){
             //Convert to upper case if not case sensitive
             if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,val);
-
+			ParameterFound.emplace(key, false);
         }
         void AddParameter(std::string key, int val){
             //Convert to upper case if not case sensitive
             if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,(double)val);
-
+			ParameterFound.emplace(key, false);
         }
 
         ///AddParameter, string
@@ -74,6 +79,7 @@ namespace extras{namespace cmex{
             if(!_CaseSensitive) key = toupper(key);
 
             Parameter.emplace(key,val);
+			ParameterFound.emplace(key, false);
         }
 
         /// Process Inputs
@@ -98,6 +104,7 @@ namespace extras{namespace cmex{
 
                 try{
                     Parameter.at(key) = pargs[n+1];
+					ParameterFound.at(key) = true;
                 }catch(std::out_of_range e){
                     //didn't find match
                     mexPrintf("arg[%d] could not find a match\n",n);
@@ -146,6 +153,25 @@ namespace extras{namespace cmex{
                 return nullptr;
             }
         }
+
+		bool wasFound(const char* cstr) const {
+			std::string key(cstr);
+			//Convert to upper case if not case sensitive
+			if (!_CaseSensitive) key = toupper(key);
+			try {
+				return ParameterFound.at(key);
+			}
+			catch (std::out_of_range e) {
+
+				mexPrintf("could not find match using key: '%s'\n", key.c_str());
+				mexPrintf("Possible Values:\n");
+				for (auto i : Parameter) {
+					mexPrintf("'%s'\n", i.first.c_str());
+				}
+
+				return false;
+			}
+		}
 
     };
 }}

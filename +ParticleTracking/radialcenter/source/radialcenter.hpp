@@ -139,13 +139,14 @@ namespace extras{namespace ParticleTracking{
 
 		nargout = min(nargout, size_t(4));
 
-
+		
 		if (!WIND.isempty() && WIND.nCols() != 4) {
+			disp(WIND);
 			throw(runtime_error("radialcenter: WIND must be empty or Mx4 extras::Array."));
 		}
 		size_t nPart = max(size_t(1), WIND.nRows());//number of particles to find
 
-		bool nPart_via_WIND = true; //number of particles determined by windows;
+		//bool nPart_via_WIND = true; //number of particles determined by windows;
 		if(!params.XYc->isempty()){
 			if(!WIND.isempty()){
 				if(params.XYc->nRows()!=WIND.nRows()){
@@ -153,7 +154,7 @@ namespace extras{namespace ParticleTracking{
 				}
 			}
 			else{
-				nPart_via_WIND = true;
+				//nPart_via_WIND = false;
 				nPart = params.XYc->nRows();
 			}
 		}

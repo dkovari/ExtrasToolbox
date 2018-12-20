@@ -9,10 +9,11 @@ yielding a result
 
 #include <extras/async/PersistentArgsProcessor.hpp>
 
-class ExampleProcessor2 : public extras::async::PersistentArgsProcessor {
+class ExampleProcessor2 : public extras::async::PersistentArgsProcessor<> {
+	typedef extras::async::PersistentArgsProcessor<>::TaskPairType TaskPairType;
 protected:
 	/// method for Processing Tasks in the task list
-	virtual extras::cmex::mxArrayGroup ProcessTask(const extras::async::TaskPairType& argPair) {
+	virtual extras::cmex::mxArrayGroup ProcessTask(const TaskPairType& argPair) {
 
 		size_t sz = argPair.first.size() + argPair.second->size();
 

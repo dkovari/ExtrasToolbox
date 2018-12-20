@@ -10,7 +10,7 @@
 
 namespace extras{namespace ParticleTracking{
     //helper function for calling radialcenter
-    std::vector<cmex::NumericArray<double>> radcen(const mxArray* pI, cmex::NumericArray<double>& WIND, cmex::NumericArray<double>& GP, rcdefs::RCparams& params, size_t nlhs) {
+    std::vector<cmex::NumericArray<double>> radcen(const mxArray* pI, extras::ArrayBase<double>& WIND, extras::ArrayBase<double>& GP, rcdefs::RCparams& params, size_t nlhs) {
     	switch (mxGetClassID(pI)) { //handle different image types seperatelys
     	case mxDOUBLE_CLASS:
     		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<double>(pI), WIND, GP, params, nlhs);

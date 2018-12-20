@@ -26,10 +26,11 @@
 
 #include <vector>
 
-class rcProc:public extras::async::PersistentArgsProcessor {//extras::async::PersistentArgsProcessor{//
+class rcProc:public extras::async::PersistentArgsProcessor<> {//extras::async::PersistentArgsProcessor{//
+	typedef extras::async::PersistentArgsProcessor<>::TaskPairType TaskPairType;
 protected:
     /// method for Processing Tasks in the task list
-    virtual extras::cmex::mxArrayGroup ProcessTask(const extras::async::TaskPairType& argPair)
+    virtual extras::cmex::mxArrayGroup ProcessTask(const TaskPairType& argPair)
 	{
         using namespace std;
         

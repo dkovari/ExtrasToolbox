@@ -323,8 +323,4 @@ namespace extras{
 
 
 	};
-
-	template<typename T> void disp(const extras::Array<T>& A){
-		A.disp();
-	}
 }

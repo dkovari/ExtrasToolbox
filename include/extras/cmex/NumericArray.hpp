@@ -45,18 +45,20 @@ namespace extras{namespace cmex {
 			}
 
 			deletemxptr(); //clear existing data if we are managing it
-
+			bool wasPersistent = isPersistent();
 			const mxArray* src_mxa = src.getmxarray();
 			if(sametype<T>(src_mxa)){
 				_mxptr = mxDuplicateArray(src_mxa);
 				_managemxptr = true;
+				_isPersistent = false;
 			}else{
 				_mxptr = mxCreateNumericArray(mxGetNumberOfDimensions(src_mxa),mxGetDimensions(src_mxa),type2ClassID<T>(),mxREAL);
 				valueCopy((T*)mxGetData(_mxptr), src_mxa);
 				_managemxptr = true;
+				_isPersistent = false;
 			}
 
-			if(src.isPersistent()){
+			if(wasPersistent||src.isPersistent()){
 				makePersistent();
 			}
 		}
@@ -512,8 +514,5 @@ namespace extras{namespace cmex {
 
 	};
 
-	template<typename T> void disp(const NumericArray<T>& NA){
-		NA.disp();
-	}
 }
 }

@@ -14,19 +14,19 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Includes">
-      <UniqueIdentifier>{d8d178c9-2f58-4112-8db4-5fc6959ed920}</UniqueIdentifier>
+      <UniqueIdentifier>{f6f65b7a-5f3c-4b1d-8dbe-fad85fae111a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\extras">
-      <UniqueIdentifier>{b2eac4fe-a189-4d65-8f9a-0a2232588dee}</UniqueIdentifier>
+      <UniqueIdentifier>{55fafacb-8fa5-40b1-99c7-b9c1f6b6fbe9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\extras\cmex">
-      <UniqueIdentifier>{85b18d22-eac0-4c17-8cf6-06330a482583}</UniqueIdentifier>
+      <UniqueIdentifier>{090b726a-d611-4dee-b5b6-cd052f4fce89}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\extras\async">
-      <UniqueIdentifier>{a8d88f02-701b-4575-bbaa-3e935f4f7f99}</UniqueIdentifier>
+      <UniqueIdentifier>{a76636d3-98a9-45ed-82c4-027a1baf44d4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\extras\SessionManager">
-      <UniqueIdentifier>{64ce96da-46bf-487c-828f-85463492d747}</UniqueIdentifier>
+      <UniqueIdentifier>{982d8fbc-5d42-462e-83ae-7c5567613003}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,12 +43,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\extras\string_extras.hpp">
       <Filter>Includes\extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp">
-      <Filter>Includes\extras\async</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\async\ProcessorPersistentArgs.hpp">
-      <Filter>Includes\extras\async</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp">
       <Filter>Includes\extras\cmex</Filter>
@@ -71,7 +65,16 @@
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp">
       <Filter>Includes\extras\cmex</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp">
+      <Filter>Includes\extras\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
+      <Filter>Includes\extras\async</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
       <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">

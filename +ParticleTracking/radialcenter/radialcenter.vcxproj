@@ -14,21 +14,6 @@
     <ClCompile Include="source\radialcenter.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\extras\Array.hpp" />
-    <ClInclude Include="..\..\include\extras\ArrayBase.hpp" />
-    <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp" />
-    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
-    <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
-    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
-    <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
-    <ClInclude Include="..\..\include\extras\string_extras.hpp" />
     <ClInclude Include="source\radialcenter.hpp" />
     <ClInclude Include="source\radialcenter_mex.hpp" />
   </ItemGroup>

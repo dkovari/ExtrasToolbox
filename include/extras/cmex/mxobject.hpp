@@ -62,7 +62,13 @@ namespace extras{namespace cmex{
 			else {
 				_mxptr = mxDuplicateArray(src._mxptr);
 				_managemxptr = true;
-				_isPersistent = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+				else if (src.isPersistent()) {
+					mexMakeArrayPersistent(_mxptr);
+					_isPersistent = true;
+				}
 			}
 		}
 
@@ -82,6 +88,33 @@ namespace extras{namespace cmex{
 			}
 		}
     public:
+		//// Constructors for persistent Data
+
+		// create persistent mxArray with empty data
+		static MxObject createPersistent() {
+			MxObject out;
+			out.makePersistent();
+			return out;
+		}
+
+		// create persistent mxArray by copying array
+		static MxObject createPersistent(const MxObject& src) {
+			MxObject out(src);
+			out.makePersistent();
+			return out;
+		}
+		// create persistent scalar
+		static MxObject createPersistent(const double& in) {
+			MxObject out(in);
+			out.makePersistent();
+			return out;
+		}
+		// create persistent string
+		static MxObject createPersistent(const std::string & in) {
+			MxObject out(in);
+			out.makePersistent();
+			return out;
+		}
 
 		/// make mxArray persistent so that is survives beyond each call to the initializing mexFunction
 		void makePersistent() {
@@ -115,6 +148,8 @@ namespace extras{namespace cmex{
         MxObject(const MxObject& src){
 			copyFrom(src);
         }
+
+		/// copy assignment
         MxObject& operator=(const MxObject& src){
 			copyFrom(src);
             return *this;
@@ -124,6 +159,8 @@ namespace extras{namespace cmex{
         MxObject(MxObject && src){
 			moveFrom(src);
         }
+
+		/// move assignment
         MxObject& operator=(MxObject && src){
 			moveFrom(src);
             return *this;
@@ -176,6 +213,8 @@ namespace extras{namespace cmex{
             _managemxptr = true;
 			_isPersistent = false;
         }
+		
+		//set to double scalar
         MxObject& operator=(const double& in){
             deletemxptr();
             _mxptr = mxCreateDoubleScalar(in);

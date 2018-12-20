@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mexInterfaceTest", "text_me
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleProcessor_PersistArgs", "..\+Async\msvc\ExampleProcessor_PersistArgs.vcxproj", "{318DC0C4-D1F3-48AB-BE70-82B2D9E4D7CF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RadialCenter2", "..\+ParticleTracking\RadialCenter2\RadialCenter2.vcxproj", "{5E362052-F7DB-44B6-B60B-38B79608C1B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -85,6 +87,12 @@ Global
 		{318DC0C4-D1F3-48AB-BE70-82B2D9E4D7CF}.Release|x64.ActiveCfg = Release|x64
 		{318DC0C4-D1F3-48AB-BE70-82B2D9E4D7CF}.Release|x64.Build.0 = Release|x64
 		{318DC0C4-D1F3-48AB-BE70-82B2D9E4D7CF}.Release|x86.ActiveCfg = Release|x64
+		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Debug|x64.ActiveCfg = Debug|x64
+		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Debug|x64.Build.0 = Debug|x64
+		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Debug|x86.ActiveCfg = Debug|x64
+		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Release|x64.ActiveCfg = Release|x64
+		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Release|x64.Build.0 = Release|x64
+		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

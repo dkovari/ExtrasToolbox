@@ -4,9 +4,10 @@
 #include "ObjectManager.h"
 #include <extras/string_extras.hpp>
 #include <functional>
+#include <unordered_map>
 
 namespace extras{namespace SessionManager{
-	typedef std::map<std::string, std::function<void(int, mxArray*[], int, const mxArray*[])>> MapT_mexI; /// map type used in mexInterface
+	typedef std::unordered_map<std::string, std::function<void(int, mxArray*[], int, const mxArray*[])>> MapT_mexI; /// map type used in mexInterface
 
     /* mexFunction Class wrapper
     * Use this to wrap c++ objects so that their methods can be called from MATLAB

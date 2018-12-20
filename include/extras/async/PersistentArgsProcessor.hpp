@@ -6,7 +6,7 @@
 
 namespace extras{namespace async{
 
-	typedef std::pair<cmex::mxArrayGroup, std::shared_ptr<cmex::mxArrayGroup>> TaskPairType;
+	
 
     /// Async Processor with optional Persistent Arguments
     /// When the thread operates on a task the stored persistent arguments are concatenated to the task array group
@@ -16,15 +16,16 @@ namespace extras{namespace async{
     /// this will add prhs[...] to any future task arguments (created by pushTask)
     ///
     /// This class is abstract, you need to implement ProcessTask()
+	template<class PersistentArgType=cmex::mxArrayGroup>
     class PersistentArgsProcessor: public extras::async::AsyncProcessor{
-
-    private:
+	public:
+		typedef std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<PersistentArgType>> TaskPairType;
+	private:
 		cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) { throw(std::runtime_error("in ProcTask(mxAG)..shouldn't be here")); return cmex::mxArrayGroup(); } ///< don't use ProcessTask(mxArrayGroup&)
-
     protected:
         std::list<TaskPairType> TaskList; // Hides TaskList inherited from AsyncProcessor
 
-        std::shared_ptr<cmex::mxArrayGroup> CurrentArgs = std::make_shared<cmex::mxArrayGroup>(0);
+        std::shared_ptr<PersistentArgType> CurrentArgs = std::make_shared<PersistentArgType>();
 
         virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&) = 0; ///< must define ProcessTask for working with pushed task and persistent args
 
@@ -105,12 +106,10 @@ namespace extras{namespace async{
 
         /// set the persistent arguments
         /// these arguments will be appended to the arguments past using pushTask
-        virtual void setPersistentArgs(size_t nrhs, const mxArray* prhs[]){
-            CurrentArgs = std::make_shared<cmex::mxArrayGroup>(nrhs,prhs);
-        }
+		virtual void setPersistentArgs(size_t nrhs, const mxArray* prhs[]);
 
         virtual void clearPersistentArgs(){
-            CurrentArgs = std::make_shared<cmex::mxArrayGroup>(0);
+            CurrentArgs = std::make_shared<PersistentArgType>();
         }
 
 #ifdef _DEBUG
@@ -122,6 +121,10 @@ namespace extras{namespace async{
 
     };
 
+	// default setPersistentArg method
+	void PersistentArgsProcessor<cmex::mxArrayGroup>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {
+		CurrentArgs = std::make_shared<cmex::mxArrayGroup>(nrhs,prhs);
+	}
 
 	// Extend the AsyncInterface
 	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of PersistentArgsProcessor*/
@@ -141,5 +144,6 @@ namespace extras{namespace async{
 			ParentType::addFunction("clearPersistentArgs", std::bind(&PersistentArgsProcessorInterface::clearPersistentArgs, *this, _1, _2, _3, _4));
 		}
 	};
+
 
 }}

@@ -9,7 +9,7 @@ This is intended to be used with Session.m
 
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 #include <mex.h>
 
@@ -17,7 +17,7 @@ namespace extras{namespace SessionManager{
 	template <class Obj>
 	class ObjectManager {
 	protected:
-		std::map<intptr_t, std::shared_ptr<Obj>> ObjectMap;
+		std::unordered_map<intptr_t, std::shared_ptr<Obj>> ObjectMap;
 
 		static intptr_t getIntPointer(const mxArray* pointer) {
 			if (mxIsEmpty(pointer))

@@ -13,21 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Includes">
-      <UniqueIdentifier>{81b77dcd-97d1-4a07-9cbf-157d098adb14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\extras">
-      <UniqueIdentifier>{fe257611-c01b-4a55-aced-655ed0e9e41b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\extras\cmex">
-      <UniqueIdentifier>{f24e4e93-a0d8-4707-af70-f9479f855d33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\extras\async">
-      <UniqueIdentifier>{d131c875-00e5-485c-8dd0-7bad4327a920}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Includes\extras\SessionManager">
-      <UniqueIdentifier>{4489f88e-fa03-43a9-8363-3876dccefa46}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\radialcenter.cpp">
@@ -40,51 +25,6 @@
     </ClInclude>
     <ClInclude Include="source\radialcenter_mex.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\Array.hpp">
-      <Filter>Includes\extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\ArrayBase.hpp">
-      <Filter>Includes\extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\string_extras.hpp">
-      <Filter>Includes\extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp">
-      <Filter>Includes\extras\async</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
-      <Filter>Includes\extras\async</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h">
-      <Filter>Includes\extras\SessionManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
-      <Filter>Includes\extras\SessionManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
-      <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
