@@ -1,0 +1,629 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>extras.jTable.Table - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.jTable.Table - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit extras.jTable.Table">View code for extras.jTable.Table</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.jTable.Table">Go to online doc for extras.jTable.Table</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.jTable.Table</div>
+      <div class="helptext"><pre><!--helptext -->  NOTE: This uses a java class dynamically added to the path. If using
+  with other dynamic java classes, you need to call
+  extras.jTable.loadJavaCustomizations() BEFORE instantiating any java objects,
+  otherwise it will not load
+ % <span class="helptopic">extras.jTable.Table</span> - Class definition for <span class="helptopic">Table</span>
+    The <span class="helptopic">Table</span> object places a Java table control within a figure or
+    container.
+ % Syntax:
+    t = <span class="helptopic">extras.jTable.Table</span>
+    t = <span class="helptopic">extras.jTable.Table</span>('Property','Value',...)
+ 
+ % <span class="helptopic">extras.jTable.Table</span> Properties:
+ 
+    BackgroundColor - controls background color of the table
+ 
+    ButtonUpFcn - callback when the mouse button goes up over the table
+ 
+    ButtonDownFcn - callback when the mouse button goes down over the
+    table
+ 
+    CellEditCallback - callback for edits to the cell
+ 
+    CellSelectionCallback - callback for change in selection
+ 
+    ColumnEditable - boolean array the same size as number of columns,
+    indicating whether each column is editable or not
+ 
+    ColumnFormat - cellstr array defining the data format for each
+        column. Valid values are:
+ 
+            '' (default format)
+            'boolean' (checkbox)
+            'integer'
+            'float'
+            'bank'
+            'date'
+            'char' (single line text)
+            'longchar' (multi-line text)
+            'popup' (popup/dropdown single selection)
+            'popupcheckbox' (popup/dropdown multi-selection)
+ 
+    ColumnFormatData - cell array the same size as ColumnFormat, and
+        containing a cellstr list of choices for any column that has a
+        popup list.
+ 
+    ColumnName - name of each column
+ 
+    ColumnMinWidth - minimum width of each column
+ 
+    ColumnMaxWidth - maximum width of each column
+ 
+    ColumnPreferredWidth - preferred width of each column
+ 
+    ColumnWidth - width of each column
+ 
+    ColumnResizable - whether each column is resizable (true/false)
+ 
+    ColumnResizePolicy - resize policy for columns. Valid values:
+        'AUTO_RESIZE_OFF', 'AUTO_RESIZE_NEXT_COLUMN',
+        'AUTO_RESIZE_SUBSEQUENT_COLUMNS', 'AUTO_RESIZE_LAST_COLUMN'
+        'AUTO_RESIZE_ALL_COLUMNS'
+        Doc: <a href="http://docs.oracle.com/javase/7/docs/api/javax/swing/JTable.html">http://docs.oracle.com/javase/7/docs/api/javax/swing/JTable.html</a>
+ 
+    Data - data in the table. Must be entered as a cell array.
+ 
+    Editable - controls whether the table node text is editable
+ 
+    Enabled - controls whether the table is enabled or disabled
+ 
+    FontAngle - font angle [normal|italic]
+ 
+    FontName - font name [string]
+ 
+    FontSize - font size [numeric]
+ 
+    FontWeight - font weight [normal|bold]
+ 
+    HeaderClickedCallback - callback when header is clicked (any button)
+        Callback function passed:
+            obj = handle for table object
+            event = struct
+                        .Position = [x,y] position in pixels of click
+                        .Location = 'header'
+                        .Cell = [row,col] of cell below cursor (note row=-1)
+                        .JavaMouseEvent = copy of java MouseEvent class
+                        .Button = (1,2,3...) mouse button pressed
+            Note: the callback is called even if a context menu has been
+            assigned to the header
+ 
+    HeaderUIContextMenu = [] assigne a context menu created by
+                          uicontextmenu().
+            Note: the context menu is drawn before the user supplied
+            callback is executed.
+ 
+    MouseClickedCallback - callback when the mouse is clicked on the
+    table
+ 
+    MouseDraggedCallback - callback while the mouse is being dragged
+    over the table
+ 
+    MouseMotionFcn - callback while the mouse is being moved over the
+    table
+ 
+    Parent - handle graphics parent for the table, which should be
+    a valid container including figure, uipanel, or uitab
+ 
+    Position - position of the table within the parent container
+ 
+    RowHeight - height of the rows in the table
+ 
+    SelectedRows - table rows that are currently selected
+ 
+    SelectionMode - mode for selecting rows
+           'single' - only one row at a time (default)
+           'contiguous' - multiple contiguous rows
+            'discontiguous' - any row at the same time
+ 
+    Tag - tag assigned to the table container
+ 
+    UIContextMenu - context menu for the table [uicontextmenu]
+ 
+    Units - units of the table container, used for determining the
+    position
+ 
+    UserData - User data to store in the table node
+ 
+    Visible - controls visibility of the control
+ 
+ % <span class="helptopic">extras.jTable.Table</span> Methods:
+ 
+    getCell - get a value from a single cell
+ 
+    setCell - set a value to a single cell
+ 
+    sizeColumnsToData - autosize column widths to best fit the data
+ 
+ % <span class="helptopic">extras.jTable.Table</span> Example:
+ 
+    % Create the figure and display the table
+    f = figure;
+    t = <span class="helptopic">extras.jTable.Table</span>('Parent',f);
+    t.Data = num2cell(magic(5));
+ 
+ % Known Issues:
+    1. Changing the number of columns will reset certain column
+    properties. To work around this issue, the number of columns should
+    be specified by at least one column property-value pair upon
+    construction. A future fix can be made by retaining and reapplying
+    all column properties automatically when the number of columns
+    changes.
+ 
+    2. Resizing a figure from the top or sometimes from a corner will
+    cause the java component to not be positioned correctly. Resizing
+    from the bottom will fix it. This will be fixed in a future
+    version.
+ 
+    3. Setting per-column properties like ColumnName, ColumnWidth, or
+    Data will increase the number of columns as needed. To decrease
+    columns in the table, set the ColumnName property.
+ 
+    4. This table is set up for row-based selection only. Cell-based
+    selection requires additional improvements.</pre></div><!--after help -->
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="matlab.mixin.SetGet.html">matlab.mixin.SetGet</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Table.html">Table</a></td>
+            <td class="m-help">extras.jTable.Table - Constructor for Table&nbsp;</td>
+         </tr>
+      </table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.BackgroundColor.html">BackgroundColor</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ButtonDownFcn.html">ButtonDownFcn</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ButtonUpFcn.html">ButtonUpFcn</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.CBEnabled.html">CBEnabled</a></td>
+            <td class="m-help">callbacks enabled state (internal)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.CellEditCallback.html">CellEditCallback</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.CellSelectionCallback.html">CellSelectionCallback</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ClickColumn.html">ClickColumn</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnEditable.html">ColumnEditable</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnFormat.html">ColumnFormat</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnFormatData.html">ColumnFormatData</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnMaxWidth.html">ColumnMaxWidth</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnMinWidth.html">ColumnMinWidth</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnName.html">ColumnName</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnPreferredWidth.html">ColumnPreferredWidth</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnResizable.html">ColumnResizable</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnResizePolicy.html">ColumnResizePolicy</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ColumnWidth.html">ColumnWidth</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Container.html">Container</a></td>
+            <td class="m-help">HG container&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Data.html">Data</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Editable.html">Editable</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Enabled.html">Enabled</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.FontAngle.html">FontAngle</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.FontName.html">FontName</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.FontSize.html">FontSize</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.FontWeight.html">FontWeight</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.HeaderClickedCallback.html">HeaderClickedCallback</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.HeaderUIContextMenu.html">HeaderUIContextMenu</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.IsConstructed.html">IsConstructed</a></td>
+            <td class="m-help">true when the constructor is complete (internal)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.JColumn.html">JColumn</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.JColumnModel.html">JColumnModel</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.JEditor.html">JEditor</a></td>
+            <td class="m-help">alternate Java cell editor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.JScrollPane.html">JScrollPane</a></td>
+            <td class="m-help">Java scroll pane&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.JSelectionModel.html">JSelectionModel</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.JTable.html">JTable</a></td>
+            <td class="m-help">Java table&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.JTableModel.html">JTableModel</a></td>
+            <td class="m-help">Java table model&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.MouseClickedCallback.html">MouseClickedCallback</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.MouseDraggedCallback.html">MouseDraggedCallback</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.MouseMotionFcn.html">MouseMotionFcn</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Parent.html">Parent</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Position.html">Position</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.RowHeight.html">RowHeight</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.SelectedRows.html">SelectedRows</a></td>
+            <td class="m-help">RowName %RAJ - not implemented&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.SelectionMode.html">SelectionMode</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Tag.html">Tag</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.UIContextMenu.html">UIContextMenu</a></td>
+            <td class="m-help">TooltipString %RAJ - not implemented&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Units.html">Units</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.UserData.html">UserData</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ValidResizeModes.html">ValidResizeModes</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ValidSelectionModes.html">ValidSelectionModes</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.Visible.html">Visible</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.hPanel.html">hPanel</a></td>
+            <td class="m-help">Main panel&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.addlistener.html">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.castToJavaArray.html">castToJavaArray</a></td>
+            <td class="m-help">Cast cell array to a Java Object&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.delete.html">delete</a></td>
+            <td class="m-help">Destructor.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.eq.html">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.findobj.html">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.findprop.html">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.ge.html">ge</a></td>
+            <td class="m-help">>= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.get.html">get</a></td>
+            <td class="m-help">Get MATLAB object properties.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.getCell.html">getCell</a></td>
+            <td class="m-help">Get a cell to the specified value&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.getdisp.html">getdisp</a></td>
+            <td class="m-help">Specialized MATLAB object property display.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.gt.html">gt</a></td>
+            <td class="m-help">> (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.isvalid.html">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.le.html">le</a></td>
+            <td class="m-help"><= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.listener.html">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.loadJavaCustomizations.html">loadJavaCustomizations</a></td>
+            <td class="m-help">Loads the required custom Java .jar file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.lt.html">lt</a></td>
+            <td class="m-help">< (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.ne.html">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.notify.html">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.redraw.html">redraw</a></td>
+            <td class="m-help">Redraw table.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.refreshRenderers.html">refreshRenderers</a></td>
+            <td class="m-help">Get the table renderers object, which contains all the java&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.set.html">set</a></td>
+            <td class="m-help">Set MATLAB object property values.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.setCell.html">setCell</a></td>
+            <td class="m-help">Set a cell to the specified value&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.setdisp.html">setdisp</a></td>
+            <td class="m-help">Specialized MATLAB object property display.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.jTable.Table.sizeColumnsToData.html">sizeColumnsToData</a></td>
+            <td class="m-help">Set column sizes automatically&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.DataChanged.html">DataChanged</a></td>
+            <td class="m-help">data changed&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.ObjectBeingDestroyed.html">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.jTable.Table.SelectionChanged.html">SelectionChanged</a></td>
+            <td class="m-help">selection changed&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

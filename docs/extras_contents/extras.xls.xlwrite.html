@@ -1,0 +1,101 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>extras.xls.xlwrite - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.xls.xlwrite - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.xls.xlwrite">View code for extras.xls.xlwrite</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.xls.xlwrite</div>
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">xlwrite</span> Write to Microsoft Excel spreadsheet file using Java
+    <span class="helptopic">xlwrite</span>(FILE,ARRAY) writes ARRAY to the first worksheet in the Excel
+    file named FILE, starting at cell A1. It aims to have exactly the same
+    behaviour as XLSWRITE. See also XLSWRITE.
+ 
+    <span class="helptopic">xlwrite</span>(FILE,ARRAY,SHEET) writes to the specified worksheet.
+ 
+    <span class="helptopic">xlwrite</span>(FILE,ARRAY,RANGE) writes to the rectangular region
+    specified by RANGE in the first worksheet of the file. Specify RANGE
+    using the syntax 'C1:C2', where C1 and C2 are opposing corners of the
+    region.
+ 
+    <span class="helptopic">xlwrite</span>(FILE,ARRAY,SHEET,RANGE) writes to the specified SHEET and
+    RANGE.
+ 
+    STATUS = <span class="helptopic">xlwrite</span>(FILE,ARRAY,SHEET,RANGE) returns the completion
+    status of the write operation: TRUE (logical 1) for success, FALSE
+    (logical 0) for failure.  Inputs SHEET and RANGE are optional.
+ 
+    Input Arguments:
+ 
+    FILE    String that specifies the file to write. If the file does not
+            exist, <span class="helptopic">xlwrite</span> creates a file, determining the format based on
+            the specified extension. To create a file compatible with Excel
+            97-2003 software, specify an extension of '.xls'. If you do not 
+            specify an extension, <span class="helptopic">xlwrite</span> applies '.xls'.
+    ARRAY   Two-dimensional logical, numeric or character array or, if each
+            cell contains a single element, a cell array.
+    SHEET   Worksheet to write. One of the following:
+            * String that contains the worksheet name.
+            * Positive, integer-valued scalar indicating the worksheet
+              index.
+            If SHEET does not exist, <span class="helptopic">xlwrite</span> adds a new sheet at the end
+            of the worksheet collection. 
+    RANGE   String that specifies a rectangular portion of the worksheet to
+            read. Not case sensitive. Use Excel A1 reference style.
+            * If you specify a SHEET, RANGE can either fit the size of
+              ARRAY or specify only the first cell (such as 'D2').
+            * If you do not specify a SHEET, RANGE must include both 
+              corners and a colon character (:), even for a single cell
+              (such as 'D2:D2').
+            * If RANGE is larger than the size of ARRAY, Excel fills the
+              remainder of the region with #N/A. If RANGE is smaller than
+              the size of ARRAY, <span class="helptopic">xlwrite</span> writes only the subset that fits
+              into RANGE to the file.
+ 
+    Note
+    * This function requires the POI library to be in your javapath.
+        If the library is not on the javapath it will be automatically
+        added, provided the jar files are in the folder: './poi_library/'
+ 
+    * Excel converts Inf values to 65535. <span class="helptopic">xlwrite</span> converts NaN values to
+      empty cells.
+ 
+    EXAMPLES
+    % Write a 7-element vector to testdata.xls:
+    xlwrite('testdata.xls', [12.7, 5.02, -98, 63.9, 0, -.2, 56])
+ 
+    % Write mixed text and numeric data to testdata2.xls
+    % starting at cell E1 of Sheet1:
+    d = {'Time','Temperature'; 12,98; 13,99; 14,97};
+    xlwrite('testdata2.xls', d, 1, 'E1')
+ 
+ 
+    REVISIONS
+  ========================================================================
+    30181115 - Automatic add java libraries (D. Kovari, Emory Univ.)
+    20121004 - First version using JExcelApi
+    20121101 - Modified to use POI library instead of JExcelApi (allows to
+            generate XLSX)
+    20121127 - Fixed bug: use existing rows if present, instead of 
+            overwrite rows by default. Thanks to Dan &amp; Jason.
+    20121204 - Fixed bug: if a numeric sheet is given &amp; didn't exist,
+            an error was returned instead of creating the sheet. Thanks to Marianna
+    20130106 - Fixed bug: use existing cell if present, instead of
+            overwriting. This way original XLS formatting is kept &amp; not
+            overwritten.
+    20130125 - Fixed bug &amp; documentation. Incorrect working of NaN. Thanks Klaus
+    20130227 - Fixed bug when no sheet number given &amp; added Stax to java
+                load. Thanks to Thierry
+ 
+    Copyright 2012-2013, Alec de Zegher
+ ==============================================================================</pre></div><!--after help -->
+   </body>
+</html>

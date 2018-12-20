@@ -47,7 +47,8 @@ classdef roiManager < handle
                 if ~isempty(this.PlotUI)
                     roi = this.PlotUI.DrawROI();
                 else
-                    error('No roi was specified and no graphical interface was available for drawing ROIs');
+                    warning('No roi was specified and no graphical interface was available for drawing ROIs');
+                    roi = this.CreateROI();
                 end
             end
             

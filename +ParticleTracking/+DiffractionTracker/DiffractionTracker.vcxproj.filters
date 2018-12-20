@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{f6f65b7a-5f3c-4b1d-8dbe-fad85fae111a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\extras">
+      <UniqueIdentifier>{55fafacb-8fa5-40b1-99c7-b9c1f6b6fbe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\extras\cmex">
+      <UniqueIdentifier>{090b726a-d611-4dee-b5b6-cd052f4fce89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\extras\async">
+      <UniqueIdentifier>{a76636d3-98a9-45ed-82c4-027a1baf44d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\extras\SessionManager">
+      <UniqueIdentifier>{982d8fbc-5d42-462e-83ae-7c5567613003}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\+ParticleTracking\+DiffractionTracker\source\DiffractionTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\extras\Array.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\ArrayBase.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\string_extras.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp">
+      <Filter>Includes\extras\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
+      <Filter>Includes\extras\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
