@@ -14,19 +14,19 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Includes">
-      <UniqueIdentifier>{8efc1eac-8dcd-4aea-9869-6cf1c9738996}</UniqueIdentifier>
+      <UniqueIdentifier>{f5dd5f14-c8f6-4c22-8c37-cd1b046c54d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\extras">
-      <UniqueIdentifier>{9420d890-219c-4e12-ad8b-8bc1740efd89}</UniqueIdentifier>
+      <UniqueIdentifier>{2855b7e4-c400-4595-b237-5e2b2ecea82d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\extras\cmex">
-      <UniqueIdentifier>{27a56094-785b-4752-a5c3-6afbbad7fd2f}</UniqueIdentifier>
+      <UniqueIdentifier>{5c541ff4-3154-4fe1-8615-5520209d5e7b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\extras\async">
-      <UniqueIdentifier>{1301d6b4-51e3-43ab-80eb-d7c50245a569}</UniqueIdentifier>
+      <UniqueIdentifier>{59577d4e-8e87-4b61-a09a-c421d44edbc7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Includes\extras\SessionManager">
-      <UniqueIdentifier>{1e06d644-56c0-4ef3-9f9b-5d2a394ff106}</UniqueIdentifier>
+      <UniqueIdentifier>{1a070b6d-7ba1-469a-96ad-ebb0d1b5fdb1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -68,16 +68,16 @@
     <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp">
       <Filter>Includes\extras\async</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\extras\async\ProcessorPersistentArgs.hpp">
+    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
       <Filter>Includes\extras\async</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h">
       <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
       <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
+    <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
       <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
   </ItemGroup>
