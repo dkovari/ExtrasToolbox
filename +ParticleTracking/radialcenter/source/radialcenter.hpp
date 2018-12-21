@@ -251,7 +251,7 @@ namespace extras{namespace ParticleTracking{
 
 			//Get Sub window range
 			bool calc_grad = false;
-			double newIx1, newIx2,newIy1,newIy2;
+			size_t newIx1, newIx2,newIy1,newIy2;
 			if (!WIND.isempty()) {
 				newIx1 = fmax(0,fmin(I.nCols()-1,floor(WIND(n, 0))));
 				newIx2 = fmax(0,fmin(I.nCols()-1,ceil(WIND(n, 1))));

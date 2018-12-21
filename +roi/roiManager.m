@@ -86,6 +86,10 @@ classdef roiManager < handle
             catch
             end
             
+            if ~isempty(ind)
+                notify(this,'roiValueChanged');
+            end
+            
         end
         
         function ClearList(this)
@@ -96,6 +100,10 @@ classdef roiManager < handle
             
             %delete roi
             delete(roi);
+            if ~isempty(roi)
+                notify(this,'roiValueChanged');
+            end
+                
         end
         
         function SetList(this,roi)
@@ -143,6 +151,11 @@ classdef roiManager < handle
             [~,sind] = ismember(ind,this.IndexSelected);
             sind(sind==0)=[];
             this.IndexSelected(sind) = [];
+            
+            if ~isempty(ind)
+                %'RoiDelete'
+                notify(this,'roiValueChanged');
+            end
         end
     end
 end

@@ -31,6 +31,11 @@ classdef roiObject < handle
         Window_Height
     end
     methods
+        
+        function s = toStruct(this)
+            s = struct('Window',{this.Window},'UUID',{this.UUID});
+        end
+        
         function v = get.Window_X1(this)
             v = this.Window(1);
             

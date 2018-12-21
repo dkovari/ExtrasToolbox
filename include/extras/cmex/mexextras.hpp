@@ -107,4 +107,66 @@ namespace extras{ namespace cmex{
         valueCopy(dst,mxGetData(src),mxGetNumberOfElements(src),mxGetClassID(src));
     }
 
+
+	/// check if mxSTRUCT has field
+	bool hasField(const mxArray* mxptr,const char* fieldname) {
+		if (!mxIsStruct(mxptr)) { return false; }
+		return mxGetFieldNumber(mxptr, fieldname) >= 0;
+		
+	}
+
+
+	/// check for array equality
+	// arrays must be same type, size, and have same elements
+	// passing cell or struct throws error
+	bool isequal(const mxArray* A, const mxArray* B) {
+		if (A == B) {
+			return true;
+		}
+
+		if (A == nullptr || B == nullptr) {
+			return false;
+		}
+		if (mxGetClassID(A) != mxGetClassID(B)) {
+			return false;
+		}
+
+		switch (mxGetClassID(A)) {
+		case mxUNKNOWN_CLASS:
+		case mxCELL_CLASS:
+		case mxSTRUCT_CLASS:
+		case mxVOID_CLASS:
+		case mxFUNCTION_CLASS:
+			throw(std::runtime_error("isequal(): invalid mxClassID, arrays must be char, numeric, or logical"));
+			break;
+		default:
+			//ok
+		}
+
+		if (mxGetNumberOfDimensions(A) != mxGetNumberOfDimensions(B)) {
+			return false;
+		}
+		size_t ndim = mxGetNumberOfDimensions(A);
+		const size_t* dimA = mxGetDimensions(A);
+		const rsize_t* dimB = mxGetDimensions(B);
+		for (size_t n = 0; n < ndim; ++n) {
+			if (dimA[n] != dimB[n]) {
+				return false;
+			}
+		}
+
+
+		uint8_t *dataA = (uint8_t*)mxGetData(A);
+		uint8_t *dataB = (uint8_t*)mxGetData(B);
+		for (size_t n = 0; n < mxGetNumberOfElements(A)*mxGetElementSize(A); ++n) {
+			if (dataA[n] != dataB[n]) {
+				return false;
+			}
+		}
+		
+		// made it here, every byte in the data is identical
+		return true;
+
+	}
+
 }}

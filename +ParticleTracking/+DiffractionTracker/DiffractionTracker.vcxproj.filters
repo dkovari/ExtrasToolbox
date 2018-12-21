@@ -80,5 +80,8 @@
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
       <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
+    <ClInclude Include="source\roiObject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

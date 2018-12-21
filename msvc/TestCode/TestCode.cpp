@@ -36,6 +36,8 @@ int main()
 	cout << "B.one: " << myB.one << endl;
 	cout << "B.two: " << myB.two << endl;
 	cout << "type:" << typeid(myB.two).name() << endl;
+
+	cout << "size_t(false)=" << size_t(false) << " size_t(true)=" << size_t(true) << endl;
     return 0;
 }
 

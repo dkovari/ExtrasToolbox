@@ -84,6 +84,9 @@ namespace extras{namespace cmex{
 
         /// Process Inputs
         int Parse(size_t nargs, const mxArray* pargs[]){
+
+			if (nargs < 1) { return 0; }
+
             if(nargs%2 !=0){ //check that even number of inputs
                 mexPrintf("Incorrect number of arguments passed to MxInputParser::Parse\n");
                 return -1;
