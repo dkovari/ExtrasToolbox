@@ -24,6 +24,9 @@
     <ClCompile Include="mxfile_writer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mxfile_reader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\extras\mxfile\FileWriter.hpp">

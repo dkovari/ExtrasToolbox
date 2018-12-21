@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mxfile_writer.cpp" />
+    <ClCompile Include="mxfile_reader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\extras\mxfile\FileWriter.hpp" />
@@ -52,7 +53,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\MATLAB\R2018b\extern\include;$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

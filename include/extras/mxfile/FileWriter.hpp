@@ -3,7 +3,6 @@
 #include <mex.h>
 #include <list>
 #include <string>
-#include <matrix.h>
 #include <vector>
 
 namespace extras {
@@ -14,8 +13,9 @@ namespace extras {
 			const mxArray* data;  //the mxArray to be written to disk
 		};
 
+		//Wrapper for fwrite; change as needed later
 		size_t write(const void * data, size_t n_bytes, size_t count, FILE * stream) {
-			fwrite(data, n_bytes, count, stream);
+			return fwrite(data, n_bytes, count, stream);
 		}
 
 
@@ -40,8 +40,8 @@ namespace extras {
 					break;
 				case mxSTRUCT_CLASS: {
 					l.nbytes = sizeof(uint8_t) + sizeof(size_t) + mxGetNumberOfDimensions(prhs[i]) + sizeof(std::string);
-					for (size_t j = 0; j < mxGetNumberOfFields(prhs[i]); j++) {
-						l.nbytes += sizeof(std::string) * std::string(mxGetFieldNameByNumber(prhs[i], j)).length();
+					for (size_t j = 0; j < mxGetNumberOfFields(prhs[i]); ++j) {
+						l.nbytes += sizeof(char) * std::string(mxGetFieldNameByNumber(prhs[i], j)).length();
 					}
 					//type, ndims, dims, nfields, field names
 					l.data = prhs[i];
@@ -60,10 +60,10 @@ namespace extras {
 					l.data = prhs[i];
 					out.push_back(l);
 				}
-				return out;
 			}
+			return out;
 		}
-
+		
 		void writeList(const std::list<SerialData> dataList, const char* filepath) {
 			//add in try-catch block for fopen failure, or otherwise)
 			FILE* fp = fopen(filepath, "wb");
@@ -116,33 +116,46 @@ namespace extras {
 					break;
 				default: //all other types are numeric-ish
 					// find the number from the enum in StructWriter
-
+					mexPrintf("Before writes fp=%i\n", ftell(fp));
 					//write type
 					write(&type, 1, 1, fp);
+					mexPrintf("after type fp=%i\n", ftell(fp));
+					
 
 					//write ndim
 					write(&ndims, sizeof(size_t), 1, fp);
+					mexPrintf("after ndims fp=%i\n", ftell(fp));
 
 					//write dims
 					write((void*)mxGetDimensions(thisArray), sizeof(size_t), ndims, fp);
+					mexPrintf("after dims fp=%i\n", ftell(fp));
 
 					//write complex
 					uint8_t isComplex = (uint8_t)mxIsComplex(thisArray);
 					write(&isComplex, 1, 1, fp);
+					mexPrintf("after isComplex fp=%i\n", ftell(fp));
 
 					//write interleaved flag
 					uint8_t interFlag = 0; //default to not interleaved complex data
 #if MX_HAS_INTERLEAVED_COMPLEX
 					interFlag = 1;
 #endif
+					mexPrintf("\t About to write interFlag:%d\n", interFlag);
 					write(&interFlag, 1, 1, fp);
+					mexPrintf("after interFlag fp=%i\n", ftell(fp));
 
 					//Write data
-					if (isComplex&&~interFlag) {
-						
-					}
 					if(!isComplex){
 						//write all data at once
+						/*mexPrintf("\t About to non-complex: ");
+						for (size_t b = 0; b < 8; b++) {
+							mexPrintf("%02x", ((uint8_t*)mxGetData(thisArray))[b]);
+						}
+						mexPrintf("\n");
+						uint64_t val = ((uint64_t*)mxGetData(thisArray))[0];
+						mexPrintf("\t            should be: %016x\n", val);
+						mexPrintf("\t        from uint64_t: %f\n", (double)val);*/
+
 						write(mxGetData(thisArray), mxGetElementSize(thisArray), mxGetNumberOfElements(thisArray), fp);
 					}else{
 #if MX_HAS_INTERLEAVED_COMPLEX
@@ -162,11 +175,10 @@ namespace extras {
 			return;
 		}
 
-		//Wrapper for fwrite; change as needed later
 
 		//Wrapper for fread; change as needed later
 		size_t read(void * data, size_t size, size_t count, FILE * stream) {
-			fread(data, size, count, stream);
+			return fread(data, size, count, stream);
 		}
 
 
@@ -176,7 +188,9 @@ namespace extras {
 			// read type
 			mxClassID thisType;
 			uint8_t tmp;
-			read(&tmp, 1, 1, fp);
+			if (read(&tmp, 1, 1, fp) == 0) {
+				return nullptr;
+			}
 			thisType = (mxClassID)tmp;
 
 			//read ndim
@@ -185,7 +199,7 @@ namespace extras {
 
 			//for each dim, read and set
 			size_t* dims = new size_t[ndim];
-			for (size_t i; i < ndim; ++i) {
+			for (size_t i = 0; i < ndim; ++i) {
 				read(&dims[i], sizeof(size_t), 1, fp);
 			}
 
@@ -202,21 +216,23 @@ namespace extras {
 				size_t nfields;
 				read(&nfields, sizeof(size_t), 1, fp);
 
-
-				const char** fieldnames = new const char*[nfields];
+				//I don't trust this code.
+				const char** fieldnames = new const char*[nfields]; //initialize string array of field names
 				size_t len;
 				for (size_t n = 0; n < nfields; ++n) {
 					read(&len, sizeof(size_t), 1, fp); //read field name length
-					fieldnames[n] = new char[len];
+					fieldnames[n] = new const char[len];
 					read((void *)fieldnames[n], sizeof(char), len, fp); //read field name
 				}
+
+
 				out = mxCreateStructArray(ndim, dims, nfields, fieldnames);
 
-				for (size_t n = 0; n < nfields; ++n) {
+				/*for (size_t n = 0; n < nfields; ++n) {
 					delete[] fieldnames[n];
 				}
 				delete[] fieldnames;
-
+				*/
 				for (size_t n = 0; n < mxGetNumberOfElements(out); ++n) {
 					for (size_t m = 0; m < mxGetNumberOfFields(out); ++m) {
 						mxSetFieldByNumber(out, n, m, readNext(fp));
@@ -288,11 +304,24 @@ namespace extras {
 			std::vector<mxArray*> out;
 
 			while (!feof(fp)) { //read until end of file
-				mxArray* thisArray = readNext(fp);
-				out.push_back(thisArray);
+				try { out.push_back(readNext(fp)); }
+				catch(std::exception e){}
 			}
 			fclose(fp);
 			return out;
+		}
+		
+		//read one line and return
+		mxArray* readline(const char* filename) {
+			FILE* fp = fopen(filename, "rb");
+
+			mxArray* thisArray = extras::mxfile::readNext(fp);
+
+			/*while (!feof(fp)) { //read until end of file
+			}
+			*/
+			fclose(fp);
+			return thisArray;
 		}
 	}
 }
