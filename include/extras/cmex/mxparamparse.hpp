@@ -14,6 +14,7 @@ namespace extras{namespace cmex{
     private:
         bool _CaseSensitive;
     public:
+        bool IgnoreUnspecifiedParameters = false;
         std::unordered_map<std::string,MxObject> Parameter;
 		std::unordered_map<std::string, bool>	ParameterFound;
 
@@ -110,13 +111,15 @@ namespace extras{namespace cmex{
 					ParameterFound.at(key) = true;
                 }catch(std::out_of_range e){
                     //didn't find match
-                    mexPrintf("arg[%d] could not find a match\n",n);
-                    mexPrintf("\tusing key: '%s'\n",key.c_str());
-                    mexPrintf("Possible Values:\n");
-                    for(auto i:Parameter){
-                        mexPrintf("\t'%s'\n",i.first.c_str());
+                    if(!IgnoreUnspecifiedParameters){
+                        mexPrintf("arg[%d] could not find a match\n",n);
+                        mexPrintf("\tusing key: '%s'\n",key.c_str());
+                        mexPrintf("Possible Values:\n");
+                        for(auto i:Parameter){
+                            mexPrintf("\t'%s'\n",i.first.c_str());
+                        }
+                        return 2;
                     }
-                    return 2;
                 }
             }
             return 0;

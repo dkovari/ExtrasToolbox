@@ -3,7 +3,6 @@
 #include "../ArrayBase.hpp"
 #include "mxobject.hpp"
 #include <algorithm>
-#include "mxClassIDhelpers.hpp"
 #include <stdexcept>
 
 
@@ -501,9 +500,9 @@ namespace extras{namespace cmex {
 		void disp() const{
 			mexPrintf("NumericMatrix: %s [", mxGetClassName(_mxptr));
 			for(size_t n=0;n<ndims()-1;++n){
-				mexPrintf("%d x ",dims()[n]);
+				mexPrintf("%zu x ",dims()[n]);
 			}
-			mexPrintf("%d]\n",dims()[ndims()-1]);
+			mexPrintf("%zu]\n",dims()[ndims()-1]);
 			if(ndims()<=2){
 				for(size_t r=0;r<nRows();++r){
 					for(size_t c=0;c<nCols();++c){

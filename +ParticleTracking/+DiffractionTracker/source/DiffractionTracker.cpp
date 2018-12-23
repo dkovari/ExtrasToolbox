@@ -37,7 +37,6 @@
 #include <extras/async/PersistentArgsProcessor.hpp>
 #include "../../radialcenter/source/radialcenter_mex.hpp" //radialcenter code
 
-
 class DiffractionTracker :public extras::async::PersistentArgsProcessor<roiAgregator> {//extras::async::PersistentArgsProcessor{//
 	typedef extras::async::PersistentArgsProcessor<roiAgregator>::TaskPairType TaskPairType;
 protected:
@@ -108,7 +107,7 @@ public:
 		}
 
 		std::shared_ptr<roiAgregator> newSettings = std::make_shared<roiAgregator>(*CurrentArgs); //make a copy of the roiSettings
-		
+
 		bool found_struct = false;
 		if (mxIsStruct(prhs[0])) {
 			found_struct = true;
@@ -123,7 +122,7 @@ public:
 		Parser.AddParameter("COMmethod", "meanABS");
 		Parser.AddParameter("DistanceFactor", INFINITY);
 
-		
+
 		if (Parser.Parse(nrhs-size_t(found_struct), &(prhs[size_t(found_struct)])) != 0) {
 			throw(std::runtime_error("DiffractionTracker::setPersistentArgs(): Parameters specified incorrectly"));
 		}
@@ -175,10 +174,10 @@ public:
 		);
 
 	}
-};
+ };
 
 //we must define the setPersistentArgs method for for parent processor type, even though we won't use it.
-void extras::async::PersistentArgsProcessor<roiAgregator>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {};
+template<> void extras::async::PersistentArgsProcessor<roiAgregator>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {};
 
 extras::SessionManager::ObjectManager<DiffractionTracker> manager;
 extras::async::PersistentArgsProcessorInterface<DiffractionTracker, manager> mex_interface; //create interface manager for the processor

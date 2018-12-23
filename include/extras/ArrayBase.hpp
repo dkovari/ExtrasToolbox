@@ -49,7 +49,7 @@ namespace extras {
 
         ///////////////
         // Implemented Here
-        
+
         virtual size_t elementsize() const { return sizeof(T); } ///< element size in bytes
         virtual ArrayBase& operator+=(double val){
     		for(size_t n=0;n<numel();++n){
@@ -98,9 +98,9 @@ namespace extras {
 		virtual	void disp() const {
 			printf("ArrayBase<%s> [", typeid(T).name());
 			for (size_t n = 0; n<ndims() - 1; ++n) {
-				printf("%d x ", dims()[n]);
+				printf("%zu x ", dims()[n]);
 			}
-			printf("%zd]\n", dims()[ndims() - 1]);
+			printf("%zu]\n", dims()[ndims() - 1]);
 			if (ndims() <= 2) {
 				for (size_t r = 0; r<nRows(); ++r) {
 					for (size_t c = 0; c<nCols(); ++c) {

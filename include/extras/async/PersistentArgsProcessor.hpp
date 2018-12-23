@@ -6,7 +6,7 @@
 
 namespace extras{namespace async{
 
-	
+
 
     /// Async Processor with optional Persistent Arguments
     /// When the thread operates on a task the stored persistent arguments are concatenated to the task array group
@@ -19,7 +19,7 @@ namespace extras{namespace async{
 	template<class PersistentArgType=cmex::mxArrayGroup>
     class PersistentArgsProcessor: public extras::async::AsyncProcessor{
 	public:
-		typedef std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<PersistentArgType>> TaskPairType;
+		typedef typename std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<PersistentArgType>> TaskPairType;
 	private:
 		cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) { throw(std::runtime_error("in ProcTask(mxAG)..shouldn't be here")); return cmex::mxArrayGroup(); } ///< don't use ProcessTask(mxArrayGroup&)
     protected:
@@ -122,7 +122,7 @@ namespace extras{namespace async{
     };
 
 	// default setPersistentArg method
-	void PersistentArgsProcessor<cmex::mxArrayGroup>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {
+	template<> void PersistentArgsProcessor<cmex::mxArrayGroup>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {
 		CurrentArgs = std::make_shared<cmex::mxArrayGroup>(nrhs,prhs);
 	}
 

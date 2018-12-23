@@ -91,9 +91,11 @@ namespace extras{namespace async{
             ProcessAndEnd = true;
             std::this_thread::sleep_for(std::chrono::microseconds(1000)); //let some time pass
             if (mThread.joinable()) {
-				mexPrintf("\tWaiting for mex::AsyncProcessor to finish\n");
+				mexPrintf("\tWaiting for AsyncProcessor to finish");
 				mexEvalString("pause(0.2)");
 				mThread.join();
+                mexPrintf("...done.\n");
+                mexEvalString("pause(0.1)");
 			}
             ProcessRunning = false;
         }
@@ -101,9 +103,11 @@ namespace extras{namespace async{
             StopProcessingNow = true;
             std::this_thread::sleep_for(std::chrono::microseconds(1000)); //let some time pass
             if (mThread.joinable()) {
-				mexPrintf("\tHalting mex::AsyncProcessor\n");
+				mexPrintf("\tHalting AsyncProcessor");
 				mexEvalString("pause(0.2)");
 				mThread.join();
+                mexPrintf("...done.\n");
+                mexEvalString("pause(0.1)");
 			}
             ProcessRunning = false;
         }

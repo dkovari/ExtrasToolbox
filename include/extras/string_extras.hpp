@@ -2,6 +2,11 @@
 
 #include <string>
 #include <cctype>
+#include <string.h>
+
+#ifndef strcmpi
+const auto& strcmpi = strcasecmp;
+#endif
 
 // define tolower and toupper for strings ()
 namespace extras{

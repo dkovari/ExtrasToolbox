@@ -22,13 +22,13 @@ public:
     classID(cid)
     {ElemSize = elementsize(cid);};
 
-    SubImage(void* data, mxClassID cid, size_t h, size_t w):
+    /*SubImage(void* data, mxClassID cid, size_t h, size_t w):
     Data((unsigned char* )data),
     H(h),
     W(w),
     Stride(h),
     classID(cid)
-    {ElemSize = elementsize(cid);};
+    {ElemSize = elementsize(cid);};*/
 
     void* data() const { return (void*)Data;}
     inline size_t nCols() const { return W; }

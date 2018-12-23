@@ -112,7 +112,7 @@ namespace extras{ namespace cmex{
 	bool hasField(const mxArray* mxptr,const char* fieldname) {
 		if (!mxIsStruct(mxptr)) { return false; }
 		return mxGetFieldNumber(mxptr, fieldname) >= 0;
-		
+
 	}
 
 
@@ -140,6 +140,7 @@ namespace extras{ namespace cmex{
 			throw(std::runtime_error("isequal(): invalid mxClassID, arrays must be char, numeric, or logical"));
 			break;
 		default:
+            break;
 			//ok
 		}
 
@@ -148,7 +149,7 @@ namespace extras{ namespace cmex{
 		}
 		size_t ndim = mxGetNumberOfDimensions(A);
 		const size_t* dimA = mxGetDimensions(A);
-		const rsize_t* dimB = mxGetDimensions(B);
+		const size_t* dimB = mxGetDimensions(B);
 		for (size_t n = 0; n < ndim; ++n) {
 			if (dimA[n] != dimB[n]) {
 				return false;
@@ -163,7 +164,7 @@ namespace extras{ namespace cmex{
 				return false;
 			}
 		}
-		
+
 		// made it here, every byte in the data is identical
 		return true;
 

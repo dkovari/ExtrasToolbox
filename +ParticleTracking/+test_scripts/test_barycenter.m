@@ -23,7 +23,7 @@ noise = 7;
 Img_Base = AvgIntensity*ones(size(xx));
 Img_Base = Img_Base + (BrightMax-AvgIntensity)*exp( -( (xx-(Xc-sz)).^2 + (yy-(Yc-sz)).^2)/(2*sz^2)) ...
     + (DarkMin-AvgIntensity)*exp( -( (xx-(Xc+sz)).^2 + (yy-(Yc+sz)).^2)/(2*sz^2));
-    
+
 Img = Img_Base+noise*(2*rand(size(Img_Base))-1);
         Img = uint8(Img);
 %% Plot Image
@@ -32,7 +32,7 @@ hOrig = figure;
 imagesc(Img,[0,255]);
 axis image;
 colormap gray;
-title("Original Image");
+title('Original Image');
 
 hold on;
 plot(Xc,Yc,'xr','markersize',16);
@@ -45,7 +45,7 @@ rectangle('Position',wind);
 %% call BaryCenter
 
 %tic
-[X,Y]= ParticleTrackers.BaryCenter_classic(Img,wind,[],0.2);
+[X,Y]= extras.ParticleTracking.barycenter(Img,wind,[],0.2);
 %toc
 
 %% Plot
