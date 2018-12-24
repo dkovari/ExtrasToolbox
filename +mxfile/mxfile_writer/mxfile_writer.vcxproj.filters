@@ -19,6 +19,9 @@
     <Filter Include="include\mxfile">
       <UniqueIdentifier>{7f181ac4-fa4b-4712-94e0-28f79bc8122f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\extras">
+      <UniqueIdentifier>{2756c45c-aa48-431a-a74f-2567b12c76c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mxfile_writer.cpp">
