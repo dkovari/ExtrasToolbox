@@ -49,7 +49,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	mxArray* out = mxCreateCellMatrix(out_list.size(), 1);
 	size_t n = 0;
-	for (auto o : out_list) {
+	for (mxArray* o : out_list) {
 		mxSetCell(out, n, o);
 		++n;
 	}

@@ -216,17 +216,19 @@ namespace extras {
 				size_t nfields;
 				read(&nfields, sizeof(size_t), 1, fp);
 
-				//I don't trust this code.
-				const char** fieldnames = new const char*[nfields]; //initialize string array of field names
+				//I don't trust this code. I think there's an issue with null termination, and the const keyword
+				//read fieldnames + lengths'
+
+				char** fieldnames = new char*[nfields]; //initialize string array of field names
 				size_t len;
 				for (size_t n = 0; n < nfields; ++n) {
 					read(&len, sizeof(size_t), 1, fp); //read field name length
-					fieldnames[n] = new const char[len];
+					fieldnames[n] = new char[len];
 					read((void *)fieldnames[n], sizeof(char), len, fp); //read field name
+					fieldnames[n][len] = '\0';
 				}
 
-
-				out = mxCreateStructArray(ndim, dims, nfields, fieldnames);
+				out = mxCreateStructArray(ndim, dims, nfields, (const char**) fieldnames);
 
 				/*for (size_t n = 0; n < nfields; ++n) {
 					delete[] fieldnames[n];
@@ -238,8 +240,8 @@ namespace extras {
 						mxSetFieldByNumber(out, n, m, readNext(fp));
 					}
 				}
-			}
 				break;
+			}
 			default: //Default case: Numeric arrays
 				uint8_t complexity;
 				read(&complexity, sizeof(uint8_t), 1, fp);
