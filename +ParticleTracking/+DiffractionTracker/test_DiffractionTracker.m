@@ -40,6 +40,7 @@ axis image;
 colormap gray;
 title('Radial Center Test');
 hold on;
+plot(Xc,Yc,'*y');
 hPlt = plot(NaN,NaN,'+r');
 %% Create ROI Manager
 RM = extras.roi.roiManager;

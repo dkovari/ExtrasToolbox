@@ -41,7 +41,7 @@ colormap gray;
 title('Radial Center Test');
 
 %% Test Using Windows
-WIND = [Xc,Xc,Yc,Yc] + [-WIDTH/(Nx+1)*0.4,+WIDTH/(Nx+1)*0.4,-WIDTH/(Nx+1)*0.4,+WIDTH/(Nx+1)*0.4];
+WIND = [Xc,Yc,zeros(size(Yc)),zeros(size(Yc))] + [-WIDTH/(Nx+1)*0.4,-WIDTH/(Nx+1)*0.4,WIDTH/(Nx+1)*0.8,WIDTH/(Nx+1)*0.8];
 
 %% Create Processor
 try

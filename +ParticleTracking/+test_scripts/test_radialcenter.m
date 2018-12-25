@@ -34,15 +34,15 @@ colormap gray;
 title('Radial Center Test');
 
 %% Test Using Windows
-WIND = [Xc,Xc,Yc,Yc] + [-WIDTH/(Nx+1)*0.4,+WIDTH/(Nx+1)*0.4,-WIDTH/(Nx+1)*0.4,+WIDTH/(Nx+1)*0.4];
+WIND = [Xc,Yc,zeros(size(Xc)),zeros(size(Yc))] + [-WIDTH/(Nx+1)*0.4,-WIDTH/(Nx+1)*0.4,WIDTH/(Nx+1)*0.8,WIDTH/(Nx+1)*0.8];
 
 hold on;
 for n=1:numel(Xc)
-    rectangle('Position',[WIND(n,1),WIND(n,3),WIND(n,2)-WIND(n,1),WIND(n,4)-WIND(n,3)]);
+    rectangle('Position',WIND(n,:));
 end
 
 [X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,WIND);
-
+plot(Xc,Yc,'*y','DisplayName','True Center');
 plot(X,Y,'+r','DisplayName','From Windows');
 
 %% Test again using XYc estimates
@@ -53,7 +53,7 @@ plot(XYc(:,1),XYc(:,2),'sc','DisplayName','Guess Point');
 plot(X,Y,'xc','DisplayName','From Guess Point');
 
 
-%% 
+%%
 XYc = [Xc,Yc];
 XYc = XYc + 10*randn(size(XYc));
 [X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,[],3,'XYc',XYc,'RadiusFilter',20);

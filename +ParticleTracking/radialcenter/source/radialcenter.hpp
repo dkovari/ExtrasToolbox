@@ -109,39 +109,30 @@ namespace rcdefs {
 };
 
 namespace extras{namespace ParticleTracking{
-	//Radial Center Detection
-	//Description:
-	// radialcenter uses Parthasarathy's radial symmetry algorithm to detect origins of asmuthal symmetry in an image
-	// This implementation is capable of using sub-windows to look for multiple particles in the same image
-	//
-	//Usage:
-	// This function is a template allowing different output types to be specified.
-	// The default template type is MatrixT<double>; however any class derived from MatrixT<double> can
-	// be used as the output type. For example, you can use radialcenter<mexMatrixT<double>> without issue.
-	//
-	// You can also specify the number of output arguments, from 1-4.
-	// Output argument order is:
-	//	X - the x locations of the particle centers
-	//	Y - the y locations of the particle centers
-	//	varXY - [Nx2] extras::Array of the localization confidence level for X (column 1) and Y (column 2)
-	//	RWR/N - the weighted-average distance between the estimated center and all the graident vectors in the sub-image
-	//
-	template<typename T=double, class C=extras::Array<T>,typename M>
-	std::vector<C> radialcenter(const extras::ArrayBase<M>& I, //input image
+	///Radial Center Detection
+	///Description:
+	/// radialcenter uses Parthasarathy's radial symmetry algorithm to detect origins of asmuthal symmetry in an image
+	/// This implementation is capable of using sub-windows to look for multiple particles in the same image
+	///
+	///Usage:
+	/// This function is a template allowing different output types to be specified.
+	///
+	/// Output argument order is:
+	///	X - the x locations of the particle centers
+	///	Y - the y locations of the particle centers
+	///	varXY - [Nx2] extras::Array of the localization confidence level for X (column 1) and Y (column 2)
+	///	RWR/N - the weighted-average distance between the estimated center and all the graident vectors in the sub-image
+	template<class OutContainerClass=extras::Array<double>,typename ImageType=double> //OutContainerClass should be class derived from extras::ArrayBase
+	std::vector<OutContainerClass> radialcenter(const extras::ArrayBase<ImageType>& I, //input image
 												const extras::ArrayBase<double>& WIND, //subwindows to use for finding particles: [X1,X2,Y1,Y2]
 												const extras::ArrayBase<double>& GP, //gradient noise-sensitivity exponent
-												const rcdefs::RCparams& params=rcdefs::RCparams(),//parameters
-												size_t nargout = 4)
+												const rcdefs::RCparams& params=rcdefs::RCparams())//parameters
 	{
 		// Check Input Dimensions and Parameters
 		//---------------------------------------
 		using namespace std;
 
-		nargout = min(nargout, size_t(4));
-
-		
 		if (!WIND.isempty() && WIND.nCols() != 4) {
-			disp(WIND);
 			throw(runtime_error("radialcenter: WIND must be empty or Mx4 extras::Array."));
 		}
 		size_t nPart = max(size_t(1), WIND.nRows());//number of particles to find
@@ -179,15 +170,13 @@ namespace extras{namespace ParticleTracking{
 
 		//Setup Output variables
 		//----------------------------
-		vector<C> out;
-		if (nargout < 1) {
-			return out;
-		}
+		vector<OutContainerClass> out;
 		out.resize(4);
-		extras::ArrayBase<T>& x = out[0];
-		extras::ArrayBase<T>& y = out[1];
-		extras::ArrayBase<T>& varXY = out[2];
-		extras::ArrayBase<T>& RWR_N = out[3];
+
+		auto& x = out[0];
+		auto& y = out[1];
+		auto& varXY = out[2];
+		auto& RWR_N = out[3];
 
 
 		//mexPrintf("about to resize output\n");
@@ -197,12 +186,8 @@ namespace extras{namespace ParticleTracking{
 		x.resize(nPart, 1);
 		y.resize(nPart, 1);
 
-		if (nargout > 2) {
-			varXY.resize(nPart, 2);
-		}
-		if (nargout > 3) {
-			RWR_N.resize(nPart, 1);
-		}
+		varXY.resize(nPart, 2);
+		RWR_N.resize(nPart, 1);
 
 		//gradient variables
 		extras::Array<double> du;
@@ -253,10 +238,17 @@ namespace extras{namespace ParticleTracking{
 			bool calc_grad = false;
 			size_t newIx1, newIx2,newIy1,newIy2;
 			if (!WIND.isempty()) {
+				/* Old WIND=[X1,X2,Y1,Y2]
 				newIx1 = fmax(0,fmin(I.nCols()-1,floor(WIND(n, 0))));
 				newIx2 = fmax(0,fmin(I.nCols()-1,ceil(WIND(n, 1))));
 				newIy1 = fmax(0,fmin(I.nRows()-1,floor(WIND(n, 2))));
 				newIy2 = fmax(0,fmin(I.nRows()-1,ceil(WIND(n, 3))));
+				*/
+				/*New WIND=[x0,y0,w,h]*/
+				newIx1 = fmax(0,fmin(I.nCols()-1,floor(WIND(n, 0))));
+				newIx2 = fmax(0,fmin(I.nCols()-1,ceil(WIND(n, 0)+WIND(n,2)-1)));
+				newIy1 = fmax(0,fmin(I.nRows()-1,floor(WIND(n, 1))));
+				newIy2 = fmax(0,fmin(I.nRows()-1,ceil(WIND(n, 1)+WIND(n,3)-1)));
 
 				//mexPrintf("Set sub from WIND\n");
 				//mexEvalString("pause(0.1)");
@@ -310,7 +302,7 @@ namespace extras{namespace ParticleTracking{
 				dv.resize_nocpy(dNy, dNx);
 
 				//calculate new gradient data
-				const M * thisI = &(I(Iy1,Ix1)); //I(y1,x1)
+				const ImageType * thisI = &(I(Iy1,Ix1)); //I(y1,x1)
 				rcdefs::smoothgrad(thisI, I.nRows(), du.getdata(), dv.getdata(), dNy, dNx);
 
 				sqWX.resize_nocpy(dNx*dNy, 2);
@@ -580,7 +572,7 @@ namespace extras{namespace ParticleTracking{
 
 			/////////////////////////
 			// calc variance if needed
-			if (nargout>2) { //calc residual
+			//if (nargout>2) { //calc residual
 				double RWR = 0;
 				for (int i = 0; i<dNx*dNy; ++i) {
 					RWR += pow(sqWy(i) - sqWX(i, 0)*x[n] - sqWX(i, 1)*y[n], 2);
@@ -591,16 +583,16 @@ namespace extras{namespace ParticleTracking{
 				if (denom>2)
 					denom -= 2;
 
-				if (nargout>3) { //calc avg distance from gradient lines
+				//if (nargout>3) { //calc avg distance from gradient lines
 					RWR_N[n] = RWR / (sw - 2 * sw2 / sw);
-				}
+				//}
 
 				RWR /= denom;
 
 				varXY(n, 0) = D*RWR;
 				varXY(n, 1) = A*RWR;
 
-			}
+			//}
 
 			x[n] += Ix1;
 			y[n] += Iy1;
@@ -608,7 +600,6 @@ namespace extras{namespace ParticleTracking{
 		}
 
 		// Return output
-		out.resize(nargout);
 		return out;
 	}
 }}

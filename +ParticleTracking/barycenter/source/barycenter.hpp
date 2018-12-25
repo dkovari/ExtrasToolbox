@@ -142,18 +142,18 @@ namespace extras{namespace ParticleTracking{
       delete[] mask;
     }
 
-    template<class OutC, typename ImageType> //OutC should be an extras::ArrayBase<type> derived class
-	std::vector<OutC> barycenter(const extras::ArrayBase<ImageType>& I, const extras::ArrayBase<double>& WIND, double LimFrac=0.2){
+    template<class OutContainerClass=extras::Array<double>, typename ImageType=double> //OutContainerClass should be a container with resize(size_t) and operator[size_t] methods
+	std::vector<OutContainerClass> barycenter(const extras::ArrayBase<ImageType>& I, const extras::ArrayBase<double>& WIND, double LimFrac=0.2){
 		using namespace std;
 		if(I.ndims()!=2){
 			throw(std::runtime_error("barycenter(): Input Image must be a matrix, i.e. ndim(Image)==2"));
 		}
 
         // Create output array
-        std::vector<OutC> out;
+        std::vector<OutContainerClass> out;
         out.resize(2);
-        OutC& X = out[0];
-        OutC& Y = out[1];
+        auto& X = out[0];
+        auto& Y = out[1];
 
         size_t HEIGHT = I.nRows();
 		size_t WIDTH = I.nCols();
@@ -204,11 +204,13 @@ namespace extras{namespace ParticleTracking{
 
             mass_center(windImg,0,H,W,I.nRows(),LimFrac,50,&y,&x);
 
-			X[w] = x+double(X0)+1;
-			Y[w] = y+double(Y0)+1;
+			X[w] = x+double(X0);
+			Y[w] = y+double(Y0);
 		}
 
         return out;
 	}
+
+
 
 }}

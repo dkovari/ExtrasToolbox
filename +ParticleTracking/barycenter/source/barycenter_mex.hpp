@@ -25,6 +25,37 @@ if something went wrong returns NaN
 
 namespace extras{namespace ParticleTracking{
 
+	template<class OutContainerClass> //C must be and ArrayBase derived class
+    std::vector<OutContainerClass> barycenter(const mxArray* pI,
+                                const extras::ArrayBase<double>& WIND,
+                                double LimFrac=0.2)
+    {
+        switch (mxGetClassID(pI)) { //handle different image types seperatelys
+    	case mxDOUBLE_CLASS:
+    		return barycenter<OutContainerClass,double>(cmex::NumericArray<double>(pI), WIND, LimFrac);
+    	case mxSINGLE_CLASS:
+    		return barycenter<OutContainerClass,float>(cmex::NumericArray<float>(pI), WIND, LimFrac);
+    	case mxINT8_CLASS:
+    		return barycenter<OutContainerClass,int8_t>(cmex::NumericArray<int8_t>(pI), WIND, LimFrac);
+    	case mxUINT8_CLASS:
+    		return barycenter<OutContainerClass,uint8_t>(cmex::NumericArray<uint8_t>(pI), WIND, LimFrac);
+    	case mxINT16_CLASS:
+    		return barycenter<OutContainerClass,int16_t>(cmex::NumericArray<int16_t>(pI), WIND, LimFrac);
+    	case mxUINT16_CLASS:
+    		return barycenter<OutContainerClass,uint16_t>(cmex::NumericArray<uint16_t>(pI), WIND, LimFrac);
+    	case mxINT32_CLASS:
+    		return barycenter<OutContainerClass,int32_t>(cmex::NumericArray<int32_t>(pI), WIND, LimFrac);
+    	case mxUINT32_CLASS:
+    		return barycenter<OutContainerClass,uint32_t>(cmex::NumericArray<uint32_t>(pI), WIND, LimFrac);
+    	case mxINT64_CLASS:
+    		return barycenter<OutContainerClass,int64_t>(cmex::NumericArray<int64_t>(pI), WIND, LimFrac);
+    	case mxUINT64_CLASS:
+    		return barycenter<OutContainerClass,uint64_t>(cmex::NumericArray<uint64_t>(pI), WIND, LimFrac);
+    	default:
+    		throw(std::runtime_error("radialcenter: Only numeric image types allowed"));
+    	}
+    }
+
 	void barycenter_mex(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	{
 		using namespace std;
@@ -44,6 +75,15 @@ namespace extras{namespace ParticleTracking{
 		cmex::NumericArray<double> WIND;//init empty window
 		if(nrhs>1){
 			WIND = prhs[1];
+			if(!WIND.isempty()){
+                if(WIND.nCols()!=4){
+                    throw(std::runtime_error("WIND must be [n x 4]"));
+                }
+                for(size_t n=0;n<WIND.nRows();++n){ //fix 1-index --> 0-index
+                    WIND(n,0)-= 1;
+                    WIND(n,1)-=1;
+                }
+            }
 		}
 
 		double LimFrac = 0.2;
@@ -51,43 +91,10 @@ namespace extras{namespace ParticleTracking{
 			LimFrac = mxGetScalar(prhs[3]);
 		}
 
-		std::vector<cmex::NumericArray<double>> out;
+		auto out = barycenter<cmex::NumericArray<double>>(prhs[0],WIND,LimFrac);
 
-		switch(mxGetClassID(prhs[0])){
-			case mxUINT8_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,uint8_t>(cmex::NumericArray<uint8_t>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxINT8_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,int8_t>(cmex::NumericArray<int8_t>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxUINT16_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,uint16_t>(cmex::NumericArray<uint16_t>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxINT16_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,int16_t>(cmex::NumericArray<int16_t>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxUINT32_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,uint32_t>(cmex::NumericArray<uint32_t>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxINT32_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,int32_t>(cmex::NumericArray<int32_t>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxUINT64_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,uint64_t>(cmex::NumericArray<uint64_t>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxINT64_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,int64_t>(cmex::NumericArray<int64_t>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxDOUBLE_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,double>(cmex::NumericArray<double>(prhs[0]),WIND, LimFrac);
-				break;
-			case mxSINGLE_CLASS:
-			 	out = barycenter<cmex::NumericArray<double>,float>(cmex::NumericArray<float>(prhs[0]),WIND, LimFrac);
-				break;
-			default:
-				throw(std::runtime_error("Image was unsupported type."));
-				break;
-		}
+		out[0]+=1; //fix 1-indexing
+		out[1]+=1;
 
 		//set outputs
 		plhs[0] = out[0];

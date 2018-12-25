@@ -19,10 +19,13 @@ protected:
 	/// method for Processing Tasks in the task list
 	virtual extras::cmex::mxArrayGroup ProcessTask(const TaskPairType& argPair)
 	{
-		std::vector<extras::cmex::NumericArray<double>> out = extras::ParticleTracking::radcen(argPair.first.getArray(0),
-			argPair.second->WIND,
-			argPair.second->GP,
-			argPair.second->rcParams, 4);
+
+		auto out =
+			extras::ParticleTracking::radialcenter<extras::cmex::NumericArray<double>>(
+				argPair.first.getArray(0),
+				argPair.second->WIND,
+				argPair.second->GP,
+				argPair.second->rcParams);
 
 		//assemble output into array of mxArray*
 		mxArray* plhs[4] = { nullptr,nullptr,nullptr,nullptr };
@@ -63,10 +66,10 @@ public:
 
 		if (Parser.wasFound("WIND")) { oldArgs.WIND = MxObject::createPersistent(Parser("WIND"));  }
 		if (Parser.wasFound("GP")) { oldArgs.GP = MxObject::createPersistent(Parser("GP")); }
-		if (Parser.wasFound("RadiusFilter")) { 
+		if (Parser.wasFound("RadiusFilter")) {
 			oldArgs.rcParams.RadiusFilter = std::make_shared<extras::cmex::NumericArray<double>>(MxObject::createPersistent(Parser("RadiusFilter")));
 		}
-		if (Parser.wasFound("XYc")) { 
+		if (Parser.wasFound("XYc")) {
 			oldArgs.rcParams.XYc = std::make_shared<extras::cmex::NumericArray<double>>(MxObject::createPersistent(Parser("XYc")));
 		}
 		if (Parser.wasFound("COMmethod")){
@@ -85,7 +88,7 @@ public:
 		if (oldArgs.WIND.isempty() && oldArgs.rcParams.XYc->isempty()) {
 			mexWarnMsgTxt("RC2::setPersistentArgs(): Both WIND and XYc are empty, the whole image will be used and a single symmetric center will be returned.");
 		}
-		
+
 		CurrentArgs = std::make_shared<rcArgsType>(oldArgs);
 	}
 
@@ -105,7 +108,7 @@ public:
 		if (CurrentArgs->WIND.isempty() && CurrentArgs->rcParams.XYc->isempty()) {
 			mexWarnMsgTxt("RC2::pushTask() no WIND or XYc supplied, pushTask will process entire image and return a single xy coordinate");
 		}
-		
+
 
 		// add task to the TaskList
 		std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
@@ -121,7 +124,7 @@ public:
 };
 
 //we must define the setPersistentArgs method for our custom PersistArgsType
-void extras::async::PersistentArgsProcessor<rcArgsType>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {};
+template<> void extras::async::PersistentArgsProcessor<rcArgsType>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {};
 
 extras::SessionManager::ObjectManager<RC2> manager;
 extras::async::PersistentArgsProcessorInterface<RC2, manager> mex_interface; //create interface manager for the ExampleProcessor

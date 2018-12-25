@@ -9,62 +9,34 @@
 #include <extras/cmex/mxparamparse.hpp>
 
 namespace extras{namespace ParticleTracking{
-    //helper function for calling radialcenter
-    std::vector<cmex::NumericArray<double>> radcen(const mxArray* pI, const extras::ArrayBase<double>& WIND, const extras::ArrayBase<double>& GP, const rcdefs::RCparams& params, size_t nlhs) {
-    	switch (mxGetClassID(pI)) { //handle different image types seperatelys
-    	case mxDOUBLE_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<double>(pI), WIND, GP, params, nlhs);
-    	case mxSINGLE_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<float>(pI), WIND, GP, params, nlhs);
-    	case mxINT8_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<int8_t>(pI), WIND, GP, params, nlhs);
-    	case mxUINT8_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<uint8_t>(pI), WIND, GP, params, nlhs);
-    	case mxINT16_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<int16_t>(pI), WIND, GP, params, nlhs);
-    	case mxUINT16_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<uint16_t>(pI), WIND, GP, params, nlhs);
-    	case mxINT32_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<int32_t>(pI), WIND, GP, params, nlhs);
-    	case mxUINT32_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<uint32_t>(pI), WIND, GP, params, nlhs);
-    	case mxINT64_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<int64_t>(pI), WIND, GP, params, nlhs);
-    	case mxUINT64_CLASS:
-    		return radialcenter<double, cmex::NumericArray<double>>(cmex::NumericArray<uint64_t>(pI), WIND, GP, params, nlhs);
-    	default:
-    		throw(std::runtime_error("radialcenter: Only numeric image types allowed"));
-    	}
-    }
 
-    template<class C> //C must be and ArrayBase derived class
-    std::vector<C> radialcenter(const mxArray* pI,
+    template<class OutContainerClass> //C must be and ArrayBase derived class
+    std::vector<OutContainerClass> radialcenter(const mxArray* pI,
                                 const extras::ArrayBase<double>& WIND,
                                 const extras::ArrayBase<double>& GP,
-                                const rcdefs::RCparams& params,
-                                size_t nlhs=4)
+                                const rcdefs::RCparams& params)
     {
         switch (mxGetClassID(pI)) { //handle different image types seperatelys
     	case mxDOUBLE_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<double>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,double>(cmex::NumericArray<double>(pI), WIND, GP, params);
     	case mxSINGLE_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<float>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,float_t>(cmex::NumericArray<float>(pI), WIND, GP, params);
     	case mxINT8_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<int8_t>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,int8_t>(cmex::NumericArray<int8_t>(pI), WIND, GP, params);
     	case mxUINT8_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<uint8_t>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,uint8_t>(cmex::NumericArray<uint8_t>(pI), WIND, GP, params);
     	case mxINT16_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<int16_t>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,int16_t>(cmex::NumericArray<int16_t>(pI), WIND, GP, params);
     	case mxUINT16_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<uint16_t>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,uint16_t>(cmex::NumericArray<uint16_t>(pI), WIND, GP, params);
     	case mxINT32_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<int32_t>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,int32_t>(cmex::NumericArray<int32_t>(pI), WIND, GP, params);
     	case mxUINT32_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<uint32_t>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,uint32_t>(cmex::NumericArray<uint32_t>(pI), WIND, GP, params);
     	case mxINT64_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<int64_t>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,int64_t>(cmex::NumericArray<int64_t>(pI), WIND, GP, params);
     	case mxUINT64_CLASS:
-    		return radialcenter<double, C>(cmex::NumericArray<uint64_t>(pI), WIND, GP, params, nlhs);
+    		return radialcenter<OutContainerClass,uint64_t>(cmex::NumericArray<uint64_t>(pI), WIND, GP, params);
     	default:
     		throw(std::runtime_error("radialcenter: Only numeric image types allowed"));
     	}
@@ -79,7 +51,7 @@ namespace extras{namespace ParticleTracking{
     %
     % Input:
     %   I: the image to process
-    %   WIND: [N x 4] specifying windows [X1,X2,Y1,Y2], default is entire image
+    %   WIND: [N x 4] specifying windows [x,y,w,h], default is entire image
     %   GP (default=5): optional exponent factor to use for magnitude weighting
     %       GP must be either scalar, or numel(GP)==size(WIND,1)
     %
@@ -123,9 +95,9 @@ namespace extras{namespace ParticleTracking{
     		mexErrMsgIdAndTxt("MATLAB:radialcenter:invalidNumInputs",
     			"At least one input required.");
     	}
-
-    	// Input 1: I
-    	//cmex::NumericArray<double> I(prhs[0]);
+        if (nlhs<1){ //nothing to do.
+            return;
+        }
 
     	cmex::NumericArray<double> WIND;
     	int ParamIndex = 1;
@@ -133,6 +105,17 @@ namespace extras{namespace ParticleTracking{
     	if (nrhs > 1 && !mxIsChar(prhs[1])) {
     		WIND = prhs[1];
     		ParamIndex = 2;
+
+            if(!WIND.isempty()){
+                if(WIND.nCols()!=4){
+                    throw(std::runtime_error("WIND must be [n x 4]"));
+                }
+                for(size_t n=0;n<WIND.nRows();++n){ //fix 1-index --> 0-index
+                    WIND(n,0)-= 1;
+                    WIND(n,1)-=1;
+                }
+            }
+
     	}
 
 
@@ -187,9 +170,8 @@ namespace extras{namespace ParticleTracking{
 
     	//mexPrintf("About to run radial center...\n");
     	try {
-    		//std::vector<cmex::NumericArray<double>> out = radialcenter<double,cmex::NumericArray<double>>(I, WIND, GP, params, nlhs);
-    		std::vector<cmex::NumericArray<double>> out = radcen(prhs[0], WIND, GP, params, nlhs);
-    		//set output
+    		auto out = radialcenter<cmex::NumericArray<double>>(prhs[0], WIND, GP, params);
+
     		if (nlhs > 0) {
     			out[0]+=1;
     			plhs[0] = out[0];

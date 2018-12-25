@@ -5,35 +5,37 @@
 #include <extras/cmex/mxobject.hpp>
 #include <extras/cmex/NumericArray.hpp>
 #include "../../radialcenter/source/radialcenter_mex.hpp" //radialcenter code
-#include "../../barycenter/source/barycenter.hpp" //barycenter code
+#include "../../barycenter/source/barycenter_mex.hpp" //barycenter code
 
 #include <extras/async/PersistentArgsProcessor.hpp>
 
+/// enum specifying xy localization algorithm
 enum XY_FUNCTION{
     BARYCENTER,
     RADIALCENTER
 };
 
+/// Struct used to store roi window and tracking parameters
 struct roiListXY{
     // Other Globals
-    XY_FUNCTION xyMethod = RADIALCENTER;
+    XY_FUNCTION xyMethod = RADIALCENTER; ///< xy tracking algorithm
 
-    std::shared_ptr<extras::cmex::MxObject> roiStruct; //original struct array object used to set roiList
+    std::shared_ptr<extras::cmex::MxObject> roiStruct; ///< original struct array object used to set roiList
 
-    std::shared_ptr<extras::ArrayBase<double>> WIND = std::make_shared<extras::Array<double>>(); //array containing windows of the rois, formatted as [X1,X2,Y1,Y2]
+    std::shared_ptr<extras::ArrayBase<double>> WIND = std::make_shared<extras::Array<double>>(); ///< array containing windows of the rois, formatted as [x0,y0,w,h]
 
     //////////////
     // For radialcenter
-    std::shared_ptr<extras::ArrayBase<double>> XYc=std::make_shared<extras::Array<double>>(); //optional array containing XYc centroid quesses
-	std::shared_ptr<extras::ArrayBase<double>> GP = std::make_shared<extras::Array<double>>(); //optional array containing GP for radialcenter
-	std::shared_ptr<extras::ArrayBase<double>> RadiusFilter = std::make_shared<extras::Array<double>>(); //optional array containing RadiusFilter for radialcenter
+    std::shared_ptr<extras::ArrayBase<double>> XYc=std::make_shared<extras::Array<double>>(); ///< optional array containing XYc centroid quesses
+	std::shared_ptr<extras::ArrayBase<double>> GP = std::make_shared<extras::Array<double>>(); ///< optional array containing GP for radialcenter
+	std::shared_ptr<extras::ArrayBase<double>> RadiusFilter = std::make_shared<extras::Array<double>>(); ///< optional array containing RadiusFilter for radialcenter
 
     /// globals for radial center
-	rcdefs::COM_METHOD COMmethod = rcdefs::MEAN_ABS;
-	double DistanceFactor = INFINITY;
+	rcdefs::COM_METHOD COMmethod = rcdefs::MEAN_ABS; ///< method for calculating image center of mass (used by radialcenter)
+	double DistanceFactor = INFINITY; ///< radial filter logistic factor, Inf=> sharp cutoff (used by radialcenter)
 
     /// globals for barycenter
-    double barycenterLimFrac = 0.2;
+    double barycenterLimFrac = 0.2; ///< LimFrac used by barycenter
 
 //////////// METHODS
 
@@ -84,15 +86,15 @@ virtual void setFromStruct(const mxArray* srcStruct) {
     for (size_t n = 0; n < len; ++n) {
         // set window
         extras::cmex::NumericArray<double> Window(mxGetField(*newStruct,n,"Window"));
-        (*newWIND)(n, 0) = Window[0]; //X1
-        (*newWIND)(n, 1) = Window[0]+Window[2]-1; //X2=x+w-1
-        (*newWIND)(n, 2) = Window[1]; //Y1
-        (*newWIND)(n, 3) = Window[1] + Window[3] - 1; //Y2=y+h-1
+        (*newWIND)(n, 0) = Window[0]-1; //x0 fixed for 0-indexing
+        (*newWIND)(n, 1) = Window[1]-1; //y0 fixed for 0-indexing
+        (*newWIND)(n, 2) = Window[2]; //w
+        (*newWIND)(n, 3) = Window[3]; //h
 
         if (extras::cmex::hasField(*newStruct, "XYc")) {
             extras::cmex::NumericArray<double> sXYc(mxGetField(*newStruct, n, "XYc"));
-            (*newXYc)(n, 0) = sXYc[0];
-            (*newXYc)(n, 1) = sXYc[1];
+            (*newXYc)(n, 0) = sXYc[0]-1; //fixed for 0-indexing
+            (*newXYc)(n, 1) = sXYc[1]-1; //fixed for 0-indexing
         }
 
         if (extras::cmex::hasField(*newStruct, "GP")) {
@@ -116,14 +118,15 @@ virtual void setFromStruct(const mxArray* srcStruct) {
 
 }
 
+/// Returns a copy of the mxArray struct used to set the roi parameters
 mxArray* getCopyOfRoiStruct() const{
     return mxDuplicateArray(*roiStruct);
 }
 
+/// number of roi windows
 size_t numberOfROI() const {
     return mxGetNumberOfElements(*roiStruct);
 }
-
 
 };
 
@@ -156,6 +159,16 @@ protected:
         int fn_xyM = mxAddField(outStruct, "xyMethod");
         if (fn_xyM < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='xyMethod' to output struct")); }
 
+        /// Get Image
+        const mxArray* img=nullptr;
+        const mxArray* time=nullptr;
+        if(mxIsStruct(argPair.first.getArray(0))){
+            img = mxGetField(argPair.first.getArray(0),0,"ImageData");
+            time = mxGetField(argPair.first.getArray(0),0,"Time");
+        }else{
+            img=argPair.first.getArray(0);
+        }
+
 
         switch(argPair.second->xyMethod){
             case RADIALCENTER:
@@ -167,12 +180,15 @@ protected:
         		rcP.COMmethod = argPair.second->COMmethod;
         		rcP.DistanceFactor = argPair.second->DistanceFactor;
 
-                std::vector<extras::Array<double>> rcOut =
+                auto rcOut =
                     extras::ParticleTracking::radialcenter<extras::Array<double>>(
-                        argPair.first.getArray(0),
+                        img,
                         *(argPair.second->WIND),
                         *(argPair.second->GP),
-                        rcP,4 );
+                        rcP);
+
+                rcOut[0]+=1; //shift for 1-indexing
+                rcOut[1]+=1; //shift for 1-indexing
 
         		// add X,Y,varXY,RWR_N to output struct
         		int fn_X = mxAddField(outStruct, "X");
@@ -199,15 +215,43 @@ protected:
             }
             break;
             case BARYCENTER:
-            {
+            { // Do Barycenter
+
+                auto bcOut = extras::ParticleTracking::barycenter<extras::Array<double>>(
+                    img,
+                    *(argPair.second->WIND),
+                    argPair.second->barycenterLimFrac);
+
+                bcOut[0]+=1;
+                bcOut[0]+=1;
+
+                // add X,Y
+        		int fn_X = mxAddField(outStruct, "X");
+        		if (fn_X < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='X' to output struct")); }
+        		int fn_Y = mxAddField(outStruct, "Y");
+
+        		//set field values
+        		for (size_t n = 0; n < argPair.second->numberOfROI(); ++n) {
+        			mxSetFieldByNumber(outStruct, n, fn_X, mxCreateDoubleScalar(bcOut[0][n]));
+        			mxSetFieldByNumber(outStruct, n, fn_Y, mxCreateDoubleScalar(bcOut[1][n]));
+
+                    mxSetFieldByNumber(outStruct,n,fn_xyM,mxCreateString("radialcenter"));
+        		}
 
             }
             break;
         }
 
+        //// Finalize outStruct
+        if(time!=nullptr){
+            int fn_Time = mxAddField(outStruct, "Time");
+            if (fn_Time < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='Time' to output struct")); }
+            for(size_t n=0;n<argPair.second->numberOfROI();++n){
+                mxSetFieldByNumber(outStruct,n,fn_Time,mxDuplicateArray(time));
+            }
+        }
 
-
-		return extras::cmex::mxArrayGroup(1, &outStruct);
+		return extras::cmex::mxArrayGroup(1, &outStruct); //wrap output struct in mxArrayGroup (makes Array persistent)
 
 	}
 public:
@@ -299,15 +343,22 @@ public:
 	/// push arguments to the task list.
 	/// Each call to ProcessTask by the task thread will pop the "pushed" arguments
 	/// off the stack and use them as arguments for ProcessTask(___)
-	///
-	/// Will warn if WIND and XYC are empty
 	virtual void pushTask(size_t nrhs, const mxArray* prhs[])
 	{
 		using namespace std;
 		if (nrhs < 1) { return; }
 		if (nrhs > 1) {
-			throw(runtime_error("XYtracker::pushTask() only accepts one input. It should be an image"));
+			throw(runtime_error("XYtracker::pushTask() only accepts one input. It should be an image, or a struct containing 'ImageData' and 'Time' fields"));
 		}
+
+        if(mxIsStruct(prhs[0])){
+            if(mxGetFieldNumber(prhs[0], "ImageData")<0){
+                throw(std::runtime_error("XYtracker::pushTask(), Image structuct must contain 'ImageData' field"));
+            }
+            if(mxGetFieldNumber(prhs[0], "Time")<0){
+                throw(std::runtime_error("XYtracker::pushTask(), Image structuct must contain 'Time' field"));
+            }
+        }
 
 		// add task to the TaskList
 		ParentClass::pushTask(nrhs,prhs);
