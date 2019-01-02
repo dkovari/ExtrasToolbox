@@ -1,6 +1,8 @@
 #include <mex.h>
 #include "extras/cmex/mxClassIDhelpers.hpp"
 
+#include "extras/cmex/MxStruct.hpp"
+
 /*
 Display the properties of mxArray data
 */
@@ -40,5 +42,21 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
             }
 
         mexPrintf("\n");
+
     }
+
+    mexPrintf("creating struct\n");
+    const char* f="f1";
+    mxArray* s = mxCreateStructMatrix(1, 1, 1, &f);
+    mexPrintf("f1: %p\n",mxGetFieldByNumber(s,0,0));
+    //mxSetFieldByNumber(s, 0, 0, mxCreateDoubleScalar(10));
+    //mexPrintf("f1: %p\n",mxGetFieldByNumber(s,0,0));
+    mxAddField(s,"t1");
+    mexPrintf("t1: %p\n",mxGetFieldByNumber(s,0,1));
+
+    extras::cmex::MxStruct Sr;
+    Sr.reshape(1,1);
+    Sr(0,"test") = mxCreateDoubleScalar(100);
+
+    plhs[0] = Sr;
 }

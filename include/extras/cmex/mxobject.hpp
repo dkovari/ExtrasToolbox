@@ -131,7 +131,7 @@ namespace extras{namespace cmex{
 			return out;
 		}
 
-		/// make mxArray persistent so that is survives beyond each call to the initializing mexFunction
+		/// make mxArray persistent so that it survives beyond each call to the initializing mexFunction
 		void makePersistent() {
 			if (_isPersistent) { return; }
 			if (!_managemxptr) {
@@ -228,15 +228,15 @@ namespace extras{namespace cmex{
 
         // Special Constructors & assigment operators
 
-        // double scalar
+        /// double scalar constructor
         MxObject(const double& in){
             _mxptr = mxCreateDoubleScalar(in);
             _managemxptr = true;
 			_isPersistent = false;
 			_setFromConst = false;
         }
-		
-		//set to double scalar
+
+		/// set to double scalar
         MxObject& operator=(const double& in){
             deletemxptr();
             _mxptr = mxCreateDoubleScalar(in);
