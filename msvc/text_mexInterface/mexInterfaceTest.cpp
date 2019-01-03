@@ -23,7 +23,7 @@ public:
 	myObjInterface() {
 		using namespace std::placeholders;
 		addFunction("fn",
-			std::bind(&myObjInterface::fn, *this, _1, _2, _3, _4)
+			std::bind(&myObjInterface::fn, this, _1, _2, _3, _4)
 		);
 	}
 };

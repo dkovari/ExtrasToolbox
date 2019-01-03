@@ -140,8 +140,8 @@ namespace extras{namespace async{
 	public:
 		PersistentArgsProcessorInterface() {
 			using namespace std::placeholders;
-			ParentType::addFunction("setPersistentArgs", std::bind(&PersistentArgsProcessorInterface::setPersistentArgs, *this, _1, _2, _3, _4));
-			ParentType::addFunction("clearPersistentArgs", std::bind(&PersistentArgsProcessorInterface::clearPersistentArgs, *this, _1, _2, _3, _4));
+			ParentType::addFunction("setPersistentArgs", std::bind(&PersistentArgsProcessorInterface::setPersistentArgs, this, _1, _2, _3, _4));
+			ParentType::addFunction("clearPersistentArgs", std::bind(&PersistentArgsProcessorInterface::clearPersistentArgs, this, _1, _2, _3, _4));
 		}
 	};
 

@@ -284,19 +284,19 @@ namespace extras{namespace async{
     public:
         AsyncMexInterface(){
             using namespace std::placeholders;
-            ParentType::addFunction("remainingTasks",std::bind(&AsyncMexInterface::remainingTasks,*this,_1,_2,_3,_4));
-            ParentType::addFunction("availableResults",std::bind(&AsyncMexInterface::availableResults,*this,_1,_2,_3,_4));
-            ParentType::addFunction("running",std::bind(&AsyncMexInterface::running,*this,_1,_2,_3,_4));
-            ParentType::addFunction("cancelRemainingTasks",std::bind(&AsyncMexInterface::cancelRemainingTasks,*this,_1,_2,_3,_4));
-            ParentType::addFunction("pushTask",std::bind(&AsyncMexInterface::pushTask,*this,_1,_2,_3,_4));
-            ParentType::addFunction("numResultOutputArgs",std::bind(&AsyncMexInterface::numResultOutputArgs,*this,_1,_2,_3,_4));
-            ParentType::addFunction("popResult",std::bind(&AsyncMexInterface::popResult,*this,_1,_2,_3,_4));
-            ParentType::addFunction("clearResults",std::bind(&AsyncMexInterface::clearResults,*this,_1,_2,_3,_4));
-            ParentType::addFunction("pause",std::bind(&AsyncMexInterface::pause,*this,_1,_2,_3,_4));
-            ParentType::addFunction("resume",std::bind(&AsyncMexInterface::resume,*this,_1,_2,_3,_4));
-            ParentType::addFunction("wasErrorThrown",std::bind(&AsyncMexInterface::wasErrorThrown,*this,_1,_2,_3,_4));
-            ParentType::addFunction("getError",std::bind(&AsyncMexInterface::getError,*this,_1,_2,_3,_4));
-            ParentType::addFunction("clearError",std::bind(&AsyncMexInterface::clearError,*this,_1,_2,_3,_4));
+            ParentType::addFunction("remainingTasks",std::bind(&AsyncMexInterface::remainingTasks,this,_1,_2,_3,_4));
+            ParentType::addFunction("availableResults",std::bind(&AsyncMexInterface::availableResults,this,_1,_2,_3,_4));
+            ParentType::addFunction("running",std::bind(&AsyncMexInterface::running,this,_1,_2,_3,_4));
+            ParentType::addFunction("cancelRemainingTasks",std::bind(&AsyncMexInterface::cancelRemainingTasks,this,_1,_2,_3,_4));
+            ParentType::addFunction("pushTask",std::bind(&AsyncMexInterface::pushTask,this,_1,_2,_3,_4));
+            ParentType::addFunction("numResultOutputArgs",std::bind(&AsyncMexInterface::numResultOutputArgs,this,_1,_2,_3,_4));
+            ParentType::addFunction("popResult",std::bind(&AsyncMexInterface::popResult,this,_1,_2,_3,_4));
+            ParentType::addFunction("clearResults",std::bind(&AsyncMexInterface::clearResults,this,_1,_2,_3,_4));
+            ParentType::addFunction("pause",std::bind(&AsyncMexInterface::pause,this,_1,_2,_3,_4));
+            ParentType::addFunction("resume",std::bind(&AsyncMexInterface::resume,this,_1,_2,_3,_4));
+            ParentType::addFunction("wasErrorThrown",std::bind(&AsyncMexInterface::wasErrorThrown,this,_1,_2,_3,_4));
+            ParentType::addFunction("getError",std::bind(&AsyncMexInterface::getError,this,_1,_2,_3,_4));
+            ParentType::addFunction("clearError",std::bind(&AsyncMexInterface::clearError,this,_1,_2,_3,_4));
         }
     };
 

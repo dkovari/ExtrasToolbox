@@ -52,7 +52,17 @@ namespace extras{namespace SessionManager{
     protected:
         /// implement 'new' function interface
         void new_object(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
+#ifdef DAN_DEBUG
+			mexPrintf("mexInterface<%s>::new_object\n", typeid(ObjType).name());
+			mexPrintf("\t press a key to continue\n");
+			mexEvalString("pause()");
+#endif
             int64_t val = ObjManager.create(new ObjType); //CHANGE THIS LINE
+#ifdef DAN_DEBUG
+			mexPrintf("\tObjPtr: %j\n", val);
+			mexPrintf("\t press a key to continue\n");
+			mexEvalString("pause()");
+#endif
             plhs[0] = mxCreateNumericMatrix(1, 1, mxINT64_CLASS, mxREAL);
             *((int64_t*)mxGetData(plhs[0])) = val;
         }
@@ -60,6 +70,11 @@ namespace extras{namespace SessionManager{
         /// implement 'delete' function interface
         void delete_object(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[])
         {
+#ifdef DAN_DEBUG
+			mexPrintf("mexInterface<%s>::delete_object\n", typeid(ObjType).name());
+			mexPrintf("\t press a key to continue\n");
+			mexEvalString("pause()");
+#endif
             if (nrhs < 1) {
                 throw(std::runtime_error("requires intptr argument specifying object to destruct"));
             }
@@ -68,7 +83,18 @@ namespace extras{namespace SessionManager{
 
         /// method for adding name-function pair to the methods list
         void addFunction(std::string name, std::function<void(int,mxArray**,int,const mxArray* *)> func){
+#ifdef DAN_DEBUG
+			mexPrintf("mexInterface:addFunction(%s,...)\n", name.c_str());
+			mexPrintf("\t press a key to continue\n");
+			mexEvalString("pause()");
+#endif
             functionMap.insert(MapT_mexI::value_type(name, func));
+
+#ifdef DAN_DEBUG
+			mexPrintf("\compelted\n", name.c_str());
+			mexPrintf("\t press a key to continue\n");
+			mexEvalString("pause()");
+#endif
         }
 
         /// Exception handler for errors thrown when executing a method from matlab
@@ -86,7 +112,7 @@ namespace extras{namespace SessionManager{
     		}
     	}
 
-        /// helper function for getting object instance from mxArray holding int64_ptr
+        /// helper function for getting object instance from mxArray* holding int64_ptr
         /// Returns a shared pointer to the object instance
         std::shared_ptr<ObjType> getObjectPtr(int nrhs, const mxArray *prhs[]){
             if (nrhs < 1) {
@@ -99,8 +125,18 @@ namespace extras{namespace SessionManager{
 
         mexInterface(){
             using namespace std::placeholders;
-            addFunction("new",std::bind(&mexInterface::new_object,*this,_1,_2,_3,_4));  //add 'new' command
-            addFunction("delete",std::bind(&mexInterface::delete_object,*this,_1,_2,_3,_4));  //add 'delete' command
+//#ifdef DAN_DEBUG
+			mexPrintf("Creating mexInterface<%s>\n", typeid(ObjType).name());
+			mexPrintf("\t press a key to continue\n");
+			mexEvalString("pause()");
+//#endif
+            addFunction("new",std::bind(&mexInterface::new_object,this,_1,_2,_3,_4));  //add 'new' command
+            addFunction("delete",std::bind(&mexInterface::delete_object,this,_1,_2,_3,_4));  //add 'delete' command
+//#ifdef DAN_DEBUG
+			mexPrintf("\done creating mexInterface\n");
+			mexPrintf("\t press a key to continue\n");
+			mexEvalString("pause()");
+//#endif
         }
 
         void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
@@ -111,8 +147,19 @@ namespace extras{namespace SessionManager{
             std::string funcName;
             try{
                 funcName = extras::cmex::getstring(prhs[0]);
+#ifdef DAN_DEBUG
+				mexPrintf("mexInterface<%s>::mexFunction\n", typeid(ObjType).name());
+				mexPrintf("\tfuncName:%s\n", funcName.c_str());
+				mexPrintf("\t press a key to continue\n");
+				mexEvalString("pause()");
+#endif
                 auto search = functionMap.find(funcName);
                 if (search != functionMap.end()) {
+#ifdef DAN_DEBUG
+					mexPrintf("\t  Entering Function\n");
+					mexPrintf("\t press a key to continue\n");
+					mexEvalString("pause()");
+#endif
                     (search->second)(nlhs,plhs,nrhs-1,&(prhs[1])); //execute command
                 }
                 else {
