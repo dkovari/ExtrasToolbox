@@ -4,8 +4,14 @@
 #include <cctype>
 #include <string.h>
 
+#ifndef _WIN32 //on mac use strcasecmp
 #ifndef strcmpi
 const auto& strcmpi = strcasecmp;
+#endif
+#else //on windows use _strcmpi
+#ifndef strcmpi
+#define strcmpi _strcmpi
+#endif
 #endif
 
 // define tolower and toupper for strings ()

@@ -52,13 +52,7 @@ namespace extras{namespace SessionManager{
     protected:
         /// implement 'new' function interface
         void new_object(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
-#ifdef _DEBUG
-			mexPrintf("mexInterface<%s>::new_object\n", typeid(ObjType).name());
-#endif
             int64_t val = ObjManager.create(new ObjType); //CHANGE THIS LINE
-#ifdef _DEBUG
-			mexPrintf("\tObjPtr: %j\n", val);
-#endif
             plhs[0] = mxCreateNumericMatrix(1, 1, mxINT64_CLASS, mxREAL);
             *((int64_t*)mxGetData(plhs[0])) = val;
         }
@@ -66,9 +60,6 @@ namespace extras{namespace SessionManager{
         /// implement 'delete' function interface
         void delete_object(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[])
         {
-#ifdef _DEBUG
-			mexPrintf("mexInterface<%s>::delete_object\n", typeid(ObjType).name());
-#endif
             if (nrhs < 1) {
                 throw(std::runtime_error("requires intptr argument specifying object to destruct"));
             }
@@ -77,9 +68,6 @@ namespace extras{namespace SessionManager{
 
         /// method for adding name-function pair to the methods list
         void addFunction(std::string name, std::function<void(int,mxArray**,int,const mxArray* *)> func){
-#ifdef _DEBUG
-			mexPrintf("mexInterface:addFunction(%s,...)\n", name.c_str());
-#endif
             functionMap.insert(MapT_mexI::value_type(name, func));
         }
 
@@ -111,9 +99,6 @@ namespace extras{namespace SessionManager{
 
         mexInterface(){
             using namespace std::placeholders;
-#ifdef _DEBUG
-			mexPrintf("Creating mexInterface<%s>\n", typeid(ObjType).name());
-#endif
             addFunction("new",std::bind(&mexInterface::new_object,*this,_1,_2,_3,_4));  //add 'new' command
             addFunction("delete",std::bind(&mexInterface::delete_object,*this,_1,_2,_3,_4));  //add 'delete' command
         }
@@ -126,15 +111,8 @@ namespace extras{namespace SessionManager{
             std::string funcName;
             try{
                 funcName = extras::cmex::getstring(prhs[0]);
-#ifdef _DEBUG
-				mexPrintf("mexInterface<%s>::mexFunction\n", typeid(ObjType).name());
-				mexPrintf("\tfuncName:%s\n", funcName.c_str());
-#endif
                 auto search = functionMap.find(funcName);
                 if (search != functionMap.end()) {
-#ifdef _DEBUG
-					mexPrintf("\t  Entering Function\n");
-#endif
                     (search->second)(nlhs,plhs,nrhs-1,&(prhs[1])); //execute command
                 }
                 else {

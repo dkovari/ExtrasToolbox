@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include <chrono>
 namespace extras{
     double matlab_now(){

@@ -13,7 +13,7 @@ namespace extras{namespace cmex{
         int field_number=-1;
         size_t index=0;
     public:
-        FieldWrapper();
+		FieldWrapper() = default;
         FieldWrapper(const FieldWrapper& src) = default;
         FieldWrapper(FieldWrapper&& src) = default;
         FieldWrapper& operator=(const FieldWrapper& src) = default;
