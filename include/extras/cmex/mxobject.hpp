@@ -32,11 +32,9 @@ namespace extras{namespace cmex{
         }
     };
 
-	//template<typename M> class NumericArray;
 
 	///Object wrapper around mxArray*
     class MxObject{
-		//template<typename M> friend class NumericArray;
     protected:
         mxArray* _mxptr = nullptr; //pointer to mxArray holding data
         mutable bool _managemxptr = true; //flag specifying if class should delete _mxptr upon destruction

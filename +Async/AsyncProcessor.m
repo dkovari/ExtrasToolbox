@@ -166,6 +166,9 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
     end
     methods (Access=protected)
         function restartResultsCheckTimer(this)
+            if ~isvalid(this)
+                return
+            end
         %internal use - restart results timer
                    
             if isempty(this.QueueList) %if no listeners to results, don't start timer
