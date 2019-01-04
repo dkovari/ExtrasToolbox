@@ -31,6 +31,12 @@ namespace extras{namespace cmex{
             if(field_number<0){
                 throw(std::runtime_error(std::string("FieldWrapper(): Could not create fieldname:")+std::string(fieldname)));
             }
+
+			//mexPrintf("construct FieldWrapper\n");
+			//mexPrintf("field: %s\n", fieldname);
+			//mexPrintf("parent: %p\n", parent);
+			//mexPrintf("index: %d\n", index);
+			//mexPrintf("field_number: %d\n", field_number);
         }
 
         FieldWrapper(mxArray* parentPtr,size_t idx, int fieldnumber):
@@ -50,8 +56,18 @@ namespace extras{namespace cmex{
 
         /// set field
         FieldWrapper& operator=(mxArray* pvalue){
+			//mexPrintf("in operator=(mxArray* pvalue)\n");
+			//mexPrintf("parent: %p\n", parent);
+			//mexPrintf("index: %d\n", index);
+			//mexPrintf("field_number: %d\n", field_number);
+			//mexPrintf("field_name: %s\n", mxGetFieldNameByNumber(parent, field_number));
+			//mexPrintf("current: %p\n", mxGetFieldByNumber(parent, index, field_number));
+			
             mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));
+			//mxSetFieldByNumber(parent, index, field_number, nullptr);
+			//mexPrintf("pvalue: %p\n", pvalue);
             mxSetFieldByNumber(parent,index,field_number,pvalue);
+			//mexPrintf("after set: %p\n", mxGetFieldByNumber(parent, index, field_number));
             return *this;
         }
 
