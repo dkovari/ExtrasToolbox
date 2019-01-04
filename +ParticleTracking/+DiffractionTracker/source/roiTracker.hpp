@@ -6,6 +6,7 @@
 #include <extras/cmex/NumericArray.hpp>
 #include "../../radialcenter/source/radialcenter_mex.hpp" //radialcenter code
 #include "../../barycenter/source/barycenter_mex.hpp" //barycenter code
+#include <extras/string_extras.hpp>
 
 #include <extras/async/PersistentArgsProcessor.hpp>
 
@@ -14,6 +15,27 @@ enum XY_FUNCTION{
     BARYCENTER,
     RADIALCENTER
 };
+
+const char* xyFunctionName(XY_FUNCTION xyF) {
+	switch (xyF) {
+	case BARYCENTER:
+		return "barycenter";
+	case RADIALCENTER:
+		return "radialcenter";
+	}
+}
+
+XY_FUNCTION xyFunction(const char* name) {
+	if (strcmpi(name, "barycenter")==0) {
+		return BARYCENTER;
+	}
+	else if (strcmpi(name, "radialcenter") == 0) {
+		return RADIALCENTER;
+	}
+	else {
+		throw(std::runtime_error("xyFunction() string not valid XY_FUNCTION name"));
+	}
+}
 
 /// Struct used to store roi window and tracking parameters
 struct roiListXY{
@@ -303,12 +325,13 @@ public:
 		/// Parse value pair inputs
 		extras::cmex::MxInputParser Parser(false); //create non-case sensitive input parser
         Parser.IgnoreUnspecifiedParameters = true; //don't have error on Unspecified Parameters
-		if (found_struct) {
+		if (!found_struct) { //didn't find roiList struct in first argument, look for name-value pair
 			Parser.AddParameter("roiList");
 		}
 		Parser.AddParameter("COMmethod", "meanABS");
 		Parser.AddParameter("DistanceFactor", INFINITY);
         Parser.AddParameter("LimFrac",0.2);
+		Parser.AddParameter("xyMethod", "radialcenter");
 
 
 		if (Parser.Parse(nrhs-size_t(found_struct), &(prhs[size_t(found_struct)])) != 0) {
@@ -335,6 +358,10 @@ public:
 		if (Parser.wasFound("DistanceFactor")) { newSettings->DistanceFactor = fabs(mxGetScalar(Parser("DistanceFactor"))); }
 
         if (Parser.wasFound("LimFrac")) { newSettings->barycenterLimFrac = fabs(mxGetScalar(Parser("LimFrac"))); }
+
+		if (Parser.wasFound("xyMethod")) {
+			newSettings->xyMethod = xyFunction(extras::cmex::getstring(Parser("xyMethod")).c_str());
+		}
 
 		//set the arguments
 		ParentClass::CurrentArgs = newSettings;
@@ -364,7 +391,56 @@ public:
 		ParentClass::pushTask(nrhs,prhs);
 
 	}
+
+	/// implement re-definable getPersistentArgs()
+	/// if you derive from roiTrackerXY using SettingsArgs != roiListXY
+	/// you will need to define
+	///  extras::cmex::MxCellArrayroiTrackerXY<YOUR_SETTINGS_TYPE>::getPersistentArgs() const {}
+	///  somewhere in your cpp code, even though you won't ever use that implementation
+	/// you will also need to define your own implementation of getPersistentArgs() in your derived class
+	/// Example:
+	///		class YourClass: public roiTrackerXY<YOUR_TYPE>{
+	///			...
+	///			extras::cmex::MxCellArray getPersistentArgs() const{
+	///				... //your code here
+	///			}
+	///		};
+	///		extras::cmex::MxCellArrayroiTrackerXY<YOUR_TYPE>::getPersistentArgs() const {return nullptr;} //define dummy (unused getPersistentArgs() implementation)
+	virtual extras::cmex::MxCellArray getPersistentArgs() const;
  };
+ /// Implement getPersistentArgs for mxArrayGroup type args
+ /// Returns the argumens as Name-Value pairs, organized as a {2 x n} cell array
+ template<> extras::cmex::MxCellArray roiTrackerXY<roiListXY>::getPersistentArgs() const {
+	 extras::cmex::MxCellArray out;
+	 out.reshape(2, 5);
+
+	 out(0) = "roiList";
+	 out(1) = ParentClass::CurrentArgs->roiStruct->getmxarray();
+
+	 out(2) = "COMmethod";
+	 switch (ParentClass::CurrentArgs->COMmethod) {
+	 case rcdefs::COM_METHOD::MEAN_ABS:
+		 out(3) = "meanABS";
+		 break;
+	 case rcdefs::COM_METHOD::GRAD_MAG:
+		 out(3) = "gradMAG";
+		 break;
+	 case rcdefs::COM_METHOD::NORMAL:
+		 out(3) = "normal";
+		 break;
+	 }
+
+	 out(4) = "DistanceFactor";
+	 out(5) = ParentClass::CurrentArgs->DistanceFactor;
+
+	 out(6) = "LimFrac";
+	 out(7) = ParentClass::CurrentArgs->barycenterLimFrac;
+
+	 out(8) = "xyMethod";
+	 out(9) = xyFunctionName(ParentClass::CurrentArgs->xyMethod);
+
+	 return out;
+ }
 
 //we must define the setPersistentArgs method for for parent processor type, even though we won't use it.
 template<> void extras::async::PersistentArgsProcessor<roiListXY>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {};

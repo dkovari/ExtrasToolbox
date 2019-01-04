@@ -83,5 +83,14 @@
     <ClInclude Include="source\roiObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="source\roiTracker.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

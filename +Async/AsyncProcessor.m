@@ -346,6 +346,11 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
         %
         % Error and Results timers will be (re)started once tasks have been
         % added to the queue
+        
+            if ~isvalid(this) %cancel if object has been deleted
+                return;
+            end
+            
             this.runMethod('pushTask',varargin{:});
             
             %% restart timers if needed
@@ -355,7 +360,7 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
 
         function pause(this)
         % pause the processing thread, but don't clear task queue
-        
+            
             this.runMethod('pause');
             
             %% stop timers
@@ -366,6 +371,10 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
         function resume(this)
         % resume the processing thread
         
+            if ~isvalid(this) %cancel if object has been deleted
+                return;
+            end
+        
             this.runMethod('resume');
             %% restart timers if needed
             this.restartErrorCheckTimer();
@@ -374,6 +383,11 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
 
         function cancelRemainingTasks(this)
         % cancel remaining tasks
+        
+            if ~isvalid(this) %cancel if object has been deleted
+                return;
+            end
+            
             this.runMethod('cancelRemainingTasks');
         end
     end

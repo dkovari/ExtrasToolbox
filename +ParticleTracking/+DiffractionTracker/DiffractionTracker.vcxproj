@@ -20,9 +20,11 @@
     <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
@@ -30,6 +32,7 @@
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
     <ClInclude Include="..\..\include\extras\string_extras.hpp" />
     <ClInclude Include="source\roiObject.hpp" />
+    <ClInclude Include="source\roiTracker.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{d070ddfc-0db4-4305-83a1-658751db4465}</ProjectGuid>

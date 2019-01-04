@@ -104,6 +104,16 @@ namespace extras{namespace cmex{
             return pArray[n];
         }
 
+		/// get const array at index n
+		const mxArray* getConstArray(size_t n) const {
+			if (n >= nArrays) {
+				throw(std::runtime_error(
+					std::string("index exceeds ArrayGroup size n=") + std::to_string(n)
+				));
+			}
+			return pArray[n];
+		}
+
         /// get array at index n
         mxArray* operator[](size_t n) const{
             if(n>=nArrays){

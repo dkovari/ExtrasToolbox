@@ -1,11 +1,14 @@
 #pragma once
 
+#define NOMINMAX //don't use the windows definition of min/max
+#include <algorithm> //use min/max from std
 #include <mex.h>
 #include <exception>
 #include <vector>
 #include <string>
 #include <initializer_list>
 #include "mexextras.hpp"
+
 
 namespace extras{namespace cmex{
 

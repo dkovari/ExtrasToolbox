@@ -55,6 +55,14 @@ namespace extras{namespace cmex{
             return *this;
         }
 
+		/// set field from const array
+		/// duplicated array
+		FieldWrapper& operator=(const mxArray* pvalue) {
+			mxDestroyArray(mxGetFieldByNumber(parent, index, field_number));
+			mxSetFieldByNumber(parent, index, field_number, mxDuplicateArray(pvalue));
+			return *this;
+		}
+
         /// set field equal to string
         FieldWrapper& operator=(const char* str){
             mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));

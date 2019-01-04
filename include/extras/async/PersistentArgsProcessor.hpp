@@ -3,6 +3,7 @@
 #include "AsyncProcessor.hpp"
 #include <memory>
 #include <utility>
+#include <extras/cmex/MxCellArray.hpp>
 
 namespace extras{namespace async{
 
@@ -73,20 +74,13 @@ namespace extras{namespace async{
 
             // add task to the TaskList
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
-#ifdef _DEBUG
-            mexPrintf("\tPush pair to list\n");
-            mexEvalString("pause(0.2)");
-#endif
+
             TaskList.emplace_back(
                 std::make_pair(
                     std::move(AG),
                     CurrentArgs
                 )
             );
-#ifdef _DEBUG
-            mexPrintf("\tPast push pair\n");
-            mexEvalString("pause(0.2)");
-#endif
 
         }
 
@@ -112,6 +106,19 @@ namespace extras{namespace async{
             CurrentArgs = std::make_shared<PersistentArgType>();
         }
 
+		/// Get current values of the persistent args
+		/// Note: this method is abstract, however if you want to derive a class using
+		/// PersistentArgType=cmex::mxArrayGroup
+		/// you can use the default implementation of getPersistentArgs() included in this header
+		/// Example:
+		///		class YourClass: public PersistentArgsProcessor<>{
+		///			...
+		///			extras::cmex::MxCellArray getPersistentArgs() const{
+		///				return PersistentArgsProcessor<>::getPersistentArgs();
+		///			}
+		///		};
+		virtual extras::cmex::MxCellArray getPersistentArgs() const= 0;
+
 #ifdef _DEBUG
 	public:
 		virtual ~PersistentArgsProcessor() {
@@ -120,6 +127,25 @@ namespace extras{namespace async{
 #endif
 
     };
+
+	/// Implement getPersistentArgs for mxArrayGroup type args
+	///	PersistentArgsProcessor<...>::getPersistentArgs() is abstract, however you can use this implementation in you derived classes
+	/// Example:
+	///		class YourClass: public PersistentArgsProcessor<>{
+	///			...
+	///			extras::cmex::MxCellArray getPersistentArgs() const{
+	///				return PersistentArgsProcessor<>::getPersistentArgs();
+	///			}
+	///		};
+	template<> extras::cmex::MxCellArray PersistentArgsProcessor<cmex::mxArrayGroup>::getPersistentArgs() const {
+		extras::cmex::MxCellArray out;
+		out.reshape(1, CurrentArgs->size());
+		/// copy args to output cell array
+		for (size_t n = 0; n < CurrentArgs->size(); ++n) {
+			out(n) = CurrentArgs->getConstArray(n);
+		}
+		return out;
+	}
 
 	// default setPersistentArg method
 	template<> void PersistentArgsProcessor<cmex::mxArrayGroup>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {
@@ -137,11 +163,15 @@ namespace extras{namespace async{
 		void clearPersistentArgs(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			ParentType::getObjectPtr(nrhs, prhs)->clearPersistentArgs();
 		}
+		void getPersistentArgs(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = ParentType::getObjectPtr(nrhs, prhs)->getPersistentArgs();
+		}
 	public:
 		PersistentArgsProcessorInterface() {
 			using namespace std::placeholders;
 			ParentType::addFunction("setPersistentArgs", std::bind(&PersistentArgsProcessorInterface::setPersistentArgs, this, _1, _2, _3, _4));
 			ParentType::addFunction("clearPersistentArgs", std::bind(&PersistentArgsProcessorInterface::clearPersistentArgs, this, _1, _2, _3, _4));
+			ParentType::addFunction("getPersistentArgs", std::bind(&PersistentArgsProcessorInterface::getPersistentArgs, this, _1, _2, _3, _4));
 		}
 	};
 

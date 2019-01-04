@@ -31,13 +31,13 @@ namespace extras{namespace SessionManager{
 
 	public:
 		ObjectManager(){
-#ifdef _DEBUG
+#ifdef DAN_DEBUG
 			mexPrintf("Creating ObjectManager<%s>\n", typeid(Obj).name());
 #endif
 		}
 
 		~ObjectManager(){
-#ifdef _DEBUG
+#ifdef DAN_DEBUG
 			mexPrintf("Destroying ObjectManager<%s>\n",typeid(Obj).name());
 #endif
 			size_t nObj = ObjectMap.size(); //number of objects created
@@ -50,7 +50,7 @@ namespace extras{namespace SessionManager{
 		//Add object to map, creates a shared_ptr from the pointer
 		// call using something like objman.create(new YourObj());
 		intptr_t create(Obj* p) { 
-#ifdef _DEBUG
+#ifdef DAN_DEBUG
 			mexPrintf("ObjectManager<%s>::create\n", typeid(Obj).name());
 #endif
 			std::shared_ptr<Obj> newObj(p);
@@ -64,7 +64,7 @@ namespace extras{namespace SessionManager{
 
 		//destroy instance
 		void destroy(intptr_t id) {
-#ifdef _DEBUG
+#ifdef DAN_DEBUG
 			mexPrintf("ObjectManager<%s>::destroy(intptr_t id)\n", typeid(Obj).name());
 #endif
 			if (!ObjectMap.empty())
@@ -80,7 +80,7 @@ namespace extras{namespace SessionManager{
 		}
 
 		std::shared_ptr<Obj> get(intptr_t id) {
-#ifdef _DEBUG
+#ifdef DAN_DEBUG
 			mexPrintf("ObjectManager<%s>::get()\n\tnObjects=%d\n", typeid(Obj).name(),ObjectMap.size());
 #endif
 			auto search = ObjectMap.find(id);
@@ -94,7 +94,7 @@ namespace extras{namespace SessionManager{
 
 		std::shared_ptr<Obj> get(const mxArray* in) {
 			intptr_t id = getIntPointer(in);
-#ifdef _DEBUG
+#ifdef DAN_DEBUG
 			mexPrintf("\t ptr=%d\n", typeid(Obj).name(),id);
 #endif
 			return get(id);

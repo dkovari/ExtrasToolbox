@@ -19,6 +19,32 @@ struct B: public A<> {
 
 	B(int x, int y) :A(x,y) {};
 };
+
+
+template<typename T=double>
+struct C {
+	virtual void sz() const = 0;
+};
+template<> void C<double>::sz() const {
+	using namespace std;
+	cout << "C<double>::sz()" << endl;
+}
+
+struct D :public C<int> {
+	void sz() const {
+		using namespace std;
+		cout << "D::sz()->C<int>" << endl;
+	}
+};
+
+
+struct D2 :public C<> {
+	void sz() const {
+		C<>::sz();
+	}
+};
+
+
 typedef std::map<std::string, int> MapT;
 int main()
 {
@@ -38,6 +64,16 @@ int main()
 	cout << "type:" << typeid(myB.two).name() << endl;
 
 	cout << "size_t(false)=" << size_t(false) << " size_t(true)=" << size_t(true) << endl;
+
+	cout << "Try D" << endl;
+	D d;
+	d.sz();
+
+	cout << "Try D2" << endl;
+	D2 c;
+	c.sz();
+
+
     return 0;
 }
 

@@ -37,12 +37,27 @@ namespace extras{namespace cmex{
             return *this;
         }
 
+		/// set field from const
+		/// duplicates array
+		CellWrapper& operator=(const mxArray* pvalue) {
+			mxDestroyArray(mxGetCell(parent, index));
+			mxSetCell(parent, index, mxDuplicateArray(pvalue));
+			return *this;
+		}
+
         /// set field equal to string
         CellWrapper& operator=(const char* str){
             mxDestroyArray(mxGetCell(parent,index));
             mxSetCell(parent,index,mxCreateString(str));
             return *this;
         }
+
+		/// set field equal to string
+		CellWrapper& operator=(double val) {
+			mxDestroyArray(mxGetCell(parent, index));
+			mxSetCell(parent, index, mxCreateDoubleScalar(val));
+			return *this;
+		}
     };
 
 
