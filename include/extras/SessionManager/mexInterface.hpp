@@ -59,7 +59,7 @@ namespace extras{namespace SessionManager{
 #endif
             int64_t val = ObjManager.create(new ObjType); //CHANGE THIS LINE
 #ifdef DAN_DEBUG
-			mexPrintf("\tObjPtr: %j\n", val);
+			mexPrintf("\tObjPtr: %p\n", val);
 			mexPrintf("\t press a key to continue\n");
 			mexEvalString("pause()");
 #endif

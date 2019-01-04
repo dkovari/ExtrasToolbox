@@ -22,10 +22,6 @@ namespace extras{namespace cmex{
         {
             parent = par;
             index = idx;
-            mexPrintf("CellWrapper parent:%p\n",parent);
-            mexPrintf("disp parent ptr=%p:\n",parent);
-            mexPrintf("parent type: %s\n",mxGetClassName(parent));
-            mexCallMATLAB(0,NULL,1,&parent,"disp");
         }
 
         /// get cell
@@ -42,20 +38,7 @@ namespace extras{namespace cmex{
 
         /// set field equal to string
         CellWrapper& operator=(const char* str){
-            mexPrintf("CellWrapper=char*\n");
-            mexPrintf("parent:%p, index:%d\n",parent,index);
-            mexPrintf("array numel: %d\n",mxGetNumberOfElements(parent));
-            mxArray* s = mxCreateString(str);
-            mexCallMATLAB(0,NULL,1,&s,"disp");
-            mexPrintf("string ptr: %p\n",s);
-            mexPrintf("disp parent ptr=%p:\n",parent);
-            mexPrintf("parent type: %s\n",mxGetClassName(parent));
-            mexCallMATLAB(0,NULL,1,&parent,"disp");
-
-            mexPrintf("set\n");
-            mxSetCell(parent,index,s);
-            mexPrintf("returning\n");
-
+            mxSetCell(parent,index,mxCreateString(str));
             return *this;
         }
     };
@@ -196,17 +179,7 @@ namespace extras{namespace cmex{
             if(idx>=mxGetNumberOfElements(_mxptr)){
                 throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
             }
-            mexPrintf("in operator()\n");
-            mexPrintf("_mxptr:%p\n",_mxptr);
-
-            mexPrintf("disp _mxptr ptr=%p:\n",_mxptr);
-            mexPrintf("type: %s\n",mxGetClassName(_mxptr));
-            for(size_t n=0;n<mxGetNumberOfElements(_mxptr);++n){
-                mexPrintf("\t&c[%d]=%p\n",n,mxGetCell(_mxptr,n));
-            }
-            mexCallMATLAB(0,NULL,1,&_mxptr,"disp");
-
-            mexPrintf("\treturning\n");
+            
             return CellWrapper(_mxptr,idx);
         }
 
