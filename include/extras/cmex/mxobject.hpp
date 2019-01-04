@@ -362,6 +362,80 @@ namespace extras{namespace cmex{
             return mxIsChar(_mxptr);
         }
 
+        /// Resize
+        void reshape(std::vector<size_t> dims){
+            if(_setFromConst){
+                throw(std::runtime_error("cannot reshape mxobject set from const mxArray*"));
+            }
+
+            mxArray* newPtr;
+            switch(mxGetClassID(_mxptr)){
+                case mxDOUBLE_CLASS:
+            	case mxSINGLE_CLASS:
+            	case mxINT8_CLASS:
+            	case mxUINT8_CLASS:
+            	case mxINT16_CLASS:
+            	case mxUINT16_CLASS:
+            	case mxINT32_CLASS:
+            	case mxUINT32_CLASS:
+            	case mxINT64_CLASS:
+            	case mxUINT64_CLASS:
+                    if(!mxIsComplex(_mxptr)){ //real data just a simple copy
+                        newPtr = mxCreateNumericArray(dims.size(),dims.data(),mxGetClassID(_mxptr),mxREAL);
+                        memcpy(mxGetData(newPtr),mxGetData(_mxptr),mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr)));
+                    }else{ // complex data
+                        newPtr = mxCreateNumericArray(dims.size(),dims.data(),mxGetClassID(_mxptr),mxCOMPLEX);
+                        #if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
+                        memcpy(mxGetData(newPtr),mxGetData(_mxptr),mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr)));
+                        #else
+                        memcpy(mxGetData(newPtr),mxGetData(_mxptr),mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr)));
+                        memcpy(mxGetImagData(newPtr),mxGetImagData(_mxptr),mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr)));
+                        #endif
+                    }
+                    if(_managemxptr&&!_setFromConst){
+                        mxDestroyArray(_mxptr);
+                    }
+                    _mxptr = newPtr;
+                    _managemxptr = true;
+                    _setFromConst = false;
+                    if(_isPersistent){
+                        mexMakeArrayPersistent(newPtr);
+                    }
+                    break;
+                case mxCELL_CLASS:
+                    newPtr = mxCreateCellArray(dims.size(), dims.data());
+                    if(_managemxptr&&!_setFromConst){ //just move the arrays
+                        for(size_t n=0;n<std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr));++n){
+                            mxSetCell(newPtr, n, mxGetCell(_mxptr,n));
+                            mxSetCell(_mxptr,n,nullptr);
+                        }
+                        mxDestroyArray(_mxptr);
+                    }else{ //need copy
+                        for(size_t n=0;n<std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr));++n){
+                            mxSetCell(newPtr, n, mxDuplicateArray(mxGetCell(_mxptr,n)));
+                        }
+                    }
+                    _mxptr = newPtr;
+                    _managemxptr = true;
+                    _setFromConst = false;
+                    if(_isPersistent){
+                        mexMakeArrayPersistent(newPtr);
+                    }
+                    break;
+                case mxSTRUCT_CLASS:
+                    mxSetDimensions(_mxptr,dims.data(),dims.size());
+                    break;
+            	default:
+            		throw(std::runtime_error("reshape not implemented for class"));
+        	}
+        }
+
+        /// Resize
+        void reshape(size_t nRows, size_t nCols){
+            reshape({nRows,nCols});
+        }
+
+
 		///returns true if ndims < 3
 		virtual bool ismatrix() const { return  mxGetNumberOfDimensions(_mxptr)<3; }
 		virtual size_t ndims() const { return mxGetNumberOfDimensions(_mxptr); }

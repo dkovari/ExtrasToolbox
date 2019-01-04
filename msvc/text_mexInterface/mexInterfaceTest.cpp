@@ -15,7 +15,7 @@ struct myObj {
 extras::SessionManager::ObjectManager<myObj> manager;
 
 class myObjInterface : public extras::SessionManager::mexInterface<myObj, manager> {
-	
+
 	void fn(int nlhs, mxArray*plhs[], int nrhs, const mxArray* prhs[]) {
 		getObjectPtr(nrhs, prhs)->fn();
 	}

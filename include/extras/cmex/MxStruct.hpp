@@ -143,6 +143,9 @@ namespace extras{namespace cmex{
 
         /// non-const access to field
         FieldWrapper operator()(size_t idx, const char* fieldname){
+            if(_setFromConst){
+                throw(std::runtime_error("MxCellArray::operator() Cannot get non-const access element of cell set from constant."));
+            }
             if(idx>=mxGetNumberOfElements(_mxptr)){
                 throw(std::runtime_error("MxStruct::operator() index exceeds struct array dimension"));
             }
@@ -155,17 +158,6 @@ namespace extras{namespace cmex{
                 throw(std::runtime_error("MxStruct::operator() index exceeds struct array dimension"));
             }
             return mxGetField(_mxptr,idx,fieldname);
-        }
-
-        /// Resize
-        void reshape(std::vector<size_t> dims){
-            mxSetDimensions(_mxptr,dims.data(),dims.size());
-        }
-
-        /// Resize
-        void reshape(size_t nRows, size_t nCols){
-            size_t dims[] = {nRows,nCols};
-            mxSetDimensions(_mxptr,dims,2);
         }
 
     };

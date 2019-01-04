@@ -2,6 +2,7 @@
 #include "extras/cmex/mxClassIDhelpers.hpp"
 
 #include "extras/cmex/MxStruct.hpp"
+#include "extras/cmex/MxCellArray.hpp"
 
 /*
 Display the properties of mxArray data
@@ -55,8 +56,40 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     mexPrintf("t1: %p\n",mxGetFieldByNumber(s,0,1));
 
     extras::cmex::MxStruct Sr;
+    mexPrintf("Sr.numel(): %d\n",Sr.numel());
     Sr.reshape(1,1);
     Sr(0,"test") = mxCreateDoubleScalar(100);
 
     plhs[0] = Sr;
+
+
+    /*/////////////
+    // CELL
+
+    mxArray* c1 = mxCreateCellMatrix(1, 0);
+    //mxSetCell(c1,0,mxCreateString("c1{1}"));
+    mexCallMATLAB(0,NULL,1,&c1,"disp");
+    mexPrintf("press a key\n");
+    mexEvalString("pause");
+
+    size_t dims[] = {3,1};
+    mxSetDimensions(c1, dims, 2);
+    mexPrintf("press a key\n");
+    mexEvalString("pause");
+    mxSetCell(c1,1,mxCreateString("c1{2}"));
+    mexCallMATLAB(0,NULL,1,&c1,"disp");
+    mexPrintf("press a key\n");
+    mexEvalString("pause");
+
+
+    mexPrintf("done with c1\n");*/
+
+
+    if(nlhs>1){
+        extras::cmex::MxCellArray C;
+        C.reshape(5,1);
+        C(0) = "fadsfasdf";
+        //C(1) = "test2";
+        plhs[1] = C;
+    }
 }

@@ -14,15 +14,23 @@ namespace extras{namespace cmex{
         mxArray* parent;
         size_t index;
     public:
+        CellWrapper()=default;
         CellWrapper(const CellWrapper& src) = default;
         CellWrapper(CellWrapper&& src) = default;
 
-        CellWrapper(mxArray* par,size_t idx):
-            parent(par),
-            index(idx){};
+        CellWrapper(mxArray* par,size_t idx)
+        {
+            parent = par;
+            index = idx;
+            mexPrintf("CellWrapper parent:%p\n",parent);
+            mexPrintf("disp parent ptr=%p:\n",parent);
+            mexPrintf("parent type: %s\n",mxGetClassName(parent));
+            mexCallMATLAB(0,NULL,1,&parent,"disp");
+        }
 
         /// get cell
-        operator const mxArray*() const{
+        operator const mxArray* () const
+        {
             return mxGetCell(parent, index);
         }
 
@@ -34,7 +42,20 @@ namespace extras{namespace cmex{
 
         /// set field equal to string
         CellWrapper& operator=(const char* str){
-            mxSetCell(parent,index,mxCreateString(str));
+            mexPrintf("CellWrapper=char*\n");
+            mexPrintf("parent:%p, index:%d\n",parent,index);
+            mexPrintf("array numel: %d\n",mxGetNumberOfElements(parent));
+            mxArray* s = mxCreateString(str);
+            mexCallMATLAB(0,NULL,1,&s,"disp");
+            mexPrintf("string ptr: %p\n",s);
+            mexPrintf("disp parent ptr=%p:\n",parent);
+            mexPrintf("parent type: %s\n",mxGetClassName(parent));
+            mexCallMATLAB(0,NULL,1,&parent,"disp");
+
+            mexPrintf("set\n");
+            mxSetCell(parent,index,s);
+            mexPrintf("returning\n");
+
             return *this;
         }
     };
@@ -57,7 +78,7 @@ namespace extras{namespace cmex{
             _managemxptr = true;
 			_isPersistent = false;
 			_setFromConst = false;
-        };
+        }
 
         MxCellArray(size_t nStr, const char* str[]){
             mxDestroyArray(_mxptr);
@@ -99,15 +120,17 @@ namespace extras{namespace cmex{
             }
         }
 
-        MxCellArray(const MxObject& src): MxObject(src){
-            if(!mxIsCell(_mxptr)){
+        MxCellArray(const MxObject& src){
+            if(!src.iscell()){
                 throw(std::runtime_error("MxCellArray(const MxObject& src): src is not a cell."));
             }
+            copyFrom(src);
         }
-        MxCellArray(MxObject&& src): MxObject(std::move(src)){
-            if(!mxIsCell(_mxptr)){
+        MxCellArray(MxObject&& src){
+            if(!src.iscell()){
                 throw(std::runtime_error("MxCellArray(MxObject&& src): src is not a cell."));
             }
+            moveFrom(src);
         }
 
         /// copy assignment
@@ -167,9 +190,23 @@ namespace extras{namespace cmex{
 
         /// non-const access to field
         CellWrapper operator()(size_t idx){
+            if(_setFromConst){
+                throw(std::runtime_error("MxCellArray::operator() Cannot get non-const access element of cell set from constant."));
+            }
             if(idx>=mxGetNumberOfElements(_mxptr)){
                 throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
             }
+            mexPrintf("in operator()\n");
+            mexPrintf("_mxptr:%p\n",_mxptr);
+
+            mexPrintf("disp _mxptr ptr=%p:\n",_mxptr);
+            mexPrintf("type: %s\n",mxGetClassName(_mxptr));
+            for(size_t n=0;n<mxGetNumberOfElements(_mxptr);++n){
+                mexPrintf("\t&c[%d]=%p\n",n,mxGetCell(_mxptr,n));
+            }
+            mexCallMATLAB(0,NULL,1,&_mxptr,"disp");
+
+            mexPrintf("\treturning\n");
             return CellWrapper(_mxptr,idx);
         }
 
@@ -181,16 +218,6 @@ namespace extras{namespace cmex{
             return mxGetCell(_mxptr,idx);
         }
 
-        /// Resize
-        void reshape(std::vector<size_t> dims){
-            mxSetDimensions(_mxptr,dims.data(),dims.size());
-        }
-
-        /// Resize
-        void reshape(size_t nRows, size_t nCols){
-            size_t dims[] = {nRows,nCols};
-            mxSetDimensions(_mxptr,dims,2);
-        }
 
     };
 
