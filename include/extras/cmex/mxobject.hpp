@@ -52,6 +52,7 @@ namespace extras{namespace cmex{
             }
         }
 
+        /// Copy data from MxObject
 		virtual void copyFrom(const MxObject& src) {
 			//mexPrintf("MxObject::copyFrom: this=%d src=%d\n", this, &src);
 			deletemxptr();
@@ -75,6 +76,8 @@ namespace extras{namespace cmex{
 			}
 		}
 
+        /// Move data from MxObject
+        /// resulting object will have _mxptr=nullptr;
         virtual void moveFrom(MxObject& src) {
 			//mexPrintf("MxObject::moveFrom: this=%d src=%d\n", this, &src);
 
@@ -147,7 +150,7 @@ namespace extras{namespace cmex{
 		bool isPersistent() const { return _isPersistent; }
 
         //destructor
-        ~MxObject(){
+        virtual ~MxObject(){
             deletemxptr();
             //mexPrintf("~mxObject():%d _mxptr:%d\n",this,_mxptr);
         }
@@ -167,7 +170,7 @@ namespace extras{namespace cmex{
         }
 
 		/// copy assignment
-        MxObject& operator=(const MxObject& src){
+        virtual MxObject& operator=(const MxObject& src){
 			copyFrom(src);
             return *this;
         }
@@ -178,29 +181,50 @@ namespace extras{namespace cmex{
         }
 
 		/// move assignment
-        MxObject& operator=(MxObject && src){
+        virtual MxObject& operator=(MxObject && src){
 			moveFrom(src);
             return *this;
         }
 
-        /// Construct and assign from mxarray
+        /// Construct from mxarray
         /// assume mxArray* is not persistent
-        MxObject(mxArray* mxptr,bool isPersistent=false){
+        /// mxArray will be managed (therefore deleted upon destruction)
+        MxObject(mxArray* mxptr){
             //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
-            _mxptr = mxptr;
-            _managemxptr = false;
-			_isPersistent = isPersistent;
-			_setFromConst = false;
-        }
-        MxObject& operator=(mxArray* mxptr){
-			//mexPrintf("MxObject& operator=(mx*):%d from: %d\n", this, mxptr);
-            deletemxptr();
             _mxptr = mxptr;
             _managemxptr = false;
 			_isPersistent = false;
 			_setFromConst = false;
+        }
+
+        /// Construct from mxArray
+        /// flag specifies if mxptr should be controlled by MxObject
+        /// must specify isPersistent
+        /// if manageFlag=true (default) data will be deleted upon MxObject destruction
+        MxObject(mxArray* mxptr,bool isPersistent, bool manageArray=true){
+            //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
+            _mxptr = mxptr;
+            _managemxptr = manageArray;
+			_isPersistent = isPersistent;
+			_setFromConst = false;
+        }
+
+        /// assign from mxarray
+        /// assume mxArray* is not persistent
+        /// mxArray will be managed (therefore deleted upon destruction)
+        virtual MxObject& operator=(mxArray* mxptr){
+			//mexPrintf("MxObject& operator=(mx*):%d from: %d\n", this, mxptr);
+            deletemxptr();
+            _mxptr = mxptr;
+            _managemxptr = true;
+			_isPersistent = false;
+			_setFromConst = false;
             return *this;
         }
+
+        /// Construct from const mxarray
+        /// assume const mxArray* is not persistent
+        /// mxArray will not be managed (therefore not deleted)
         MxObject(const mxArray* mxptr, bool isPersistent = false){
             //mexPrintf("mxObject(const mx*):%d from: %d\n",this,mxptr);
             /*if(mxptr!=nullptr)
@@ -211,7 +235,11 @@ namespace extras{namespace cmex{
 			_isPersistent = isPersistent;
 			_setFromConst = true;
         }
-        MxObject& operator=(const mxArray* mxptr){
+
+        /// assign from const mxarray
+        /// assume mxArray* is not persistent
+        /// mxArray will not be managed (therefore not deleted)
+        virtual MxObject& operator=(const mxArray* mxptr){
 			//mexPrintf("MxObject& operator=(const mx*):%d from: %d\n", this, mxptr);
             deletemxptr();
 
@@ -225,6 +253,17 @@ namespace extras{namespace cmex{
             return *this;
         }
 
+        /// link to mxarray
+        /// array will not be managed (hence not delete upon destruction)
+        /// assume mxArray* is not persistent, unless specified
+        virtual MxObject& linkto(mxArray* mxptr, bool isPersistent = false){
+            deletemxptr();
+            _mxptr = mxptr;
+            _managemxptr = false;
+			_isPersistent = isPersistent;
+			_setFromConst = false;
+            return *this;
+        }
 
         // Special Constructors & assigment operators
 
@@ -237,7 +276,7 @@ namespace extras{namespace cmex{
         }
 
 		/// set to double scalar
-        MxObject& operator=(const double& in){
+        virtual MxObject& operator=(const double& in){
             deletemxptr();
             _mxptr = mxCreateDoubleScalar(in);
             _managemxptr = true;
@@ -265,7 +304,7 @@ namespace extras{namespace cmex{
         /// assign to (cast to) mxArray
 		///if array is not persistent change management rule so that data is not deleted on destruction
 		///if array is persistent, returns copy of the data that is not persistent (and therefore managed by MATLAB)
-        operator mxArray*(){
+        virtual operator mxArray*(){
 			if (_isPersistent||_setFromConst) {
 				return mxDuplicateArray(_mxptr);
 			}
@@ -275,7 +314,7 @@ namespace extras{namespace cmex{
 
 		/// returns const mxArray*, memory management is not changed
 		/// pointer may be invalid when object is deleted
-        operator const mxArray*() const{
+        virtual operator const mxArray*() const{
             return _mxptr;
         }
 
@@ -300,10 +339,10 @@ namespace extras{namespace cmex{
         ///return the mxArray ptr without changing data managment rule
         /// if data is locally held, it will be deleted upon construction
         /// DO NOT use for setting the return data of a mexFunction.
-        ///instead use the cast operator:
+        /// instead use the cast operator:
         /// e.g
         ///  prhs[0] = (mxArray *)YourMxObject;
-        const mxArray* getmxarray() const{
+        virtual const mxArray* getmxarray() const{
             return _mxptr;
         }
 
@@ -345,10 +384,10 @@ namespace extras{namespace cmex{
             return mxIsStruct(_mxptr);
         }
 
-		virtual mxArray* getField(size_t element, const char* fieldname) const {
+		/*virtual mxArray* getField(size_t element, const char* fieldname) const {
 			if (!isstruct()) { throw(std::runtime_error("MxObject::getField(): mxArray* is not a struct.")); }
 			return mxGetField(_mxptr, element, fieldname);
-		}
+		}*/
 
 
         /// true if is numeric

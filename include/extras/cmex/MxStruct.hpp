@@ -9,7 +9,7 @@ namespace extras{namespace cmex{
     /// provides simple get and set support using operator=
     class FieldWrapper{
     protected:
-        mxArray* parentStruct=nullptr;
+        mxArray* parent=nullptr;
         int field_number=-1;
         size_t index=0;
     public:
@@ -19,13 +19,13 @@ namespace extras{namespace cmex{
         FieldWrapper& operator=(const FieldWrapper& src) = default;
         FieldWrapper& operator=(FieldWrapper&& src) = default;
 
-        FieldWrapper(mxArray* parentStructPtr,size_t idx, const char* fieldname):
-            parentStruct(parentStructPtr),
+        FieldWrapper(mxArray* parentPtr,size_t idx, const char* fieldname):
+            parent(parentPtr),
             index(idx)
         {
-            field_number = mxGetFieldNumber(parentStruct,fieldname);
+            field_number = mxGetFieldNumber(parent,fieldname);
             if(field_number<0){ //need to create field
-                field_number = mxAddField(parentStruct,fieldname);
+                field_number = mxAddField(parent,fieldname);
             }
 
             if(field_number<0){
@@ -33,8 +33,8 @@ namespace extras{namespace cmex{
             }
         }
 
-        FieldWrapper(mxArray* parentStructPtr,size_t idx, int fieldnumber):
-            parentStruct(parentStructPtr),
+        FieldWrapper(mxArray* parentPtr,size_t idx, int fieldnumber):
+            parent(parentPtr),
             field_number(fieldnumber),
             index(idx)
         {
@@ -45,12 +45,27 @@ namespace extras{namespace cmex{
 
         /// get field
         operator const mxArray*() const{
-            return mxGetFieldByNumber(parentStruct,index,field_number);
+            return mxGetFieldByNumber(parent,index,field_number);
         }
 
         /// set field
         FieldWrapper& operator=(mxArray* pvalue){
-            mxSetFieldByNumber(parentStruct,index,field_number,pvalue);
+            mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));
+            mxSetFieldByNumber(parent,index,field_number,pvalue);
+            return *this;
+        }
+
+        /// set field equal to string
+        FieldWrapper& operator=(const char* str){
+            mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));
+            mxSetFieldByNumber(parent,index,field_number,mxCreateString(str));
+            return *this;
+        }
+
+        /// set field equal to scalar double
+        FieldWrapper& operator=(double val){
+            mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));
+            mxSetFieldByNumber(parent,index,field_number,mxCreateDoubleScalar(val));
             return *this;
         }
     };

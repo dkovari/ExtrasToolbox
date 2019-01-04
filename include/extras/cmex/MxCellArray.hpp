@@ -32,12 +32,14 @@ namespace extras{namespace cmex{
 
         /// set field
         CellWrapper& operator=(mxArray* pvalue){
+            mxDestroyArray(mxGetCell(parent,index));
             mxSetCell(parent, index, pvalue);
             return *this;
         }
 
         /// set field equal to string
         CellWrapper& operator=(const char* str){
+            mxDestroyArray(mxGetCell(parent,index));
             mxSetCell(parent,index,mxCreateString(str));
             return *this;
         }
@@ -179,7 +181,7 @@ namespace extras{namespace cmex{
             if(idx>=mxGetNumberOfElements(_mxptr)){
                 throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
             }
-            
+
             return CellWrapper(_mxptr,idx);
         }
 
