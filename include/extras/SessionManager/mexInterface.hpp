@@ -91,7 +91,7 @@ namespace extras{namespace SessionManager{
             functionMap.insert(MapT_mexI::value_type(name, func));
 
 #ifdef DAN_DEBUG
-			mexPrintf("\compelted\n", name.c_str());
+			mexPrintf("\tcompelted\n", name.c_str());
 			mexPrintf("\t press a key to continue\n");
 			mexEvalString("pause()");
 #endif
