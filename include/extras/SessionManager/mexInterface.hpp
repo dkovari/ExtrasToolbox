@@ -125,18 +125,18 @@ namespace extras{namespace SessionManager{
 
         mexInterface(){
             using namespace std::placeholders;
-//#ifdef DAN_DEBUG
+#ifdef DAN_DEBUG
 			mexPrintf("Creating mexInterface<%s>\n", typeid(ObjType).name());
 			mexPrintf("\t press a key to continue\n");
 			mexEvalString("pause()");
-//#endif
+#endif
             addFunction("new",std::bind(&mexInterface::new_object,this,_1,_2,_3,_4));  //add 'new' command
             addFunction("delete",std::bind(&mexInterface::delete_object,this,_1,_2,_3,_4));  //add 'delete' command
-//#ifdef DAN_DEBUG
-			mexPrintf("\done creating mexInterface\n");
+#ifdef DAN_DEBUG
+			mexPrintf("\tdone creating mexInterface\n");
 			mexPrintf("\t press a key to continue\n");
 			mexEvalString("pause()");
-//#endif
+#endif
         }
 
         void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
