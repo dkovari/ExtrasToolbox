@@ -462,8 +462,42 @@ namespace extras{namespace cmex{
                         mexMakeArrayPersistent(newPtr);
                     }
                     break;
-                case mxSTRUCT_CLASS:
-                    mxSetDimensions(_mxptr,dims.data(),dims.size());
+				case mxSTRUCT_CLASS:
+					{
+						size_t nfields = mxGetNumberOfFields(_mxptr);
+						const char* * fnames;
+						fnames = new const char*[nfields];
+						for (size_t n = 0; n < nfields; ++n) {
+							fnames[n] = mxGetFieldNameByNumber(_mxptr, n);
+						}
+
+						newPtr = mxCreateStructArray(dims.size(), dims.data(), nfields, fnames);
+						if (_managemxptr && !_setFromConst) { //just move the arrays
+							for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
+								for (size_t f = 0; f < nfields; ++f) {
+									mxSetFieldByNumber(newPtr, n, f, mxGetFieldByNumber(_mxptr, n, f));
+									mxSetFieldByNumber(_mxptr, n, f, nullptr);
+								}
+							}
+							mxDestroyArray(_mxptr);
+						}
+						else { //need copy
+							for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
+								for (size_t f = 0; f < nfields; ++f) {
+									mxSetFieldByNumber(newPtr, n, f, mxDuplicateArray(mxGetFieldByNumber(_mxptr, n, f)));
+									mxSetFieldByNumber(_mxptr, n, f, nullptr);
+								}
+							}
+						}
+						delete[] fnames;
+
+						_mxptr = newPtr;
+						_managemxptr = true;
+						_setFromConst = false;
+						if (_isPersistent) {
+							mexMakeArrayPersistent(newPtr);
+						}
+					}
                     break;
             	default:
             		throw(std::runtime_error("reshape not implemented for class"));
