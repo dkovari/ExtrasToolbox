@@ -15,7 +15,8 @@
     <ClCompile Include="mxfile_reader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\extras\mxfile\FileWriter.hpp" />
+    <ClInclude Include="..\..\include\extras\mxfile\mxfile_reader.hpp" />
+    <ClInclude Include="..\..\include\extras\mxfile\mxfile_writer.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{51e8b979-eb01-47da-a1ff-e24464e1ae7a}</ProjectGuid>

@@ -32,7 +32,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\extras\mxfile\FileWriter.hpp">
+    <ClInclude Include="..\..\include\extras\mxfile\mxfile_writer.hpp">
+      <Filter>include\mxfile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\mxfile\mxfile_reader.hpp">
       <Filter>include\mxfile</Filter>
     </ClInclude>
   </ItemGroup>

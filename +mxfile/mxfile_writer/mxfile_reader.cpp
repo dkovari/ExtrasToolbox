@@ -1,4 +1,5 @@
-#include <extras/mxfile/FileWriter.hpp>
+#include <extras/mxfile/mxfile_writer.hpp>
+#include <extras/mxfile/mxfile_reader.hpp>
 #include <mex.h>
 #include <string>
 #include <extras/cmex/mexextras.hpp>
@@ -12,9 +13,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		Required Input
 		filepath: mxChar array specifying path to read from
 		*/
-
-
-		//mexPrintf("Hi James!\n");
 
 
 		// validate input

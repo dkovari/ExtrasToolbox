@@ -1,4 +1,4 @@
-#include <extras/mxfile/FileWriter.hpp>
+#include <extras/mxfile/mxfile_writer.hpp>
 #include <mex.h>
 #include <string>
 #include <extras/cmex/mexextras.hpp>
