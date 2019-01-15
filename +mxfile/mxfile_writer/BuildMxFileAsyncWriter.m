@@ -1,7 +1,7 @@
 % Build ExampleProcessor
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
-OUTNAME = 'write_file'; %output function name
+OUTNAME = 'write_file_async'; %output function name
 OUTDIR = THIS_PATH; %output to .../+extras/+ParticleTracking
 
 
@@ -14,7 +14,7 @@ end
 
 %% Setup Source Path
 [pth,~,~] = fileparts(mfilename('fullpath'));
-src = fullfile(pth,'mxfile_writer.cpp'); %SOURCE FILE NAME
+src = fullfile(pth,'mxfile_async_writer.cpp'); %SOURCE FILE NAME
 
 %% Setup Include
 INCLUDE = ['-I',extras.IncludePath];

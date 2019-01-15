@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <mex.h>
+#include <zlib.h>
 #include <list>
 #include <string>
 #include <vector>
@@ -16,6 +17,11 @@ namespace extras {
 		//Wrapper for fwrite; change as needed later
 		size_t write(const void * data, size_t n_bytes, size_t count, FILE * stream) {
 			return fwrite(data, n_bytes, count, stream);
+		}
+
+		//compressed version
+		size_t write(const void * data, size_t n_bytes, size_t count, gzFile stream) {
+			return gzwrite(stream, data, n_bytes * count);
 		}
 
 

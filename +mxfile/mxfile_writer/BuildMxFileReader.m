@@ -1,7 +1,7 @@
 % Build ExampleProcessor
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
-OUTNAME = 'read_test'; %output function name
+OUTNAME = 'read_file'; %output function name
 OUTDIR = THIS_PATH; %output to .../+extras/+ParticleTracking
 
 
