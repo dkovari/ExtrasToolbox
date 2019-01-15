@@ -1,4 +1,4 @@
-classdef TargetValueDeviceUI < extras.GraphicsChild
+classdef TargetValueDeviceUI < extras.GraphicsChild & extras.uixDerivative
 %% UI for controlling extras.TargetValueDevice objects
 % Target values can be manipulated with auto-generated sliders and edit
 % boxes.
@@ -140,6 +140,13 @@ classdef TargetValueDeviceUI < extras.GraphicsChild
             %% addapt size again to force formatting
             this.SizeChangedCallback();
             
+            if this.CreatedParent
+                if this.UIcontrols(1).IsHorizontal
+                    this.Parent.Position(4) = (this.UIcontrols(1).Horizontal_Height)*numel(this.UIcontrols);
+                else
+                    this.Parent.Position(3) = (this.UIcontrols(1).Vertical_Width)*numel(this.UIcontrols);
+                end
+            end
             %% Set other properties
             set(this,varargin{:});
         end
@@ -217,7 +224,6 @@ classdef TargetValueDeviceUI < extras.GraphicsChild
             end
             
             for n = 1:NumVals
-                
                 if numel(this.UIcontrols) < n %create
                     
                     %% Get Label

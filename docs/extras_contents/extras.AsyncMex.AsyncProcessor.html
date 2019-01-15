@@ -1,0 +1,365 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>extras.AsyncMex.AsyncProcessor - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.AsyncMex.AsyncProcessor - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit extras.AsyncMex.AsyncProcessor">View code for extras.AsyncMex.AsyncProcessor</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.AsyncMex.AsyncProcessor">Go to online doc for extras.AsyncMex.AsyncProcessor</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.AsyncMex.AsyncProcessor</div>
+      <div class="helptext"><pre><!--helptext -->  extras.SessionManager.AsyncMexProcessor
+  Interface to Mex-based Asynchronous data processor
+    This class creates the interface to a MEX SessionManager object
+    providing the thread processor.
+    
+   The associated MEX SessionManager object should be derived from
+    mex::<span class="helptopic">AsyncProcessor</span> defined in mexAsyncProcessor.h
+ 
+    Communication from MATLAB to the processor object is handed by
+    background timers.
+ 
+    Users can add tasks to the processor queue using pushTask()
+ 
+    Results can be retrieved via the extras.QueueDispatcher system.
+        Users should create an extras.Queue type object and subscribe to
+        events using the method
+            <span class="helptopic">AsyncProcessor</span>.registerQueue(YOUR_QUEUE)
+        See extras.QueueDispatcher for more details
+ % Copyright 2018 Daniel T. Kovari, Emory University
+    All rights reserved.</pre></div><!--after help -->
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="extras.SessionManager.Session.html">extras.SessionManager.Session</a>, <a href="extras.QueueDispatcher.html">extras.QueueDispatcher</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.AsyncProcessor.html">AsyncProcessor</a></td>
+            <td class="m-help">Create AsyncProcessor Object&nbsp;</td>
+         </tr>
+      </table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.AvailableResults.html">AvailableResults</a></td>
+            <td class="m-help">number of available results&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.DeleteListeners.html">DeleteListeners</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.ErrorCheckTimer.html">ErrorCheckTimer</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.ErrorCheckTimerPeriod.html">ErrorCheckTimerPeriod</a></td>
+            <td class="m-help">period at which to check for errors&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.LastErrorMessage.html">LastErrorMessage</a></td>
+            <td class="m-help">struct containing last error message&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.Name.html">Name</a></td>
+            <td class="m-help">Human-readable name for the processor. (USER EDITABLE) The waitbar that is created when the object is delete before the tasks
+               have finished will use this name in its message&nbsp;
+            </td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.QueueList.html">QueueList</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.RemainingTasks.html">RemainingTasks</a></td>
+            <td class="m-help">number of remaining tasks&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.ResultsCheckTimer.html">ResultsCheckTimer</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.ResultsCheckTimerPeriod.html">ResultsCheckTimerPeriod</a></td>
+            <td class="m-help">period at which to check for new results&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.Running.html">Running</a></td>
+            <td class="m-help">T/F is thread running&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.DispatchErrorMessage.html">DispatchErrorMessage</a></td>
+            <td class="m-help">internal use - check and dispatch error messages        &nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.addlistener.html">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.cancelRemainingTasks.html">cancelRemainingTasks</a></td>
+            <td class="m-help">cancel remaining tasks&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.clearError.html">clearError</a></td>
+            <td class="m-help">clear error flag and error struct from buffer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.clearResults.html">clearResults</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.delete.html">delete</a></td>
+            <td class="m-help">Delete a handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.deregisterQueue.html">deregisterQueue</a></td>
+            <td class="m-help">remove queues from the listening to results&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.eq.html">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.findobj.html">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.findprop.html">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.ge.html">ge</a></td>
+            <td class="m-help">>= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.getError.html">getError</a></td>
+            <td class="m-help">Get error from processor, if no error was thrown err is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.gt.html">gt</a></td>
+            <td class="m-help">> (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.isvalid.html">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.le.html">le</a></td>
+            <td class="m-help"><= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.listener.html">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.lt.html">lt</a></td>
+            <td class="m-help">< (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.ne.html">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.notify.html">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.numResultOutputArgs.html">numResultOutputArgs</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.pause.html">pause</a></td>
+            <td class="m-help">the processing thread, but don't clear task queue&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.popResult.html">popResult</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.pushTask.html">pushTask</a></td>
+            <td class="m-help">Add task to the processing thread queue&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.registerQueue.html">registerQueue</a></td>
+            <td class="m-help">Register queues to listen to results&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.restartErrorCheckTimer.html">restartErrorCheckTimer</a></td>
+            <td class="m-help">internal use - Restart the error check timer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.restartResultsCheckTimer.html">restartResultsCheckTimer</a></td>
+            <td class="m-help">internal use - restart results timer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.resume.html">resume</a></td>
+            <td class="m-help">the processing thread&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.send.html">send</a></td>
+            <td class="m-help">(QD,data)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.wasErrorThrown.html">wasErrorThrown</a></td>
+            <td class="m-help">T/F is error was thrown&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.ErrorOccured.html">ErrorOccured</a></td>
+            <td class="m-help">Event thrown when error has occured in the processor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.AsyncMex.AsyncProcessor.ObjectBeingDestroyed.html">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

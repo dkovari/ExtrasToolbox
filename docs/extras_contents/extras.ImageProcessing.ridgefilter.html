@@ -1,0 +1,44 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>extras.ImageProcessing.ridgefilter - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.ImageProcessing.ridgefilter - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.ImageProcessing.ridgefilter">View code for extras.ImageProcessing.ridgefilter</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.ImageProcessing.ridgefilter</div>
+      <div class="helptext"><pre><!--helptext -->  Apply ridge-finding filter to image
+ 
+  The function uses the eigenvalues of the Hessian of the image to
+  determine pixels that correspond with ridge-lines of image intensity.
+ 
+  Input:
+    im: 2D array containing a grayscale image
+ 
+  Optional Input:
+    idx: numeric array or cell array of numeric arrays containing the pixel
+    locations at which the ridge-line filter should be applied.
+        NOTE: Indicies must be valid for size(im) arrays.
+ 
+  Output:
+    R: A "ridge-line" image the same size as im
+ 
+  Details:
+    The algorithm applies 5-point second-derivatives Dxx, Dyy, Dxy in the 
+    region around each pixel. Then calculates the eigenvalue of the
+    hessian:
+        [Dxx, Dxy;
+         Dxy, Dyy]
+    Each R(idx) contains the negative of the leading eigenvalue;
+ 
+ % Copyright 2017, Daniel T. Kovari, Emory University
+  All rights reserved</pre></div><!--after help -->
+   </body>
+</html>

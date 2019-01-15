@@ -1,0 +1,43 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>extras.ImageProcessing.imtrace - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.ImageProcessing.imtrace - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.ImageProcessing.imtrace">View code for extras.ImageProcessing.imtrace</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.ImageProcessing.imtrace</div>
+      <div class="helptext"><pre><!--helptext -->  Trace along neighboring pixels in an image.
+ 
+  Routine written by Haowei Wang.
+  This function is just a wrapper around Haowei's original tracing routine,
+  making it a little easier to use with other functions.
+ 
+  Usage:
+    XY = imtrace(IM,THRESHOLD)
+ 
+  Inputs:
+    IM: The image that should be traced.
+    
+    THRESHOLD: the value which specifies the level used to threshold IM
+    into a binary image.
+ 
+  Output:
+    YX: A cell array where each cell specifies the coordinates of a
+    traced segment.
+    Segments are specified as column vectors:
+        YX = [Y1,X1;
+              Y2,X2;...]
+    Note: There appears to be a pixel-shift of +1 for each coodinate
+ 
+ % Copyright 2017 Emory University
+  All rights reserved.</pre></div><!--after help -->
+   </body>
+</html>

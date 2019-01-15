@@ -1,0 +1,76 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>listener (extras.AsyncMex.AsyncProcessorError) - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">listener (extras.AsyncMex.AsyncProcessorError) - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit extras.AsyncMex.AsyncProcessorError/listener">View code for extras.AsyncMex.AsyncProcessorError/listener</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.AsyncMex.AsyncProcessorError/listener">Go to online doc for extras.AsyncMex.AsyncProcessorError/listener</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.AsyncMex.AsyncProcessorError/listener</div>
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">listener</span>  Add listener for event without binding the listener to the source object.
+    el = <span class="helptopic">listener</span>(hSource, Eventname, callbackFcn) creates a listener
+    for the event named Eventname.  The source of the event is the handle  
+    object hSource.  If hSource is an array of source handles, the listener
+    responds to the named event on any handle in the array.  callbackFcn
+    is a function handle that is invoked when the event is triggered.
+ 
+    el = <span class="helptopic">listener</span>(hSource, PropName, Eventname, callback) adds a 
+    listener for a property event.  Eventname must be one of  
+    'PreGet', 'PostGet', 'PreSet', or 'PostSet'. Eventname can be a 
+    string sclar or character vector.  PropName must be either a single 
+    property name specified as a string scalar or character vector, or 
+    a collection of property names specified as a cell array of character 
+    vectors or a string array, or as an array of one ore more 
+    meta.property objects. The properties must belong to the class of 
+    hSource.  If hSource is scalar, PropName can include dynamic 
+    properties.
+    
+    For all forms, listener returns an event.listener.  To remove a
+    listener, delete the object returned by listener.  For example,
+    delete(el) calls the handle class delete method to remove the listener
+    and delete it from the workspace.  Calling delete(el) on the listener
+    object deletes the listener, which means the event no longer causes
+    the callback function to execute. 
+ 
+    <span class="helptopic">listener</span> does not bind the listener's lifecycle to the object that is
+    the source of the event.  Destroying the source object does not impact
+    the lifecycle of the listener object.  A listener created with <span class="helptopic">listener</span>
+    must be destroyed independently of the source object.  Calling 
+    delete(el) explicitly destroys the listener. Redefining or clearing 
+    the variable containing the listener can delete the listener if no 
+    other references to it exist.  To tie the lifecycle of the listener to 
+    the lifecycle of the source object, use addlistener.
+ 
+    
+
+Help for <span class="helptopic">extras.AsyncMex.AsyncProcessorError/listener</span> is inherited from superclass <a href="matlab:helpwin handle">handle</a></pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="matlab:helpwin extras.AsyncMex.AsyncProcessorError/addlistener">addlistener</a>, <a href="matlab:helpwin event.listener">event.listener</a>, <a href="matlab:helpwin extras.AsyncMex.AsyncProcessorError">extras.AsyncMex.AsyncProcessorError</a>, <a href="matlab:helpwin extras.AsyncMex.AsyncProcessorError/notify">notify</a>, <a href="matlab:helpwin delete">delete</a>, <a href="matlab:helpwin meta.property">meta.property</a>, <a href="matlab:helpwin events">events</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Defining Class</td>
+            <td>handle</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

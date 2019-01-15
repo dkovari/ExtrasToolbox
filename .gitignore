@@ -1,6 +1,7 @@
 *.asv
 *.m~
-
+*.mexw64
+*.mexmaci64
 
 
 #VISUAL STUDIO

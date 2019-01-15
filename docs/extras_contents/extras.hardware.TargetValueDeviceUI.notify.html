@@ -2,27 +2,27 @@
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    
-      <link rel="stylesheet" href="+extras\doc\extras_contents/helpwin.css">
-      <title>MATLAB File Help: extras.hardware.TargetValueDeviceUI/notify</title>
+      <link rel="stylesheet" href="+extras/docs/extras_contents/helpwin.css">
+      <title>notify (extras.hardware.TargetValueDeviceUI) - MATLAB File Help</title>
    </head>
    <body>
       <!--Single-page help-->
       <table border="0" cellspacing="0" width="100%">
          <tr class="subheader">
-            <td class="headertitle">MATLAB File Help: extras.hardware.TargetValueDeviceUI/notify</td>
+            <td class="headertitle">notify (extras.hardware.TargetValueDeviceUI) - MATLAB File Help</td>
             <td class="subheader-left"><a href="matlab:edit extras.hardware.TargetValueDeviceUI/notify">View code for extras.hardware.TargetValueDeviceUI/notify</a></td>
-            <td class="subheader-left"><a href="matlab:doc extras.hardware.TargetValueDeviceUI/notify">Go to online doc for extras.hardware.TargetValueDeviceUI/notify</a></td>
-            <td class="subheader-right"><a href="matlab:helpwin">Default Topics</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.hardware.TargetValueDeviceUI/notify">Go to online doc for extras.hardware.TargetValueDeviceUI/notify</a></td>
          </tr>
       </table>
       <div class="title">extras.hardware.TargetValueDeviceUI/notify</div>
       <div class="helptext"><pre><!--helptext --> <span class="helptopic">notify</span>   Notify listeners of event.
-    <span class="helptopic">notify</span>(H,'eventname') notifies listeners added to the event named 
-    EVENTNAME for handle object array H that the event is taking place.  
+    <span class="helptopic">notify</span>(H, eventname) notifies listeners added to the event named 
+    eventname for handle object array H that the event is taking place. 
+    eventname can be a string scalar or character vector.  
     H is the array of handles to the event source objects, and 'eventname'
     must be a character vector.
  
-    <span class="helptopic">notify</span>(H,'eventname',ed) provides a way of encapsulating information 
+    <span class="helptopic">notify</span>(H,eventname,ed) provides a way of encapsulating information 
     about an event which can then be accessed by each registered listener.
     ed must belong to the EVENT.EVENTDATA class.
  

@@ -15,8 +15,8 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
     
     %% Mercury Device Communication
     properties (SetAccess=protected)
-        BoardID
-        Hub
+        BoardID %ID of the controller, set be dip switches
+        Hub %MATLAB Serial Hub object
     end
     properties (Access=protected)
         HubConnectedListener
@@ -29,8 +29,8 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
         LastPositionReadTime = -Inf;
     end
     properties (Constant, Access=protected)
-        ValueTimerPeriod = 0.1;
-        PositionMinimumPeriod = 0.09;
+        ValueTimerPeriod = 0.75;
+        PositionMinimumPeriod = 0.15;
     end
 
     %% Device Properties
@@ -45,8 +45,10 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
         Acceleration = 1;
     end
     properties (Access=protected)
-        Internal_setVelocity = false;
-        Internal_setAcceleration = false;
+        Internal_setVelocity = false; %flag indicating internal function is setting value
+        Internal_setAcceleration = false;%flag indicating internal function is setting value
+        
+
     end
     properties (SetAccess=protected,SetObservable=true,AbortSet = true)
         IsRotary = false;
@@ -54,9 +56,65 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
         MotorScale = 1; %steps/unit
     end
     
+    %% Status Bits
+    properties(Access=protected) %internal set flaggs
+        Internal_MotorOn = false; %flag indicating internal function is setting value
+        Internal_BrakeOn = false; %flag indicating internal function is setting value
+    end
+    properties(SetObservable=true,AbortSet = true)
+        MotorOn = false; % T/F if motor is enabled
+        BrakeOn = false; % T/F if brake is enabled
+    end
+    methods
+        function set.MotorOn(this,TF)
+           % 'in MotorOn'
+            if this.Internal_MotorOn
+                %'internal MotorOn'
+                %TF
+                this.MotorOn = TF;
+            else
+                assert(isscalar(TF),'MotorOn must be scalar and convertable to logical');
+                TF = logical(TF);
+                if TF
+                    %'here'
+                    this.Hub.sendCommand(this.BoardID,'MN,TS');
+                else
+                    this.Hub.sendCommand(this.BoardID,'MF,TS');
+                end
+            end
+        end
+        function set.BrakeOn(this,TF)
+            if this.Internal_BrakeOn
+                this.BrakeOn = TF;
+            else
+                assert(isscalar(TF),'MotorOn must be scalar and convertable to logical');
+                TF = logical(TF);
+                if TF
+                    this.Hub.sendCommand(this.BoardID,'BN,TS');
+                else
+                    this.Hub.sendCommand(this.BoardID,'BF,TS');
+                end
+            end
+        end
+    end
+    
     %% create/delete
     methods
-        function this = MercuryDevice(HubPort,BoardID,AxisType)
+        function this = MercuryDevice(HubPort,BoardID,AxisType,varargin)
+        % Create Mercury Motor Device
+        %   HubPort: com port string (e.g. 'COM3')
+        %            or handle to MercuryHub object
+        %   BoardID: ##, 0-15 specifying the device board id
+        %   AxisType: type string (e.g. 'M-126.PD2')
+        %           used to automatically specify device characteristics
+        %           like limits and scale
+        %   
+        % Optional Parameters
+        %   'DeviceName': string specifying human-readable device name
+        %                 default='MercuryMotor: ##', where ## = BoardID
+        %   'ValueLabels': string specifying human-readable label for the
+        %                  axis default=''
+            
             if isa(HubPort,'extras.hardware.PI.MercuryHub')
                 this.Hub = HubPort;
             else
@@ -103,6 +161,16 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             if exist('AxisType','var')
                 this.AxisType = AxisType;
             end
+            
+            
+            this.DeviceName = sprintf('MercuryMotor: %d',this.BoardID);
+            
+            %% Set other parameters
+            set(this,varargin{:});
+            
+            %% Turn Motor and break on by default
+            this.MotorOn = true;
+            this.BrakeOn = false;
         end
         
         function delete(this)
@@ -147,22 +215,28 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             assert(numel(status)==6,'status must have 6 byte codes specified as hex chars');
             
             %% 1F LM629 Status
-            %Bit 0
+            %Bit 0 
             %Bit 1
             %Bit 2: Trajectory Complete
-            %ontarget = bitget(hex2dec(status{1}),3)
-                this.OnTarget = bitget(hex2dec(status{1}),3); %appears to be OnTarget signal
+                this.OnTarget = logical(bitget(hex2dec(status{1}),3)); %appears to be OnTarget signal
             %Bit 3: Index Pulse recieved   
             %Bit 4
             %Bit 5
             %Bit 6
-            %Bit 7
+            %Bit 7 Motor OFF
+                this.Internal_MotorOn = true;
+                this.MotorOn = ~logical(bitget(hex2dec(status{1}),8));
+                this.Internal_MotorOn = false;
             
             %% 2F Internal operation flags
             
             %% 3F Motor Loop Flags
             
             %% 4F Signal Lines Status
+            %bit 3 Brake ON
+                this.Internal_BrakeOn = true;
+                this.BrakeOn = logical(bitget(hex2dec(status{4}),4));
+                this.Internal_BrakeOn = false;
             
             %% 5F Signal Lines Inputs
             
@@ -223,7 +297,10 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             
             this.Target = max(this.Limits(1),min(val,this.Limits(2)));
             if this.Hub.connected
-                this.Hub.sendCommand(this.BoardID,[sprintf('MA%0.0f',this.Target*this.MotorScale),',TT']);
+                %disp('about to send MA')
+                %disp([sprintf('MA%0.0f',this.Target*this.MotorScale),',TT'])
+                %pause()
+                this.Hub.sendCommand(this.BoardID,[sprintf('MA%0.0f',this.Target*this.MotorScale),',TT,TP']);
             end
         end
         function set.Velocity(this,val)
@@ -280,7 +357,7 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             end
             
             if ~ismember(this.BoardID,this.Hub.BoardList)
-                error('Board: % is not listed in the BoardList for MercuryHub connected to %s. OnTarget will never change. Aborting Wait',this.BoardID,this.Hub.Port);
+                error('Board: %d is not listed in the BoardList for MercuryHub connected to %s. OnTarget will never change. Aborting Wait',this.BoardID,this.Hub.Port);
             end
             
             %stop ValueTimer
@@ -303,11 +380,32 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             if ~this.Hub.connected
                 return;
             end
+            hProg = [];
             if this.HasLimitSwitch
-                this.Hub.sendCommand(this.BoardID,'FE1');
+                
+                qdlg = questdlg(sprintf('About to reference %s\n VERIFY PATH IS CLEAR!',this.DeviceName),sprintf('Referencing %s',this.DeviceName),'OK','Cancel','OK');
+                if strcmpi(qdlg,'Cancel')
+                    return
+                end
+                this.MotorOn = true;
+                this.BrakeOn = false;
+                hProg = warndlg(sprintf('Referencing %s in progress',this.DeviceName),sprintf('Referencing %s',this.DeviceName),'non-modal');
+                stop(this.ValueTimer);
+                this.Hub.sendCommand(this.BoardID,'FE2');
+                pause(1);
+                this.Hub.sendCommand(this.BoardID,'FE3');
+                pause(1);
+            end
+            if isempty(hProg)||~isgraphics(hProg)
+                hProg = warndlg(sprintf('Referencing %s in progress',this.DeviceName),sprintf('Referencing %s',this.DeviceName),'non-modal');
             end
             this.WaitForOnTarget;
             this.Hub.sendCommand(this.BoardID,'DH');
+            this.Hub.sendCommand(this.BoardID,'TT,TP');
+            try
+                delete(hProg)
+            catch
+            end
         end
         function StopMotor(this)
             if ~this.Hub.connected
