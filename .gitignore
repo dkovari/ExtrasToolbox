@@ -11,6 +11,13 @@
 *.user
 *.userosscache
 *.sln.docstates
+.vs
+*.ilk
+*.pdb
+*.iobj
+*.ipdb
+*.idb
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
