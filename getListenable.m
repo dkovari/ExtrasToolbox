@@ -1,5 +1,7 @@
 function [observable,nonObservable,eventNames] = getListenable(hndl)
 % Return an alphabetical list of Observable properties in handle HNDL
+%   [observable,nonObservable,eventNames] = getListenable(hndl)
+%   
 %
 % Brett Shoelson, PhD
 % brett.shoelson@mathworks.com

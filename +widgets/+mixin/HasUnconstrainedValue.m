@@ -11,4 +11,12 @@ classdef HasUnconstrainedValue < extras.widgets.mixin.HasValue
             value = this.validateValue(value);
         end
     end
+    
+    %% public methods - should be overriden
+    methods
+        function varargout = closestAllowedValue(~,value)
+            varargout = cell(1,nargout);
+            varargout{1} = value;
+        end
+    end
 end

@@ -25,9 +25,19 @@ classdef HasIncrement < extras.widgets.mixin.HasUnconstrainedValue
         end
     end
     
+    %% public methods - should be overriden
+    methods
+        function varargout = closestAllowedValue(this,value)
+            varargout = cell(1,nargout);
+            if ~isnan(this.Increment)&&this.Increment~=0
+                varargout{1} = round( (value - this.IncrementStart)/this.Increment)*this.Increment + this.IncrementStart;
+            end
+        end
+    end
+    
     %% Overridable Callback methods
     methods (Access=protected)
-        function onIncrementChanged(this)
+        function onIncrementChanged(~)
         end
         
         function value = validateValue(this,value)

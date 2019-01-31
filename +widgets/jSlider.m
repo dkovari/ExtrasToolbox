@@ -2,7 +2,8 @@
          uiw.abstract.JavaControl & ...
          extras.widgets.mixin.HasScalarLimits &...
          extras.widgets.mixin.HasCallback & ...
-         extras.widgets.mixin.AssignNV
+         extras.widgets.mixin.AssignNV & ...
+         extras.widgets.mixin.HasTooltip
      
     properties (AbortSet=true, SetObservable=true)
         Orientation char {mustBeMember(Orientation,{'horizontal','vertical'})} = 'horizontal' % Slider orientation [horizontal|vertical]
@@ -12,12 +13,10 @@
         
         MajorTickValues = 'auto';
         %SnapToMajorTicks (1,1) logical = false;
-    end
-    
-    properties (AbortSet, Hidden, SetObservable)
-        %NotifyOnMotion (1,1) logical = false %Undocumented and may change
+        
         OnMotionCallback function_handle = function_handle.empty(0,1) %function handle to call when the widget is edited
     end
+    
     methods(Access=protected)
         function callOnMotionCallback(this)
             if ~isempty(this.OnMotionCallback)
@@ -119,7 +118,6 @@
             
         end %function
         
-        
         function onResized(obj,~,~)
             % Handle changes to widget size
             
@@ -176,7 +174,6 @@
             
         end %function
         
-        
         function onEnableChanged(obj,~)
             % Handle updates to Enable state
             
@@ -189,7 +186,6 @@
             end %if obj.jSlider_IsConstructed
             
         end %function
-        
         
         function onStyleChanged(obj,~)
             % Handle updates to style and value validity changes
@@ -229,7 +225,6 @@
                 end
             end
         end
-        
         
         function onSliderChanged(obj,~)
             % Handle interaction with slider
@@ -392,6 +387,9 @@
             end %if obj.jSlider_IsConstructed
         end %function
         
+        function onTooltipChanged(this)
+            this.JControl.setToolTipText(this.Tooltip);
+        end
     end % Protected methods
     
     %% Get/set methods

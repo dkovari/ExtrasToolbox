@@ -1,13 +1,20 @@
-classdef ValueControl < extras.widgets.LabeledPanel & ...
+classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
+        extras.RequireWidgetsToolbox & ...
+        extras.widgets.LabelPanel & ...
         extras.widgets.mixin.abstract.HasEnable & ...
         extras.widgets.mixin.HasCallback & ...
         extras.widgets.mixin.HasScalarLimits & ...
         extras.widgets.mixin.HasAllowedValues & ...
-        extras.widgets.mixin.HasIncrement
+        extras.widgets.mixin.HasIncrement & ...
+        extras.widgets.mixin.HasTooltip
     
     properties (SetObservable=true,AbortSet=true)
+        HideSlider (1,1) logical = false;
+        HidePopupMenu (1,1) logical = false;
+        HideIncrementButtons (1,1) logical = false;
+        
         PreferedStyle = 'auto'; % prefered style for the uicontrol
-        ValueType = 'string'; % type of values to accept
+        ValueType = 'float'; % type of values to accept
         RememberValueHistory (1,1) logical = false;
         %SliderOrientation = 'horizontal';
     end
@@ -17,7 +24,7 @@ classdef ValueControl < extras.widgets.LabeledPanel & ...
             this.PreferedStyle = validatestring(style,{'auto','Slider','Field','Popup','Counter'});
         end
         function set.ValueType(this,vtype)
-            this.ValueType = validatestring(vtype,{'string','float','integer'});
+            this.ValueType = validatestring(vtype,{'string','float','integer','boolean'});
             this.updateControls();
         end
         %function set.SliderOrientation(this,sorient)
@@ -33,62 +40,134 @@ classdef ValueControl < extras.widgets.LabeledPanel & ...
         end
     end
     
-    %% internal changable
+    %% public visible, internal changable
     properties(SetAccess=protected,AbortSet=true,SetObservable=true)
-        CurrentStyle = 'Field';
         EditHistory = {};
     end
     
-    %% internal only
+    %% Graphics elements - internal only
     properties(Access=private)
-        ControlGrid
-        ValueControl_IsConstructed = false;
-        MainControl
-        MainBox
-        AuxBox
-        Slider
-        IncrementVBox
-        IncrementUpBox
-        IncrementDownBox
-        IncrementUpButton
-        IncrementDownButton
+        ValueControl_IsConstructed = false; %flag if object has been constructed
+        
+        ControlGrid %outer grid that holds all elements
+        FieldButtonHBox %holds increment buttons and edit/popup field
+        ButtonVBox = uix.VBox.empty();%holds inrement buttons
+        
+        FieldControl %handle to main value control
+        IncrementButton %handle to increment button
+        DecrementButton %handle to decrement button
+        Slider %handle to slider
+        
+        FieldControlStyle %char array specifying FieldControl type
     end
     
     %% Constructor
     methods
         function this = ValueControl(varargin)
             % responsible for initial control creation
-            this@extras.widgets.LabeledPanel(varargin{:})
+            this@extras.widgets.LabelPanel(varargin{:})
             
-            %% Create HBox to hold controls
-            this.ControlGrid = uix.HBox('Parent',this.MainPanel);
-            this.MainBox = uix.HBox('Parent',this.ControlGrid);
-            this.AuxBox = uix.HBox('Parent',this.ControlGrid);
-            this.IncrementVBox = uix.VBox('Parent',this.AuxBox);
-            this.IncrementUpBox = uix.HBox('Parent',this.IncrementVBox);
-            this.IncrementDownBox = uix.HBox('Parent',this.IncrementVBox);
+            %% Create Boxes to hold controls
+            this.ControlGrid = uix.Grid('Parent',this);
+            this.FieldButtonHBox = uix.HBox('Parent',this.ControlGrid);
             
             %% Create main uicontrol element
-            this.MainControl = uicontrol(this.MainBox,...
+            this.FieldControl = uicontrol(this.FieldButtonHBox,...
                 'Style','edit',...
-                'Callback',@(~,~) this.mainUICallback());
+                'HandleVisibility','callback',...
+                'Interruptible','off',...
+                'Callback',@(~,~) this.FieldControlCallback());
             
             %% construction flag
             this.ValueControl_IsConstructed = true;
             
             %% set public
-            this.setPublicProperties(varargin{:})
+            this.setPublicProperties(varargin{:});
             
             this.updateControls();
             
         end
+        
+        function delete(this)
+            try
+                delete(this.FieldControl)
+            catch
+            end
+            try
+                delete(this.Slider)
+            catch
+            end
+            try
+                delete(this.IncrementButton)
+            catch
+            end
+            try
+                delete(this.DecrementButton)
+            catch
+            end
+            try
+                delete(this.ControlGrid)
+            catch
+            end
+        end
     end
     
+    
+    %% Implemented in seperate files
+    methods (Access=protected)
+        updateControls(this) %(re)builds controls
+        updateUIValue(this) %updates control value display
+        FieldControlCallback(this) %executed when field/popup is changed
+        sliderMotionCallback(this)
+        onTooltipChanged(this)
+    end
+    
+    %% public - must be overriden
+    methods
+        function varargout = closestAllowedValue(this,value)
+            value = closestAllowedValue@extras.widgets.mixin.HasIncrement(this,value);
+            [varargout{1:nargout}] = closestAllowedValue@extras.widgets.mixin.HasAllowedValues(this,value);
+        end
+    end
     
     %% Overridable Callback methods
     methods (Access=protected)
         
-        updateControls(this) %implemented in file
+        function str = valueToString(this)
+            str = num2str(this.Value);
+        end
+        
+        function value = valueFromString(this,str)
+            switch this.ValueType
+                case 'string'
+                    value = this.valueToString(str);
+                case 'integer'
+                    str=char(str);
+                    [value,tf] = str2num(str);
+                    assert(tf,sprintf('Could not convert: %s to number',str));
+                    value = round(value);
+                case 'float'
+                    str=char(str);
+                    [value,tf] = str2num(str);
+                    assert(tf,sprintf('Could not convert: %s to number',str));
+                case 'boolean'
+                    str=char(str);
+                    if strcmpi(str,'true')
+                        value = true;
+                    elseif strcmpi(str,'false')
+                        value = false;
+                    elseif strcmpi(str,'on')
+                        value = true;
+                    elseif strcmpi(str,'off')
+                        value = false;
+                    else
+                        [value,tf]=str2num(str);
+                        assert(tf,sprintf('Could not convert: %s to number',str));
+                        value = logical(value);
+                    end
+                    
+            end
+        end
         
         function incrementValue(this)
             if ~isvalid(this)
@@ -109,32 +188,6 @@ classdef ValueControl < extras.widgets.LabeledPanel & ...
             if this.hasIncrement
                 try
                 this.Value = this.Value - this.Increment;
-                catch
-                end
-            end
-        end
-        
-        function updateUIValue(this)
-            if ~this.ValueControl_IsConstructed
-                return;
-            end
-            if isa(this.MainControl,'matlab.ui.control.UIControl')
-                %ctrl_val = [];
-                switch this.MainControl.Style
-                    case 'edit'
-                        this.MainControl.String = num2str(this.Value);
-                    case 'popupmenu'
-                        this.MainControl.Value = this.ValueIndex;
-                    otherwise
-                        error('invalid MainControl Type');
-                end
-            elseif isa(this.MainControl,'uiw.widget.EditablePopup')
-                this.MainControl.Value = this.Value;
-            end
-            
-            if isvalid(this.Slider)
-                try
-                    this.Slider.Value = this.Value;
                 catch
                 end
             end
@@ -202,58 +255,13 @@ classdef ValueControl < extras.widgets.LabeledPanel & ...
         function onIncrementChanged(this)
             this.updateControls();
         end
-        
-        function mainUICallback(this)
-            if ~isvalid(this)||isempty(this.MainControl)||~isvalid(this.MainControl)
-                return;
-            end
-            
-            if isa(this.MainControl,'matlab.ui.control.UIControl')
-                %ctrl_val = [];
-                switch this.MainControl.Style
-                    case 'edit'
-                        ctrl_val = this.MainControl.String;
-                    case 'popupmenu'
-                        ctrl_val = this.MainControl.String{this.MainControl.Value};
-                    otherwise
-                        error('invalid MainControl Type');
-                end
-                if strcmpi(this.ValueType,'string')
-                    this.Value = ctrl_val;
-                else
-                    [val,tf]= str2num(ctrl_val);
-                    if tf
-                       this.Value = val;
-                    else
-                        this.updateUIValue();
-                    end
-                end
-                if strcmpi(this.MainControl.Style,'edit')
-                    this.addHistory(ctrl_val);
-                end
-            elseif isa(this.MainControl,'uiw.widget.EditablePopup')
-                if strcmpi(this.ValueType,'string')
-                    this.Value = this.MainControl.Value;
-                else
-                    [val,tf]= str2num(this.MainControl.Value);
-                    if tf
-                       this.Value = val;
-                    else
-                        this.updateUIValue();
-                    end
-                end
-                if isempty(this.MainControl.SelectedIndex)
-                    this.addHistory(this.MainControl.Value);
-                end
-            end
-            
-        end
-        
+
         function sliderCallback(this)
             if ~isvalid(this)||isempty(this.Slider)||~isvalid(this.Slider)
                 return;
             end
             this.Value = this.Slider.Value;
         end
+        
     end
 end

@@ -45,6 +45,12 @@ classdef (HandleCompatible) AssignNV < matlab.mixin.SetGet
             %% set values
             set(this,Results);
             
+            %% clear output
+            if nargout < 1
+                clear Unmatched;
+                clear Results;
+            end
+            
         end
         
     end
@@ -80,6 +86,12 @@ classdef (HandleCompatible) AssignNV < matlab.mixin.SetGet
             %% set values
             set(this,Results);
             
+            %% clear output
+            if nargout < 1
+                clear Unmatched;
+                clear Results;
+            end
+            
         end
         
         function [Unmatched,Results] = setAllProperties(this,varargin)
@@ -112,6 +124,12 @@ classdef (HandleCompatible) AssignNV < matlab.mixin.SetGet
             
             %% set values
             set(this,Results);
+            
+            %% clear output
+            if nargout < 1
+                clear Unmatched;
+                clear Results;
+            end
             
         end
     end

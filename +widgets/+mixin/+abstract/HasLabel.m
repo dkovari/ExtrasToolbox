@@ -12,7 +12,6 @@ classdef (Abstract) HasLabel < handle & extras.widgets.mixin.AssignNV
     %% hidden
     methods (Hidden,Static)
         function ApplyStringToObject(string,objects)
-            'applystring'
         % set the String property of each object in the obects
             if isempty(objects)
                 return;
@@ -64,7 +63,7 @@ classdef (Abstract) HasLabel < handle & extras.widgets.mixin.AssignNV
     
     %% Override
     methods(Access=protected)
-        function onLabelChanged(this)
+        function onLabelChanged(~)
         end
     end
     

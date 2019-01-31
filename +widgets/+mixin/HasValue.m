@@ -27,7 +27,7 @@ classdef HasValue < handle
         % returns the value that will be set to this.Value
             %value = value;
         end
-        function onValueChanged(this)
+        function onValueChanged(~)
         % Called by set.Value after changing this.Value, but before
         % exiting set.Value() and executing listener callbacks 
         % default impelementation does nothing.

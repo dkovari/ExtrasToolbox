@@ -8,8 +8,8 @@ classdef HasValueLimits < extras.widgets.mixin.HasUnconstrainedValue
     end
     
     properties(Dependent)
-        hasMin
-        hasMax
+        hasMin;
+        hasMax;
     end
     
     %% get/set
@@ -101,7 +101,7 @@ classdef HasValueLimits < extras.widgets.mixin.HasUnconstrainedValue
             
         end
         
-        function onLimitsChanged(this)
+        function onLimitsChanged(~)
         end
     end
     

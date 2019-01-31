@@ -9,9 +9,6 @@ classdef (Abstract) HasEnable < handle & extras.widgets.mixin.AssignNV
         % Enable
         function set.Enable(obj,value)
             value = extras.validateOnOff(value,'ArrayInput',false);
-            evt = struct('Property','Enable',...
-                'OldValue',obj.Enable,...
-                'NewValue',value);
             obj.Enable = value;
             obj.onEnableChanged();
         end
