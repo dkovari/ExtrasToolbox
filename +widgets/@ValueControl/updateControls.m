@@ -70,6 +70,8 @@ switch ControlType
                 'Callback',@(~,~) this.FieldControlCallback(),...
                 'HandleVisibility','callback',...
                 'Interruptible','off');
+            
+            this.addHasEnableObjects(this.FieldControl);
         end
         set(this.FieldControl,...
             'Style','edit',...
@@ -86,6 +88,7 @@ switch ControlType
                 'Callback',@(~,~) this.FieldControlCallback(),...
                 'HandleVisibility','callback',...
                 'Interruptible','off');
+            this.addHasEnableObjects(this.FieldControl);
         end        
         %% set control
         if isnumeric(this.AllowedValues)
@@ -111,6 +114,7 @@ switch ControlType
             end
             this.FieldControl = uiw.widget.EditablePopup('Parent',this.FieldButtonHBox,...
                 'Callback',this.FieldControlCallback());
+            this.addHasEnableObjects(this.FieldControl);
         end
         %% Allowed values
         AV = this.AllowedValues;
@@ -140,6 +144,7 @@ switch ControlType
                 'Callback',@(~,~) this.FieldControlCallback(),...
                 'HandleVisibility','callback',...
                 'Interruptible','off');
+            this.addHasEnableObjects(this.FieldControl);
         end        
         %% set control
         set(this.FieldControl,...
@@ -169,6 +174,7 @@ if ShowIncButtons
             'HandleVisibility','callback',...
             'Interruptible','off',...
             'Callback',@(~,~) this.incrementValue);
+        this.addHasEnableObjects(this.IncrementButton);
     end
     this.IncrementButton.TooltipString = sprintf('Increment +%g',this.Increment);
     %% create down button if needed
@@ -180,6 +186,7 @@ if ShowIncButtons
             'HandleVisibility','callback',...
             'Interruptible','off',...
             'Callback',@(~,~) this.decrementValue);
+        this.addHasEnableObjects(this.DecrementButton);
     end
     this.DecrementButton.TooltipString = sprintf('Decrement -%g',this.Increment);
     %% set button order
@@ -200,6 +207,7 @@ if ShowSlider&&~this.HideSlider
             'Callback',@(~,~) this.sliderCallback(),...
             'OnMotionCallback',@(~,~) this.sliderMotionCallback());
         this.ControlGrid.Contents = [this.FieldButtonHBox,this.Slider];
+        this.addHasEnableObjects(this.Slider);
     end
     this.Slider.Min = this.Min;
     this.Slider.Max = this.Max;

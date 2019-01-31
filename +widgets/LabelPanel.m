@@ -382,6 +382,10 @@ classdef LabelPanel < handle & ...
             % Impelment redraw()
             %  c.redraw() redraws the container c.
             
+            if isempty(ancestor( this, 'figure' )) || ~isvalid(ancestor( this, 'figure' ))
+                return;
+            end
+            
             %% Outer bounds
             bounds = hgconvertunits( ancestor( this, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', this );

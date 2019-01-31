@@ -13,16 +13,12 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
         HidePopupMenu (1,1) logical = false;
         HideIncrementButtons (1,1) logical = false;
         
-        PreferedStyle = 'auto'; % prefered style for the uicontrol
-        ValueType = 'float'; % type of values to accept
+        ValueType = 'float'; % type of values to accept possible values 'float' 'integet' 'string' 'boolean'
         RememberValueHistory (1,1) logical = false;
         %SliderOrientation = 'horizontal';
     end
     %% get/set
     methods
-        function set.PreferedStyle(this,style)
-            this.PreferedStyle = validatestring(style,{'auto','Slider','Field','Popup','Counter'});
-        end
         function set.ValueType(this,vtype)
             this.ValueType = validatestring(vtype,{'string','float','integer','boolean'});
             this.updateControls();
@@ -36,6 +32,19 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
             if ~val
                 this.EditHistory = {};
             end
+            this.updateControls();
+        end
+        
+        function set.HideSlider(this,value)
+            this.HideSlider = value;
+            this.updateControls();
+        end
+        function set.HidePopupMenu(this,value)
+            this.HidePopupMenu = value;
+            this.updateControls();
+        end
+        function set.HideIncrementButtons(this,value)
+            this.HideIncrementButtons = value;
             this.updateControls();
         end
     end

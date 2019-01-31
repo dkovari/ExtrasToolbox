@@ -26,9 +26,11 @@ classdef (Abstract) HasEnable < handle & extras.widgets.mixin.AssignNV
     methods (Access=protected)
         function addHasEnableObjects(this,obj)
             this.HasEnable_Objects = union(this.HasEnable_Objects,obj);
+            this.HasEnable_Objects(~isvalid(this.HasEnable_Objects)) = [];
         end
         function removeHasEnableObjects(this,obj)
             this.HasEnable_Objects = setdiff(this.HasEnable_Objects,obj);
+            this.HasEnable_Objects(~isvalid(this.HasEnable_Objects)) = [];
         end
     end
     

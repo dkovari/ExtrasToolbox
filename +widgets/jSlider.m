@@ -55,7 +55,13 @@
             % Use the default value
             obj.Value = obj.JControl.getValue();
             
-            % Set properties from P-V pairs
+            %% parent as 1st arg
+            if numel(varargin)>1 && ~ischar(varargin{1}) && isgraphics(varargin{1})
+                obj.Parent = varargin{1};
+                varargin(1) = [];
+            end
+            
+            %% Set properties from P-V pairs
             obj.setPublicProperties(varargin{:});
             
             % No new value is pending
@@ -67,6 +73,7 @@
             
             % Assign the construction flag
             obj.jSlider_IsConstructed = true;
+            obj.IsConstructed = true;
             
             %% Redraw the widget
             obj.onResized();
@@ -180,8 +187,13 @@
             % Ensure the construction is complete
             if obj.jSlider_IsConstructed
                 
+                %ic = obj.IsConstructed
+                
                 % Call superclass methods
                 onEnableChanged@uiw.abstract.JavaControl(obj);
+                %IsEnable = strcmp(obj.Enable,'on');
+                %obj.JControl.setEnabled(IsEnable);
+                %en = obj.JControl.isEnabled()
                 
             end %if obj.jSlider_IsConstructed
             

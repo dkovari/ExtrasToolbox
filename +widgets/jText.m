@@ -53,6 +53,7 @@ classdef jText <  extras.RequireGuiLayoutToolbox & ...
 
             %% set constructed flag
             this.jLabel_IsConstructed = true;
+            obj.IsConstructed = true;
             
             %% Validate parent as first arg
             if nargin>0 && ~ischar(varargin{1})&&isscalar(varargin{1}) && isgraphics(varargin{1})
