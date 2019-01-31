@@ -1,0 +1,39 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>extras.QueueDispatcher/QueueDispatcher - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.QueueDispatcher/QueueDispatcher - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.QueueDispatcher/QueueDispatcher">View code for extras.QueueDispatcher/QueueDispatcher</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.QueueDispatcher/QueueDispatcher</div>
+      <div class="helptext"><pre><!--helptext -->  Manage and distribute data to a list of extras.Queues
+ 
+  When queues are deleted, they are automatically removed from the list.
+ 
+  List Management
+ ========================
+  To add a queue to the distribution list
+    registerQueue(QD, queuesToAdd)
+        This will look through the array queuesToAdd and add queues that
+        are not already in the list.
+ 
+  To remove queues
+    deregisterQueue(QD,queuesToRemove)
+        Look through array queuesToRemove and remove any that are present
+        in QueueList
+ 
+  DispatchData
+ ==================
+    send(QD,data)
+    Sends data to the queues in the list
+        alias of send(QD.QueueList,data)</pre></div><!--after help -->
+   </body>
+</html>

@@ -1,0 +1,63 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>extras.widgets.ValueControl.get - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.widgets.ValueControl.get - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:doc get">Go to online doc for extras.widgets.ValueControl.get</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.widgets.ValueControl.get</div>
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">get</span>    Get object properties.
+    V = <span class="helptopic">get</span>(H,'PropertyName') returns the value of the specified property
+    for the graphics object with handle H.  If H is a vector of handles,
+    then get will return an M-by-1 cell array of values where M is equal
+    to length(H).  If 'PropertyName' is replaced by a 1-by-N or N-by-1 cell
+    array of strings containing property names, then <span class="helptopic">get</span> will return an 
+    M-by-N cell array of values.
+ 
+    <span class="helptopic">get</span>(H) displays the names and current values of all user-gettable 
+    properties for the graphics object with handle H.
+ 
+    V = <span class="helptopic">get</span>(H) where H is a scalar, returns a structure where each field
+    name is the name of a user-gettable property of H and each field
+    contains the value of that property.
+ 
+    V = <span class="helptopic">get</span>(0, 'Factory') 
+    V = <span class="helptopic">get</span>(0, 'Factory&lt;ObjectType&gt;')
+    V = <span class="helptopic">get</span>(0, 'Factory&lt;ObjectType&gt;&lt;PropertyName&gt;') 
+    returns for all object types the factory values of all properties
+    which have user-settable default values.  
+ 
+    V = <span class="helptopic">get</span>(H, 'Default') 
+    V = <span class="helptopic">get</span>(H, 'Default&lt;ObjectType&gt;') 
+    V = <span class="helptopic">get</span>(H, 'Default&lt;ObjectType&gt;&lt;PropertyName&gt;') 
+    returns information about default property values (H must be scalar).  
+    'Default' returns a list of all default property values currently set 
+    on H.  'Default&lt;ObjectType&gt;' returns only the defaults for properties 
+    of &lt;ObjectType&gt; set on H.
+    'Default&lt;ObjectType&gt;&lt;PropertyName&gt;' returns the default value for the
+    specific property, by searching the defaults set on H and its
+    ancestors, until that default is found.  If no default value for this
+    property has been set on H or any ancestor of H up through the root, 
+    then the factory value for that property is returned.
+  
+    Defaults can not be queried on a descendant of the object, or on the
+    object itself - for example, a value for 'DefaultAxesColor' can not
+    be queried on an axes or an axes child, but can be queried on a figure
+    or on the root.
+ 
+    When using the 'Factory' or 'Default' <span class="helptopic">get</span>, if PropertyName is omitted 
+    then the return value will take the form of a structure in which each 
+    field name is a property name and the corresponding value is the value
+    of that property.  If PropertyName is specified then a matrix or string
+    value will be returned.</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="matlab:helpwin set">set</a>, <a href="matlab:helpwin reset">reset</a>, <a href="matlab:helpwin delete">delete</a>, <a href="matlab:helpwin gcf">gcf</a>, <a href="matlab:helpwin gca">gca</a>, <a href="matlab:helpwin figure">figure</a>, <a href="matlab:helpwin axes">axes</a>.
+</div>
+   </body>
+</html>

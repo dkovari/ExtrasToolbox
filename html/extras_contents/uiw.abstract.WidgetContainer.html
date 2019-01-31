@@ -1,0 +1,705 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>uiw.abstract.WidgetContainer - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">uiw.abstract.WidgetContainer - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit uiw.abstract.WidgetContainer">View code for uiw.abstract.WidgetContainer</a></td>
+            <td class="subheader-right"><a href="matlab:doc uiw.abstract.WidgetContainer">Go to online doc for uiw.abstract.WidgetContainer</a></td>
+         </tr>
+      </table>
+      <div class="title">uiw.abstract.WidgetContainer</div>
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">WidgetContainer</span> - Base class for a graphical widget
+ 
+  This class provides the basic properties needed for a panel that will
+  contain a group of graphics objects to build a complex widget. It
+  also has a label which may optionally be used. The label will be
+  shown once any Label* property has been set.</pre></div><!--after help -->
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="uiw.abstract.BaseContainer.html">uiw.abstract.BaseContainer</a>, <a href="uiw.abstract.BasePanel.html">uiw.abstract.BasePanel</a>, <a href="uiw.abstract.BaseLabel.html">uiw.abstract.BaseLabel</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.WidgetContainer.html">WidgetContainer</a></td>
+            <td class="m-help">Construct the control&nbsp;</td>
+         </tr>
+      </table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.BackgroundColor.html">BackgroundColor</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.BeingDeleted.html">BeingDeleted</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.BusyAction.html">BusyAction</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.ButtonDownFcn.html">ButtonDownFcn</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Children.html">Children</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Clipping.html">Clipping</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Controller.html">Controller</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.CreateFcn.html">CreateFcn</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.DeleteFcn.html">DeleteFcn</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Enable.html">Enable</a></td>
+            <td class="m-help">Allow interaction with this widget [(on)|off]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.FontAngle.html">FontAngle</a></td>
+            <td class="m-help">Style of the font [(normal)|italic]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.FontName.html">FontName</a></td>
+            <td class="m-help">Name of the font &nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.FontSize.html">FontSize</a></td>
+            <td class="m-help">Size of the font&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.FontUnits.html">FontUnits</a></td>
+            <td class="m-help">Units of the font [inches|centimeters|characters|normalized|(points)|pixels]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.FontWeight.html">FontWeight</a></td>
+            <td class="m-help">Weight of the font [(normal)|bold]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.ForegroundColor.html">ForegroundColor</a></td>
+            <td class="m-help">Foreground/font color of the panel&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.HandleVisibility.html">HandleVisibility</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.InnerPosition.html">InnerPosition</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Interruptible.html">Interruptible</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.IsConstructed.html">IsConstructed</a></td>
+            <td class="m-help">Indicates widget has completed construction, useful for optimal performance to minimize redraws on launch, etc.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Label.html">Label</a></td>
+            <td class="m-help">The label (char). If set, LabelVisible changes to 'on'.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelFontAngle.html">LabelFontAngle</a></td>
+            <td class="m-help">Font angle of the label [(normal)|italic]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelFontName.html">LabelFontName</a></td>
+            <td class="m-help">Font name of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelFontSize.html">LabelFontSize</a></td>
+            <td class="m-help">Font size of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelFontUnits.html">LabelFontUnits</a></td>
+            <td class="m-help">Font units of the label [inches|centimeters|characters|normalized|(points)|pixels]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelFontWeight.html">LabelFontWeight</a></td>
+            <td class="m-help">Font weight of the label [(normal)|bold]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelForegroundColor.html">LabelForegroundColor</a></td>
+            <td class="m-help">Font color of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelHeight.html">LabelHeight</a></td>
+            <td class="m-help">Pixel height of label (applies to top|bottom location)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelHorizontalAlignment.html">LabelHorizontalAlignment</a></td>
+            <td class="m-help">Alignment of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelLocation.html">LabelLocation</a></td>
+            <td class="m-help">Placement of the label [(left)|right|top|bottom]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelSpacing.html">LabelSpacing</a></td>
+            <td class="m-help">Pixel spacing between label and widget&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelTooltipString.html">LabelTooltipString</a></td>
+            <td class="m-help">Tooltip of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelVisible.html">LabelVisible</a></td>
+            <td class="m-help">Toggles the label visibility [on|(off)]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelVisible_.html">LabelVisible_</a></td>
+            <td class="m-help">Cache of LabelVisible&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.LabelWidth.html">LabelWidth</a></td>
+            <td class="m-help">Pixel width of label (applies to left|right location)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.OuterPosition.html">OuterPosition</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Padding.html">Padding</a></td>
+            <td class="m-help">Pixel spacing around the widget (applies to some widgets)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Parent.html">Parent</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Position.html">Position</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.SizeChangedFcn.html">SizeChangedFcn</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Spacing.html">Spacing</a></td>
+            <td class="m-help">Pixel spacing between controls (applies to some widgets)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Tag.html">Tag</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Type.html">Type</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.UIContextMenu.html">UIContextMenu</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Units.html">Units</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.UserData.html">UserData</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.Visible.html">Visible</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.h.html">h</a></td>
+            <td class="m-help">For widgets to store internal graphics objects&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.hBasePanel.html">hBasePanel</a></td>
+            <td class="m-help">The internal panel upon which the widget contents are placed&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.hLabel.html">hLabel</a></td>
+            <td class="m-help">The label control&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.hLayout.html">hLayout</a></td>
+            <td class="m-help">For widgets to store internal layout objects&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.addlistener.html">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.addprop.html">addprop</a></td>
+            <td class="m-help">Add dynamic property to MATLAB object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.assignPVPairs.html">assignPVPairs</a></td>
+            <td class="m-help">Assign the specified property-value pairs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.cat.html">cat</a></td>
+            <td class="m-help">Concatenation for heterogeneous arrays&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.clo.html">clo</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.convertObject.html">convertObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.debugRedraw.html">debugRedraw</a></td>
+            <td class="m-help">For debugging only - trigger the widget's protected redraw method&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.debugResize.html">debugResize</a></td>
+            <td class="m-help">For debugging only - trigger the widget's protected redraw method&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.delete.html">delete</a></td>
+            <td class="m-help">Delete a handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.displayEmptyObject.html">displayEmptyObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.displayNonScalarObject.html">displayNonScalarObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.displayScalarHandleToDeletedObject.html">displayScalarHandleToDeletedObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.displayScalarObject.html">displayScalarObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.double.html">double</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.eq.html">eq</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.findHandleObjects.html">findHandleObjects</a></td>
+            <td class="m-help">Look for all encapsulated graphics objects in "h" property&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.findobj.html">findobj</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.findprop.html">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.ge.html">ge</a></td>
+            <td class="m-help">>= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.get.html">get</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getDefaultScalarElement.html">getDefaultScalarElement</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getDescriptiveLabelForDisplay.html">getDescriptiveLabelForDisplay</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getFooter.html">getFooter</a></td>
+            <td class="m-help">Build and return display footer text&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getHeader.html">getHeader</a></td>
+            <td class="m-help">Build and return display header text&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getInnerPixelSize.html">getInnerPixelSize</a></td>
+            <td class="m-help">Return the widget's inner pixel size&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getLabelPropertyGroup.html">getLabelPropertyGroup</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getPixelPosition.html">getPixelPosition</a></td>
+            <td class="m-help">Return the container's pixel position&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getPixelSize.html">getPixelSize</a></td>
+            <td class="m-help">Return the container's outer pixel size&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getPropertyGroups.html">getPropertyGroups</a></td>
+            <td class="m-help">Construct an array of property groups &nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.getWidgetPropertyGroup.html">getWidgetPropertyGroup</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.gt.html">gt</a></td>
+            <td class="m-help">> (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.horzcat.html">horzcat</a></td>
+            <td class="m-help">Horizontal concatenation for heterogeneous arrays&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.isprop.html">isprop</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.isvalid.html">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.java.html">java</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.le.html">le</a></td>
+            <td class="m-help"><= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.listener.html">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.loadobj.html">loadobj</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.lt.html">lt</a></td>
+            <td class="m-help">< (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.ne.html">ne</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.notify.html">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.onContainerBeingDestroyed.html">onContainerBeingDestroyed</a></td>
+            <td class="m-help">Triggered on container destroyed - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.onContainerResized.html">onContainerResized</a></td>
+            <td class="m-help">Triggered on resize of the widget's container&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.onEnableChanged.html">onEnableChanged</a></td>
+            <td class="m-help">Handle updates to Enable state - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.onResized.html">onResized</a></td>
+            <td class="m-help">Handle changes to widget size - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.onStyleChanged.html">onStyleChanged</a></td>
+            <td class="m-help">Handle updates to style changes - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.onVisibleChanged.html">onVisibleChanged</a></td>
+            <td class="m-help">Handle updates to Visible state - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.redraw.html">redraw</a></td>
+            <td class="m-help">Handle state changes that may need UI redraw - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.removeArg.html">removeArg</a></td>
+            <td class="m-help">Remove specified argument from the rest of P-V pairs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.reset.html">reset</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.set.html">set</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.splitArgs.html">splitArgs</a></td>
+            <td class="m-help">Separate specified P-V arguments from the rest of P-V pairs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.abstract.WidgetContainer.vertcat.html">vertcat</a></td>
+            <td class="m-help">Vertical concatenation for heterogeneous arrays&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.ObjectBeingDestroyed.html">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.PropertyAdded.html">PropertyAdded</a></td>
+            <td class="m-help">Notifies listeners that a dynamic property has been added.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.abstract.WidgetContainer.PropertyRemoved.html">PropertyRemoved</a></td>
+            <td class="m-help">Notifies listeners that a dynamic property has been removed.&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

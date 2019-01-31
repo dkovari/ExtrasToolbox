@@ -1,0 +1,32 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>extras.UndoRedo/UndoRedo - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.UndoRedo/UndoRedo - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.UndoRedo/UndoRedo">View code for extras.UndoRedo/UndoRedo</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.UndoRedo/UndoRedo</div>
+      <div class="helptext"><pre><!--helptext -->  Implements and Undo and Redo system
+ 
+  Usage:
+    &gt;&gt; UD = <span class="helptopic">UndoRedo</span>(3); %create <span class="helptopic">UndoRedo</span> object with intial value =3
+    &gt;&gt; UD.applyOp(@(x,y) x+y, 7); %add 7 to initial value (val-&gt;10)
+    &gt;&gt; UD.applyOp(@(x) x*50); %multiply by 50 (val-&gt;500)
+    &gt;&gt; UD.undo %undo last op (val-&gt;10)
+    &gt;&gt; UD.redo %redo op (val-&gt;500)
+ 
+  Properties
+    BufferLength (default=10): number of pre-computed values to store in
+        the undo and redo buffers.
+        If more Operations have been applied, then user will be prompted
+        as to whether the operations should be re-applied from the begining</pre></div><!--after help -->
+   </body>
+</html>

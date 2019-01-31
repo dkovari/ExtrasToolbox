@@ -1,0 +1,146 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>matlab.mixin.CustomDisplay - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">matlab.mixin.CustomDisplay - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit matlab.mixin.CustomDisplay">View code for matlab.mixin.CustomDisplay</a></td>
+            <td class="subheader-right"><a href="matlab:doc matlab.mixin.CustomDisplay">Go to online doc for matlab.mixin.CustomDisplay</a></td>
+         </tr>
+      </table>
+      <div class="title">matlab.mixin.CustomDisplay</div>
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">CustomDisplay</span>    Display customization interface class
+    This class provides a display customization interface that defines a
+    set of utilities for customizing the appearance of a class display.
+ 
+    Derive your class from <span class="helptopic">matlab.mixin.CustomDisplay</span> to add the custom
+    display functionality to your class.  
+ 
+    The class provides three public sealed display methods: DISP, DISPLAY,
+    and DETAILS.  The DISP and DISPLAY methods provide a simple object
+    display, and DETAILS provides the detailed formal display.  These
+    methods are marked as hidden.
+ 
+    An object array is displayed in one of four possible formats depending
+    on the state of the array.  Those formats are:
+        - deleted object (scalar handles only) 
+        - empty object array
+        - scalar object
+        - non-scalar object array
+    Each of these formats can be customized.  Customize a particular
+    format when your class must display in a manner that differs from the
+    standard layout.  Default implementations of each format are
+    provided.
+ 
+    For each format, the display is broken into three sections:  a header,
+    a list of properties, and a footer.  Overridable methods correspond 
+    to each section; each section may therefore be customized as needed.
+    This allows a class display to follow the standard layout while still
+    customizing the content of a particular section.
+     
+    For example, a class that requires a custom header only when
+    displaying a scalar instance can customize the getHeader method 
+    without needing to customize the entire displayScalarObject method.
+ 
+    Override one or more of the following methods to implement a fully
+    custom display when your object array is in the corresponding state.  
+    These methods must be implemented as protected methods.
+ 
+    <span class="helptopic">CustomDisplay</span> methods:
+     <a href="matlab:helpwin matlab.mixin.CustomDisplay/displayEmptyObject">displayEmptyObject</a>            - Display for empty object arrays
+     <a href="matlab:helpwin matlab.mixin.CustomDisplay/displayScalarObject">displayScalarObject</a>           - Display format for scalar objects
+     <a href="matlab:helpwin matlab.mixin.CustomDisplay/displayNonScalarObject">displayNonScalarObject</a>        - Display format for non-scalar object
+                                     arrays 
+ 
+    Override the following methods to create pieces of a customized
+    display. For classes that utilize the standard layout but require
+    customized content in a particular section, only these methods need to
+    be implemented.  These methods must be implemented as protected
+    methods.
+ 
+    <span class="helptopic">CustomDisplay</span> methods:
+     <a href="matlab:helpwin matlab.mixin.CustomDisplay/getHeader">getHeader</a>         - Build and return display header text
+     <a href="matlab:helpwin matlab.mixin.CustomDisplay/getPropertyGroups">getPropertyGroups</a> - Construct an array of property groups 
+     <a href="matlab:helpwin matlab.mixin.CustomDisplay/getFooter">getFooter</a>         - Build and return display footer text</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="matlab:helpwin matlab.mixin.util.PropertyGroup">matlab.mixin.util.PropertyGroup</a>, <a href="matlab:helpwin disp">disp</a>, <a href="matlab:helpwin display">display</a>, <a href="matlab:helpwin details">details</a>        
+</div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab.mixin.CustomDisplay.displayEmptyObject.html">displayEmptyObject</a></td>
+            <td class="m-help">Display for empty object arrays&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab.mixin.CustomDisplay.displayNonScalarObject.html">displayNonScalarObject</a></td>
+            <td class="m-help">Display format for non-scalar objects&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab.mixin.CustomDisplay.displayScalarHandleToDeletedObject.html">displayScalarHandleToDeletedObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab.mixin.CustomDisplay.displayScalarObject.html">displayScalarObject</a></td>
+            <td class="m-help">Display format for scalar objects&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab.mixin.CustomDisplay.getFooter.html">getFooter</a></td>
+            <td class="m-help">Build and return display footer text&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab.mixin.CustomDisplay.getHeader.html">getHeader</a></td>
+            <td class="m-help">Build and return display header text&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab.mixin.CustomDisplay.getPropertyGroups.html">getPropertyGroups</a></td>
+            <td class="m-help">Construct an array of property groups &nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

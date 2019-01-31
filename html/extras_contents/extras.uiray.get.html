@@ -1,0 +1,68 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>get (extras.uiray) - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">get (extras.uiray) - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit extras.uiray/get">View code for extras.uiray/get</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.uiray/get">Go to online doc for extras.uiray/get</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.uiray/get</div>
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">get</span>    Get MATLAB object properties.
+    V = <span class="helptopic">get</span>(H, 'PropertyName') returns the value of the specified
+    property for the MATLAB object with handle H.  If H is an array of  
+    handles, <span class="helptopic">get</span> returns an M-by-1 cell array of values, where M is equal
+    to length(H). If 'PropertyName' is replaced by a 1-by-N or N-by-1
+    cell array of strings containing property names, <span class="helptopic">get</span> returns an M-by-N
+    cell array of values.  For non-scalar H, if 'PropertyName' is a 
+    dynamic  property, <span class="helptopic">get</span> returns a value only if the property exists in 
+    all objects of the array.
+  
+    V = <span class="helptopic">get</span>(H, 'InexactPropertyName') returns the value of the specified
+    property for the MATLAB object with handle H. <span class="helptopic">get</span> matches partial and 
+    case-insensitive names that are not ambiguous. Inexact name matching 
+    applies only to class properties. Dynamic properties require exact name matches.
+ 
+    V = <span class="helptopic">get</span>(H) returns a structure in which each field name is the name of
+    a user-gettable property of H and each field contains the value of that
+    property.  If H is non-scalar, <span class="helptopic">get</span> returns a struct array with 
+    dimensions M-by-1, where M = numel(H).  If H is non-scalar, <span class="helptopic">get</span> does 
+    not return dynamic properties.
+ 
+    <span class="helptopic">get</span>(H) displays the names of all user-gettable properties and their 
+    current values for the MATLAB object with handle H.  The class can 
+    override the GETDISP method to control how this information is 
+    displayed.  H must be scalar.
+ 
+    
+
+Help for <span class="helptopic">extras.uiray/get</span> is inherited from superclass <a href="matlab:helpwin matlab.mixin.SetGet">matlab.mixin.SetGet</a></pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="matlab:helpwin get">get</a>, <a href="matlab:helpwin extras.uiray">extras.uiray</a>, <a href="matlab:helpwin extras.uiray/getdisp">extras.uiray/getdisp</a>, <a href="matlab:helpwin handle">handle</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Defining Class</td>
+            <td>matlab.mixin.SetGet</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

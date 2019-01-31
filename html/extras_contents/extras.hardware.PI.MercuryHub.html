@@ -1,0 +1,350 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>extras.hardware.PI.MercuryHub - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.hardware.PI.MercuryHub - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit extras.hardware.PI.MercuryHub">View code for extras.hardware.PI.MercuryHub</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.hardware.PI.MercuryHub">Go to online doc for extras.hardware.PI.MercuryHub</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.hardware.PI.MercuryHub</div>
+      <div class="helptext"><pre><!--helptext -->  Object for communicating with PI Mercury Controllers via serial port
+ 
+  The constructor for this class is protected, so you cannot create an
+  instance directly.
+  Instead, you should search for an existing Hub connected to a given
+  serial port using findHub()
+ 
+    &gt; hub = <span class="helptopic">extras.hardware.PI.MercuryHub</span>.findHub('COM5');
+        or
+    &gt; hub = <span class="helptopic">extras.hardware.PI.MercuryHub</span>.findHub('Port','COM5');
+        
+  If no hub is connected, a new hub will be created.
+ 
+  You can create a new hub by not passing any arguments or passing an empty
+  port
+    &gt; newHub = <span class="helptopic">extras.hardware.PI.MercuryHub</span>.findHub()
+        or
+    &gt; newHub = <span class="helptopic">extras.hardware.PI.MercuryHub</span>.findHub([])
+        or
+    &gt; newHub = <span class="helptopic">extras.hardware.PI.MercuryHub</span>.findHub('Port',[])
+ 
+  You can specify device parameters by including Name-Value pairs after the
+  port. (Note, the port parameter must be listed first)
+    &gt; newHub = <span class="helptopic">extras.hardware.PI.MercuryHub</span>.findHub('COM5',PropName,Value,...)
+        or
+    &gt; newHub = <span class="helptopic">extras.hardware.PI.MercuryHub</span>.findHub([],PropName,Value,...)
+        or
+    &gt; newHub = <span class="helptopic">extras.hardware.PI.MercuryHub</span>.findHub('Port','COM6',PropName,Value,...)
+ 
+  *************************************************************************
+  Developer Notes:
+  *************************************************************************
+  Automatic Hub deletion
+  =============================
+  if you no longer need a reference to a Hub object (returned by findHub)
+  you should call:
+  &gt; DecrementReferenceCount(hubObj)
+  This decrements the hub's internal reference counter.
+  When the counter hits zero, the hub will be deleted.</pre></div><!--after help -->
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="extras.hardware.SerialDevice.html">extras.hardware.SerialDevice</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.MercuryHub.html">MercuryHub</a></td>
+            <td class="m-help">Set Serial Properties&nbsp;</td>
+         </tr>
+      </table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.BoardList.html">BoardList</a></td>
+            <td class="m-help">list of detected boad IDs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.BytesAvailable.html">BytesAvailable</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.BytesAvailableFcn.html">BytesAvailableFcn</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.CommandWaitPeriod.html">CommandWaitPeriod</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.DeviceMap.html">DeviceMap</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.HubList.html">HubList</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.ParseTimeout.html">ParseTimeout</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.Port.html">Port</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.ReferenceCount.html">ReferenceCount</a></td>
+            <td class="m-help">number of device objects connected to this hub&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.ResponseTimeout.html">ResponseTimeout</a></td>
+            <td class="m-help">Ti&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.connected.html">connected</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.ConnectCOM.html">ConnectCOM</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.DecrementReferenceCount.html">DecrementReferenceCount</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.DisconnectCOM.html">DisconnectCOM</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.addlistener.html">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.delete.html">delete</a></td>
+            <td class="m-help">DeviceMap&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.eq.html">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.findHub.html">findHub</a></td>
+            <td class="m-help">Find or create a Hub with associated port&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.findobj.html">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.findprop.html">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.ge.html">ge</a></td>
+            <td class="m-help">>= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.get.html">get</a></td>
+            <td class="m-help">Get MATLAB object properties.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.getDefaultScalarElement.html">getDefaultScalarElement</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.getdisp.html">getdisp</a></td>
+            <td class="m-help">Specialized MATLAB object property display.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.gt.html">gt</a></td>
+            <td class="m-help">> (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.isvalid.html">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.le.html">le</a></td>
+            <td class="m-help"><= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.listener.html">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.lt.html">lt</a></td>
+            <td class="m-help">< (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.ne.html">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.notify.html">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.sendCommand.html">sendCommand</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.serialportlist.html">serialportlist</a></td>
+            <td class="m-help">List available serial ports&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.set.html">set</a></td>
+            <td class="m-help">Set MATLAB object property values.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.setdisp.html">setdisp</a></td>
+            <td class="m-help">Specialized MATLAB object property display.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.validateConnection.html">validateConnection</a></td>
+            <td class="m-help">this.scom.BytesAvailableFcn = '';&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.DataRecieved.html">DataRecieved</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.hardware.PI.MercuryHub.ObjectBeingDestroyed.html">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

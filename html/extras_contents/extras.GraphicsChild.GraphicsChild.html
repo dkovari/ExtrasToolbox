@@ -1,0 +1,51 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>extras.GraphicsChild/GraphicsChild - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.GraphicsChild/GraphicsChild - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.GraphicsChild/GraphicsChild">View code for extras.GraphicsChild/GraphicsChild</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.GraphicsChild/GraphicsChild</div>
+      <div class="helptext"><pre><!--helptext -->  Derivable class for graphics objects that are the children of figures,
+  panels, or axes
+ Usage:
+ 
+  If constucted with no arguments:
+        obj = obj@extras.<span class="helptopic">GraphicsChild</span>()
+    default parent will be a gcf()
+ 
+  For current axes
+        obj = obj@extras.<span class="helptopic">GraphicsChild</span>('axes')
+ 
+  To create a new uipanel
+        obj = obj@extras.<span class="helptopic">GraphicsChild</span>('uipanel')
+ 
+  You can also specify the default parent constructor using a function
+  handle
+        obj = obj@extras.<span class="helptopic">GraphicsChild</span>(@() YOUR_FUNCTION() )
+    The function specified must return a graphics object
+ 
+ 
+  After creating the <span class="helptopic">GraphicsChild</span> object, you can validate calling
+  function inputs specifying the parent using:
+ 
+  other_args = obj.CheckParentInput(varargin)
+    the function will search for the parent object in varargin and return
+    the argument list (without the parent field) to other_args
+ 
+    Examples
+        args = obj.CheckParentInput(parent,...)
+ 
+        args = obj.CheckParentInput(...,'Parent',parent);
+ 
+    CheckParentInput can only be called once</pre></div><!--after help -->
+   </body>
+</html>

@@ -1,0 +1,62 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>getHeader (extras.widgets.abstract.HGJContainer) - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">getHeader (extras.widgets.abstract.HGJContainer) - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit extras.widgets.abstract.HGJContainer/getHeader">View code for extras.widgets.abstract.HGJContainer/getHeader</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.widgets.abstract.HGJContainer/getHeader">Go to online doc for extras.widgets.abstract.HGJContainer/getHeader</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.widgets.abstract.HGJContainer/getHeader</div>
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">getHeader</span> Build and return display header text
+    S = <span class="helptopic">getHeader</span>(A) builds and returns the text used as the header when 
+    displaying the object A.  This method is called once each time A is
+    displayed.
+ 
+    Override this method as a protected method when a custom header is needed.  
+    The overriding implementation must support all of the possible states an 
+    object might be in, including scalar, non-scalar, empty, and deleted (if A
+    is an instance of a handle class).
+ 
+    The default implementation creates a header as follows:
+    If A is scalar, the class name is returned;
+    If A is non-scalar, the dimensions and class name are returned;
+    If A is a deleted handle, "handle to deleted 'classname'" is returned
+ 
+    In all cases, the class name is the simple name of the class (i.e.,
+    the non-package-qualified name), and is hyperlinked to MATLAB
+    documentation for the class, to be displayed in the helpPopup
+    window.
+ 
+    
+
+Help for <span class="helptopic">extras.widgets.abstract.HGJContainer/getHeader</span> is inherited from superclass <a href="matlab:helpwin matlab.mixin.CustomDisplay">matlab.mixin.CustomDisplay</a></pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="matlab:helpwin extras.widgets.abstract.HGJContainer">extras.widgets.abstract.HGJContainer</a>, <a href="matlab:helpwin extras.widgets.abstract.HGJContainer/getFooter">getFooter</a>, <a href="matlab:helpwin matlab.settings.SettingsGroup/getPropertyGroups">getPropertyGroups</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Defining Class</td>
+            <td>matlab.mixin.CustomDisplay</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>protected</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

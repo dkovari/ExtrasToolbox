@@ -1,0 +1,745 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>extras.widgets.abstract.CheckboxControl - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.widgets.abstract.CheckboxControl - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit extras.widgets.abstract.CheckboxControl">View code for extras.widgets.abstract.CheckboxControl</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.widgets.abstract.CheckboxControl">Go to online doc for extras.widgets.abstract.CheckboxControl</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.widgets.abstract.CheckboxControl</div>
+      <div class="helptext"><pre><!--helptext -->  Checkbox control, looks similar to controls included in the widgets
+  toolbox</pre></div><!--after help -->
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="extras.RequireWidgetsToolbox.html">extras.RequireWidgetsToolbox</a>, <a href="uiw.abstract.WidgetContainer.html">uiw.abstract.WidgetContainer</a>, <a href="uiw.mixin.HasCallback.html">uiw.mixin.HasCallback</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.CheckboxControl.html">CheckboxControl</a></td>
+            <td class="m-help">Call superclass constructors&nbsp;</td>
+         </tr>
+      </table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.BackgroundColor.html">BackgroundColor</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.BeingDeleted.html">BeingDeleted</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.BusyAction.html">BusyAction</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.ButtonDownFcn.html">ButtonDownFcn</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Callback.html">Callback</a></td>
+            <td class="m-help">function handle to call when the widget is edited&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Children.html">Children</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Clipping.html">Clipping</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Controller.html">Controller</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.CreateFcn.html">CreateFcn</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.DeleteFcn.html">DeleteFcn</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Enable.html">Enable</a></td>
+            <td class="m-help">Allow interaction with this widget [(on)|off]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.FontAngle.html">FontAngle</a></td>
+            <td class="m-help">Style of the font [(normal)|italic]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.FontName.html">FontName</a></td>
+            <td class="m-help">Name of the font &nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.FontSize.html">FontSize</a></td>
+            <td class="m-help">Size of the font&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.FontUnits.html">FontUnits</a></td>
+            <td class="m-help">Units of the font [inches|centimeters|characters|normalized|(points)|pixels]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.FontWeight.html">FontWeight</a></td>
+            <td class="m-help">Weight of the font [(normal)|bold]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.ForegroundColor.html">ForegroundColor</a></td>
+            <td class="m-help">Foreground/font color of the panel&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.HandleVisibility.html">HandleVisibility</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.InnerPosition.html">InnerPosition</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Interruptible.html">Interruptible</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.IsConstructed.html">IsConstructed</a></td>
+            <td class="m-help">Indicates widget has completed construction, useful for optimal performance to minimize redraws on launch, etc.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Label.html">Label</a></td>
+            <td class="m-help">The label (char). If set, LabelVisible changes to 'on'.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelFontAngle.html">LabelFontAngle</a></td>
+            <td class="m-help">Font angle of the label [(normal)|italic]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelFontName.html">LabelFontName</a></td>
+            <td class="m-help">Font name of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelFontSize.html">LabelFontSize</a></td>
+            <td class="m-help">Font size of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelFontUnits.html">LabelFontUnits</a></td>
+            <td class="m-help">Font units of the label [inches|centimeters|characters|normalized|(points)|pixels]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelFontWeight.html">LabelFontWeight</a></td>
+            <td class="m-help">Font weight of the label [(normal)|bold]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelForegroundColor.html">LabelForegroundColor</a></td>
+            <td class="m-help">Font color of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelHeight.html">LabelHeight</a></td>
+            <td class="m-help">Pixel height of label (applies to top|bottom location)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelHorizontalAlignment.html">LabelHorizontalAlignment</a></td>
+            <td class="m-help">Alignment of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelLocation.html">LabelLocation</a></td>
+            <td class="m-help">Placement of the label [(left)|right|top|bottom]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelSpacing.html">LabelSpacing</a></td>
+            <td class="m-help">Pixel spacing between label and widget&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelTooltipString.html">LabelTooltipString</a></td>
+            <td class="m-help">Tooltip of the label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelVisible.html">LabelVisible</a></td>
+            <td class="m-help">Toggles the label visibility [on|(off)]&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelVisible_.html">LabelVisible_</a></td>
+            <td class="m-help">Cache of LabelVisible&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.LabelWidth.html">LabelWidth</a></td>
+            <td class="m-help">Pixel width of label (applies to left|right location)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.OuterPosition.html">OuterPosition</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Padding.html">Padding</a></td>
+            <td class="m-help">Pixel spacing around the widget (applies to some widgets)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Parent.html">Parent</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Position.html">Position</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.SizeChangedFcn.html">SizeChangedFcn</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Spacing.html">Spacing</a></td>
+            <td class="m-help">Pixel spacing between controls (applies to some widgets)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Tag.html">Tag</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Tooltip.html">Tooltip</a></td>
+            <td class="m-help">Enable - > inherited from HasContainer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.TooltipString.html">TooltipString</a></td>
+            <td class="m-help">legacy alias of Tooltip&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Type.html">Type</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.UIContextMenu.html">UIContextMenu</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Units.html">Units</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.UserData.html">UserData</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Value.html">Value</a></td>
+            <td class="m-help">(1,1) logical = false; % t/f is checkbox is set&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.Visible.html">Visible</a></td>
+            <td class="m-help">PropInfo&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.h.html">h</a></td>
+            <td class="m-help">For widgets to store internal graphics objects&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.hBasePanel.html">hBasePanel</a></td>
+            <td class="m-help">The internal panel upon which the widget contents are placed&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.hCheckbox.html">hCheckbox</a></td>
+            <td class="m-help">the checkbox control&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.hLabel.html">hLabel</a></td>
+            <td class="m-help">The label control&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.hLayout.html">hLayout</a></td>
+            <td class="m-help">For widgets to store internal layout objects&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.addlistener.html">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.addprop.html">addprop</a></td>
+            <td class="m-help">Add dynamic property to MATLAB object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.assignPVPairs.html">assignPVPairs</a></td>
+            <td class="m-help">Assign the specified property-value pairs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.callCallback.html">callCallback</a></td>
+            <td class="m-help">Call the function handle based callback&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.cat.html">cat</a></td>
+            <td class="m-help">Concatenation for heterogeneous arrays&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.clo.html">clo</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.convertObject.html">convertObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.debugRedraw.html">debugRedraw</a></td>
+            <td class="m-help">For debugging only - trigger the widget's protected redraw method&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.debugResize.html">debugResize</a></td>
+            <td class="m-help">For debugging only - trigger the widget's protected redraw method&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.delete.html">delete</a></td>
+            <td class="m-help">Delete a handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.displayEmptyObject.html">displayEmptyObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.displayNonScalarObject.html">displayNonScalarObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.displayScalarHandleToDeletedObject.html">displayScalarHandleToDeletedObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.displayScalarObject.html">displayScalarObject</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.double.html">double</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.eq.html">eq</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.findHandleObjects.html">findHandleObjects</a></td>
+            <td class="m-help">Look for all encapsulated graphics objects in "h" property&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.findobj.html">findobj</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.findprop.html">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.ge.html">ge</a></td>
+            <td class="m-help">>= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.get.html">get</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getDefaultScalarElement.html">getDefaultScalarElement</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getDescriptiveLabelForDisplay.html">getDescriptiveLabelForDisplay</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getFooter.html">getFooter</a></td>
+            <td class="m-help">Build and return display footer text&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getHeader.html">getHeader</a></td>
+            <td class="m-help">Build and return display header text&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getInnerPixelSize.html">getInnerPixelSize</a></td>
+            <td class="m-help">Return the widget's inner pixel size&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getLabelPropertyGroup.html">getLabelPropertyGroup</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getPixelPosition.html">getPixelPosition</a></td>
+            <td class="m-help">Return the container's pixel position&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getPixelSize.html">getPixelSize</a></td>
+            <td class="m-help">Return the container's outer pixel size&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getPropertyGroups.html">getPropertyGroups</a></td>
+            <td class="m-help">Construct an array of property groups &nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.getWidgetPropertyGroup.html">getWidgetPropertyGroup</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.gt.html">gt</a></td>
+            <td class="m-help">> (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.horzcat.html">horzcat</a></td>
+            <td class="m-help">Horizontal concatenation for heterogeneous arrays&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.isprop.html">isprop</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.isvalid.html">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.java.html">java</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.le.html">le</a></td>
+            <td class="m-help"><= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.listener.html">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.loadobj.html">loadobj</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.lt.html">lt</a></td>
+            <td class="m-help">< (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.ne.html">ne</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.notify.html">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.onContainerBeingDestroyed.html">onContainerBeingDestroyed</a></td>
+            <td class="m-help">Triggered on container destroyed - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.onContainerResized.html">onContainerResized</a></td>
+            <td class="m-help">Triggered on resize of the widget's container&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.onEdit.html">onEdit</a></td>
+            <td class="m-help">triggered on text changes&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.onEnableChanged.html">onEnableChanged</a></td>
+            <td class="m-help">Handle updates to Enable state - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.onResized.html">onResized</a></td>
+            <td class="m-help">Handle changes to widget size - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.onStyleChanged.html">onStyleChanged</a></td>
+            <td class="m-help">Handle updates to style changes - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.onVisibleChanged.html">onVisibleChanged</a></td>
+            <td class="m-help">Handle updates to Visible state - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.redraw.html">redraw</a></td>
+            <td class="m-help">Handle state changes that may need UI redraw - subclass may override&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.removeArg.html">removeArg</a></td>
+            <td class="m-help">Remove specified argument from the rest of P-V pairs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.reset.html">reset</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.set.html">set</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.splitArgs.html">splitArgs</a></td>
+            <td class="m-help">Separate specified P-V arguments from the rest of P-V pairs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.updateUI.html">updateUI</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.vertcat.html">vertcat</a></td>
+            <td class="m-help">Vertical concatenation for heterogeneous arrays&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.ObjectBeingDestroyed.html">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.PropertyAdded.html">PropertyAdded</a></td>
+            <td class="m-help">Notifies listeners that a dynamic property has been added.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="extras.widgets.abstract.CheckboxControl.PropertyRemoved.html">PropertyRemoved</a></td>
+            <td class="m-help">Notifies listeners that a dynamic property has been removed.&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

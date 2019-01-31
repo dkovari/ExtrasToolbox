@@ -1,0 +1,36 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>extras.getListenable - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.getListenable - MATLAB File Help</td>
+            <td class="subheader-right"><a href="matlab:edit extras.getListenable">View code for extras.getListenable</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.getListenable</div>
+      <div class="helptext"><pre><!--helptext -->  Return an alphabetical list of Observable properties in handle HNDL
+    [observable,nonObservable,eventNames] = <span class="helptopic">getListenable</span>(hndl)
+    
+ 
+  Brett Shoelson, PhD
+  brett.shoelson@mathworks.com
+  11/11/2015
+ 
+ %% EXAMPLE Property Listener:
+  f = figure;
+  d = dir;
+  a = addlistener(f,&#x85;
+  &#x91;ApplicationData&#x92;,&#x92;PostSet&#x92;,&#x85;
+  @(~,~) disp(&#x91;appdatachanged&#x92;));
+ %% This triggers the callback:
+  f.ApplicationData.test = d;
+ %% This does not. WHY?
+  setappdata(f,&#x92;test&#x92;,d)</pre></div><!--after help -->
+   </body>
+</html>

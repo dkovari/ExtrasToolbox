@@ -1,0 +1,88 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>getDefaultScalarElement (matlab.mixin.Heterogeneous) - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">getDefaultScalarElement (matlab.mixin.Heterogeneous) - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit matlab.mixin.Heterogeneous.getDefaultScalarElement">View code for matlab.mixin.Heterogeneous.getDefaultScalarElement</a></td>
+            <td class="subheader-right"><a href="matlab:doc matlab.mixin.Heterogeneous.getDefaultScalarElement">Go to online doc for matlab.mixin.Heterogeneous.getDefaultScalarElement</a></td>
+         </tr>
+      </table>
+      <div class="title">matlab.mixin.Heterogeneous.getDefaultScalarElement</div>
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">getDefaultScalarElement</span>   Create a default object for heterogeneous arrays
+     The <span class="helptopic">getDefaultScalarElement</span> method is called automatically by MATLAB 
+     when an expression such as indexed assignment creates gaps in any
+     array derived from matlab.mixin.Heterogeneous.  It is not legal to
+     have gaps in an array of  MATLAB objects, so the gaps are filled in
+     with default objects returned by this method.
+ 
+     Consider the following heterogeneous hierarchy, with the root class
+     Root defining the set of classes that can be combined together into a
+     valid heterogeneous array:
+ 
+                        matlab.mixin.Heterogeneous
+                                   |
+                                  Root
+                               /        \
+                            Middle       LeafD
+                          /    |   \ 
+                     LeafA   LeafB  LeafC
+ 
+     %Example #1:
+     o = LeafA;
+     o(2) = LeafB; 
+     o(5) = LeafC;
+ 
+     In the sequence above, the assignment to array position 5 leaves a 
+     gap in the array, because positions o(3) and o(4) are not explicitly
+     assigned values.  MATLAB will call the <span class="helptopic">getDefaultScalarElement</span>
+     method to fill the gap. 
+ 
+     The <span class="helptopic">getDefaultScalarElement</span> method has the following signature, and 
+     must be implemented as static, sealed, and protected:
+         obj = <span class="helptopic">getDefaultScalarElement</span>
+ 
+     The matlab.mixin.Heterogeneous class provides a default implementation 
+     of <span class="helptopic">getDefaultScalarElement</span>, which will return an instance of the root 
+     class if the root class is not abstract, and will error otherwise.  
+     If the root class is abstract, or it is not an appropriate default 
+     object for the collection of classes, override <span class="helptopic">getDefaultScalarElement</span> 
+     in the root class to return an instance of some other member of the 
+     class hierarchy.  
+ 
+     <span class="helptopic">getDefaultScalarElement</span> can return an instance of any class
+     derived from Root.  The class of the resulting array will then be
+     determined on the basis of the specific class instances in the 
+     resulting array.  MATLAB will issue an error if the value returned
+     by <span class="helptopic">getDefaultScalarElement</span> is not scalar or is not a valid member of
+     the hierarchy of classes.
+ 
+     The <span class="helptopic">getDefaultScalarElement</span> method is also called when loading an 
+     object  from  a MAT-file if a specific class definition cannot be 
+     found or contains an error.  MATLAB will issue a warning if a default 
+     object is being used in place of a specific object due to an error.</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="matlab:helpwin matlab.mixin.Heterogeneous">matlab.mixin.Heterogeneous</a>, <a href="matlab:helpwin load">load</a>
+</div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>protected</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </table>
+   </body>
+</html>

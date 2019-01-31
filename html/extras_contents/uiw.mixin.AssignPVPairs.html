@@ -1,0 +1,239 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>uiw.mixin.AssignPVPairs - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">uiw.mixin.AssignPVPairs - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit uiw.mixin.AssignPVPairs">View code for uiw.mixin.AssignPVPairs</a></td>
+            <td class="subheader-right"><a href="matlab:doc uiw.mixin.AssignPVPairs">Go to online doc for uiw.mixin.AssignPVPairs</a></td>
+         </tr>
+      </table>
+      <div class="title">uiw.mixin.AssignPVPairs</div>
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">AssignPVPairs</span> - Mixin to assign PV pairs to public properties
+  ---------------------------------------------------------------------
+  This mixin class provides a method to assign PV pairs to populate
+  public properties of a handle object. This is typically performed in
+  a constructor.
+ 
+  The class must inherit this object to access the method. Call the
+  protected method like this to assign properties:
+ 
+      % Assign PV pairs to properties
+      obj.assignPVPairs(varargin{:});
+ 
+        or
+ 
+      % Assign PV pairs to properties and return non-matches
+      UnmatchedPairs = obj.assignPVPairs(varargin{:});
+ 
+  Methods of uiw.abstract.<span class="helptopic">AssignPVPairs</span>:
+ 
+    varargout = assignPVPairs(obj,varargin) - assigns the
+    property-value pairs to matching properties of the object</pre></div><!--after help -->
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="handle.html">handle</a>, <a href="matlab.mixin.SetGet.html">matlab.mixin.SetGet</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.AssignPVPairs.html">AssignPVPairs</a></td>
+            <td class="m-help">Mixin to assign PV pairs to public properties&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.addlistener.html">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.assignPVPairs.html">assignPVPairs</a></td>
+            <td class="m-help">Assign the specified property-value pairs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.delete.html">delete</a></td>
+            <td class="m-help">Delete a handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.eq.html">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.findobj.html">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.findprop.html">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.ge.html">ge</a></td>
+            <td class="m-help">>= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.get.html">get</a></td>
+            <td class="m-help">Get MATLAB object properties.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.getdisp.html">getdisp</a></td>
+            <td class="m-help">Specialized MATLAB object property display.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.gt.html">gt</a></td>
+            <td class="m-help">> (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.isvalid.html">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.le.html">le</a></td>
+            <td class="m-help"><= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.listener.html">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.lt.html">lt</a></td>
+            <td class="m-help">< (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.ne.html">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.notify.html">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.removeArg.html">removeArg</a></td>
+            <td class="m-help">Remove specified argument from the rest of P-V pairs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.set.html">set</a></td>
+            <td class="m-help">Set MATLAB object property values.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.setdisp.html">setdisp</a></td>
+            <td class="m-help">Specialized MATLAB object property display.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.splitArgs.html">splitArgs</a></td>
+            <td class="m-help">Separate specified P-V arguments from the rest of P-V pairs&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="uiw.mixin.AssignPVPairs.ObjectBeingDestroyed.html">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

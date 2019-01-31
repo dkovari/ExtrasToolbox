@@ -1,0 +1,212 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <link rel="stylesheet" href="html/extras_contents/helpwin.css">
+      <title>extras.SessionManager.Session - MATLAB File Help</title>
+   </head>
+   <body>
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tr class="subheader">
+            <td class="headertitle">extras.SessionManager.Session - MATLAB File Help</td>
+            <td class="subheader-left"><a href="matlab:edit extras.SessionManager.Session">View code for extras.SessionManager.Session</a></td>
+            <td class="subheader-right"><a href="matlab:doc extras.SessionManager.Session">Go to online doc for extras.SessionManager.Session</a></td>
+         </tr>
+      </table>
+      <div class="title">extras.SessionManager.Session</div>
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">extras.SessionManager.Session</span>
+  Class interface for communicating with C++ objects that outlive calls to
+  a mex function built using the SessionManager framework.
+  
+  Mex function should be written using the framework included in
+  mexDispatch.h and ObjectManager.h
+ 
+ 
+  Example C++ Code
+ =================================
+  struct myClass{
+  int myVal = 0;
+  int retOne(){ return 1;}
+  };
+  
+  #include "mexDispatch.h"
+  #include "ObjectManager.h"
+  
+  ObjectManager&lt;myClass&gt; manager;
+  
+  // Create new instance
+  MEX_DEFINE(new) (int nlhs, mxArray* plhs[],
+  	int nrhs, const mxArray* prhs[]) {
+  	int64_t val = manager.create(new myClass);
+  	plhs[0] = mxCreateNumericMatrix(1, 1, mxINT64_CLASS, mxREAL);
+  	*(((int64_t*)mxGetData(plhs[0]))) = val;
+  }
+  
+  //delete instance
+  MEX_DEFINE(delete) (int nlhs, mxArray* plhs[],
+  	int nrhs, const mxArray* prhs[])
+  {
+  	if (nrhs &lt; 1) {
+  		throw(std::runtime_error("requires intptr argument specifying object to destruct"));
+  	}
+  	manager.destroy(prhs[0]);
+  }
+  
+  //define retOne method
+  MEX_DEFINE(retOne) (int nlhs, mxArray* plhs[],
+  	int nrhs, const mxArray* prhs[])
+  {
+      if (nrhs &lt; 1) {
+  		throw(std::runtime_error("requires intptr argument specifying object"));
+  	}
+      plhs[0] = mxCreateDoubleScalar(manager.get(prhs[0])-&gt;retOne());
+  }
+  
+  // Implement mexFunction using dispatch
+  MEX_DISPATCH</pre></div><!--after help -->
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="handle.html">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.SessionManager.Session.Session.html">Session</a></td>
+            <td class="m-help">extras.SessionManager.Session&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.addlistener.html">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.delete.html">delete</a></td>
+            <td class="m-help">Delete a handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.eq.html">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.findobj.html">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.findprop.html">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.ge.html">ge</a></td>
+            <td class="m-help">>= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.gt.html">gt</a></td>
+            <td class="m-help">> (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.isvalid.html">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.le.html">le</a></td>
+            <td class="m-help"><= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.listener.html">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.lt.html">lt</a></td>
+            <td class="m-help">< (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.ne.html">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="extras.SessionManager.Session.notify.html">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="extras.SessionManager.Session.ObjectBeingDestroyed.html">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>
