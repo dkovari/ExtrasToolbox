@@ -8,9 +8,14 @@ end
 %% determine best main control style
 % 'edit' 'popupmenu' 'popedit' 'checkbox'
 
+HideAuxControls = false; %flag to hide buttons and slider
 ControlType = 'edit'; %default to field
 if strcmpi(this.ValueType,'boolean')
     ControlType = 'checkbox';
+    HideAuxControls = true;
+elseif strcmpi(this.ValueType,'command')
+    ControlType = 'button';
+    HideAuxControls = true;
 end
 
 if ~this.HidePopupMenu
@@ -153,6 +158,24 @@ switch ControlType
             'Value',this.Value);
         %% style flag
         this.FieldControlStyle = 'checkbox';
+    case 'button'
+        %% create/init control
+        if isempty(this.FieldControl) || ~isvalid(this.FieldControl) || ~isa(this.FieldControl,'matlab.ui.control.UIControl')
+            try
+                delete(this.FieldControl)
+            catch
+            end
+            this.FieldControl = uicontrol(this.FieldButtonHBox,...
+                'Callback',@(~,~) this.FieldControlCallback(),...
+                'HandleVisibility','callback',...
+                'Interruptible','off');
+            
+            this.addHasEnableObjects(this.FieldControl);
+        end
+        set(this.FieldControl,...
+            'Style','button',...
+            'String','Execute');
+        this.FieldControlStyle = 'button'; 
     otherwise
         error('shouldnt be here!!!');
 end

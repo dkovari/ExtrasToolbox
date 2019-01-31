@@ -36,6 +36,8 @@ switch this.FieldControlStyle
         this.FieldControl.Value = this.Value;
     case 'checkbox'
         this.FieldControl.Value = this.Value;
+    case 'button'
+        %do nothing
 end
 
 %% Update slider

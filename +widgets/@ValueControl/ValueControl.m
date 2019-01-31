@@ -20,7 +20,10 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
     %% get/set
     methods
         function set.ValueType(this,vtype)
-            this.ValueType = validatestring(vtype,{'string','float','integer','boolean'});
+            if ~ischar(vtype)||isstring(vtype)
+                vtype = char(vtype);
+            end
+            this.ValueType = validatestring(vtype,{'string','float','integer','boolean','command'});
             this.updateControls();
         end
         %function set.SliderOrientation(this,sorient)
@@ -47,6 +50,11 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
             this.HideIncrementButtons = value;
             this.updateControls();
         end
+    end
+    
+    %% Events
+    events
+        UserInteraction %event called when user interacts with the controls
     end
     
     %% public visible, internal changable
@@ -183,10 +191,16 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
                 return;
             end
             if this.hasIncrement
+                Evt = uiw.event.EventData('Interaction','Increment','OldValue',this.Value,'NewValue',[]);
                 try
                 this.Value = this.Value + this.Increment;
                 catch
                 end
+                Evt.NewValue = this.Value;
+                
+                %% fire callback
+                this.callCallback(Evt);
+                notify(this,'UserInteraction',Evt);
             end
         end
         
@@ -195,10 +209,16 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
                 return;
             end
             if this.hasIncrement
+                Evt = uiw.event.EventData('Interaction','Decrement','OldValue',this.Value,'NewValue',[]);
                 try
                 this.Value = this.Value - this.Increment;
                 catch
                 end
+                Evt.NewValue = this.Value;
+                
+                %% fire callback
+                this.callCallback(Evt);
+                notify(this,'UserInteraction',Evt);
             end
         end
 
@@ -245,6 +265,8 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
                     value = validateValue@extras.widgets.mixin.HasIncrement(this,value);
                     value = validateValue@extras.widgets.mixin.HasAllowedValues(this,value);
                     value = validateValue@extras.widgets.mixin.HasValueLimits(this,value);
+                case 'command'
+                    value = NaN;
             end
             
         end
@@ -266,10 +288,17 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
         end
 
         function sliderCallback(this)
+            
             if ~isvalid(this)||isempty(this.Slider)||~isvalid(this.Slider)
                 return;
             end
+            
+            Evt = uiw.event.EventData('Interaction','Slider Changed','OldValue',this.Value,'NewValue',[]);
             this.Value = this.Slider.Value;
+            Evt.NewValue = this.Value;
+            %% fire callback
+            this.callCallback(Evt);
+            notify(this,'UserInteraction',Evt);
         end
         
     end
