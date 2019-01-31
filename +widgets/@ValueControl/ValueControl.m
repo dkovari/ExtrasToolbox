@@ -7,7 +7,14 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
         extras.widgets.mixin.HasAllowedValues & ...
         extras.widgets.mixin.HasIncrement & ...
         extras.widgets.mixin.HasTooltip
-    
+% UI widget for controlling a value
+% Automatically picks best display for numeric and string data
+% implements:
+%       Min/Max
+%       Increment
+%       AllowedValues
+
+    %% Public Controllable properties
     properties (SetObservable=true,AbortSet=true)
         HideSlider (1,1) logical = false;
         HidePopupMenu (1,1) logical = false;
