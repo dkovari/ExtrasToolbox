@@ -1,4 +1,4 @@
-classdef stackviewer < extras.GraphicsChild
+classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
 %% Interactive viewer for displaying image stacks or video clips
 %
 % Usage:

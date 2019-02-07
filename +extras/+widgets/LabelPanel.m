@@ -228,12 +228,12 @@ classdef LabelPanel < handle & ...
     
     %% LabelRelated
     properties  (Access=public, AbortSet, SetObservable)
-        LabelPosition = 'left'
-        LabelOrientation = 'horizontal'
-        LabelVerticalAlignment = 'center';
-        LabelHorizontalAlignment = 'leading';
-        LabelWidth = -0.5;
-        LabelHeight = -0.5
+        LabelPosition = 'left'; %Label Position, relative to panel
+        LabelOrientation = 'horizontal'; %Label angle orientation
+        LabelVerticalAlignment = 'center'; %Alignment of text
+        LabelHorizontalAlignment = 'leading'; %Alignment of text
+        LabelWidth (1,1) double = -0.5; %Width of label if using left/right position (negative is relative fraction of parent, see uix.HBox)
+        LabelHeight (1,1) double = -0.5; %Height of label, if using top/bottom position (negative is relative fraction of parent, see uix.VBox)
     end
     
     %% label related get/set
@@ -269,11 +269,36 @@ classdef LabelPanel < handle & ...
                 this.LabelHorizontalAlignment =validatestring(value,{'left','center','right','leading','trailing'});
             end
         end
+        
+        function val = get.LabelWidth(this)
+            if isempty(this.Label)
+                val = 1;
+            else
+                val = this.LabelWidth;
+            end
+        end
+        function set.LabelWidth(this,val)
+            this.LabelWidth = val;
+            this.redraw();
+        end
+        function val = get.LabelHeight(this)
+            if isempty(this.Label)
+                val = 1;
+            else
+                val = this.LabelHeight;
+            end
+        end
+        function set.LabelHeight(this,val)
+            this.LabelHeight = val;
+            this.redraw();
+        end
     end
     
     %% internal only
-    properties(Access=private)
+    properties (Access=protected)
         hLabel
+    end
+    properties(Access=private)
         adding_hLabel = false;
         LabelPanel_ParentSetListener
         LabelPanel_hLabel_Contstructed = false;
@@ -284,6 +309,9 @@ classdef LabelPanel < handle & ...
         function this = LabelPanel(varargin)
             %% add temporary parent-set listener
             this.LabelPanel_ParentSetListener = addlistener(this,'Parent','PostSet',@(~,~) this.LabelPanel_ParentSetCallback());
+            
+            %% label change listener
+            addlistener(this,'Label','PostSet',@(~,~) this.redraw);
             
             %% set properties
             

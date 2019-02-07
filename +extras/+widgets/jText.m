@@ -1,7 +1,8 @@
 classdef jText <  extras.RequireGuiLayoutToolbox & ...
          extras.widgets.abstract.HGJContainer & ...
          extras.widgets.mixin.AssignNV & ...
-         matlab.mixin.CustomDisplay
+         matlab.mixin.CustomDisplay & ...
+         extras.widgets.mixin.HasTooltip
      
     properties (AbortSet=true, SetObservable=true)
         String %char
@@ -172,5 +173,15 @@ classdef jText <  extras.RequireGuiLayoutToolbox & ...
                 this.jLabel.setVerticalAlignment(numeric_val)
             end
         end
-    end 
+    end
+    %% Override
+    methods (Access=protected)
+        function onTooltipChanged(this)            
+            try
+                this.jLabel.setToolTipText(this.Tooltip);
+            catch
+            end
+            
+        end
+    end
 end
