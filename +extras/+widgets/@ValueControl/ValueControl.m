@@ -106,6 +106,7 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
             this.ValueControl_IsConstructed = true;
             
             %% set public
+            varargin = this.setParentFromArgs(varargin{:});
             this.setPublicProperties(varargin{:});
             
             this.updateControls();

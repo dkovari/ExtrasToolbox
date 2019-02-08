@@ -1,4 +1,4 @@
-classdef colormapUI < extras.GraphicsChild & extras.uixDerivative & extras.RequireWidgetsToolbox
+classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & extras.RequireWidgetsToolbox
 % GUI for interactively building a colormap
     
     %% Graphics Containers
@@ -18,8 +18,6 @@ classdef colormapUI < extras.GraphicsChild & extras.uixDerivative & extras.Requi
         
         ImageHistogram
         ImageHistXlimListener
-        
-        
         
     end
     
@@ -253,6 +251,7 @@ classdef colormapUI < extras.GraphicsChild & extras.uixDerivative & extras.Requi
             set(this.CmapImage,...
                 'PickableParts','none',...
                 'HitTest','off');
+            
             
             
             %context menu

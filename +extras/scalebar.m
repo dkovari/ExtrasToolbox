@@ -28,6 +28,9 @@ classdef scalebar < extras.GraphicsChild
         changeXYfromPCL = false; %flag if internal change to XY
         changeXYfromLocation = false;
         ContextMenu
+        
+        YDirListener
+        XDirListener
     end
     properties(Dependent)
         Color;
@@ -124,13 +127,73 @@ classdef scalebar < extras.GraphicsChild
                 return;
             end
             
-            this.changeXYfromLocation = true;
             this.Location = val;
+            
+            this.updateLocation();
+            
+        end
+        function set.Color(this,val)
+            if ~iscell(val)
+                val = {val,val};
+            end
+            this.Line.Color = val{1};
+            this.Text.Color = val{2};
+        end
+        function clrs = get.Color(this)
+            clrs = {[],[]};
+            clrs{1} = this.Line.Color;
+            clrs{2} = this.Text.Color;
+        end
+        function txt = get.Label(this)
+            txt = sprintf('%g %s',this.Length,this.Unit);
+        end
+        function set.DragEnabled(this,val)
+            assert(isscalar(val),'DragEnable must be scalar and convertable to logical');
+            val = logical(val);
+            this.DragEnabled = val;
+
+            this.Line.DragEnabled = val;
+        end
+    end
+    
+    methods(Access=private)
+        function updateLocation(this)
+            
+            if isempty(this.Parent)||~isvalid(this.Parent)
+                return;
+            end
+            
+            val = this.Location;
+            this.changeXYfromLocation = true;
+
             XL = this.Parent.XLim;
             dX = diff(XL);
             YL = this.Parent.YLim;
             dY = diff(YL);
             dL = this.Length/this.Scale;
+            
+            if strcmpi(this.Parent.YDir,'reverse')
+                kn = strfind(val,'north');
+                ks = strfind(val,'south');
+                if ~isempty(kn)
+                    val(kn:kn+4) = 'south';
+                end
+                if ~isempty(ks)
+                    val(ks:ks+4) = 'north';
+                end
+            end
+            
+            if strcmpi(this.Parent.XDir,'reverse')
+                kn = strfind(val,'east');
+                ks = strfind(val,'west');
+                if ~isempty(kn)
+                    val(kn:kn+3) = 'west';
+                end
+                if ~isempty(ks)
+                    val(ks:ks+3) = 'east';
+                end
+            end
+            
             switch val
                 case 'northwest'
                     X = dL/2 + 0.04*dX + XL(1);
@@ -165,30 +228,9 @@ classdef scalebar < extras.GraphicsChild
                     Y = mean(YL);
                     this.XY = [X,Y];
             end
-            this.changeXYfromLocation = false;
             
-        end
-        function set.Color(this,val)
-            if ~iscell(val)
-                val = {val,val};
-            end
-            this.Line.Color = val{1};
-            this.Text.Color = val{2};
-        end
-        function clrs = get.Color(this)
-            clrs = {[],[]};
-            clrs{1} = this.Line.Color;
-            clrs{2} = this.Text.Color;
-        end
-        function txt = get.Label(this)
-            txt = sprintf('%g %s',this.Length,this.Unit);
-        end
-        function set.DragEnabled(this,val)
-            assert(isscalar(val),'DragEnable must be scalar and convertable to logical');
-            val = logical(val);
-            this.DragEnabled = val;
+            this.changeXYfromLocation = false;
 
-            this.Line.DragEnabled = val;
         end
     end
     
@@ -251,15 +293,23 @@ classdef scalebar < extras.GraphicsChild
             this.AxesOrderListener = addlistener(this.Parent,'ChildAdded',@(~,~) this.bringToFront);
             %% Turn off BeingConstructed flag
             this.BeingConstructed = false;
-            
+
             %% Set others
             set(this,varargin{:});
+            
+            this.updateLocation();
+            
+            %% listener to parent dir change
+            this.YDirListener = addlistener(this.Parent,'YDir','PostSet',@(~,~) this.updateLocation());
+            this.XDirListener = addlistener(this.Parent,'XDir','PostSet',@(~,~) this.updateLocation());
         end
     end
     
     %% delete
     methods
         function delete(this)
+            delete(this.YDirListener);
+            delete(this.XDirListener);
             delete(this.AxesOrderListener);
             delete(this.ContextMenu);
             delete(this.PositionListenerX);
@@ -357,7 +407,7 @@ classdef scalebar < extras.GraphicsChild
             this.Text.Position = this.XY;
             switch(this.Orientation)
                 case 'horizontal'
-                    if this.XY(2) <= mean(YL) %below middle of axes
+                    if strcmpi(this.Parent.YDir,'normal') && this.XY(2) <= mean(YL) || strcmpi(this.Parent.YDir,'reverse') && this.XY(2) >= mean(YL) %below middle of axes
                         this.Text.VerticalAlignment = 'bottom';
                         this.Text.HorizontalAlignment = 'center';
                         this.Text.Rotation = 0;
@@ -367,7 +417,7 @@ classdef scalebar < extras.GraphicsChild
                         this.Text.Rotation = 0;
                     end
                 case 'vertical'
-                    if this.XY(1) <= mean(XL) %Left side
+                    if strcmpi(this.Parent.YDir,'normal') && this.XY(1) <= mean(XL) || strcmpi(this.Parent.YDir,'reverse') && this.XY(1) >= mean(XL) %Left side
                         this.Text.VerticalAlignment = 'top';
                         this.Text.HorizontalAlignment = 'center';
                         this.Text.Rotation = 90;

@@ -38,6 +38,10 @@ switch this.FieldControlStyle
         this.FieldControl.Value = this.Value;
     case 'button'
         %do nothing
+        try
+            this.FieldControl.String = num2str(this.Value);
+        catch
+        end
 end
 
 %% Update slider

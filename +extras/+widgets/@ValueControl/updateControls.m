@@ -173,8 +173,12 @@ switch ControlType
             this.addHasEnableObjects(this.FieldControl);
         end
         set(this.FieldControl,...
-            'Style','button',...
+            'Style','pushbutton',...
             'String','Execute');
+        try
+            this.FieldControl.String = num2str(this.Value);
+        catch
+        end
         this.FieldControlStyle = 'button'; 
     otherwise
         error('shouldnt be here!!!');

@@ -314,12 +314,7 @@ classdef LabelPanel < handle & ...
             addlistener(this,'Label','PostSet',@(~,~) this.redraw);
             
             %% set properties
-            
-            if nargin>0 && ~ischar(varargin{1}) && numel(varargin{1})==1 && isgraphics(varargin{1})
-                this.Parent = varargin{1};
-                varargin(1) = [];
-            end
-            
+            varargin = this.setParentFromArgs(varargin{:});
             this.setPublicProperties(varargin{:});
         end
     end
@@ -359,8 +354,36 @@ classdef LabelPanel < handle & ...
     end
     
     %% Container Related
+    methods (Access=protected,Sealed)
+        function [args,found_parent] = setParentFromArgs(this,varargin)
+            %sets Parent property using variable arguments
+            % looks for parent as first argument or in 'Name',Value pairs
+            args = varargin;
+            found_parent = false;
+            if nargin>0 && ~ischar(args{1}) && numel(args{1})==1 && isgraphics(args{1})
+                this.Parent = args{1};
+                args(1) = [];
+                found_parent = true;
+            end
+            pid = find(strcmpi('Parent',args));
+            if found_parent && ~isempty(pid)
+                error('Parent specified multiple times');
+            elseif numel(pid)>1
+                error('Parent specified multiple times');
+            elseif ~isempty(pid)&&pid==numel(args)
+                error('Parent flag found in args but handle did not follow')
+            elseif ~isempty(pid)&&~isgraphics(args{pid+1})
+                error('specified parent is not a valid graphics object');
+            elseif ~isempty(pid)
+                this.Parent = args{pid+1};
+                args(pid:pid+1) = [];
+                found_parent = true;
+            end            
+        end
+    end
+    
     methods( Access = protected )
-        
+
         function value = getContents(obj)
             value = obj.Contents_;
         end

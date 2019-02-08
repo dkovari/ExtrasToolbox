@@ -3,11 +3,12 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
 %
 % Usage:
 % stackviewer([HxWxN])
+% stackviewer([HxWx3xN])
 % stackviewer({[HxW],[HxW],...})
 % stackviewer('path/to/images/*.tif')
 % stackviewer('path/to/images')
 % stackviewer({path/img1.tif','path2/img2.tif',...})
-% stackviewer(Structwithnames)
+% stackviewer(Structwithnames) <-- use with dir(): e.g stackviewer(dir(mytiffs_*.tif)) 
 %
 % stackviewer(fig_handle,__)
 % stackviewer('Parent',fig_handle,'StackData',__)
@@ -115,12 +116,48 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
         LevelsUI
     end
     
+    %% Create figure method
+    methods(Hidden,Static)
+        function hFig = createFig()
+            hFig = figure('Name','Image Stack Viewer',...
+                    'NumberTitle','off',...
+                    'MenuBar','none',...
+                    'ToolBar','figure');
+           
+            %% disable some of the toolbar controls
+            %New Figure
+            delete(findall(hFig,'ToolTipString','New Figure'));
+            %Open File
+            delete(findall(hFig,'ToolTipString','Open File'));
+            %Print Figure
+            delete(findall(hFig,'ToolTipString','Print Figure'));
+            %Edit Plot
+            delete(findall(hFig,'ToolTipString','Edit Plot'));
+            %Rotate 3D
+            delete(findall(hFig,'ToolTipString','Rotate 3D'));
+            %Data Cursor
+            delete(findall(hFig,'ToolTipString','Data Cursor'));
+            %Brush/Select Data
+            delete(findall(hFig,'ToolTipString','Brush/Select Data'));
+            %Link Plot
+            delete(findall(hFig,'ToolTipString','Link Plot'));
+            %Insert Legend
+            delete(findall(hFig,'ToolTipString','Insert Legend'));
+            %Hide Plot Tools
+            delete(findall(hFig,'ToolTipString','Hide Plot Tools'));
+            %Show Plot Tools and Dock Figure
+            delete(findall(hFig,'ToolTipString','Show Plot Tools and Dock Figure'));
+            
+        end
+    end
+    
     %% Create/Delete
     methods
         function this = stackviewer(varargin)
             %% Setup Parent
             %initiate graphics parent related variables
-            this@extras.GraphicsChild(@() figure());
+            this@extras.GraphicsChild(@() extras.stackviewer.createFig());
+            
             %look for parent specified in arguments
             varargin = this.CheckParentInput(varargin{:});
             
@@ -146,7 +183,14 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
             
             this.Image = imagesc('Parent',this.ImageAxes,'HandleVisibility','off');
             
+            %% Modify axes to look nice
+            axis(this.ImageAxes,'tight');
             axis(this.ImageAxes,'image');
+            try
+                set(this.ImageAxes,'LooseInset',get(this.ImageAxes,'TightInset')); %expand axes to fill figure
+            catch
+            end
+            %Invert Y-axis for normal image display
             this.ImageAxes.YDir = 'reverse';
 
             
