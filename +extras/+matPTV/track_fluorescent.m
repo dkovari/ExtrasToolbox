@@ -183,7 +183,7 @@ for n=1:numel(trackResults.track)
 end
 
 %% view results
-%extras.matPTV.trackviewer(trackResults);
+extras.matPTV.trackviewer(trackResults);
 
 
 %% set output
