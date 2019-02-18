@@ -20,7 +20,7 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
         HidePopupMenu (1,1) logical = false;
         HideIncrementButtons (1,1) logical = false;
         
-        ValueType = 'float'; % type of values to accept possible values 'float' 'integet' 'string' 'boolean'
+        ValueType = 'float'; % type of values to accept possible values 'float' 'integer' 'string' 'boolean'
         RememberValueHistory (1,1) logical = false;
         %SliderOrientation = 'horizontal';
     end
@@ -82,7 +82,7 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
         DecrementButton %handle to decrement button
         Slider %handle to slider
         
-        FieldControlStyle %char array specifying FieldControl type
+        FieldControlStyle ='edit';%char array specifying FieldControl type
     end
     
     %% Constructor

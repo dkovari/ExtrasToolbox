@@ -14,6 +14,7 @@ addParameter(p,'Memory',1,@(x) isscalar(x)&&isnumeric(x)&&x>=1);
 addParameter(p,'GraphicDebug',false,@(x) isscalar(x));
 addParameter(p,'ShowProgress',true,@(x) isscalar(x));
 addParameter(p,'ExpandingSearch',true,@(x) isscalar(x));
+addParameter(p,'PositionDims',[1,2]);
 
 
 parse(p,varargin{:});
@@ -28,6 +29,8 @@ USE_LENGTH = p.Results.MinLength>1;
 PROG_BAR = p.Results.ShowProgress;
 
 EXP_DISP = p.Results.ExpandingSearch;
+
+POS_DIMS = p.Results.PositionDims;
 
 nFrames = numel(P);
 %check dims
@@ -110,7 +113,7 @@ end
             partdist_calced{f}{n}(next_f) = true;
             %build dist array cause it's empty
             partdist{f}{n}{next_f} = sqrt( sum( ...
-                bsxfun(@minus,P{next_f},P{f}(n,:)).^2 ,2) ); %calc dist
+                bsxfun(@minus,P{next_f}(:,POS_DIMS),P{f}(n,POS_DIMS)).^2 ,2) ); %calc dist
             partdist_id{f}{n}{next_f} = 1:size(P{next_f},1);
             
             if EXP_DISP
@@ -253,6 +256,7 @@ tracks = {};
     end
 if PROG_BAR
     hWait = waitbar(0,'Assembling Track List');
+    tic_t = tic;
 end
 nT=0;
 for f=nFrames:-1:1
@@ -266,15 +270,15 @@ for f=nFrames:-1:1
         
         assemble(nT,P_list{f}(1),f);
     end
-    if PROG_BAR
+    if PROG_BAR && toc(tic_t)>0.75
         waitbar((nFrames-f+1)/nFrames,hWait);
+        tic_t = tic;
     end
 end
 if PROG_BAR
     close(hWait);
 end
 
-disp(numel(tracks))
 if USE_LENGTH
     tracks(trk_framecount<p.Results.MinLength) = [];
 end

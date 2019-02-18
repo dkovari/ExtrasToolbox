@@ -1,4 +1,4 @@
-function Answer=inputdlg(Prompt, Title, NumLines, DefAns, Resize)
+function Answer=inputdlg(Prompt, Title, NumLines, DefAns, OPTIONS,varargin)
 %INPUTDLG Input dialog box.
 %
 %  MODIFIED: When user hit "enter" the input box closes.
@@ -55,7 +55,6 @@ function Answer=inputdlg(Prompt, Title, NumLines, DefAns, Resize)
 %%%%%%%%%%%%%%%%%%%%
 %%% Nargin Check %%%
 %%%%%%%%%%%%%%%%%%%%
-error(nargchk(0,5,nargin));
 error(nargoutchk(0,1,nargout));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,20 +84,34 @@ if nargin<4
     end
 end
 
-if nargin<5
-    Resize = 'off';
-end
-WindowStyle='modal';
-Interpreter='none';
 
-Options = struct([]); %#ok
-if nargin==5 && isstruct(Resize)
-    Options = Resize;
-    Resize  = 'off';
-    if isfield(Options,'Resize'),      Resize=Options.Resize;           end
-    if isfield(Options,'WindowStyle'), WindowStyle=Options.WindowStyle; end
-    if isfield(Options,'Interpreter'), Interpreter=Options.Interpreter; end
+%% Handle OPTIONS
+
+if nargin < 5
+    Resize = 'off';
+    WindowStyle='modal';
+    Interpreter='none';
+else
+    if ischar(OPTIONS) && ismember(OPTIONS,{'off','on'})
+        varargin = [{'Resize',OPTIONS},varargin];
+    else
+        varargin = [{OPTIONS},varargin];
+    end
+    
+    p=inputParser;
+    p.CaseSensitive=false;
+    addParameter(p,'Resize','off',@(x) ischar(x)&&any(strcmpi(x,{'on','off'})));
+    addParameter(p,'WindowStyle','modal',@(x) ischar(x)&&any(strcmpi(x,{'modal','normal'})));
+    addParameter(p,'Interpreter','none',@(x) ischar(x)&&any(strcmpi(x,{'none','tex'})));
+    
+    parse(p,varargin{:});
+    Resize = lower(p.Results.Resize);
+    WindowStyle = lower(p.Results.WindowStyle);
+    Interpreter = lower(p.Results.Interpreter);
 end
+
+
+%%
 
 [rw,cl]=size(NumLines);
 OneVect = ones(NumQuest,1);

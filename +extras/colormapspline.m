@@ -149,7 +149,7 @@ classdef colormapspline < matlab.mixin.SetGet
             %update the spline after changing node or color values
             
             if numel(this.NodeValue)<2|| size(this.NodeColor,1)<2
-                warning('Nodes are empty, will not update spline');
+                %warning('Nodes are empty, will not update spline');
                 return;
             end
             

@@ -55,14 +55,12 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
     end
     methods
         function set.XData(this,val)
-            assert(isnumeric(val)&&numel(val)==2,'XData must be numeric with 2 values');
-            set(this.Image,'XData',val);
-            this.XData = this.Image.XData;
+            this.XData = val;
+            this.ChangeXData;
         end
         function set.YData(this,val)
-            assert(isnumeric(val)&&numel(val)==2,'YData must be numeric with 2 values');
-            set(this.Image,'YData',val);
-            this.YData = this.Image.YData;
+            this.YData = val;
+            this.ChangeYData;
         end
     end
 
@@ -322,6 +320,70 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
         function UpdateImage(this)
             this.Image.CData = this.CurrentImageData;
         end
+        
+        function ChangeXData(this)
+            if isempty(this.XData) %default
+                this.Image.XData = [];
+            elseif isnumeric(this.XData) && numel(this.XData)==2
+                set(this.Image,'XData',this.XData);
+                this.XData = this.Image.XData;
+            elseif iscell(this.XData)
+                try
+                    set(this.Image,'XData',this.XData{this.CurrentFrame});
+                catch
+                end
+            else %numeric n-d
+                try
+                set(this.Image,'XData',this.XData(this.CurrentFrame,:));
+                catch
+                end
+            end
+        end
+        function ChangeYData(this)
+            if isempty(this.YData) %default
+                this.Image.YData = [];
+            elseif isnumeric(this.YData) && numel(this.YData)==2
+                set(this.Image,'YData',this.YData);
+                this.YData = this.Image.YData;
+            elseif iscell(this.YData)
+                try
+                    set(this.Image,'YData',this.YData{this.CurrentFrame});
+                catch
+                end
+            else %numeric n-d
+                try
+                set(this.Image,'YData',this.YData(this.CurrentFrame,:));
+                catch
+                end
+            end
+        end
+        
+        function UpdateXYData(this)
+            if iscell(this.XData)
+                try
+                    set(this.Image,'XData',this.XData{this.CurrentFrame});
+                catch
+                end
+            elseif isnumeric(this.XData)&&size(this.XData,1)>1
+                try
+                    set(this.Image,'XData',this.XData(this.CurrentFrame,:));
+                catch
+                end
+            end
+            
+            if iscell(this.YData)
+                try
+                    set(this.Image,'YData',this.YData{this.CurrentFrame});
+                catch
+                end
+            elseif isnumeric(this.YData)&&size(this.YData,1)>1
+                try
+                    set(this.Image,'YData',this.YData(this.CurrentFrame,:));
+                catch
+                end
+            end
+        end
+        
     end
     
     %% Callbacks
@@ -390,6 +452,7 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
             this.Slider.Value = this.CurrentFrame;
             
             this.UpdateImage();
+            this.UpdateXYData();
             
             if old_frame ~= this.CurrentFrame
                 hgfeval(this.ChangeFrameCallback,this,this.CurrentImageData);

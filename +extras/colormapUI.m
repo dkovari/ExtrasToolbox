@@ -16,8 +16,8 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
         CmapImage
         SpacerBelowAxis
         
-        ImageHistogram
-        ImageHistXlimListener
+        ImageHistogram;
+        ImageHistXlimListener;
         
     end
     
@@ -32,6 +32,7 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
     end
     properties (SetAccess=protected)
         ImageDeleteListener;
+        ImageCDataChangeListener;
     end
     methods
         function set.Image(this,val)
@@ -43,8 +44,21 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
             
             this.Image = val;
             
+            %% delete listener
+            try
+                delete(this.ImageDeleteListener)
+            catch
+            end
             this.ImageDeleteListener = addlistener(this.Image,'ObjectBeingDestroyed',@(~,~) this.AssociatedImageDeleted);
             
+            %% cdata listener
+            try
+                delete(this.ImageCDataChangeListener)
+            catch
+            end
+            this.ImageCDataChangeListener = addlistener(this.Image,'CData','PostSet',@(~,~) this.updateColorbar());
+              
+            %% create imageHist
             if isempty(this.Image)
                 this.AssociatedImageDeleted();
             else
@@ -62,6 +76,14 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
                     this.ImageHistogram.Image = this.Image;
                 end
             end
+            
+            %% set cmap if needed
+            if isempty(this.cmap.NodeValue) %hasn't be updated
+                %% create cmap from current image colormap
+                cm = this.Image.Parent.Colormap;
+                NV = 1:size(cm,1);
+                this.cmap.setColor(NV,cm);
+            end
 
             %% Update
             this.cmapChanged();
@@ -71,14 +93,26 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
     %% other
     properties(Dependent)
         clim
+        cextent
     end
     methods
-        function CLIM = get.clim(this)
+        function CEXT = get.cextent(this)
             if isgraphics(this.Image) %valid image
-                CLIM = [min(this.cmap.clim(1),this.Image.Parent.CLim(1)),max(this.cmap.clim(2),this.Image.Parent.CLim(2))];
+                
+                CEXT = [min(this.cmap.clim(1),double(min(this.Image.CData(:)))),max(this.cmap.clim(2),double(max(this.Image.CData(:))))];
+                %CLIM = [min(this.cmap.clim(1),this.Image.Parent.CLim(1)),max(this.cmap.clim(2),this.Image.Parent.CLim(2))];
             else
-                CLIM = this.cmap.clim;
+                CEXT = this.cmap.clim;
             end
+        end
+        function CLIM = get.clim(this)
+           % if isgraphics(this.Image) %valid image
+                
+            %    CLIM = [min(this.cmap.clim(1),min(this.Image.CData(:))),max(this.cmap.clim(2),max(this.Image.CData(:)))];
+                %CLIM = [min(this.cmap.clim(1),this.Image.Parent.CLim(1)),max(this.cmap.clim(2),this.Image.Parent.CLim(2))];
+            %else
+                CLIM = this.cmap.clim;
+            %end
         end
     end
     
@@ -165,6 +199,9 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
     end
 
     %% Create
+    properties(Access=private)
+        colormapUI_BeingContstructed = true;
+    end
     methods
         function this = colormapUI(varargin)
         % create colormapUI interface
@@ -266,7 +303,7 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
             this.PlotVBox.Heights = [-1,this.CAxisHeight,-1];
                         
             %% create cmap
-            this.cmap = extras.colormapspline; %colormapspline object
+            this.cmap = extras.colormapspline(); %colormapspline object
                       
             %% colormapUI(__,[#,#,#...],Colors,...) --> pass num and colors to setColor
             if numel(varargin)>=2 && isnumeric(varargin{1})
@@ -276,6 +313,12 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
             
             %% Set other properties
             set(this,varargin{:});
+            
+            %% construction flag
+            this.colormapUI_BeingContstructed = false;
+            
+            %% final update
+            this.cmapChanged();
         end
     end
     
@@ -304,6 +347,12 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
             
             %delete(this.ImageListener);
             %delete(this.ImageDeleteListener);
+            
+            try
+                delete(this.ImageCDataChangeListener)
+            catch
+            end
+            
             try
             delete(this.cmapValuesListener);
             delete(this.cmapColorsListener);
@@ -315,11 +364,19 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
     %% internal callback methods
     methods (Access=protected)
         function TableAdd(this)
+            if this.colormapUI_BeingContstructed
+                return;
+            end
+            
             this.cmap.NodeValue(end+1)=NaN;
             this.cmap.NodeColor(end+1,1:3)=[0,0,0];
         end
         
         function TableDelete(this)
+            if this.colormapUI_BeingContstructed
+                return;
+            end
+            
             idx = this.Table.SelectedRows;
             
             this.cmap.NodeValue(idx)=[];
@@ -328,6 +385,10 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
         end
         
         function ColorbarAdd(this)
+            if this.colormapUI_BeingContstructed
+                return;
+            end
+            
             CP = this.CmapAxes.CurrentPoint;
             this.cmap.setColor(CP(1),[0,0,0]);
             %this.cmap.NodeValue(end+1) = CP(1);
@@ -340,13 +401,18 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
         function updateColorbar(this)
             %% Update Colorbar
             
+            if this.colormapUI_BeingContstructed
+                return;
+            end
+            
             %need to determine clim range
-            CLIM = this.clim;
+            CLIM = this.cextent;
             
             CB = zeros(1,3);
             try
                CB =  this.cmap.colormap(512,CLIM);
-            catch
+            catch %ME
+                %disp(ME.getReport)
             end
             CB = repmat(CB,1,1,2);
             CB = permute(CB,[3,1,2]);
@@ -389,7 +455,12 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
         
         function cmapChanged(this)
         %called when cmap value or colors are changed
+        
+            if this.colormapUI_BeingContstructed
+                return;
+            end
             
+            try
             %% Update the table
             nRows = max(size(this.cmap.NodeValue,1),size(this.cmap.NodeColor,1));
             DATA = cell(nRows,3);
@@ -406,20 +477,39 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
                 DATA{n,3} = this.cmap.NodeColor(n,:);
             end
             this.Table.Data = DATA;
-            
+            catch
+            end
+                   
             %% Update colorbar
-            this.updateColorbar;
+            this.updateColorbar();
             
             %% Update Colormap for associated image
             if isgraphics(this.Image) %valid image
+                
+                %% update image display
+                
+                %xlim
                 try
-                this.ImageHistogram.Axes.XLim = this.clim;
+                this.ImageHistogram.Axes.XLim = this.cextent;
                 catch
                 end
-                CB = this.cmap.colormap(512,this.clim);
-                colormap(this.Image.Parent,CB);
+                
+                %image colormap
+                try
+                    CB = this.cmap.colormap(512,this.clim);
+                    colormap(this.Image.Parent,CB);
+                catch
+                end
+                
+                % image clim
+                try
+                    set(this.Image.Parent,'CLim',this.clim);
+                catch
+                end
                 
             end
+            
+            
         end
         function tableEdit(this,~,evt)
             editRow = evt.Indices(1);
@@ -462,6 +552,7 @@ classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ex
         function AssociatedImageDeleted(this)
             delete(this.ImageHistXlimListener);
             delete(this.ImageHistogram);
+            delete(this.ImageCDataChangeListener);
             
             this.PlotVBox.Heights = [-1,this.CAxisHeight,-1];
         end

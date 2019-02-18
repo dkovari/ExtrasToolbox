@@ -1,4 +1,4 @@
- function out=cntrd2(im,mx,sz)
+function out=cntrd(im,mx,sz)
 % out=cntrd(im,mx,sz)
 % 
 % PURPOSE:  calculates the centroid of bright spots to sub-pixel accuracy.
@@ -18,9 +18,6 @@
 %     window will need to be larger than the particle size.  RECCOMMENDED
 %     size is the long lengthscale used in bpass plus 2.
 %     
-% Requirements:
-%   radialcenter() by Raghuveer Parthasarthy, Nat. Methods 2012 pp. 724-6
-%   with modifications by DTK
 %
 % NOTE:
 %  - if pkfnd, and cntrd return more then one location per particle then
@@ -36,6 +33,8 @@
 %           out(:,2) is the y-coordinates
 %           out(:,3) is the brightnesses
 %           out(:,4) is the square of the radius of gyration
+%           out(:,5) = Eccentricity
+%           out(:,6) = angle of major axis
 %
 % CREATED: Eric R. Dufresne, Yale University, Feb 4 2005
 %  5/2005 inputs diamter instead of radius
@@ -52,20 +51,15 @@
 %  ERD 6/06  Added size and brightness output ot interactive mode.  Also 
 %   fixed bug in calculation of rg^2
 %  JWM 6/07  Small corrections to documentation
-%  Jan Scrimgeour, Curtis Lab, Georgia Tech 04/13 This version of the cntrd
-%  calls radialcenter.m to determine the peak position instead of using the
-%  centroid method.
-%  Dan Kovari, Curtis Lab, Ga Tech 02/2014
+%  Dan Kovari, Curtis Lab, Ga Tech 11/2014
 %   Cleaned up some of the syntax to be in compliance with matlabs best
 %   coding practices, this should also help with speed.  Simplified some of
 %   the code, and fixed the 1 pixel offset that was being introduced. Got
-%   rid of interactive flag.
-%  Dan Kovari 2014-04-15
-%   Changed radialcenter to allow for image derivatives and filtered
-%   derivatives to be pre-calculated to save on lots of calls to conv2,
-%   which were very slow.  
+%   rid of interactive flag. Still need to re-implement eccentricity, overload
+%  Dan Kovari, Emory Univ. 02/09/2019
+%   Added Image moment calculations to get eccentricity and angle
 
-
+%%  Check Image Size
 if ~mod(sz,2)
     warning('sz must be odd, like bpass, adding one');
     sz = sz+1;
@@ -78,9 +72,10 @@ if isempty(mx)
 end
 
 
+%% Setup Variables
+
 %Only calculate points which are at locations within a distance sz from the
 %edge of the image
-
 [H,W] = size(im);
 r = (sz-1)/2;
 mx = mx(...
@@ -95,37 +90,56 @@ mask = dst<= r;
 
 %preallocate output, don't call zeros or nan, etc. because it wastes time
 %filling the values
-out(size(mx,1),4)=0;
+out(size(mx,1),6)=0;
 
-%calculate image derivatives for use in radialcenter()
-dIdu = im(1:end-1,2:end)-im(2:end,1:end-1);
-dIdv = im(1:end-1,1:end-1)-im(2:end,2:end);
-%calc smoothed derivative
-h = ones(3)/9;  % simple 3x3 averaging filter
-fdv = conv2(dIdv, h, 'same');
-fdu = conv2(dIdu, h, 'same');
+im = double(im);
+
 
 %Loop over remaining peaks and detect centroids
 for p=1:size(mx,1)
     cx = (-r:r)+mx(p,1);
     cy = (-r:r)+mx(p,2);
     tmp = mask.*im(cy,cx);  %apply mask to region around peak
-
-    %calculate radial center
-    %[xavg, yavg] = radialcenter(tmp);  %old method, witout precalc. derivs
-    [xavg, yavg] = radialcenter(tmp,...
-        mask(1:end-1,1:end-1).*dIdu(cy(1:end-1),cx(1:end-1)),...
-        mask(1:end-1,1:end-1).*dIdv(cy(1:end-1),cx(1:end-1)),...
-        mask(1:end-1,1:end-1).*fdu(cy(1:end-1),cx(1:end-1)),...
-        mask(1:end-1,1:end-1).*fdv(cy(1:end-1),cx(1:end-1)));
-        
-    %calculate integrated intensity
-    norm = sum(sum(tmp));
+    
+    %calculate the total brightness
+    norm=sum(sum(tmp));
+    
+    %calculate the weigthed average x location
+    xavg=sum(sum(tmp.*xx))./norm;
+    
+    %calculate the weighted average y location
+    yavg=sum(sum(tmp.*yy))./norm;
     
     %calculate radius of gyration
     %(Rg)^2 = sum(mass_i*r_i^2) / (total mass)
     rg2 = sum(sum(tmp.*dst.^2))/norm;
     
-    out(p,:) = [mx(p,1)+xavg-r-1, mx(p,2)+yavg-r-1, norm, rg2];
+    %calc covariance matrix
+    % see https://en.wikipedia.org/wiki/Image_moment
+    u20 = sum(sum(tmp.*xx.^2))/norm - xavg^2;
+    u02 = sum(sum(tmp.*yy.^2))/norm - yavg^2;
+    u11 = sum(sum(tmp.*xx.*yy))/norm - xavg*yavg;
+    
+    [V,D] = eig([u20,u11;u11,u02]);
+    % sort eigenvalues
+    D = diag(D);
+    [D,ind] = sort(D,'descend');
+    V = V(:,ind);
+    
+    %eccentricity
+    E = sqrt(1-D(2)/D(1));
+    
+    %angle
+    if D(1)==D(2)
+        theta = 0;
+    else
+        theta=atan2(V(2,1),V(1,1));
+    end
+    
+    out(p,:) = [mx(p,1)+xavg, mx(p,2)+yavg, norm, rg2,E,theta];
 end
+
+
+
+
 

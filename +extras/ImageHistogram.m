@@ -106,7 +106,7 @@ classdef ImageHistogram < extras.GraphicsChild & extras.RequireWidgetsToolbox & 
             set(this,varargin{:});
             
             %% update
-            this.CDataChanged
+            this.CDataChanged();
         end
     end
     

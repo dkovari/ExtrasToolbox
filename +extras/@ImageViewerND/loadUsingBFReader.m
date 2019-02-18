@@ -10,6 +10,15 @@ if ~exist('filepath','var')
     filepath = fullfile(pth,file);
 end
 
+%% Change figure title
+if this.CreatedParent
+    [~,FN,EXT] = fileparts(filepath);
+    try
+        set(this.Parent,'Name',[FN,EXT]);
+    catch
+    end
+end
+
 %% create bfreader object
 this.UsingBF  = true;
 this.bfreader = extras.bfmatlab.bfGetReader(filepath);
@@ -55,7 +64,13 @@ for n=1:nC
     end
     
     %% colorspline
-    this.ChannelColorspline(n) = extras.colormapspline([0;1],[0,0,0;this.ChannelColor{n}]);
+    
+    %use min/max of first image as default color range
+    img = this.getImagePlane([n,1,1,1]);
+    cl(1) = double(min(img(:)));
+    cl(2) = double(max(img(:)));
+    
+    this.ChannelColorspline(n) = extras.colormapspline(cl,[0,0,0;this.ChannelColor{n}]);
 end
 
 %% rebuild controls

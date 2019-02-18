@@ -46,9 +46,20 @@ classdef ImageViewerND < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
         ChannelNames = {}; %cellstr array of human-readable channel names
         ChannelColor = {}; %rgb color for each channel, used for alphamaps
         UseAlphaMap = []; %flag for each channel specifying if it should be used as an alpha map when viewing merged image
-        ChannelColorspline = extras.colormapspline.empty(); %colormap spline for each channel
-        ChannelCLim = {}; %clim for each channel
+        ChannelColorspline = extras.colormapspline.empty(); %colormap spline for each channel        
+    end
+    properties(Access=private,AbortSet)
         ChannelIndex = 1;
+    end
+    methods
+        function set.ChannelIndex(this,value)
+            prev_channel = this.ChannelIndex;
+            this.ChannelIndex = value;
+            this.changedChannelIndex(prev_channel,value);
+        end
+    end
+    events
+        ChannelChanged
     end
     
     %% Control Panel Containers
@@ -68,6 +79,8 @@ classdef ImageViewerND < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
         AxesPanel;%container which holds Axes (and axes peers)
         Axes; %main axes on which images are plotted
         Image; %image handle
+        
+        ColormapUI;
     end
     
     %% Internal Stack Related
@@ -130,6 +143,20 @@ classdef ImageViewerND < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
             
             %look for parent specified in arguments
             varargin = this.CheckParentInput(varargin{:});
+            
+            %% LUT toolbar button
+            
+            persistent LUT_ico;
+            if isempty(LUT_ico)
+                [pth,~,~] = fileparts(mfilename('fullpath'));
+                LUT_ico = imread(fullfile(pth,'LUT_icon.png'));
+            end
+            
+            tbh = findall(ancestor(this.Parent,'Figure'),'Type','uitoolbar');
+            uipushtool(tbh,'CData',LUT_ico,...
+                    'HandleVisibility','Callback',...
+                    'TooltipString','Show Colormap Editor',...
+                    'ClickedCallback',@(~,~) this.showColormapUI());
 
             %% Create outer container
             this.MainOuterVBox = uix.VBox('Parent',this.Parent);
@@ -161,13 +188,22 @@ classdef ImageViewerND < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
             %% Done with initial construction
             this.ImageViewerND_BeingConstructed = false;
             
-            %%
-            this.loadUsingBFReader();
+            %% PROCESS ARGS -----> NEED TO CHANGE THIS
+            if nargin>0
+                this.loadUsingBFReader(varargin{1});
+            else
+                this.loadUsingBFReader
+            end
         end
         
         function delete(this)
             try
                 delete(this.ControlPanelFig)
+            catch
+            end
+            
+            try
+                delete(this.ColormapUI)
             catch
             end
         end
@@ -203,12 +239,19 @@ classdef ImageViewerND < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
     
     %% Defined in other files
     methods(Access=private)
-        loadUsingBFReader(filepath)
-        rebuildFrameControls(this)
+        loadUsingBFReader(this,filepath) %load image stack from file using bioformats importer
+        rebuildFrameControls(this) %rebuild controld gui
         updateColormapFromChannelColors(this)
         displayChannelOverlay(this)
-        toggleChannelDisplay(this,ChanIdx)
-        updateImage(this)
+        toggleChannelDisplay(this,ChanIdx); % callback executed by channel buttons
+        updateImage(this) %update image display
+        changedChannelIndex(this,previous_channel,new_channel); % callback executed when channel is changed.
+        showColormapUI(this); %display colormap ui for currently selected channel
+        
+    end
+    
+    methods
+        ImStack = getImageStack(this,varargin); %returns the stack of all images,loads images if needed
     end
     
 end
