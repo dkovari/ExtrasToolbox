@@ -26,6 +26,15 @@ if isfield(trackResults,'driftY')
     end
 end
 
+%% Track Labels
+for n=1:numel(hTracks)
+    text(hSV.ImageAxes,...
+        min(hTracks(n).XData),...
+        min(hTracks(n).YData),...
+        sprintf('%d',n),'Color',hTracks(n).Color,...
+        'FontSize',12);
+end
+
 
 %% Plot Centroids
 hPlot = plot(hSV.ImageAxes,NaN,NaN,'xr','MarkerSize',10);

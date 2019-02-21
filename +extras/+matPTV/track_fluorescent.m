@@ -1,7 +1,6 @@
 function trackResults = track_fluorescent()
 % Track Fluorescent Particles 
 
-
 %% Load File
 FilePath = ''; %Specify file here, or leave blank to choose file
 
@@ -119,8 +118,12 @@ for f=1:numT
     
     
     %get timestamp
-    dT = meta.getPlaneDeltaT(Series-1,idx-1);
-    TimeSec(f) = dT.value(ome.units.UNITS.S).doubleValue();
+    try
+        dT = meta.getPlaneDeltaT(Series-1,idx-1);
+        TimeSec(f) = dT.value(ome.units.UNITS.S).doubleValue();
+    catch
+        warning('Could not load time data');
+    end
     
     if ~usingWB && toc(t)>0.85 %taking a while, show waitbar
         hWB = waitbar(f/numT,sprintf('Retrieving ImageStack (%d/%d)',f,numT));
@@ -184,7 +187,6 @@ end
 
 %% view results
 extras.matPTV.trackviewer(trackResults);
-
 
 %% set output
 if nargout<1
