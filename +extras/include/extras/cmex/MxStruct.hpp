@@ -12,6 +12,7 @@ namespace extras{namespace cmex{
         mxArray* parent=nullptr;
         int field_number=-1;
         size_t index=0;
+		bool _setFromConst = false;
     public:
 		FieldWrapper() = default;
         FieldWrapper(const FieldWrapper& src) = default;
@@ -19,35 +20,65 @@ namespace extras{namespace cmex{
         FieldWrapper& operator=(const FieldWrapper& src) = default;
         FieldWrapper& operator=(FieldWrapper&& src) = default;
 
-        FieldWrapper(mxArray* parentPtr,size_t idx, const char* fieldname):
-            parent(parentPtr),
-            index(idx)
+		FieldWrapper(mxArray* parentPtr, size_t idx, const char* fieldname, bool setFromConst = false) :
+			parent(parentPtr),
+			index(idx),
+			_setFromConst(setFromConst)
         {
             field_number = mxGetFieldNumber(parent,fieldname);
             if(field_number<0){ //need to create field
+
+				if (_setFromConst) {
+					throw(std::runtime_error("FieldWrapper: Cannot add field to const mxArray*"));
+				}
+
                 field_number = mxAddField(parent,fieldname);
             }
 
             if(field_number<0){
                 throw(std::runtime_error(std::string("FieldWrapper(): Could not create fieldname:")+std::string(fieldname)));
             }
-
-			//mexPrintf("construct FieldWrapper\n");
-			//mexPrintf("field: %s\n", fieldname);
-			//mexPrintf("parent: %p\n", parent);
-			//mexPrintf("index: %d\n", index);
-			//mexPrintf("field_number: %d\n", field_number);
         }
 
-        FieldWrapper(mxArray* parentPtr,size_t idx, int fieldnumber):
+        FieldWrapper(mxArray* parentPtr,size_t idx, int fieldnumber, bool setFromConst = false):
             parent(parentPtr),
             field_number(fieldnumber),
-            index(idx)
+            index(idx),
+			_setFromConst(setFromConst)
         {
             if(field_number<0){
                 throw(std::runtime_error("invalid field number"));
             }
         }
+
+		FieldWrapper(const mxArray* parentPtr, size_t idx, const char* fieldname) :
+			parent((mxArray*)parentPtr),
+			index(idx),
+			_setFromConst(true)
+		{
+			field_number = mxGetFieldNumber(parent, fieldname);
+			if (field_number<0) { //need to create field
+				if (_setFromConst) {
+					throw(std::runtime_error("FieldWrapper: Cannot add field to const mxArray*"));
+				}
+				field_number = mxAddField(parent, fieldname);
+			}
+
+			if (field_number<0) {
+				throw(std::runtime_error(std::string("FieldWrapper(): Could not create fieldname:") + std::string(fieldname)));
+			}
+		}
+
+		FieldWrapper(const mxArray* parentPtr, size_t idx, int fieldnumber) :
+			parent((mxArray*)parentPtr),
+			field_number(fieldnumber),
+			index(idx),
+			_setFromConst(true)
+		{
+			if (field_number<0) {
+				throw(std::runtime_error("invalid field number"));
+			}
+		}
 
         /// get field
         operator const mxArray*() const{
@@ -56,12 +87,10 @@ namespace extras{namespace cmex{
 
         /// set field
         FieldWrapper& operator=(mxArray* pvalue){
-			//mexPrintf("in operator=(mxArray* pvalue)\n");
-			//mexPrintf("parent: %p\n", parent);
-			//mexPrintf("index: %d\n", index);
-			//mexPrintf("field_number: %d\n", field_number);
-			//mexPrintf("field_name: %s\n", mxGetFieldNameByNumber(parent, field_number));
-			//mexPrintf("current: %p\n", mxGetFieldByNumber(parent, index, field_number));
+
+			if (_setFromConst) {
+				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
+			}
 			
             mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));
 			//mxSetFieldByNumber(parent, index, field_number, nullptr);
@@ -74,6 +103,10 @@ namespace extras{namespace cmex{
 		/// set field from const array
 		/// duplicated array
 		FieldWrapper& operator=(const mxArray* pvalue) {
+			if (_setFromConst) {
+				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
+			}
+
 			mxDestroyArray(mxGetFieldByNumber(parent, index, field_number));
 			mxSetFieldByNumber(parent, index, field_number, mxDuplicateArray(pvalue));
 			return *this;
@@ -81,6 +114,10 @@ namespace extras{namespace cmex{
 
         /// set field equal to string
         FieldWrapper& operator=(const char* str){
+			if (_setFromConst) {
+				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
+			}
+
             mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));
             mxSetFieldByNumber(parent,index,field_number,mxCreateString(str));
             return *this;
@@ -88,6 +125,10 @@ namespace extras{namespace cmex{
 
         /// set field equal to scalar double
         FieldWrapper& operator=(double val){
+			if (_setFromConst) {
+				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
+			}
+
             mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));
             mxSetFieldByNumber(parent,index,field_number,mxCreateDoubleScalar(val));
             return *this;
@@ -180,15 +221,17 @@ namespace extras{namespace cmex{
         //////////////////
         // Field Access
 
+		bool isfield(const char* fieldname) {
+			return mxGetFieldNumber(_mxptr, fieldname) >= 0;
+		}
+
         /// non-const access to field
         FieldWrapper operator()(size_t idx, const char* fieldname){
-            if(_setFromConst){
-                throw(std::runtime_error("MxCellArray::operator() Cannot get non-const access element of cell set from constant."));
-            }
+           
             if(idx>=mxGetNumberOfElements(_mxptr)){
                 throw(std::runtime_error("MxStruct::operator() index exceeds struct array dimension"));
             }
-            return FieldWrapper(_mxptr,idx,fieldname);
+            return FieldWrapper(_mxptr,idx,fieldname,_setFromConst);
         }
 
         /// const access to field

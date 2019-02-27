@@ -245,7 +245,7 @@ protected:
                     argPair.second->barycenterLimFrac);
 
                 bcOut[0]+=1;
-                bcOut[0]+=1;
+                bcOut[1]+=1;
 
                 // add X,Y
         		int fn_X = mxAddField(outStruct, "X");

@@ -11,8 +11,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "splineroot", "..\+ParticleT
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DiffractionTracker", "..\+ParticleTracking\+DiffractionTracker\DiffractionTracker.vcxproj", "{D070DDFC-0DB4-4305-83A1-658751DB4465}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "radialcenterAsync", "..\+ParticleTracking\radialcenter\radialcenterAsync.vcxproj", "{526DA091-FD51-4CB3-A9A0-6AF98347E757}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCode", "TestCode\TestCode.vcxproj", "{227F1D92-9ECF-4058-85E9-4CEB8B229047}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleProcessor", "ExampleProcessor\ExampleProcessor.vcxproj", "{564F1C90-B517-49AB-8832-5EABAA7C797C}"
@@ -20,8 +18,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mexInterfaceTest", "text_mexInterface\text_mexInterface.vcxproj", "{266B8DD0-A1E4-4E6E-8E10-9C60BF9BA498}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleProcessor_PersistArgs", "..\+Async\msvc\ExampleProcessor_PersistArgs.vcxproj", "{318DC0C4-D1F3-48AB-BE70-82B2D9E4D7CF}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RadialCenter2", "..\+ParticleTracking\RadialCenter2\RadialCenter2.vcxproj", "{5E362052-F7DB-44B6-B60B-38B79608C1B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,12 +51,6 @@ Global
 		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x64.ActiveCfg = Release|x64
 		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x64.Build.0 = Release|x64
 		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x86.ActiveCfg = Release|x64
-		{526DA091-FD51-4CB3-A9A0-6AF98347E757}.Debug|x64.ActiveCfg = Debug|x64
-		{526DA091-FD51-4CB3-A9A0-6AF98347E757}.Debug|x64.Build.0 = Debug|x64
-		{526DA091-FD51-4CB3-A9A0-6AF98347E757}.Debug|x86.ActiveCfg = Debug|x64
-		{526DA091-FD51-4CB3-A9A0-6AF98347E757}.Release|x64.ActiveCfg = Release|x64
-		{526DA091-FD51-4CB3-A9A0-6AF98347E757}.Release|x64.Build.0 = Release|x64
-		{526DA091-FD51-4CB3-A9A0-6AF98347E757}.Release|x86.ActiveCfg = Release|x64
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Debug|x64.ActiveCfg = Debug|x64
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Debug|x64.Build.0 = Debug|x64
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Debug|x86.ActiveCfg = Debug|Win32
@@ -87,12 +77,6 @@ Global
 		{318DC0C4-D1F3-48AB-BE70-82B2D9E4D7CF}.Release|x64.ActiveCfg = Release|x64
 		{318DC0C4-D1F3-48AB-BE70-82B2D9E4D7CF}.Release|x64.Build.0 = Release|x64
 		{318DC0C4-D1F3-48AB-BE70-82B2D9E4D7CF}.Release|x86.ActiveCfg = Release|x64
-		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Debug|x64.ActiveCfg = Debug|x64
-		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Debug|x64.Build.0 = Debug|x64
-		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Debug|x86.ActiveCfg = Debug|x64
-		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Release|x64.ActiveCfg = Release|x64
-		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Release|x64.Build.0 = Release|x64
-		{5E362052-F7DB-44B6-B60B-38B79608C1B7}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,8 +7,6 @@
 
 namespace extras{namespace async{
 
-
-
     /// Async Processor with optional Persistent Arguments
     /// When the thread operates on a task the stored persistent arguments are concatenated to the task array group
     ///

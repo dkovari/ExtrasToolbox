@@ -45,7 +45,7 @@
 */
 struct roiAgregator {
 	std::shared_ptr<extras::ArrayBase<double>> WIND = std::make_shared<extras::Array<double>>(); //array containing windows of the rois, formatted as [X1,X2,Y1,Y2]
-	std::shared_ptr<extras::ArrayBase<double>> XYc=std::make_shared<extras::Array<double>>(); //optional array containing XYc centroid quesses
+	std::shared_ptr<extras::ArrayBase<double>> XYc=std::make_shared<extras::Array<double>>(); //optional array containing XYc centroid guesses
 	std::shared_ptr<extras::ArrayBase<double>> GP = std::make_shared<extras::Array<double>>(); //optional array containing GP for radialcenter
 	std::shared_ptr<extras::ArrayBase<double>> RadiusFilter = std::make_shared<extras::Array<double>>(); //optional array containing RadiusFilter for radialcenter
 	std::shared_ptr<extras::cmex::MxObject> roiStruct; //original struct array object used to set roiList

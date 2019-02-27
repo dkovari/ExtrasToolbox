@@ -30,11 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\+Async\ExampleProcessor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\include\extras\Array.hpp">
       <Filter>Includes\extras</Filter>
     </ClInclude>
@@ -80,5 +75,16 @@
     <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
       <Filter>Includes\extras\async</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\MatlabTime.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\traspose.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\+Async\+Example\ExampleProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
