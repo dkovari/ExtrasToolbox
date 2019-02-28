@@ -10,6 +10,13 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\barycenter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\barycenter.hpp" />
+    <ClInclude Include="source\barycenter_mex.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ff7bac31-6dfd-42e5-8918-16f674bf82a4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

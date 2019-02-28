@@ -11,9 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ExampleProcessor_PersistArgs.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\include\extras\Array.hpp" />
     <ClInclude Include="..\..\include\extras\ArrayBase.hpp" />
     <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp" />
@@ -29,6 +26,9 @@
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
     <ClInclude Include="..\..\include\extras\string_extras.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\+Example\ExampleProcessor_PersistArgs.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{318dc0c4-d1f3-48ab-be70-82b2d9e4d7cf}</ProjectGuid>

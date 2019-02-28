@@ -35,8 +35,8 @@
 
 #include "roiTracker.hpp"
 
-extras::SessionManager::ObjectManager<roiTrackerXY<>> manager;
-extras::async::PersistentArgsProcessorInterface<roiTrackerXY<>, manager> mex_interface; //create interface manager for the processor
+extras::SessionManager::ObjectManager<roiTrackerXY<roiListXY>> manager;
+extras::async::PersistentArgsProcessorInterface<roiTrackerXY<roiListXY>, manager> mex_interface; //create interface manager for the processor
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	mex_interface.mexFunction(nlhs, plhs, nrhs, prhs);

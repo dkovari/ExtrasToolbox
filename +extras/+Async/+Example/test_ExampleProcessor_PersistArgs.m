@@ -3,7 +3,7 @@ try
 catch
 end
 
-EP2 = extras.Async.ExampleProcessor_PersistArgs; %create processor
+EP2 = extras.Async.Example.ExampleProcessor_PersistArgs; %create processor
 
 CBQ = extras.CallbackQueue; %create callback queue to listen to results from processor
 

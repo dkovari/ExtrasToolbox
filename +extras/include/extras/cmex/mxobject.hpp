@@ -19,43 +19,25 @@ namespace extras{namespace cmex{
         }
     };
 
-    class MxNotStruct: MxObjectException{
-        const char * what() const throw(){
-            return "mxStruct syntax used on non-struct MxObject";
-        }
-    };
-    class MxNotNumeric: MxObjectException{
-        const char * what() const throw(){
-            return "mxNumeric syntax used on non-numeric MxObject";
-        }
-    };
-    class MxNotCell: MxObjectException{
-        const char * what() const throw(){
-            return "mxCell syntax used on non-cell MxObject";
-        }
-    };
-
-
 	///Object wrapper around mxArray*
     class MxObject{
     protected:
         mxArray* _mxptr = nullptr; //pointer to mxArray holding data
-        mutable bool _managemxptr = true; //flag specifying if class should delete _mxptr upon destruction
+        bool _managemxptr = true; //flag specifying if class should delete _mxptr upon destruction
 		bool _isPersistent = false;
 		bool _setFromConst = false;
 
         void deletemxptr(){
-            if(_managemxptr && _mxptr!=nullptr){
-                //mexPrintf("mxObject().deletemxpty():%d _mxptr=%d\n",this,_mxptr);
+            if(_managemxptr && _mxptr!=nullptr && !_setFromConst){
                 mxDestroyArray(_mxptr);
                 _mxptr = nullptr;
 				_isPersistent = false;
+				_setFromConst = false;
             }
         }
 
         /// Copy data from MxObject
 		virtual void copyFrom(const MxObject& src) {
-			//mexPrintf("MxObject::copyFrom: this=%d src=%d\n", this, &src);
 			deletemxptr();
 			if (src._mxptr == nullptr) {
 				_mxptr = nullptr;
@@ -165,6 +147,7 @@ namespace extras{namespace cmex{
 			_setFromConst = false;
         }
 
+
         /// Copy constructor and copy assignment
         MxObject(const MxObject& src){
 			copyFrom(src);
@@ -193,9 +176,17 @@ namespace extras{namespace cmex{
         MxObject(mxArray* mxptr){
             //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
             _mxptr = mxptr;
-            _managemxptr = false;
-			_isPersistent = false;
-			_setFromConst = false;
+			if (mxptr != nullptr) {
+				_managemxptr = false;
+				_isPersistent = false;
+				_setFromConst = false;
+			}
+			else {
+				_managemxptr = true;
+				_isPersistent = false;
+				_setFromConst = false;
+			}
+            
         }
 
         /// Construct from mxArray

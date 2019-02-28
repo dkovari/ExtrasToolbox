@@ -63,6 +63,9 @@ lst = addlistener(rcp,'ErrorOccured',@(~,err) disp(err)); %add listener for erro
 
 rcp.registerQueue(CBQ); %register the callback queue
 
+%
+
+
 
 %% Add listener to roiValueChanged
 addlistener(RM,'roiValueChanged',@(~,~) roiChanged(RM,rcp,I));
@@ -75,8 +78,13 @@ addlistener(hFig,'ObjectBeingDestroyed',@(~,~) delete(RM));
 %% Add ROI
 RM.AddROI();
 
+
+%% barycenter
+rcp.setPersistentArgs('xyMethod','barycenter')
+
 %% define callback function
 function CB(data,hPlt)
+v =[data.X]
 hPlt.XData = [data.X];
 hPlt.YData = [data.Y];
 persistent n;

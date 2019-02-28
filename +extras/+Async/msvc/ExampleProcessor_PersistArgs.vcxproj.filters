@@ -30,11 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ExampleProcessor_PersistArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\include\extras\Array.hpp">
       <Filter>Includes\extras</Filter>
     </ClInclude>
@@ -80,5 +75,10 @@
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
       <Filter>Includes\extras\SessionManager</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\+Example\ExampleProcessor_PersistArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

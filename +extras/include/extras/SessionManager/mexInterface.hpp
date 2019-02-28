@@ -123,6 +123,14 @@ namespace extras{namespace SessionManager{
 
     public:
 
+		virtual ~mexInterface() {
+#ifdef _DEBUG
+			mexPrintf("Destroying mexInterface<%s,...>\n", typeid(ObjType).name());
+			mexEvalString("pause(0.2)");
+#endif
+
+		}
+
         mexInterface(){
             using namespace std::placeholders;
 #ifdef DAN_DEBUG

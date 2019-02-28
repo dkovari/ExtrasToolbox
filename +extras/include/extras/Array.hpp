@@ -32,7 +32,7 @@ namespace extras{
 
 	///C++ Native extras::ArrayBase with self-managed memory.
 	///with column-major data storage
-	template<typename T> class Array: public extras::ArrayBase<T> {
+	template<typename T> class Array: virtual public extras::ArrayBase<T> {
 	protected:
 		T* _data = nullptr; ///< pointer to data
 		std::vector<size_t> _dim{0,0}; ///< dimensions of the data
@@ -156,7 +156,6 @@ namespace extras{
 		virtual std::vector<size_t> dims() const {return _dim;} ///< returns dimensions of the data
     	virtual size_t ndims() const {return _dim.size();} ///< number of dimensions
 
-
     	virtual const T* getdata() const {return _data;} ///< get pointer to raw data array
     	virtual T* getdata() {return _data;} ///< get pointer to raw data array
     	virtual T& operator[](size_t index) {
@@ -252,7 +251,7 @@ namespace extras{
 
 		///////////////////
 		// Destructor
-		~Array(){freedata();}
+		virtual ~Array(){freedata();}
 
 		//////////////////
 		// Constructors

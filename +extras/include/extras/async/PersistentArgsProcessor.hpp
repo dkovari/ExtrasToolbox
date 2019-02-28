@@ -115,14 +115,10 @@ namespace extras{namespace async{
 		///				return PersistentArgsProcessor<>::getPersistentArgs();
 		///			}
 		///		};
-		virtual extras::cmex::MxCellArray getPersistentArgs() const= 0;
+		virtual extras::cmex::MxCellArray getPersistentArgs() const;
 
-#ifdef _DEBUG
 	public:
-		virtual ~PersistentArgsProcessor() {
-			mexPrintf("~PersistentArgsProcessor()\n");
-		}
-#endif
+		virtual ~PersistentArgsProcessor() {};
 
     };
 

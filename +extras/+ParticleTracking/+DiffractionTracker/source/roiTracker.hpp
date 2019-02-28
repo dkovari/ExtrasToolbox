@@ -22,7 +22,10 @@ const char* xyFunctionName(XY_FUNCTION xyF) {
 		return "barycenter";
 	case RADIALCENTER:
 		return "radialcenter";
+	default:
+		throw(std::runtime_error("BAD Y_FUNCTION"));
 	}
+	
 }
 
 XY_FUNCTION xyFunction(const char* name) {
@@ -42,7 +45,7 @@ struct roiListXY{
     // Other Globals
     XY_FUNCTION xyMethod = RADIALCENTER; ///< xy tracking algorithm
 
-    std::shared_ptr<extras::cmex::MxObject> roiStruct; ///< original struct array object used to set roiList
+    std::shared_ptr<extras::cmex::MxObject> roiStruct = std::make_shared<extras::cmex::MxObject>(nullptr); ///< original struct array object used to set roiList
 
     std::shared_ptr<extras::ArrayBase<double>> WIND = std::make_shared<extras::Array<double>>(); ///< array containing windows of the rois, formatted as [x0,y0,w,h]
 
@@ -59,96 +62,106 @@ struct roiListXY{
     /// globals for barycenter
     double barycenterLimFrac = 0.2; ///< LimFrac used by barycenter
 
-//////////// METHODS
+	//////////// METHODS
 
-/// Set roiList Parameters using struct array
-/// You can redefine this method to extend roiListXY to work with more data
-/// in which case you should call this class's imstance first, and then your
-/// additional code.
-virtual void setFromStruct(const mxArray* srcStruct) {
-    auto newStruct = std::make_shared<extras::cmex::MxObject>(srcStruct);
-    if (!newStruct->isstruct()) {
-        throw(std::runtime_error("roiAgregator::setFromStruct(): MxObject is not a struct"));
-    }
-    if (!extras::cmex::hasField(*newStruct, "Window")) {
-        throw(std::runtime_error("roiAgregator::setFromStruct(): struct does not contain 'Window' field"));
-    }
-    if (!extras::cmex::hasField(*newStruct, "UUID")) {
-        throw(std::runtime_error("roiAgregator::setFromStruct(): struct does not contain 'UUID' field"));
-    }
+	/// Set roiList Parameters using struct array
+	/// You can redefine this method to extend roiListXY to work with more data
+	/// in which case you should call this class's imstance first, and then your
+	/// additional code.
+	virtual void setFromStruct(const mxArray* srcStruct) {
+		auto newStruct = std::make_shared<extras::cmex::MxObject>(srcStruct);
+	
+		if (!newStruct->isstruct()) {
+			throw(std::runtime_error("roiAgregator::setFromStruct(): MxObject is not a struct"));
+		}
+		if (!extras::cmex::hasField(*newStruct, "Window")) {
+			throw(std::runtime_error("roiAgregator::setFromStruct(): struct does not contain 'Window' field"));
+		}
+		if (!extras::cmex::hasField(*newStruct, "UUID")) {
+			throw(std::runtime_error("roiAgregator::setFromStruct(): struct does not contain 'UUID' field"));
+		}
 
-    size_t len = newStruct->numel();
-    //create temporary array that will be pushed into main variables at the end of the function
-    // if an error is thrown, original arrays will remain unchanged.
-    std::shared_ptr<extras::ArrayBase<double>> newWIND = std::make_shared<extras::Array<double>>(len, 4);
-    std::shared_ptr<extras::ArrayBase<double>> newXYc = XYc;
-    std::shared_ptr<extras::ArrayBase<double>> newGP = GP;
-    std::shared_ptr<extras::ArrayBase<double>> newRadiusFilter = RadiusFilter;
+		// srtStruct is ok, duplicate and make persistent
+		newStruct->managedata();
+		newStruct->makePersistent();
 
-    if (extras::cmex::hasField(*newStruct, "XYc")) {
-        newXYc->resize(len, 2);
-    }
-    else {
-        newXYc->resize(0, 2);
-    }
+		size_t len = newStruct->numel();
+		//create temporary array that will be pushed into main variables at the end of the function
+		// if an error is thrown, original arrays will remain unchanged.
+		std::shared_ptr<extras::ArrayBase<double>> newWIND = std::make_shared<extras::Array<double>>(len, 4);
+		std::shared_ptr<extras::ArrayBase<double>> newXYc = XYc;
+		std::shared_ptr<extras::ArrayBase<double>> newGP = GP;
+		std::shared_ptr<extras::ArrayBase<double>> newRadiusFilter = RadiusFilter;
 
-    if (extras::cmex::hasField(*newStruct, "GP")) {
-        newGP->resize(len);
-    }
-    else {
-        newGP->resize(0,1);
-    }
-    if (extras::cmex::hasField(*newStruct, "RadiusFilter")) {
-        newRadiusFilter->resize(len);
-    }
-    else {
-        newRadiusFilter->resize(0, 1);
-    }
+		if (extras::cmex::hasField(*newStruct, "XYc")) {
+			newXYc->resize(len, 2);
+		}
+		else {
+			newXYc->resize(0, 2);
+		}
 
-    for (size_t n = 0; n < len; ++n) {
-        // set window
-        extras::cmex::NumericArray<double> Window(mxGetField(*newStruct,n,"Window"));
-        (*newWIND)(n, 0) = Window[0]-1; //x0 fixed for 0-indexing
-        (*newWIND)(n, 1) = Window[1]-1; //y0 fixed for 0-indexing
-        (*newWIND)(n, 2) = Window[2]; //w
-        (*newWIND)(n, 3) = Window[3]; //h
+		if (extras::cmex::hasField(*newStruct, "GP")) {
+			newGP->resize(len);
+		}
+		else {
+			newGP->resize(0,1);
+		}
+		if (extras::cmex::hasField(*newStruct, "RadiusFilter")) {
+			newRadiusFilter->resize(len);
+		}
+		else {
+			newRadiusFilter->resize(0, 1);
+		}
 
-        if (extras::cmex::hasField(*newStruct, "XYc")) {
-            extras::cmex::NumericArray<double> sXYc(mxGetField(*newStruct, n, "XYc"));
-            (*newXYc)(n, 0) = sXYc[0]-1; //fixed for 0-indexing
-            (*newXYc)(n, 1) = sXYc[1]-1; //fixed for 0-indexing
-        }
+		for (size_t n = 0; n < len; ++n) {
+			// set window
+			extras::cmex::NumericArray<double> Window(mxGetField(*newStruct,n,"Window"));
+			(*newWIND)(n, 0) = Window[0]-1; //x0 fixed for 0-indexing
+			(*newWIND)(n, 1) = Window[1]-1; //y0 fixed for 0-indexing
+			(*newWIND)(n, 2) = Window[2]; //w
+			(*newWIND)(n, 3) = Window[3]; //h
 
-        if (extras::cmex::hasField(*newStruct, "GP")) {
-            extras::cmex::NumericArray<double> sGP(mxGetField(*newStruct, n, "GP"));
-            (*newGP)(n) = sGP[0];
-        }
-        if (extras::cmex::hasField(*newStruct, "RadiusFilter")) {
-            extras::cmex::NumericArray<double> sRadiusFilter(mxGetField(*newStruct, n, "RadiusFilter"));
-            (*newRadiusFilter)(n) = sRadiusFilter[0];
-        }
-    }
+			if (extras::cmex::hasField(*newStruct, "XYc")) {
+				extras::cmex::NumericArray<double> sXYc(mxGetField(*newStruct, n, "XYc"));
+				(*newXYc)(n, 0) = sXYc[0]-1; //fixed for 0-indexing
+				(*newXYc)(n, 1) = sXYc[1]-1; //fixed for 0-indexing
+			}
 
-    // no errors!
-    // set main variables
-    newStruct->makePersistent();
-    roiStruct = newStruct;
-    WIND = newWIND;
-    GP = newGP;
-    XYc = newXYc;
-    RadiusFilter = newRadiusFilter;
+			if (extras::cmex::hasField(*newStruct, "GP")) {
+				extras::cmex::NumericArray<double> sGP(mxGetField(*newStruct, n, "GP"));
+				(*newGP)(n) = sGP[0];
+			}
+			if (extras::cmex::hasField(*newStruct, "RadiusFilter")) {
+				extras::cmex::NumericArray<double> sRadiusFilter(mxGetField(*newStruct, n, "RadiusFilter"));
+				(*newRadiusFilter)(n) = sRadiusFilter[0];
+			}
+		}
 
-}
+		// no errors!
+		// set main variables
+		//newStruct->makePersistent();
+		roiStruct = newStruct;
+		WIND = newWIND;
+		GP = newGP;
+		XYc = newXYc;
+		RadiusFilter = newRadiusFilter;
+	}
 
-/// Returns a copy of the mxArray struct used to set the roi parameters
-mxArray* getCopyOfRoiStruct() const{
-    return mxDuplicateArray(*roiStruct);
-}
+	/// Returns a copy of the mxArray struct used to set the roi parameters
+	mxArray* getCopyOfRoiStruct() const{
+		return mxDuplicateArray(*roiStruct);
+	}
 
-/// number of roi windows
-size_t numberOfROI() const {
-    return mxGetNumberOfElements(*roiStruct);
-}
+	/// number of roi windows
+	size_t numberOfROI() const {
+		return mxGetNumberOfElements(*roiStruct);
+	}
+
+	///
+	~roiListXY() {
+		roiStruct.reset();
+		WIND.reset();
+	}
 
 };
 
@@ -238,26 +251,31 @@ protected:
             break;
             case BARYCENTER:
             { // Do Barycenter
-
-                auto bcOut = extras::ParticleTracking::barycenter<extras::Array<double>>(
+				
+				auto bcOut = extras::ParticleTracking::barycenter_mx<extras::Array<double>>(
                     img,
                     *(argPair.second->WIND),
                     argPair.second->barycenterLimFrac);
 
                 bcOut[0]+=1;
                 bcOut[1]+=1;
-
+				
                 // add X,Y
         		int fn_X = mxAddField(outStruct, "X");
         		if (fn_X < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='X' to output struct")); }
         		int fn_Y = mxAddField(outStruct, "Y");
+				if (fn_Y < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='Y' to output struct")); }
 
         		//set field values
         		for (size_t n = 0; n < argPair.second->numberOfROI(); ++n) {
-        			mxSetFieldByNumber(outStruct, n, fn_X, mxCreateDoubleScalar(bcOut[0][n]));
-        			mxSetFieldByNumber(outStruct, n, fn_Y, mxCreateDoubleScalar(bcOut[1][n]));
 
-                    mxSetFieldByNumber(outStruct,n,fn_xyM,mxCreateString("radialcenter"));
+        			//mxSetFieldByNumber(outStruct, n, fn_X, mxCreateDoubleScalar(bcOut[0][n]));
+        			//mxSetFieldByNumber(outStruct, n, fn_Y, mxCreateDoubleScalar(bcOut[1][n]));
+
+					mxSetFieldByNumber(outStruct, n, fn_X, mxCreateDoubleScalar(n+1));
+					mxSetFieldByNumber(outStruct, n, fn_Y, mxCreateDoubleScalar(n+1));
+
+                    mxSetFieldByNumber(outStruct,n,fn_xyM,mxCreateString("barycenter"));
         		}
 
             }
@@ -278,6 +296,15 @@ protected:
 	}
 public:
 
+	roiTrackerXY() {
+		//mexPrintf("Creating roiTrackerXY\n");
+
+	}
+
+	virtual ~roiTrackerXY() {
+		//mexPrintf("Deleteing roiTrackerXY\n");
+
+	}
     // sets settingsArgs for XY settings
     // If you are redefining this, remember that the roiStruct is set via
     // roiListXY::setFromStruct()
@@ -442,5 +469,7 @@ public:
 	 return out;
  }
 
-//we must define the setPersistentArgs method for for parent processor type, even though we won't use it.
+//we must define the setPersistentArgs & getPersistentArgs methods for for parent processor type, even though we won't use it.
 template<> void extras::async::PersistentArgsProcessor<roiListXY>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {};
+
+template<> extras::cmex::MxCellArray extras::async::PersistentArgsProcessor<roiListXY>::getPersistentArgs() const { return extras::cmex::MxCellArray(); }

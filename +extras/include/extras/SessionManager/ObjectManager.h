@@ -18,6 +18,7 @@ namespace extras{namespace SessionManager{
 
 
 
+	/*
 	/// ObjectManager base class
 	/// used to setup the static mexAtExit function, calling ObjMan::clearObjects() for all object managers
 	struct ObjectManager_Base {
@@ -32,13 +33,16 @@ namespace extras{namespace SessionManager{
 	/// called at MexAtExit
 	/// clears all objectmanagers
 	void ExitFn() {
+
 		for (auto pObj : g_ObjectManagerBaseList) {
 			pObj->clearObjects();
 		}
+
 	}
 
 	ObjectManager_Base::~ObjectManager_Base() {
 		// remove self from om list
+
 		g_ObjectManagerBaseList.remove(this);
 	}
 
@@ -52,9 +56,11 @@ namespace extras{namespace SessionManager{
 			g_MexAtExitSet = true;
 		}
 	}
+	*/
+
 
 	template <class Obj>
-	class ObjectManager: virtual public ObjectManager_Base {
+	class ObjectManager{//: virtual public ObjectManager_Base {
 	protected:
 		bool _lock_mex;
 		std::unordered_map<intptr_t, std::shared_ptr<Obj>> ObjectMap;
@@ -75,8 +81,13 @@ namespace extras{namespace SessionManager{
 		void clearObjects() {
 #ifdef _DEBUG
 			mexPrintf("ObjectManager<%s>::clearObjects()\n", typeid(Obj).name());
+			mexEvalString("pause(0.2)");
 #endif
 			ObjectMap.clear();
+#ifdef _DEBUG
+			mexPrintf("\t...Objects cleared.\n", typeid(Obj).name());
+			mexEvalString("pause(0.2)");
+#endif
 		}
 
 		ObjectManager(bool LOCK_MEX = true){
@@ -86,11 +97,12 @@ namespace extras{namespace SessionManager{
 #endif
 		}
 
-		~ObjectManager(){
+		virtual ~ObjectManager(){
 #ifdef _DEBUG
 			mexPrintf("Destroying ObjectManager<%s>\n",typeid(Obj).name());
 			mexEvalString("pause(0.2)");
 #endif
+			
 			clearObjects();
 		}
 

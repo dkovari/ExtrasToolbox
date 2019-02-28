@@ -15,7 +15,7 @@ namespace extras{namespace cmex {
 	/// MATLAB does not have a default integet type therefore it does not make
 	/// make sense to include it as an option.
 	template<typename T>
-	class NumericArray : public MxObject, public ArrayBase<T> {
+	class NumericArray : public MxObject, virtual public ArrayBase<T> {
 	private:
 		mxArray * getField(size_t element, const char* fieldname) const { throw(std::runtime_error("MxObject::getField(): mxArray* is not a struct."));  return nullptr; } //hide getField since the array is numeric
 	protected:
@@ -443,6 +443,8 @@ namespace extras{namespace cmex {
 
 		//////////////////////////////////////
 		// Constructors & Assignment
+
+		virtual ~NumericArray() {};
 
 		NumericArray() {};
 

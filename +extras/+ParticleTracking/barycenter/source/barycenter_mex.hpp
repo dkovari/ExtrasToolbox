@@ -26,7 +26,7 @@ if something went wrong returns NaN
 namespace extras{namespace ParticleTracking{
 
 	template<class OutContainerClass> //C must be and ArrayBase derived class
-    std::vector<OutContainerClass> barycenter(const mxArray* pI,
+    std::vector<OutContainerClass> barycenter_mx(const mxArray* pI,
                                 const extras::ArrayBase<double>& WIND,
                                 double LimFrac=0.2)
     {
@@ -91,7 +91,7 @@ namespace extras{namespace ParticleTracking{
 			LimFrac = mxGetScalar(prhs[3]);
 		}
 
-		auto out = barycenter<cmex::NumericArray<double>>(prhs[0],WIND,LimFrac);
+		auto out = barycenter_mx<cmex::NumericArray<double>>(prhs[0],WIND,LimFrac);
 
 		out[0]+=1; //fix 1-indexing
 		out[1]+=1;
