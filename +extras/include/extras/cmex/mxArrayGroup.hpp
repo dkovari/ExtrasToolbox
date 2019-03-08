@@ -73,6 +73,7 @@ namespace extras{namespace cmex{
 
 		/// construct fron non-const mxArray**
 		/// takes ownwership of array and makes all of the mxArray* persistent
+        /// DO NOT DESTROY mxArray* contained in pA after passing to mxArrayGroup
 		mxArrayGroup(size_t nA, mxArray** pA) {
 			nArrays = nA;
 

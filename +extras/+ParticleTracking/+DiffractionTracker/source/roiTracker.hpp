@@ -10,37 +10,9 @@
 
 #include <extras/async/PersistentArgsProcessor.hpp>
 
-/// enum specifying xy localization algorithm
-enum XY_FUNCTION{
-    BARYCENTER,
-    RADIALCENTER
-};
+#include "roiObject.hpp"
 
-const char* xyFunctionName(XY_FUNCTION xyF) {
-	switch (xyF) {
-	case BARYCENTER:
-		return "barycenter";
-	case RADIALCENTER:
-		return "radialcenter";
-	default:
-		throw(std::runtime_error("BAD Y_FUNCTION"));
-	}
-	
-}
-
-XY_FUNCTION xyFunction(const char* name) {
-	if (strcmpi(name, "barycenter")==0) {
-		return BARYCENTER;
-	}
-	else if (strcmpi(name, "radialcenter") == 0) {
-		return RADIALCENTER;
-	}
-	else {
-		throw(std::runtime_error("xyFunction() string not valid XY_FUNCTION name"));
-	}
-}
-
-/// Struct used to store roi window and tracking parameters
+/*// Struct used to store roi window and tracking parameters
 struct roiListXY{
     // Other Globals
     XY_FUNCTION xyMethod = RADIALCENTER; ///< xy tracking algorithm
@@ -70,7 +42,7 @@ struct roiListXY{
 	/// additional code.
 	virtual void setFromStruct(const mxArray* srcStruct) {
 		auto newStruct = std::make_shared<extras::cmex::MxObject>(srcStruct);
-	
+
 		if (!newStruct->isstruct()) {
 			throw(std::runtime_error("roiAgregator::setFromStruct(): MxObject is not a struct"));
 		}
@@ -164,11 +136,13 @@ struct roiListXY{
 	}
 
 };
+*/
 
-template <typename SettingsArgs=roiListXY>
+template <typename SettingsArgs=roiAgregator>
 class roiTrackerXY :public extras::async::PersistentArgsProcessor<SettingsArgs> {//extras::async::PersistentArgsProcessor{//
-	typedef typename extras::async::PersistentArgsProcessor<SettingsArgs>::TaskPairType TaskPairType;
+	typedef typename extras::async::PersistentArgsProcessor<SettingsArgs>::TaskPairType TaskPairType; //alias or pair containing mxArrayGroup and std::shared_ptr<SettingsArgs>
     typedef typename extras::async::PersistentArgsProcessor<SettingsArgs> ParentClass; //alias to templated parent class name
+    typedef typename std::shared_ptr<SettingsArgs> SettingsArgs_Ptr;
 protected:
 	/// method for Processing Tasks in the task list
     /// If you extend roiTrackerXY you should re-define this and use the original
@@ -184,15 +158,16 @@ protected:
     ///     }
 	virtual extras::cmex::mxArrayGroup ProcessTask(const TaskPairType& argPair)
 	{
+
+        const extras::cmex::mxArrayGroup& imgGroup = argPair.first;
+        const SettingsArgs_Ptr& settings = argPair.second;
+
+        using namespace extras::cmex;
+
 		//if no windows or XYc, then return empty
-		if (argPair.second->WIND->isempty() && argPair.second->XYc->isempty()) {
-			return extras::cmex::mxArrayGroup();
+		if (settings->isempty() && settings->XYc->isempty()) {
+			return mxArrayGroup();
 		}
-
-		mxArray* outStruct = argPair.second->getCopyOfRoiStruct();
-
-        int fn_xyM = mxAddField(outStruct, "xyMethod");
-        if (fn_xyM < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='xyMethod' to output struct")); }
 
         /// Get Image
         const mxArray* img=nullptr;
@@ -204,7 +179,9 @@ protected:
             img=argPair.first.getArray(0);
         }
 
+        MxStruct outStruct(argPair.second->getCopyOfRoiStruct(),false,true); //construct output struct;
 
+        // process images
         switch(argPair.second->xyMethod){
             case RADIALCENTER:
             {
@@ -225,33 +202,24 @@ protected:
                 rcOut[0]+=1; //shift for 1-indexing
                 rcOut[1]+=1; //shift for 1-indexing
 
-        		// add X,Y,varXY,RWR_N to output struct
-        		int fn_X = mxAddField(outStruct, "X");
-        		if (fn_X < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='X' to output struct")); }
-        		int fn_Y = mxAddField(outStruct, "Y");
-        		if (fn_Y < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='Y' to output struct")); }
-        		int fn_varXY = mxAddField(outStruct, "varXY");
-        		if (fn_varXY < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='varXY' to output struct")); }
-        		int fn_RWR_N = mxAddField(outStruct, "RWR_N");
-        		if (fn_RWR_N < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='RWR_N' to output struct")); }
-
         		//set field values
         		for (size_t n = 0; n < argPair.second->numberOfROI(); ++n) {
-        			mxSetFieldByNumber(outStruct, n, fn_X, mxCreateDoubleScalar(rcOut[0][n]));
-        			mxSetFieldByNumber(outStruct, n, fn_Y, mxCreateDoubleScalar(rcOut[1][n]));
-        			extras::cmex::NumericArray<double> vxy(2, 1);
+                    outStruct(n,"X") = rcOut[0][n];
+                    outStruct(n,"Y") = rcOut[1][n];
+
+                    NumericArray<double> vxy(2, 1);
         			vxy(0) = rcOut[2](n, 0);
         			vxy(1) = rcOut[2](n, 1);
-        			mxSetFieldByNumber(outStruct, n, fn_varXY, vxy);
-        			mxSetFieldByNumber(outStruct, n, fn_RWR_N, mxCreateDoubleScalar(rcOut[3][n]));
+                    outStruct(n,"varXY") = vxy;
 
-                    mxSetFieldByNumber(outStruct,n,fn_xyM,mxCreateString("radialcenter"));
+                    outStruct(n,"RWR_N") = rcOut[3][n];
+                    outStruct(n,"xyMethod") = "radialcenter";
         		}
             }
             break;
             case BARYCENTER:
             { // Do Barycenter
-				
+
 				auto bcOut = extras::ParticleTracking::barycenter_mx<extras::Array<double>>(
                     img,
                     *(argPair.second->WIND),
@@ -259,23 +227,13 @@ protected:
 
                 bcOut[0]+=1;
                 bcOut[1]+=1;
-				
-                // add X,Y
-        		int fn_X = mxAddField(outStruct, "X");
-        		if (fn_X < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='X' to output struct")); }
-        		int fn_Y = mxAddField(outStruct, "Y");
-				if (fn_Y < 0) { mxFree(outStruct); throw(std::runtime_error("could not add field='Y' to output struct")); }
 
-        		//set field values
+                //set field values
         		for (size_t n = 0; n < argPair.second->numberOfROI(); ++n) {
+                    outStruct(n,"X") = bcOut[0][n];
+                    outStruct(n,"Y") = bcOut[1][n];
 
-        			//mxSetFieldByNumber(outStruct, n, fn_X, mxCreateDoubleScalar(bcOut[0][n]));
-        			//mxSetFieldByNumber(outStruct, n, fn_Y, mxCreateDoubleScalar(bcOut[1][n]));
-
-					mxSetFieldByNumber(outStruct, n, fn_X, mxCreateDoubleScalar(n+1));
-					mxSetFieldByNumber(outStruct, n, fn_Y, mxCreateDoubleScalar(n+1));
-
-                    mxSetFieldByNumber(outStruct,n,fn_xyM,mxCreateString("barycenter"));
+                    outStruct(n,"xyMethod") = "radialcenter";
         		}
 
             }
@@ -291,7 +249,8 @@ protected:
             }
         }
 
-		return extras::cmex::mxArrayGroup(1, &outStruct); //wrap output struct in mxArrayGroup (makes Array persistent)
+        mxArray* outMx = outStruct.releasemxarray();
+		return extras::cmex::mxArrayGroup(1, &outMx); //wrap output struct in mxArrayGroup (makes Array persistent)
 
 	}
 public:
@@ -305,6 +264,7 @@ public:
 		//mexPrintf("Deleteing roiTrackerXY\n");
 
 	}
+
     // sets settingsArgs for XY settings
     // If you are redefining this, remember that the roiStruct is set via
     // roiListXY::setFromStruct()
@@ -322,7 +282,7 @@ public:
     //      ...
     //      ParentClass::CurrentArgs = newSettings;
     // }
-	virtual void setPersistentArgs(size_t nrhs, const mxArray* prhs[],std::shared_ptr<SettingsArgs>newSettings=nullptr) {
+	virtual void setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {
 		/* Syntax
 		setPersistentArgs(roiStruct)
 		setPersistentArgs(roiStruct,'Param',val)
@@ -339,9 +299,8 @@ public:
 			throw(std::runtime_error("roiTrackerXY::setPersistentArgs() first arg must be struct or char array specifying parameter name"));
 		}
 
-        if(!newSettings){
-            newSettings = std::make_shared<SettingsArgs>(*ParentClass::CurrentArgs); //make a copy of the roiSettings
-        }
+        SettingsArgs_Ptr newSettings = std::make_shared<SettingsArgs>(*ParentClass::CurrentArgs); // make a copy of CurrentArgs
+
 
 		bool found_struct = false;
 		if (mxIsStruct(prhs[0])) {
@@ -437,7 +396,7 @@ public:
  };
  /// Implement getPersistentArgs for mxArrayGroup type args
  /// Returns the argumens as Name-Value pairs, organized as a {2 x n} cell array
- template<> extras::cmex::MxCellArray roiTrackerXY<roiListXY>::getPersistentArgs() const {
+ template<> extras::cmex::MxCellArray roiTrackerXY<roiAgregator>::getPersistentArgs() const {
 	 extras::cmex::MxCellArray out;
 	 out.reshape(2, 5);
 
@@ -470,6 +429,6 @@ public:
  }
 
 //we must define the setPersistentArgs & getPersistentArgs methods for for parent processor type, even though we won't use it.
-template<> void extras::async::PersistentArgsProcessor<roiListXY>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {};
+template<> void extras::async::PersistentArgsProcessor<roiAgregator>::setPersistentArgs(size_t nrhs, const mxArray* prhs[]) {};
 
-template<> extras::cmex::MxCellArray extras::async::PersistentArgsProcessor<roiListXY>::getPersistentArgs() const { return extras::cmex::MxCellArray(); }
+template<> extras::cmex::MxCellArray extras::async::PersistentArgsProcessor<roiAgregator>::getPersistentArgs() const { return extras::cmex::MxCellArray(); }

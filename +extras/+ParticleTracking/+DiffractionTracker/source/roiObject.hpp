@@ -2,13 +2,45 @@
 
 #include <extras/Array.hpp>
 #include <memory>
-#include <extras/cmex/mxobject.hpp>
+#include <extras/cmex/MxStruct.hpp>
 #include <extras/cmex/NumericArray.hpp>
 #include "../../radialcenter/source/radialcenter_mex.hpp" //radialcenter code
 
 
+typedef std::shared_ptr<extras::cmex::MxStruct> MxStruct_Ptr;
+
+/// enum specifying xy localization algorithm
+enum XY_FUNCTION{
+    BARYCENTER,
+    RADIALCENTER
+};
+
+const char* xyFunctionName(XY_FUNCTION xyF) {
+	switch (xyF) {
+	case BARYCENTER:
+		return "barycenter";
+	case RADIALCENTER:
+		return "radialcenter";
+	default:
+		throw(std::runtime_error("BAD Y_FUNCTION"));
+	}
+
+}
+
+XY_FUNCTION xyFunction(const char* name) {
+	if (strcmpi(name, "barycenter")==0) {
+		return BARYCENTER;
+	}
+	else if (strcmpi(name, "radialcenter") == 0) {
+		return RADIALCENTER;
+	}
+	else {
+		throw(std::runtime_error("xyFunction() string not valid XY_FUNCTION name"));
+	}
+}
+
 // List of roiObjects (see MATLAB packaget extras.roi)
-// 
+//
 /* Expected Syntax
 % setPersistentArgs(Name,Value)
 %
@@ -44,78 +76,69 @@
 %   'splineroot_min_dR2frac'
 */
 struct roiAgregator {
+
 	std::shared_ptr<extras::ArrayBase<double>> WIND = std::make_shared<extras::Array<double>>(); //array containing windows of the rois, formatted as [X1,X2,Y1,Y2]
 	std::shared_ptr<extras::ArrayBase<double>> XYc=std::make_shared<extras::Array<double>>(); //optional array containing XYc centroid guesses
 	std::shared_ptr<extras::ArrayBase<double>> GP = std::make_shared<extras::Array<double>>(); //optional array containing GP for radialcenter
 	std::shared_ptr<extras::ArrayBase<double>> RadiusFilter = std::make_shared<extras::Array<double>>(); //optional array containing RadiusFilter for radialcenter
-	std::shared_ptr<extras::cmex::MxObject> roiStruct; //original struct array object used to set roiList
-
+	MxStruct_Ptr roiStruct = std::make_shared<extras::cmex::MxStruct>(); //original struct array object used to set roiList
 
 	void setFromStruct(const mxArray* srcStruct) {
-		auto newStruct = std::make_shared<extras::cmex::MxObject>(srcStruct);
-		if (!newStruct->isstruct()) {
-			throw(std::runtime_error("roiAgregator::setFromStruct(): MxObject is not a struct"));
-		}
-		if (!extras::cmex::hasField(*newStruct, "Window")) {
+		using namespace extras::cmex;
+		auto newStruct = std::make_shared<MxStruct>(srcStruct);
+
+		if(!newStruct->isfield("Window")){
 			throw(std::runtime_error("roiAgregator::setFromStruct(): struct does not contain 'Window' field"));
 		}
-		if (!extras::cmex::hasField(*newStruct, "UUID")) {
-			throw(std::runtime_error("roiAgregator::setFromStruct(): struct does not contain 'UUID' field"));
-		}
 
-		size_t len = newStruct->numel();
-		//create temporary array that will be pushed into main variables at the end of the function
-		// if an error is thrown, original arrays will remain unchanged.
+		size_t len = newStruct->numel(); //number of entries in roiList
+
+		// Set Windows
 		std::shared_ptr<extras::ArrayBase<double>> newWIND = std::make_shared<extras::Array<double>>(len, 4);
-		std::shared_ptr<extras::ArrayBase<double>> newXYc = XYc;
-		std::shared_ptr<extras::ArrayBase<double>> newGP = GP;
-		std::shared_ptr<extras::ArrayBase<double>> newRadiusFilter = RadiusFilter;
-
-		if (extras::cmex::hasField(*newStruct, "XYc")) {
-			newXYc->resize(len, 2);
-		}
-		else {
-			newXYc->resize(0, 2);
-		}
-
-		if (extras::cmex::hasField(*newStruct, "GP")) {
-			newGP->resize(len);
-		}
-		else {
-			newGP->resize(0,1);
-		}
-		if (extras::cmex::hasField(*newStruct, "RadiusFilter")) {
-			newRadiusFilter->resize(len);
-		}
-		else {
-			newRadiusFilter->resize(0, 1);
-		}
-
 		for (size_t n = 0; n < len; ++n) {
 			// set window
-			extras::cmex::NumericArray<double> Window(mxGetField(*newStruct,n,"Window"));
+			NumericArray<double> Window = MxObject((*newStruct)(n,"Window"));
 			(*newWIND)(n, 0) = Window[0]; //X1
 			(*newWIND)(n, 1) = Window[0]+Window[2]-1; //X2=x+w-1
 			(*newWIND)(n, 2) = Window[1]; //Y1
 			(*newWIND)(n, 3) = Window[1] + Window[3] - 1; //Y2=y+h-1
+		}
 
-			if (extras::cmex::hasField(*newStruct, "XYc")) {
-				extras::cmex::NumericArray<double> sXYc(mxGetField(*newStruct, n, "XYc"));
-				(*newXYc)(n, 0) = sXYc[0];
-				(*newXYc)(n, 1) = sXYc[1];
-			}
-
-			if (extras::cmex::hasField(*newStruct, "GP")) {
-				extras::cmex::NumericArray<double> sGP(mxGetField(*newStruct, n, "GP"));
-				(*newGP)(n) = sGP[0];
-			}
-			if (extras::cmex::hasField(*newStruct, "RadiusFilter")) {
-				extras::cmex::NumericArray<double> sRadiusFilter(mxGetField(*newStruct, n, "RadiusFilter"));
-				(*newRadiusFilter)(n) = sRadiusFilter[0];
+		// set XYc
+		std::shared_ptr<extras::ArrayBase<double>> newXYc = XYc;
+		if(newStruct->isfield("XYc")){
+			newXYc->resize(len, 2);
+			for (size_t n = 0; n < len; ++n) {
+				// set window
+				NumericArray<double> sXYc = MxObject((*newStruct)(n,"XYc"));
+				(*newXYc)(n,0) = sXYc[0];
+				(*newXYc)(n,0) = sXYc[1];
 			}
 		}
 
-		// no errors!
+		// Set GP
+		std::shared_ptr<extras::ArrayBase<double>> newGP = GP;
+		if(newStruct->isfield("GP")){
+			newGP->resize(len, 1);
+			for (size_t n = 0; n < len; ++n) {
+				// set window
+				NumericArray<double> sGP = MxObject((*newStruct)(n,"GP"));
+				(*newGP)(n,0) = sGP[0];
+			}
+		}
+
+		// Set RadiusFilter
+		std::shared_ptr<extras::ArrayBase<double>> newRadiusFilter = RadiusFilter;
+		if(newStruct->isfield("RadiusFilter")){
+			newGP->resize(len, 1);
+			for (size_t n = 0; n < len; ++n) {
+				// set window
+				NumericArray<double> sRadiusFilter = MxObject((*newStruct)(n,"RadiusFilter"));
+				(*newRadiusFilter)(n,0) = sRadiusFilter[0];
+			}
+		}
+
+		// no errors so far!
 		// set main variables
 		newStruct->makePersistent();
 		roiStruct = newStruct;
@@ -137,4 +160,9 @@ struct roiAgregator {
 	/// globals for radial center
 	rcdefs::COM_METHOD COMmethod = rcdefs::MEAN_ABS;
 	double DistanceFactor = INFINITY;
+
+	/// globals for barycenter
+    double barycenterLimFrac = 0.2; ///< LimFrac used by barycenter
+
+	XY_FUNCTION xyMethod = RADIALCENTER;
 };

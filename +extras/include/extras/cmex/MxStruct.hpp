@@ -91,7 +91,7 @@ namespace extras{namespace cmex{
 			if (_setFromConst) {
 				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
 			}
-			
+
             mxDestroyArray(mxGetFieldByNumber(parent,index,field_number));
 			//mxSetFieldByNumber(parent, index, field_number, nullptr);
 			//mexPrintf("pvalue: %p\n", pvalue);
@@ -227,7 +227,7 @@ namespace extras{namespace cmex{
 
         /// non-const access to field
         FieldWrapper operator()(size_t idx, const char* fieldname){
-           
+
             if(idx>=mxGetNumberOfElements(_mxptr)){
                 throw(std::runtime_error("MxStruct::operator() index exceeds struct array dimension"));
             }

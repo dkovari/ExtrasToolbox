@@ -446,7 +446,7 @@ namespace extras{namespace cmex {
 
 		virtual ~NumericArray() {};
 
-		NumericArray() {};
+		NumericArray():MxObject(mxCreateNumericMatrix(0,0,type2ClassID<T>(),mxREAL),false,true) {}; //create non-persistent empty numeric array (with self-managed mxarray*)
 
 		NumericArray(size_t numel){
 			resize_nocpy(numel);

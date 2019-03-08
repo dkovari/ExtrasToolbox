@@ -19,14 +19,16 @@ namespace extras{namespace async{
     class PersistentArgsProcessor: public extras::async::AsyncProcessor{
 	public:
 		typedef typename std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<PersistentArgType>> TaskPairType;
+		typedef typename std::shared_ptr<PersistentArgType> PersistentArg_Ptr;
 	private:
 		cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) { throw(std::runtime_error("in ProcTask(mxAG)..shouldn't be here")); return cmex::mxArrayGroup(); } ///< don't use ProcessTask(mxArrayGroup&)
     protected:
         std::list<TaskPairType> TaskList; // Hides TaskList inherited from AsyncProcessor
 
-        std::shared_ptr<PersistentArgType> CurrentArgs = std::make_shared<PersistentArgType>();
+        PersistentArg_Ptr CurrentArgs = std::make_shared<PersistentArgType>();
 
-        virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&) = 0; ///< must define ProcessTask for working with pushed task and persistent args
+        //virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&) = 0; ///< must define ProcessTask for working with pushed task and persistent args
+		virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&)
 
 		/// core method called by ProcessLoop() to handle tasks.
 		/// this function is responsible for getting the top element from the TaskList and calling ProcessTask

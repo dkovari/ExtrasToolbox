@@ -147,7 +147,6 @@ namespace extras{namespace cmex{
 			_setFromConst = false;
         }
 
-
         /// Copy constructor and copy assignment
         MxObject(const MxObject& src){
 			copyFrom(src);
@@ -171,34 +170,36 @@ namespace extras{namespace cmex{
         }
 
         /// Construct from mxarray
-        /// assume mxArray* is not persistent
+        /// assume mxArray* is not persistent (unless specified)
         /// mxArray will be managed (therefore deleted upon destruction)
-        MxObject(mxArray* mxptr){
+        MxObject(mxArray* mxptr, bool isPersistent=false){
             //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
             _mxptr = mxptr;
 			if (mxptr != nullptr) {
 				_managemxptr = false;
-				_isPersistent = false;
-				_setFromConst = false;
 			}
 			else {
 				_managemxptr = true;
-				_isPersistent = false;
-				_setFromConst = false;
 			}
-
+            _setFromConst = false;
+            _isPersistent = isPersistent;
         }
 
         /// Construct from mxArray
         /// flag specifies if mxptr should be controlled by MxObject
         /// must specify isPersistent
         /// if manageFlag=true (default=false) data will be deleted upon MxObject destruction
-        MxObject(mxArray* mxptr,bool isPersistent, bool manageArray=false){
+        MxObject(mxArray* mxptr,bool isPersistent, bool manageArray){
             //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
             _mxptr = mxptr;
-            _managemxptr = manageArray;
-			_isPersistent = isPersistent;
-			_setFromConst = false;
+			if (mxptr != nullptr) {
+				_managemxptr = manageArray;
+			}
+			else {
+				_managemxptr = true;
+			}
+            _setFromConst = false;
+            _isPersistent = isPersistent;
         }
 
         /// assign from mxarray
@@ -381,9 +382,7 @@ namespace extras{namespace cmex{
         }
 
         /// std::vector holding dimension of the mxArray object
-        virtual std::vector<size_t> size() const{
-            return cmex::size(_mxptr);
-        }
+        virtual std::vector<size_t> size() const{return cmex::size(_mxptr);}
 
         /// number of elements
         virtual size_t numel() const{
