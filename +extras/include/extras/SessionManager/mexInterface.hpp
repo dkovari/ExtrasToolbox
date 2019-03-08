@@ -1,3 +1,7 @@
+/*--------------------------------------------------
+Copyright 2018-2019, Daniel T. Kovari, Emory University
+All rights reserved.
+----------------------------------------------------*/
 #pragma once
 
 #include <extras/cmex/mexextras.hpp>
@@ -121,6 +125,14 @@ namespace extras{namespace SessionManager{
             return ObjManager.get(prhs[0]);
         }
 
+		void clearObjects(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+#ifdef _DEBUG
+			mexPrintf("Clearing All Objects.\n");
+			mexEvalString("pause(0.2)");
+#endif
+			ObjManager.clearObjects();
+		}
+
     public:
 
 		virtual ~mexInterface() {
@@ -128,7 +140,6 @@ namespace extras{namespace SessionManager{
 			mexPrintf("Destroying mexInterface<%s,...>\n", typeid(ObjType).name());
 			mexEvalString("pause(0.2)");
 #endif
-
 		}
 
         mexInterface(){
@@ -140,6 +151,8 @@ namespace extras{namespace SessionManager{
 #endif
             addFunction("new",std::bind(&mexInterface::new_object,this,_1,_2,_3,_4));  //add 'new' command
             addFunction("delete",std::bind(&mexInterface::delete_object,this,_1,_2,_3,_4));  //add 'delete' command
+			addFunction("clear_mex_objects", std::bind(&mexInterface::clearObjects, this, _1, _2, _3, _4));  //add 'clear_mex_objects' command
+
 #ifdef DAN_DEBUG
 			mexPrintf("\tdone creating mexInterface\n");
 			mexPrintf("\t press a key to continue\n");

@@ -1,3 +1,7 @@
+/*--------------------------------------------------
+Copyright 2018-2019, Daniel T. Kovari, Emory University
+All rights reserved.
+----------------------------------------------------*/
 #pragma once
 
 #define NOMINMAX //don't use the windows definition of min/max

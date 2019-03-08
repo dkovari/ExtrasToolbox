@@ -1,3 +1,7 @@
+/*--------------------------------------------------
+Copyright 2018-2019, Daniel T. Kovari, Emory University
+All rights reserved.
+----------------------------------------------------*/
 #pragma once
 
 #include "AsyncProcessor.hpp"
@@ -28,7 +32,7 @@ namespace extras{namespace async{
         PersistentArg_Ptr CurrentArgs = std::make_shared<PersistentArgType>();
 
         //virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&) = 0; ///< must define ProcessTask for working with pushed task and persistent args
-		virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&)
+		virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&) = 0;
 
 		/// core method called by ProcessLoop() to handle tasks.
 		/// this function is responsible for getting the top element from the TaskList and calling ProcessTask

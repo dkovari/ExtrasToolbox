@@ -1,3 +1,8 @@
+/* MxCellArray.hpp
+Copyright 2019, Daniel T. Kovari, Emory University
+All rights reserved.
+---------------------------------------------------*/
+
 #pragma once
 
 #include "mxobject.hpp"
@@ -207,6 +212,32 @@ namespace extras{namespace cmex{
             }
             return mxGetCell(_mxptr,idx);
         }
+
+		/// non-const access to field
+		CellWrapper operator()(const std::vector<size_t>& subscripts) {
+
+			size_t idx = mxCalcSingleSubscript(_mxptr, subscripts.size(), subscripts.data());
+
+			if (_setFromConst) {
+				throw(std::runtime_error("MxCellArray::operator() Cannot get non-const access element of cell set from constant."));
+			}
+			if (idx >= mxGetNumberOfElements(_mxptr)) {
+				throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
+			}
+
+			return CellWrapper(_mxptr, idx);
+		}
+
+		/// const access to field
+		const mxArray* operator()(const std::vector<size_t>& subscripts) const {
+
+			size_t idx = mxCalcSingleSubscript(_mxptr, subscripts.size(), subscripts.data());
+
+			if (idx >= mxGetNumberOfElements(_mxptr)) {
+				throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
+			}
+			return mxGetCell(_mxptr, idx);
+		}
 
 
     };

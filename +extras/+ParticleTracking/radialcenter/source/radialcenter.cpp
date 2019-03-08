@@ -44,7 +44,11 @@
 %           w = w/r^DF
 %       where r is the distance of a pixel from the extimated com or the
 %       specified XYc(n,:) coordinate
-*/
+
+/*--------------------------------------------------
+Copyright 2018-2019, Daniel T. Kovari, Emory University
+All rights reserved.
+----------------------------------------------------*/
 
 
 #include "radialcenter_mex.hpp"

@@ -5,7 +5,11 @@ This mex file creates a dummy processor which simply copies the task inputs
 provided via pushTask(Arg1,Arg2,...) to the results queue
 yielding a result
 [Arg1,Arg2,...] = popResult();
-*/
+
+/*--------------------------------------------------
+Copyright 2018-2019, Daniel T. Kovari, Emory University
+All rights reserved.
+----------------------------------------------------*/
 
 #include <extras/async/PersistentArgsProcessor.hpp>
 

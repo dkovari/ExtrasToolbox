@@ -1,3 +1,7 @@
+/*--------------------------------------------------
+Copyright 2018-2019, Daniel T. Kovari, Emory University
+All rights reserved.
+----------------------------------------------------*/
 #pragma once
 
 #include <extras/Array.hpp> //include extras::extras::Array, be sure to add +extras/include to your include path

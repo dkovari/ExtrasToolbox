@@ -5,7 +5,11 @@ allowing the object to be used across multiple calls.
 Couple this the mexDispatch to create a class interface
 
 This is intended to be used with Session.m
-*/
+
+/*--------------------------------------------------
+Copyright 2018, Daniel T. Kovari, Emory University
+All rights reserved.
+----------------------------------------------------*/
 
 #pragma once
 
@@ -17,52 +21,9 @@ This is intended to be used with Session.m
 namespace extras{namespace SessionManager{
 
 
-
-	/*
-	/// ObjectManager base class
-	/// used to setup the static mexAtExit function, calling ObjMan::clearObjects() for all object managers
-	struct ObjectManager_Base {
-		virtual ~ObjectManager_Base();
-		virtual void clearObjects() = 0;
-		ObjectManager_Base();
-	};
-
-	bool g_MexAtExitSet = false; ///< global flag specifying if mexAtExit has been set
-	std::list<ObjectManager_Base*> g_ObjectManagerBaseList; ///< global list of object managers
-
-	/// called at MexAtExit
-	/// clears all objectmanagers
-	void ExitFn() {
-
-		for (auto pObj : g_ObjectManagerBaseList) {
-			pObj->clearObjects();
-		}
-
-	}
-
-	ObjectManager_Base::~ObjectManager_Base() {
-		// remove self from om list
-
-		g_ObjectManagerBaseList.remove(this);
-	}
-
-	ObjectManager_Base::ObjectManager_Base() {
-		// add self to static OM list
-		g_ObjectManagerBaseList.push_back(this);
-
-		if (!g_MexAtExitSet) {
-			//void(*pfn)(void) = ;
-			///mexAtExit(&ObjectManager_Base::ExitFn);
-			g_MexAtExitSet = true;
-		}
-	}
-	*/
-
-
 	template <class Obj>
 	class ObjectManager{//: virtual public ObjectManager_Base {
 	protected:
-		bool _lock_mex;
 		std::unordered_map<intptr_t, std::shared_ptr<Obj>> ObjectMap;
 
 		static intptr_t getIntPointer(const mxArray* pointer) {
@@ -83,15 +44,20 @@ namespace extras{namespace SessionManager{
 			mexPrintf("ObjectManager<%s>::clearObjects()\n", typeid(Obj).name());
 			mexEvalString("pause(0.2)");
 #endif
-			ObjectMap.clear();
+			// unlock mex file
+			for (size_t n = 0; n < ObjectMap.size(); n++) {
+				mexUnlock(); //decrement mex lock counter;
+			}
+
+			ObjectMap.clear(); //destroy all objects
+
 #ifdef _DEBUG
 			mexPrintf("\t...Objects cleared.\n", typeid(Obj).name());
 			mexEvalString("pause(0.2)");
 #endif
 		}
 
-		ObjectManager(bool LOCK_MEX = true){
-			_lock_mex = LOCK_MEX;
+		ObjectManager(){
 #ifdef _DEBUG
 			mexPrintf("Creating ObjectManager<%s>\n", typeid(Obj).name());
 #endif
@@ -101,8 +67,7 @@ namespace extras{namespace SessionManager{
 #ifdef _DEBUG
 			mexPrintf("Destroying ObjectManager<%s>\n",typeid(Obj).name());
 			mexEvalString("pause(0.2)");
-#endif
-			
+#endif			
 			clearObjects();
 		}
 
@@ -116,10 +81,7 @@ namespace extras{namespace SessionManager{
 			std::shared_ptr<Obj> newObj(p);
 			intptr_t ptr = reinterpret_cast<intptr_t>(p);
 			ObjectMap.insert(std::make_pair(ptr, newObj));//add object to map
-
-			if (_lock_mex) {
-				mexLock(); //increment mex lock counter;
-			}
+			mexLock(); //increment mex lock counter;
 			
 			return ptr;
 		}
@@ -133,9 +95,7 @@ namespace extras{namespace SessionManager{
 			if (!ObjectMap.empty())
 			{
 				ObjectMap.erase(id);
-				if (_lock_mex) { //unlock mex file if needed
-					mexUnlock(); //deccrement mex lock counter;
-				}
+				mexUnlock(); //deccrement mex lock counter;
 			}
 		}
 

@@ -11,33 +11,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\extras\Array.hpp" />
-    <ClInclude Include="..\..\include\extras\ArrayBase.hpp" />
     <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp" />
     <ClInclude Include="..\..\include\extras\async\ParamProcessor.hpp" />
     <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
-    <ClInclude Include="..\..\include\extras\string_extras.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\+Example\ExampleProcessor_PersistArgs.cpp" />
+    <ClCompile Include="..\..\+Async\+Example\ExampleProcessor_ParamArgs.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{318dc0c4-d1f3-48ab-be70-82b2d9e4d7cf}</ProjectGuid>
+    <ProjectGuid>{4057b649-1bac-4648-9869-c49ad107c869}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ExampleProcessor_PersistArgs</RootNamespace>
+    <RootNamespace>ExampleProcessor_ParamArgs</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -68,17 +62,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>..\..\+Async\+Example\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
-    <TargetName>ExampleProcessor_PersistArgsMex</TargetName>
+    <TargetName>EP_PA_mex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>..\..\+Async\+Example\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
-    <TargetName>ExampleProcessor_PersistArgsMex</TargetName>
+    <TargetName>EP_PA_mex</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

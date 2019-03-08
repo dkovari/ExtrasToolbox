@@ -1,14 +1,10 @@
+
 try
     delete(EP2)
 catch
 end
 
-disp('Create EP_PA');
-EP2 = extras.Async.Example.ExampleProcessor_PersistArgs; %create processor
-
-disp('push key to continue');
-pause
-
+EP2 = extras.Async.Example.ExampleProcessor_ParamArgs; %create processor
 
 CBQ = extras.CallbackQueue; %create callback queue to listen to results from processor
 
@@ -30,7 +26,7 @@ pause
 
 disp('pausing processor and adding tasks and persistent args');
 EP2.pause();
-EP2.setPersistentArgs('Persist',[100,200,300]);
+EP2.setParameters('Persist',[100,200,300]);
 
 for n=11:21
     EP2.pushTask('Task',n,rand(10));
