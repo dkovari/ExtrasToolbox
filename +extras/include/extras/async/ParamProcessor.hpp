@@ -7,39 +7,36 @@ All rights reserved.
 #include "AsyncProcessor.hpp"
 #include <unordered_map>
 #include <memory>
-#include <extras/cmex/PersistentMxArray.hpp>
-#include <extras/cmex/MxCellArray.hpp>
-#include <extras/cmex/mexextras.hpp>
+#include <extras/cmex/PersistentMxMap.hpp>
 
 namespace extras {namespace async {
 
 	class ParamProcessor: public AsyncProcessor {
 	public:
-		typedef typename cmex::persistentMxArray ParameterType;
-		typedef typename std::shared_ptr<ParameterType> ParameterPtr;
-		typedef typename std::unordered_map<std::string, ParameterPtr> ParameterMap;
+		typedef typename extras::cmex::ParameterMxMap ParameterMap;
 		typedef typename std::shared_ptr<ParameterMap> ParameterMapPtr;
 		typedef typename std::pair<extras::cmex::mxArrayGroup, ParameterMapPtr> TaskParameterPair;
 	private:
 		cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) { throw(std::runtime_error("in ProcTask(mxAG)..shouldn't be here")); return cmex::mxArrayGroup(); } ///< don't use ProcessTask(mxArrayGroup&)
+		std::list<cmex::mxArrayGroup> TaskList; //Hide original list inherited from AsyncProcessor 
 	protected:
 		ParameterMapPtr _pMap = std::make_shared<ParameterMap>(); //pointer to current parameter list
 
-		std::list<TaskParameterPair> TaskList; // Hides TaskList inherited from AsyncProcessor
+		std::list<TaskParameterPair> TaskPairList; // List containing Pair
 
 		/// pure virtual method that must be defined for handling tasks
 		virtual cmex::mxArrayGroup ProcessTask(const  cmex::mxArrayGroup& TaskArgs, const ParameterMap& Params) = 0;
 
 		/// core method called by ProcessLoop() to handle tasks.
-		/// this function is responsible for getting the top element from the TaskList and calling ProcessTask
+		/// this function is responsible for getting the top element from the TaskPairList and calling ProcessTask
 		/// it should return a bool specifying if there are more tasks to process
 		/// this function is responsible for handling the TaskListMutex lock
 		///
-		/// Redefined here to make sure this version of TaskList is used
+		/// Redefined here to make sure this version of TaskPairList is used
 		virtual bool ProcessLoopCore() {
 			std::lock_guard<std::mutex> lock(TaskListMutex);
-			if (!TaskList.empty()) {
-				auto& taskPair = TaskList.front();
+			if (!TaskPairList.empty()) {
+				auto& taskPair = TaskPairList.front();
 
 				//DO Task
 				cmex::mxArrayGroup res;
@@ -55,62 +52,25 @@ namespace extras {namespace async {
 					ResultsList.push_front(std::move(res));
 				}
 
-				TaskList.pop_front();
+				TaskPairList.pop_front();
 			}
 
-			if (TaskList.empty()) {
+			if (TaskPairList.empty()) {
 				return false;
 			}
 			return true;
 		}
 
-		/// convert ParameterMap to mxArrayGroup
-		/// could be useful for passing parameter args to functions designed with MATLAB mexFunction(...) interface
-		/// NOTE: This will create a copy of the Data stored in each parameter. Consequently it could be slow if the data is large.
-		static cmex::mxArrayGroup map2arraygroup(const ParameterMap& map) {
-			extras::cmex::mxArrayGroup out(2 * map.size());
-			size_t k = 0;
-			for (const auto& p : map) {
-				out.setArray(k, extras::cmex::MxObject(p.first).getmxarray());
-				out.setArray(k + 1, p.second->getMxArray());
-				k += 2;
-			}
-		}
-
 	public:
-		/// alias of  std::make_shared<cmex::persistentMxArray>(src)
-		static ParameterPtr makeParameterPtr(const ParameterType& src){
-			return std::make_shared<ParameterType>(src);
-		}
-
-		/// alias of std::make_shared<cmex::persistentMxArray>(src)
-		static ParameterPtr makeParameterPtr(ParameterType&& src) {
-			return std::make_shared<ParameterType>(std::move(src));
-		}
 
 		virtual ~ParamProcessor() {};
 
 		/// returns MxCellArray containing parameters formated as Name-Value Pairs
 		virtual cmex::MxCellArray getParameters() const {
-			cmex::MxCellArray out;
-
-			if (!_pMap) { //_pMap has not been set (i.e. nullptr)
-				return out; //return empty cell
+			if (!_pMap) { //uninitinalized pmap, return empty cell
+				return cmex::MxCellArray();
 			}
-			
-			if (_pMap->empty()) { //_pMap is empty
-				return out;
-			}
-
-			out.reshape({ 2,_pMap->size() });
-			size_t k = 0;
-			for (const auto& param : *_pMap) {
-				out({ 0,k }) = param.first.c_str(); //set first cell param name
-				out({ 1,k }) = param.second->getMxArray(); //set second cell to copy of param mxArray
-				k++;
-			}
-
-			return out;
+			return _pMap->map2cell();
 		}
 
 		/// push arguments to the task list.
@@ -125,34 +85,29 @@ namespace extras {namespace async {
 			//Convert mxArray list to array group
 			cmex::mxArrayGroup AG(nrhs, prhs);
 
-			// add task to the TaskList
+			// add task to the TaskPairList
 			std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
 
-			TaskList.emplace_back(
-				std::make_pair(
-					std::move(AG),
-					_pMap
-				)
-			);
+			TaskPairList.push_back(std::pair<cmex::mxArrayGroup, ParameterMapPtr>(std::move(AG), _pMap));
 
-			auto& taskPair = TaskList.front();
+			auto& taskPair = TaskPairList.front();
 			mexPrintf("front args size: %d,%d\n", taskPair.first.size(),taskPair.second->size());
 			mexEvalString("pause(0.2)");
 		}
 
-		// redefine to force use of new TaskList
+		// redefine to force use of new TaskPairList
 		virtual void cancelRemainingTasks() {
 			StopProcessor();
 
 			std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
-			TaskList.clear();
+			TaskPairList.clear();
 
 			mexPrintf("\t\t Remaining tasks cleared.\n");
 			mexEvalString("pause(0.2)");
 		}
 
-		// redefine to force use of new TaskList
-		virtual size_t remainingTasks() const { return TaskList.size(); }
+		// redefine to force use of new TaskPairList
+		virtual size_t remainingTasks() const { return TaskPairList.size(); }
 
 		/// add or replace persistent perameters
 		virtual void setParameters(size_t nrhs, const mxArray* prhs[]) {
@@ -164,10 +119,7 @@ namespace extras {namespace async {
 				newMap = std::make_shared<ParameterMap>(*_pMap); // make a copy of the parametermap
 			}
 
-			// loop over args and set parameters
-			for (size_t n = 0; n < nrhs - 1; n += 2) {
-				(*newMap)[cmex::getstring(prhs[n])] = makeParameterPtr(prhs[n+1]);
-			}
+			newMap->setParameters(nrhs, prhs);
 
 			_pMap = newMap;
 		}

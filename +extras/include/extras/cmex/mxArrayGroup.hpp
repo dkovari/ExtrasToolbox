@@ -157,6 +157,7 @@ namespace extras{namespace cmex{
             }
         }
 
+		// movers
         mxArrayGroup(mxArrayGroup&& B){
             nArrays = B.nArrays;
             pArray = B.pArray;

@@ -89,7 +89,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\+Example\ExampleProcessor_PersistArgs.cpp">
+    <ClCompile Include="..\+Example\+PersistentProcessor\ExamplePersistentProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

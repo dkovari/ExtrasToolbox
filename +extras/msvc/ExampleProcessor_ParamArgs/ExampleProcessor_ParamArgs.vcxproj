@@ -16,23 +16,27 @@
     <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\MxObject.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\+Async\+Example\ExampleProcessor_ParamArgs.cpp" />
+    <ClCompile Include="..\..\+Async\+Example\+ParamProcessor\ExampleParamProcessor.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4057b649-1bac-4648-9869-c49ad107c869}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ExampleProcessor_ParamArgs</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectName>ExampleParamProcessor</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -62,17 +66,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\+Async\+Example\</OutDir>
+    <OutDir>..\..\+Async\+Example\+ParamProcessor\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
-    <TargetName>EP_PA_mex</TargetName>
+    <TargetName>ExampleParamProcessorMex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\+Async\+Example\</OutDir>
+    <OutDir>..\..\+Async\+Example\+ParamProcessor\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
-    <TargetName>EP_PA_mex</TargetName>
+    <TargetName>ExampleParamProcessorMex</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
