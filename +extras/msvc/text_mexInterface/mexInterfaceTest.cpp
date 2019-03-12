@@ -5,12 +5,15 @@ All rights reserved.
 #include <extras/SessionManager/mexInterface.hpp>
 
 struct myObj {
+	int call_n = 0;
 	myObj() {
 		mexPrintf("Create myObj\n");
 		mexEvalString("pause(0.5)");
 	}
 
 	void fn() {
+		mexPrintf("Call Count: %d\n", call_n);
+		call_n++;
 		mexPrintf("myObj:fn() Press a key to continue\n");
 		mexEvalString("pause()");
 	}

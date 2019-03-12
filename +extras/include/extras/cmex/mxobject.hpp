@@ -6,46 +6,60 @@ All rights reserved.
 
 #define NOMINMAX //don't use the windows definition of min/max
 #include <algorithm> //use min/max from std
+
 #include <mex.h>
-#include <exception>
-#include <vector>
-#include <string>
-#include <initializer_list>
+
 #include "mexextras.hpp"
 
+#include <vector>
+#include <string>
+#include <atomic>
+#include <mutex>
+#include <utility>
 
-namespace extras{namespace cmex{
+#include "type2ClassID.hpp"
 
-	///Exceptions thrown by MxObject
-    class MxObjectException: public std::exception{
-        virtual const char * what() const throw(){
-            return "Generic Exception thrown by MxObject Class";
-        }
-    };
 
-	///Object wrapper around mxArray*
-    class MxObject{
-    protected:
-        mxArray* _mxptr = nullptr; //pointer to mxArray holding data
-        bool _managemxptr = true; //flag specifying if class should delete _mxptr upon destruction
-		bool _isPersistent = false;
-		bool _setFromConst = false;
+namespace extras {namespace cmex {
 
-        void deletemxptr(){
-            if(_managemxptr && _mxptr!=nullptr && !_setFromConst){
-                mxDestroyArray(_mxptr);
-                _mxptr = nullptr;
-				_isPersistent = false;
-				_setFromConst = false;
-            }
-        }
+	class MxObject {
+	protected:
+		std::mutex _mxptrMutex; //mutex for thread-safe locking of _mxptr;
+		mxArray* _mxptr = nullptr; //mxArray ptr
+		std::atomic_bool _managemxptr = true; //flag if data is managed
+		std::atomic_bool _isPersistent = false; //flag if data is persistent
+		std::atomic_bool _setFromConst = false; //flag if set from const
 
-        /// Copy data from MxObject
+		/// delete mxptr if needed
+		/// if not managed, set from constant, or not set (i.e. nullptr) memory is not freed
+		/// upon return:
+		///		_mxptr == nullptr
+		///		_mxptr == false
+		///		_mxptr == false
+		void deletemxptr_nolock() {
+			// free memory if needed
+			if (_managemxptr && !_setFromConst && _mxptr != nullptr) {
+				mxDestroyArray(_mxptr);
+			}
+
+			_mxptr = nullptr;
+			_managemxptr = true;
+			_isPersistent = false;
+			_setFromConst = false;
+		}
+
+		/// creates a mutex lock on _mxptr before calling deletemxptr_nolock()
+		void deletemxptr_withlock() {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+		}
+
+		/// create deep copy of object
 		virtual void copyFrom(const MxObject& src) {
-			deletemxptr();
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
 			if (src._mxptr == nullptr) {
 				_mxptr = nullptr;
-				_managemxptr = true;
 				_isPersistent = false;
 				_setFromConst = false;
 			}
@@ -53,518 +67,613 @@ namespace extras{namespace cmex{
 				_mxptr = mxDuplicateArray(src._mxptr);
 				_managemxptr = true;
 				_setFromConst = false;
-				if (_isPersistent) {
-					mexMakeArrayPersistent(_mxptr);
-				}
-				else if (src.isPersistent()) {
-					mexMakeArrayPersistent(_mxptr);
-					_isPersistent = true;
+				if (src._isPersistent) {
+					makePersistent();
 				}
 			}
 		}
 
-        /// Move data from MxObject
-        /// resulting object will have _mxptr=nullptr;
-        virtual void moveFrom(MxObject& src) {
-			//mexPrintf("MxObject::moveFrom: this=%d src=%d\n", this, &src);
+		/// move object
+		virtual void moveFrom(MxObject& src) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 
-			deletemxptr();
-			if (src._mxptr == nullptr) {
-				_mxptr = nullptr;
-				_managemxptr = true;
+			deletemxptr_nolock();
+			
+			_mxptr = src._mxptr;
+			_managemxptr = bool(src._managemxptr);
+			_setFromConst = bool(src._setFromConst);
+			_isPersistent = bool(src._isPersistent);
+
+			// reset src
+			src._managemxptr = false;
+			src.deletemxptr_withlock();
+		}
+
+		/// set from const mxArray*
+		virtual void setFromConst(const mxArray* psrc, bool persist) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+
+			_mxptr = (mxArray*)psrc;
+			_managemxptr = false;
+			if (psrc == nullptr) {
 				_setFromConst = false;
 			}
 			else {
-				_mxptr = src._mxptr;
-				_managemxptr = src._managemxptr;
-				_setFromConst = src._setFromConst;
-				src._managemxptr = false;
-				_isPersistent = src._isPersistent;
+				_setFromConst = true;
 			}
-		}
-    public:
-		//// Constructors for persistent Data
-
-		// create persistent mxArray with empty data
-		static MxObject createPersistent() {
-			MxObject out;
-			out.makePersistent();
-			return out;
+			_isPersistent = persist;
 		}
 
-		// create persistent mxArray by copying array
-		static MxObject createPersistent(const MxObject& src) {
-			MxObject out(src);
-			out.makePersistent();
-			return out;
-		}
-		static MxObject createPersistent(mxArray* src, bool isPersistent = false) {
-			MxObject out(src, isPersistent);
-			out.makePersistent();
-			return out;
-		}
-		static MxObject createPersistent(const mxArray* src, bool isPersistent = false) {
-			MxObject out(src, isPersistent);
-			out.makePersistent();
-			return out;
-		}
-		// create persistent scalar
-		static MxObject createPersistent(const double& in) {
-			MxObject out(in);
-			out.makePersistent();
-			return out;
-		}
-		// create persistent string
-		static MxObject createPersistent(const std::string & in) {
-			MxObject out(in);
-			out.makePersistent();
-			return out;
+		/// set from (non-const) mxArray*
+		virtual void setFrom(mxArray* psrc, bool persist) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+			_mxptr = psrc;
+			_managemxptr = false;
+			_setFromConst = false;
+			_isPersistent = persist;
 		}
 
-		/// make mxArray persistent so that it survives beyond each call to the initializing mexFunction
+		/// if linked mxArray is not managed, creates a copy and manages the new copy
+		/// if already managed or mxptr==nullptr then does nothing.
+		/// If the array was not managed, and a copy is created, the the previously linked array
+		/// is returned in a pair, along with a bool specifying if it was set from const.
+		///
+		///	Return:
+		//		out.first -> mxArray*
+		//		out.second -> bool specifying if out.first shoud be considered "const mxArray*"
+		std::pair<mxArray*,bool> takeOwnership() {
+
+			if (_mxptr == nullptr) { //nullptr, nothing to do
+				return std::make_pair<mxArray*,bool>(nullptr,false);
+			}
+
+			if (_managemxptr && !_setFromConst) { //already managed, nothing to do
+				return std::make_pair<mxArray*, bool>(nullptr, false);
+			}
+
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			mxArray* oldPtr = _mxptr;
+			_mxptr = mxDuplicateArray(_mxptr);
+			_managemxptr = true;
+			_setFromConst = false;
+			if (_isPersistent) {
+				mexMakeArrayPersistent(_mxptr);
+			}
+
+			return std::pair<mxArray*, bool>(oldPtr, bool(_setFromConst));
+		}
+
+	public:
+
+		/// destroy object
+		virtual ~MxObject() { deletemxptr_withlock(); };
+
+		/// make mxArray persistent so that it survives different calls to a mexFunction
 		void makePersistent() {
-			if (_isPersistent) { return; }
-			if (!_managemxptr) {
+			if (_isPersistent) {
+				return;
+			}
+
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+
+			if (!_managemxptr || _setFromConst) {
 				_mxptr = mxDuplicateArray(_mxptr);
 				_managemxptr = true;
 				_setFromConst = false;
 			}
+
 			mexMakeArrayPersistent(_mxptr);
 			_isPersistent = true;
 		}
 
-		///true if mxArray is persistent (i.e. can outlive a mexFunction call)
-		bool isPersistent() const { return _isPersistent; }
+		///////////////////////////////////////////////////////////////////////////////////
+		// Constructors
 
-        //destructor
-        virtual ~MxObject(){
-            deletemxptr();
-            //mexPrintf("~mxObject():%d _mxptr:%d\n",this,_mxptr);
-        }
+		/// Defaul Constructor
+		/// mxArray will be set to nullptr
+		MxObject() : _mxptr(nullptr), _managemxptr(true), _isPersistent(false), _setFromConst(false) {};
 
-        ///Generic constructor, constructs empty array
-        MxObject(){
-            //mexPrintf("mxObject():%d\n",this);
-            _mxptr = nullptr;//mxCreateDoubleMatrix(0,0,mxREAL);
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
-        }
-
-        /// Copy constructor and copy assignment
-        MxObject(const MxObject& src){
+		/// Construct by copy
+		MxObject(const MxObject& src) {
 			copyFrom(src);
-        }
+		}
 
-		/// copy assignment
-        virtual MxObject& operator=(const MxObject& src){
+		/// Construct by move
+		MxObject(MxObject&& src) {
+			moveFrom(src);
+		}
+
+		/// Construct from const mxArray*
+		MxObject(const mxArray* psrc, bool persist = false) {
+			setFromConst(psrc, persist);
+		}
+
+		/// Construct from (non-const) mxArray*
+		MxObject(mxArray* psrc, bool persist = false) {
+			setFrom(psrc, persist);
+		}
+
+		///////////////////////////////////////////////////////////////////////
+		// Set Operators
+
+		/// set by copy
+		virtual MxObject& operator=(const MxObject& src) {
 			copyFrom(src);
-            return *this;
-        }
+			return *this;
+		}
 
-        /// move constructor and move assignment
-        MxObject(MxObject && src){
+		/// set by move
+		virtual MxObject& operator=(MxObject&& src) {
 			moveFrom(src);
-        }
+			return *this;
+		}
 
-		/// move assignment
-        virtual MxObject& operator=(MxObject && src){
-			moveFrom(src);
-            return *this;
-        }
+		/// set from const mxArray*, with optional ability to set persistent flag
+		virtual MxObject& set(const mxArray* psrc, bool isPersist = false) {
+			setFromConst(psrc, isPersist);
+			return *this;
+		}
 
-        /// Construct from mxarray
-        /// assume mxArray* is not persistent (unless specified)
-        /// mxArray will be managed (therefore deleted upon destruction)
-        MxObject(mxArray* mxptr, bool isPersistent=false){
-            //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
-            _mxptr = mxptr;
-			if (mxptr != nullptr) {
-				_managemxptr = false;
+		/// set from (non-const) mxArray*, with optional ability to set persistent flag
+		virtual MxObject& set(mxArray* psrc, bool isPersist = false) {
+			setFrom(psrc, isPersist);
+			return *this;
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////
+		// Cast Conversions
+
+		/// return mutable (non-const) mxArray*
+		/// returned array will not be persistent so it's ok to pass back to MATLAB
+		/// if object is persistent or setFromConst then a copy of mxArray is returned;
+		/// otherwise, the linked mxarray is returned and the management flag is changed.
+		/// CAUTION:
+		///		Once you call this function it is your responsibility to manage the memory pointed
+		///		by the resulting mxArray. Therefore, if you do not pass it back to MATLAB you MUST
+		///		call mxDeleteArray(...) on the array.
+		virtual operator mxArray*() {
+			if (_mxptr == nullptr) { //nullptr, just return nullptr
+				return nullptr;
 			}
-			else {
-				_managemxptr = true;
-			}
-            _setFromConst = false;
-            _isPersistent = isPersistent;
-        }
 
-        /// Construct from mxArray
-        /// flag specifies if mxptr should be controlled by MxObject
-        /// must specify isPersistent
-        /// if manageFlag=true (default=false) data will be deleted upon MxObject destruction
-        MxObject(mxArray* mxptr,bool isPersistent, bool manageArray){
-            //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
-            _mxptr = mxptr;
-			if (mxptr != nullptr) {
-				_managemxptr = manageArray;
-			}
-			else {
-				_managemxptr = true;
-			}
-            _setFromConst = false;
-            _isPersistent = isPersistent;
-        }
-
-        /// assign from mxarray
-        /// assume mxArray* is not persistent
-        /// mxArray will be managed (therefore deleted upon destruction)
-        virtual MxObject& operator=(mxArray* mxptr){
-			//mexPrintf("MxObject& operator=(mx*):%d from: %d\n", this, mxptr);
-            deletemxptr();
-            _mxptr = mxptr;
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
-            return *this;
-        }
-
-        /// Construct from const mxarray
-        /// assume const mxArray* is not persistent
-        /// mxArray will not be managed (therefore not deleted)
-        MxObject(const mxArray* mxptr, bool isPersistent = false){
-            //mexPrintf("mxObject(const mx*):%d from: %d\n",this,mxptr);
-            /*if(mxptr!=nullptr)
-                _mxptr = mxDuplicateArray(mxptr);
-            _managemxptr = true;*/
-            _mxptr = (mxArray*)mxptr; //force const conversion
-            _managemxptr = false;
-			_isPersistent = isPersistent;
-			_setFromConst = true;
-        }
-
-        /// assign from const mxarray
-        /// assume mxArray* is not persistent
-        /// mxArray will not be managed (therefore not deleted)
-        virtual MxObject& operator=(const mxArray* mxptr){
-			//mexPrintf("MxObject& operator=(const mx*):%d from: %d\n", this, mxptr);
-            deletemxptr();
-
-            /*if(mxptr!=nullptr)
-                _mxptr = mxDuplicateArray(mxptr);
-            _managemxptr = true;*/
-            _mxptr = (mxArray*)mxptr; //force const conversion
-            _managemxptr = false;
-			_isPersistent = false;
-			_setFromConst = true;
-            return *this;
-        }
-
-        /// link to mxarray
-        /// array will not be managed (hence not delete upon destruction)
-        /// assume mxArray* is not persistent, unless specified
-        virtual MxObject& linkto(mxArray* mxptr, bool isPersistent = false){
-            deletemxptr();
-            _mxptr = mxptr;
-            _managemxptr = false;
-			_isPersistent = isPersistent;
-			_setFromConst = false;
-            return *this;
-        }
-
-        /// link to const mxarray
-        /// array will not be managed (hence not delete upon destruction)
-        /// assume const mxArray* is not persistent, unless specified
-        virtual MxObject& linkto(const mxArray* mxptr, bool isPersistent = false){
-            deletemxptr();
-            _mxptr = (mxArray*)mxptr;
-            _managemxptr = false;
-			_isPersistent = isPersistent;
-			_setFromConst = true;
-            return *this;
-        }
-
-        // Special Constructors & assigment operators
-
-        /// double scalar constructor
-        MxObject(const double& in){
-            _mxptr = mxCreateDoubleScalar(in);
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
-        }
-
-		/// set to double scalar
-        virtual MxObject& operator=(const double& in){
-            deletemxptr();
-            _mxptr = mxCreateDoubleScalar(in);
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
-            return *this;
-        }
-
-        //string
-        MxObject(const std::string & in){
-            _mxptr = mxCreateString(in.c_str());
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
-        }
-        MxObject& operator=(const std::string& in){
-            deletemxptr();
-            _mxptr = mxCreateString(in.c_str());
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
-            return *this;
-        }
-
-        /// assign to (cast to) mxArray
-		///if array is not persistent or set from const change management rule so that data is not deleted on destruction
-		///if array is persistent or const, returns copy of the data that is not persistent (and therefore managed by MATLAB)
-        virtual operator mxArray*(){
-
-            if(_mxptr==nullptr){
-                return _mxptr;
-            }
-
-			if (_isPersistent||_setFromConst) {
+			if (_setFromConst || _isPersistent) {
 				return mxDuplicateArray(_mxptr);
 			}
-            _managemxptr = false;
-            return _mxptr;
-        }
+			_managemxptr = false;
+			return _mxptr;
+		}
 
-		/// returns const mxArray*, memory management is not changed
-		/// pointer may be invalid when object is deleted
-        virtual operator const mxArray*() const{
-            return _mxptr;
-        }
+		/// return const mxArray*
+		virtual operator const mxArray*() const {
+			return _mxptr;
+		}
 
-        ///Change data ownership
-        virtual void managedata(){
-            if(!_managemxptr){
-                if(_mxptr!=nullptr){
-                    _mxptr = mxDuplicateArray(_mxptr);
-                }
-                _managemxptr = true;
-				_isPersistent = false;
-				_setFromConst = false;
-            }
-        }
-
-        /// return data type held by mxArray pointer
-        mxClassID mxType() const{
-            if(_mxptr==nullptr){
-                return mxUNKNOWN_CLASS;
-            }
-            return mxGetClassID(_mxptr);
-        }
-
-        ///return the mxArray ptr without changing data managment rule
-        /// if data is locally held, it will be deleted upon construction
-        /// DO NOT use for setting the return data of a mexFunction.
-        /// instead use the cast operator:
-        /// e.g
-        ///  prhs[0] = (mxArray *)YourMxObject;
-        virtual const mxArray* getmxarray() const{
-            return _mxptr;
-        }
-
-        ///return the mxArray and change data management rule to false
-        /// after calling, the mxObject will no longer delete the mxArray
-        /// when it goes out of scope. Therefore it is the user's responsibility
-        /// to manage the memory appropriately.
-        /// WARNING: this is meant for advanced usage, be sure you understand before using.
-        /// Note: if the mxArray was persistent it will remain persistent.
-        /// the user can check if the mxArray was persistent using mxObj.isPersistent()
-        /// Also, it is possible the mxArray was not ever under this mxObject's management
-        /// in that case the user probably does not want to delete the data
-        mxArray* releasemxarray(bool* wasManaged = nullptr, bool* wasPersistent=nullptr,bool* wasSetFromConst=nullptr){
-            if(wasPersistent!=nullptr){
-                *wasPersistent = isPersistent();
-            }
-            if(wasManaged != nullptr){
-                *wasManaged = _managemxptr;
-            }
-			if (wasSetFromConst != nullptr) {
-				*wasSetFromConst = _setFromConst;
+		/// returns const mxArray* linked to data
+		/// optionally specify a bool* in which the state of the persistence will be stored.
+		virtual const mxArray* getmxarray(bool * wasPersistent = nullptr) const {
+			if (wasPersistent != nullptr) {
+				*wasPersistent = _isPersistent;
 			}
-            _managemxptr = false;
-            return _mxptr;
-        }
+			return _mxptr;
+		}
 
-        /// std::vector holding dimension of the mxArray object
-        virtual std::vector<size_t> size() const{return cmex::size(_mxptr);}
+		///////////////////////////////////////////////////////////////////////////////////////
+		// MxObject Info
 
-        /// number of elements
-        virtual size_t numel() const{
-            return cmex::numel(_mxptr);
-        }
+		/// is linked mxarray persistent?
+		bool isPersistent() const { return _isPersistent; }
 
-        /// true if mxArray is a struct
-        bool isstruct() const{
-            if(_mxptr==nullptr){
-                return false;
-            }
-            return mxIsStruct(_mxptr);
-        }
+		/// is linked mxarray const?
+		bool isConst() const { return _setFromConst; }
 
-        /// true if is numeric
-        bool isnumeric() const{
-            return mxIsNumeric(_mxptr);
-        }
-        bool iscell() const{
-            return mxIsCell(_mxptr);
-        }
-        bool ischar() const{
-            return mxIsChar(_mxptr);
-        }
+		/// is linked mxarray managed by mxobject?
+		bool isManaged() const { return _managemxptr; }
 
-        /// Resize
-        void reshape(std::vector<size_t> dims){
-            if(_setFromConst){
-                throw(std::runtime_error("cannot reshape mxobject set from const mxArray*"));
-            }
+		/// std::vector holding dimension of the mxArray object
+		virtual std::vector<size_t> size() const { return cmex::size(_mxptr); }
 
-            if(_mxptr==nullptr){
-                _mxptr = mxCreateNumericArray(dims.size(),dims.data(),mxDOUBLE_CLASS,mxREAL);
-                _managemxptr = true;
-                _setFromConst = false;
-                if(_isPersistent){
-                    mexMakeArrayPersistent(_mxptr);
-                }
-                return;
-            }
+		/// number of elements
+		virtual size_t numel() const {
+			if (_mxptr == nullptr) {
+				return 0;
+			}
+			return cmex::numel(_mxptr);
+		}
 
-            mxArray* newPtr;
-            switch(mxGetClassID(_mxptr)){
-                case mxDOUBLE_CLASS:
-            	case mxSINGLE_CLASS:
-            	case mxINT8_CLASS:
-            	case mxUINT8_CLASS:
-            	case mxINT16_CLASS:
-            	case mxUINT16_CLASS:
-            	case mxINT32_CLASS:
-            	case mxUINT32_CLASS:
-            	case mxINT64_CLASS:
-            	case mxUINT64_CLASS:
-                    if(!mxIsComplex(_mxptr)){ //real data just a simple copy
-                        newPtr = mxCreateNumericArray(dims.size(),dims.data(),mxGetClassID(_mxptr),mxREAL);
-                        memcpy(mxGetData(newPtr),mxGetData(_mxptr),mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr)));
-                    }else{ // complex data
-                        newPtr = mxCreateNumericArray(dims.size(),dims.data(),mxGetClassID(_mxptr),mxCOMPLEX);
-                        #if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
-                        memcpy(mxGetData(newPtr),mxGetData(_mxptr),mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr)));
-                        #else
-                        memcpy(mxGetData(newPtr),mxGetData(_mxptr),mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr)));
-                        memcpy(mxGetImagData(newPtr),mxGetImagData(_mxptr),mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr)));
-                        #endif
-                    }
-                    if(_managemxptr&&!_setFromConst){
-                        mxDestroyArray(_mxptr);
-                    }
-                    _mxptr = newPtr;
-                    _managemxptr = true;
-                    _setFromConst = false;
-                    if(_isPersistent){
-                        mexMakeArrayPersistent(newPtr);
-                    }
-                    break;
-                case mxCELL_CLASS:
-                    newPtr = mxCreateCellArray(dims.size(), dims.data());
-                    if(_managemxptr&&!_setFromConst){ //just move the arrays
-                        for(size_t n=0;n<std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr));++n){
-                            mxSetCell(newPtr, n, mxGetCell(_mxptr,n));
-                            mxSetCell(_mxptr,n,nullptr);
-                        }
-                        mxDestroyArray(_mxptr);
-                    }else{ //need copy
-                        for(size_t n=0;n<std::min(mxGetNumberOfElements(_mxptr),mxGetNumberOfElements(newPtr));++n){
-                            mxSetCell(newPtr, n, mxDuplicateArray(mxGetCell(_mxptr,n)));
-                        }
-                    }
-                    _mxptr = newPtr;
-                    _managemxptr = true;
-                    _setFromConst = false;
-                    if(_isPersistent){
-                        mexMakeArrayPersistent(newPtr);
-                    }
-                    break;
-				case mxSTRUCT_CLASS:
-					{
-						size_t nfields = mxGetNumberOfFields(_mxptr);
-						const char* * fnames;
-						fnames = new const char*[nfields];
-						for (size_t n = 0; n < nfields; ++n) {
-							fnames[n] = mxGetFieldNameByNumber(_mxptr, n);
-						}
+		/// true if mxArray is a struct
+		bool isstruct() const {
+			if (_mxptr == nullptr) {
+				return false;
+			}
+			return mxIsStruct(_mxptr);
+		}
 
-						newPtr = mxCreateStructArray(dims.size(), dims.data(), nfields, fnames);
-						if (_managemxptr && !_setFromConst) { //just move the arrays
-							for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
-								for (size_t f = 0; f < nfields; ++f) {
-									mxSetFieldByNumber(newPtr, n, f, mxGetFieldByNumber(_mxptr, n, f));
-									mxSetFieldByNumber(_mxptr, n, f, nullptr);
-								}
-							}
-							mxDestroyArray(_mxptr);
-						}
-						else { //need copy
-							for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
-								for (size_t f = 0; f < nfields; ++f) {
-									mxSetFieldByNumber(newPtr, n, f, mxDuplicateArray(mxGetFieldByNumber(_mxptr, n, f)));
-									mxSetFieldByNumber(_mxptr, n, f, nullptr);
-								}
-							}
-						}
-						delete[] fnames;
-
-						_mxptr = newPtr;
-						_managemxptr = true;
-						_setFromConst = false;
-						if (_isPersistent) {
-							mexMakeArrayPersistent(newPtr);
-						}
-					}
-                    break;
-            	default:
-            		throw(std::runtime_error("reshape not implemented for class"));
-        	}
-        }
-
-        /// Resize
-        void reshape(size_t nRows, size_t nCols){
-            reshape({nRows,nCols});
-        }
-
+		/// true if is numeric
+		bool isnumeric() const {
+			if (_mxptr == nullptr) {
+				return false;
+			}
+			return mxIsNumeric(_mxptr);
+		}
+		bool iscell() const {
+			if (_mxptr == nullptr) {
+				return false;
+			}
+			return mxIsCell(_mxptr);
+		}
+		bool ischar() const {
+			if (_mxptr == nullptr) {
+				return false;
+			}
+			return mxIsChar(_mxptr);
+		}
 
 		///returns true if ndims < 3
 		virtual bool ismatrix() const {
-            if(_mxptr==nullptr){
-                return false;
-            }
-            return  mxGetNumberOfDimensions(_mxptr)<3;
-        }
+			if (_mxptr == nullptr) {
+				return false;
+			}
+			return  mxGetNumberOfDimensions(_mxptr)<3;
+		}
+
+		/// number of dims
 		virtual size_t ndims() const {
-            if(_mxptr==nullptr){
-                return 0;
-            }
-            return mxGetNumberOfDimensions(_mxptr); }
+			if (_mxptr == nullptr) {
+				return 0;
+			}
+			return mxGetNumberOfDimensions(_mxptr);
+		}
 
-        virtual bool isempty() const{
-            if(_mxptr==nullptr){
-                return true;
-            }
-            return numel()==0;}
+		/// true if empty
+		virtual bool isempty() const {
+			if (_mxptr == nullptr) {
+				return true;
+			}
+			return numel() == 0;
+		}
 
-    };
+		/// return data type held by mxArray pointer
+		mxClassID mxType() const {
+			if (_mxptr == nullptr) {
+				return mxUNKNOWN_CLASS;
+			}
+			return mxGetClassID(_mxptr);
+		}
 
-    // MxObject Info functions
+		////////////////////////////////////////////////////////////////////////////////
+		// MISC Object Management
 
-    /// return data type held by mxArray pointer
-    mxClassID mxType(const MxObject& mxo){return mxo.mxType();}
+		/// Take Ownership of array
+		/// if linked mxArray is not managed, creates a copy and manages the new copy
+		/// if already managed or mxptr==nullptr then does nothing.
+		/// If the array was not managed, and a copy is created, the the previously linked array
+		/// is returned in a pair, along with a bool specifying if it was set from const.
+		///
+		///	Return:
+		//		out.first -> mxArray*
+		//		out.second -> bool specifying if out.first shoud be considered "const mxArray*"
+		virtual std::pair<mxArray*, bool> managearray() {
+			return takeOwnership();
+		}
 
-    std::vector<size_t> size(const MxObject& mxo){return mxo.size();}
+		/// Reshape using matlab-like syntax
+		virtual void reshape(const std::vector<size_t>& dims) {
+			if (_setFromConst) {
+				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+			}
 
-    size_t numel(const MxObject& mxo){return mxo.numel();}
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 
-    bool isstruct(const MxObject& mxo){return mxo.isstruct();}
-    bool isnumeric(const MxObject& mxo){ return mxo.isnumeric();}
-    bool iscell(const MxObject& mxo){ return mxo.iscell();}
-    bool ischar(const MxObject& mxo){return mxo.ischar();}
+			/// nullptr -> return numeric real double
+			if (_mxptr == nullptr) {
+				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+				return;
+			}
 
-    std::string getstring(const MxObject& mxo){ return getstring(mxo.getmxarray());}
+			/// Perform resize
+			mxArray* newPtr;
+			switch (mxGetClassID(_mxptr)) {
+			case mxDOUBLE_CLASS:
+			case mxSINGLE_CLASS:
+			case mxINT8_CLASS:
+			case mxUINT8_CLASS:
+			case mxINT16_CLASS:
+			case mxUINT16_CLASS:
+			case mxINT32_CLASS:
+			case mxUINT32_CLASS:
+			case mxINT64_CLASS:
+			case mxUINT64_CLASS:
+				if (!mxIsComplex(_mxptr)) { //real data just a simple copy
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
+					memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+				}
+				else { // complex data
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
+#if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
+					memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+#else
+					memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+					memcpy(mxGetImagData(newPtr), mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+#endif
+				}
+				if (_managemxptr && !_setFromConst) {
+					mxDestroyArray(_mxptr);
+				}
+				_mxptr = newPtr;
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(newPtr);
+				}
+				break;
+			case mxCELL_CLASS:
+				newPtr = mxCreateCellArray(dims.size(), dims.data());
+				if (_managemxptr && !_setFromConst) { //just move the arrays
+					for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
+						mxSetCell(newPtr, n, mxGetCell(_mxptr, n));
+						mxSetCell(_mxptr, n, nullptr);
+					}
+					mxDestroyArray(_mxptr);
+				}
+				else { //need copy
+					for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
+						mxSetCell(newPtr, n, mxDuplicateArray(mxGetCell(_mxptr, n)));
+					}
+				}
+				_mxptr = newPtr;
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(newPtr);
+				}
+				break;
+			case mxSTRUCT_CLASS:
+			{
+				size_t nfields = mxGetNumberOfFields(_mxptr);
+				const char* * fnames;
+				fnames = new const char*[nfields];
+				for (size_t n = 0; n < nfields; ++n) {
+					fnames[n] = mxGetFieldNameByNumber(_mxptr, n);
+				}
+
+				newPtr = mxCreateStructArray(dims.size(), dims.data(), nfields, fnames);
+				if (_managemxptr && !_setFromConst) { //just move the arrays
+					for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
+						for (size_t f = 0; f < nfields; ++f) {
+							mxSetFieldByNumber(newPtr, n, f, mxGetFieldByNumber(_mxptr, n, f));
+							mxSetFieldByNumber(_mxptr, n, f, nullptr);
+						}
+					}
+					mxDestroyArray(_mxptr);
+				}
+				else { //need copy
+					for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
+						for (size_t f = 0; f < nfields; ++f) {
+							mxSetFieldByNumber(newPtr, n, f, mxDuplicateArray(mxGetFieldByNumber(_mxptr, n, f)));
+							mxSetFieldByNumber(_mxptr, n, f, nullptr);
+						}
+					}
+				}
+				delete[] fnames;
+
+				_mxptr = newPtr;
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(newPtr);
+				}
+			}
+			break;
+			case mxCHAR_CLASS:
+				newPtr = mxCreateCharArray(dims.size(), dims.data());
+				memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+				if (_managemxptr && !_setFromConst) {
+					mxDestroyArray(_mxptr);
+				}
+				_mxptr = newPtr;
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(newPtr);
+				}
+				break;
+			default:
+				throw(std::runtime_error("reshape not implemented for class"));
+			}
+
+		}
+
+		/// Resize
+		virtual void reshape(size_t nRows, size_t nCols) {
+			reshape({ nRows,nCols });
+		}
+
+		/// reshape without copy
+		virtual void reshape_nocopy(const std::vector<size_t>& dims) {
+			if (_setFromConst) {
+				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+			}
+
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+
+			/// nullptr -> return numeric real double
+			if (_mxptr == nullptr) {
+				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+				return;
+			}
+
+			//////////////
+			/// Perform resize
+			mxArray* newPtr;
+			switch (mxGetClassID(_mxptr)) {
+			case mxDOUBLE_CLASS:
+			case mxSINGLE_CLASS:
+			case mxINT8_CLASS:
+			case mxUINT8_CLASS:
+			case mxINT16_CLASS:
+			case mxUINT16_CLASS:
+			case mxINT32_CLASS:
+			case mxUINT32_CLASS:
+			case mxINT64_CLASS:
+			case mxUINT64_CLASS:
+				if (!mxIsComplex(_mxptr)) { //real data just a simple copy
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
+				}
+				else { // complex data
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
+				}
+				if (_managemxptr && !_setFromConst) {
+					mxDestroyArray(_mxptr);
+				}
+				_mxptr = newPtr;
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(newPtr);
+				}
+				break;
+			case mxCELL_CLASS:
+				newPtr = mxCreateCellArray(dims.size(), dims.data());
+				if (_managemxptr && !_setFromConst) {
+					mxDestroyArray(_mxptr);
+				}
+				_mxptr = newPtr;
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(newPtr);
+				}
+				break;
+			case mxSTRUCT_CLASS:
+			{
+				size_t nfields = mxGetNumberOfFields(_mxptr);
+				const char* * fnames;
+				fnames = new const char*[nfields];
+				for (size_t n = 0; n < nfields; ++n) {
+					fnames[n] = mxGetFieldNameByNumber(_mxptr, n);
+				}
+
+				newPtr = mxCreateStructArray(dims.size(), dims.data(), nfields, fnames);
+				if (_managemxptr && !_setFromConst) {
+					mxDestroyArray(_mxptr);
+				}
+
+				delete[] fnames;
+
+				_mxptr = newPtr;
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(newPtr);
+				}
+			}
+			break;
+			case mxCHAR_CLASS:
+				newPtr = mxCreateCharArray(dims.size(), dims.data());
+
+				if (_managemxptr && !_setFromConst) {
+					mxDestroyArray(_mxptr);
+				}
+				_mxptr = newPtr;
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(newPtr);
+				}
+				break;
+			default:
+				throw(std::runtime_error("reshape not implemented for class"));
+			}
+
+
+		}
+
+
+		/// Resize
+		virtual void reshape_nocopy(size_t nRows, size_t nCols) {
+			reshape_nocopy({ nRows,nCols });
+		}
+
+		/////////////////////////////////////////////////////////////////
+		// specialized assignment/construction
+
+		/// construct from string
+		MxObject(const std::string& str) {
+			_mxptr = mxCreateString(str.c_str());
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+		}
+
+		/// assign from string
+		virtual MxObject& operator=(const std::string& str) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+			_mxptr = mxCreateString(str.c_str());
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+
+			return *this;
+		}
+
+		/// assign from double
+		virtual MxObject& operator=(double val) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+			_mxptr = mxCreateDoubleScalar(val);
+
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+
+			return *this;
+		}
+
+		/// assign from numeric vector
+		template <typename T>
+		virtual MxObject& operator=(const std::vector<T>& vals) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+
+			_mxptr = mxCreateNumericMatrix(vals.size(), 1, type2ClassID<T>(), mxREAL);
+			valueCopy((T*)mxGetData(_mxptr), vals.data(), vals.size());
+			
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+
+			return *this;
+		}
+	};
+
+	//////////////////////////////////////////////////
+	// MxObject Info functions
+
+	/// return data type held by mxArray pointer
+	mxClassID mxType(const MxObject& mxo) { return mxo.mxType(); }
+
+	std::vector<size_t> size(const MxObject& mxo) { return mxo.size(); }
+
+	size_t numel(const MxObject& mxo) { return mxo.numel(); }
+
+	bool isstruct(const MxObject& mxo) { return mxo.isstruct(); }
+	bool isnumeric(const MxObject& mxo) { return mxo.isnumeric(); }
+	bool iscell(const MxObject& mxo) { return mxo.iscell(); }
+	bool ischar(const MxObject& mxo) { return mxo.ischar(); }
+
+	std::string getstring(const MxObject& mxo) { return getstring(mxo.getmxarray()); }
 
 }}

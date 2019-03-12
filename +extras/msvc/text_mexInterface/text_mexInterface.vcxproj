@@ -21,8 +21,10 @@
     <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\mxobject_old.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\MxObject.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray_orig.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />

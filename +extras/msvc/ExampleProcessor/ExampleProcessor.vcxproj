@@ -66,14 +66,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\+Async</OutDir>
+    <OutDir>..\..\+Async\+Example\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
     <TargetName>ExampleProcessorMex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\+Async</OutDir>
+    <OutDir>..\..\+Async\+Example\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
     <TargetName>ExampleProcessorMex</TargetName>

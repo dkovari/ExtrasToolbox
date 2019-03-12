@@ -277,6 +277,7 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
             nRem = this.RemainingTasks;
             last_comp = 0;
             while this.RemainingTasks>0
+                
                 RT = this.RemainingTasks;
                 comp = nRem-RT;
                 if comp<0 %more tasks were added
@@ -285,7 +286,7 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
                 end
                 
                 if isempty(hWB)
-                    hWB = waitbar(comp/nRem,sprintf('%s: Processing (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem),'CreateCancelBtn',@(~,~) this.cancelRemainingTasks);
+                    hWB = waitbar(comp/nRem,sprintf('%s: Processing (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem),'CreateCancelBtn',@(~,~) this.cancelRemainingTasks());
                 elseif ishghandle(hWB)
                     waitbar(comp/nRem,hWB,sprintf('%s: Processing (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem));
                 end
@@ -383,11 +384,6 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
 
         function cancelRemainingTasks(this)
         % cancel remaining tasks
-        
-            if ~isvalid(this) %cancel if object has been deleted
-                return;
-            end
-            
             this.runMethod('cancelRemainingTasks');
         end
     end

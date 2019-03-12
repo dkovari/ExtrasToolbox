@@ -6,6 +6,10 @@ p = mexInterfaceTest('new');
 pause
 mexInterfaceTest('fn',p)
 
+mexInterfaceTest('fn',p)
+
+mexInterfaceTest('fn',p)
+
 'press key to delete'
 pause
 mexInterfaceTest('delete',p);

@@ -142,6 +142,8 @@ namespace extras{namespace async{
         }
 
         virtual void cancelRemainingTasks(){
+			mexPrintf("Trying to cancel tasks...\n");
+			mexEvalString("pause(0.2)");
             StopProcessor();
 
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list

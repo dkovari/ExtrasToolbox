@@ -53,13 +53,7 @@
     <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp">
       <Filter>Includes\extras\cmex</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp">
-      <Filter>Includes\extras\cmex</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp">
       <Filter>Includes\extras\cmex</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp">
@@ -79,6 +73,18 @@
     </ClInclude>
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
       <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxobject_old.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxObject.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray_orig.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp">
+      <Filter>Includes\extras\cmex</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
