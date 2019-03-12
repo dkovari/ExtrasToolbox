@@ -644,7 +644,7 @@ namespace extras {namespace cmex {
 
 		/// assign from numeric vector
 		template <typename T>
-		virtual MxObject& operator=(const std::vector<T>& vals) {
+		MxObject& operator=(const std::vector<T>& vals) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
 

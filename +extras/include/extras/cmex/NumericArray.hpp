@@ -4,6 +4,7 @@ All rights reserved.
 ----------------------------------------------------*/
 #pragma once
 
+#include <mex.h>
 #include "MxObject.hpp"
 #include <extras/ArrayBase.hpp>
 
@@ -18,7 +19,7 @@ namespace extras {namespace cmex {
 	template <typename T>
 	class NumericArray : public MxObject, virtual public ArrayBase<T> {
 	protected:
-		template <typename M> virtual void copyFrom(const ArrayBase<M>& src) {
+		template <typename M> void copyFrom(const ArrayBase<M>& src) {
 			bool wasPersistent = isPersistent();
 
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -49,7 +50,7 @@ namespace extras {namespace cmex {
 			}
 		}
 		
-		template <typename M> virtual void copyFrom(const NumericArray<M>& src) {
+		template <typename M> void copyFrom(const NumericArray<M>& src) {
 			bool wasPersistent = _isPersistent;
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock(); //delete old data
@@ -63,7 +64,7 @@ namespace extras {namespace cmex {
 			}
 		}
 
-		template <typename M> virtual void moveFrom(NumericArray<M>& src) {
+		template <typename M> void moveFrom(NumericArray<M>& src) {
 			NumericArray::copyFrom(src);
 		}
 
@@ -88,7 +89,7 @@ namespace extras {namespace cmex {
 		}
 
 		// try to move from MxObject, if different type perform copy
-		virtual moveFrom(MxObject& src) {
+		virtual void moveFrom(MxObject& src) {
 			bool wasPersistent = _isPersistent;
 			if (sametype<T>(src)) {
 				MxObject::moveFrom(src);
@@ -145,8 +146,9 @@ namespace extras {namespace cmex {
 		//////////////////////////////////////////////////////////////////////////////////
 		// Methods from ArrayBase that must be defined
 
-		//virtual size_t numel() const ... ///< number of elements, inhereted from MxObject
-		//virtual bool isempty() const ...; ///< is array empty, inhereted from MxObject
+		virtual size_t numel() const { return MxObject::numel(); } ///< number of elements, inhereted from MxObject
+		virtual bool isempty() const { return MxObject::isempty(); } ///< is array empty, inhereted from MxObject
+		virtual size_t ndims() const { return MxObject::ndims(); } ///< number of dimensions
 
 		virtual size_t nRows() const { return mxGetM(_mxptr); } //number of rows
 		virtual size_t nCols() const { return mxGetN(_mxptr); } //number of columns, is nd-array, nCols=numel/nRows
@@ -154,25 +156,25 @@ namespace extras {namespace cmex {
 
 		/// get const pointer to raw data array
 		virtual const T* getdata() const { 
-			if (_mpxtr==nullptr) {
+			if (_mxptr==nullptr) {
 				return nullptr;
 			}
-			return (T*)mxGetData(_mptr);
+			return (T*)mxGetData(_mxptr);
 		};
 		/// get (non-const) pointer to raw data array
 		virtual T* getdata() {
-			if (_mpxtr == nullptr) {
+			if (_mxptr == nullptr) {
 				return nullptr;
 			}
 			if (_setFromConst) {
 				throw(std::runtime_error("NumericArray::getdata(): cannot get non-const pointer to data from MxObject that was set from const."));
 			}
-			return (T*)mxGetData(_mptr);
+			return (T*)mxGetData(_mxptr);
 		}
 
 		///< set n-th element
 		virtual T& operator[](size_t index) {
-			if (_mpxtr == nullptr) {
+			if (_mxptr == nullptr) {
 				throw(std::runtime_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
 			}
 			if (_setFromConst) {
@@ -187,49 +189,57 @@ namespace extras {namespace cmex {
 
 		///< get n-th element
 		virtual const T& operator[](size_t index) const {
-			if (_mpxtr == nullptr) {
+			if (_mxptr == nullptr) {
 				throw(std::runtime_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
 			}
 			if (index > numel()) {
 				throw(std::runtime_error("NumericArray::operator[](): index>numel()"));
 			}
-			T* dat = getdata();
+			const T* dat = getdata();
 			return dat[index];
 		}
 
 		///< set n-th element
-		virtual T& operator()(size_t index) {return *this[index];}
+		virtual T& operator()(size_t index) {return (*this)[index];}
 
 		///< get n-th element
-		virtual const T& operator()(size_t index) const {return *this[index];}
+		virtual const T& operator()(size_t index) const {return (*this)[index];}
 
 		///< set element [m,n]
 		virtual T& operator()(size_t row, size_t col) {
 			size_t subs[2] = { row,col };
-			return *this[mxCalcSingleSubscript(_mxptr, 2, subs)];
+
+			size_t ind = mxCalcSingleSubscript(_mxptr, 2, subs);
+			return (*this)[ind];
 		} 
 
 		///< get element [m,n]
 		virtual const T& operator()(size_t row, size_t col) const {
 			size_t subs[2] = { row,col };
-			return *this[mxCalcSingleSubscript(_mxptr, 2, subs)];
+
+			size_t ind = mxCalcSingleSubscript(_mxptr, 2, subs);
+			return (*this)[ind];
 		}
 
 		///< set element at coordinate [x,y,z,...] specified by the vector elementCoord
 		virtual T& operator()(const std::vector<size_t>& elementCoord) { 
-			return *this[mxCalcSingleSubscript(_mxptr, elementCoord.size(), elementCoord.data())];
+			size_t ind = mxCalcSingleSubscript(_mxptr, elementCoord.size(), elementCoord.data());
+			return (*this)[ind];
 		} 
 		
 		///< get element at coordinate [x,y,z,...] specified by the vector elementCoord///< get element at coordinate [x,y,z,...] specified by the vector elementCoord
 		virtual const T& operator()(const std::vector<size_t>& elementCoord) const {
-			return *this[mxCalcSingleSubscript(_mxptr, elementCoord.size(), elementCoord.data())]; 
+
+			size_t ind = mxCalcSingleSubscript(_mxptr, elementCoord.size(), elementCoord.data());
+
+			return (*this)[ind]; 
 		} 
 
 		virtual void resize(size_t num) { reshape(num,1); } ///< resize to hold n elements, keep old data, new data set to zeros
 		virtual void resize(size_t nRows, size_t nCols) { reshape(nRows, nCols); } ///< resize to hold MxN elements, keep old data, new data set to zeros
 		virtual void resize(const std::vector<size_t>& dim) { reshape(dim); } ///< resize to new size
 
-		virtual void resize_nocpy(size_t numel) { reshape_nocopy(num, 1); } ///< resize to hold n elements, discard original data
+		virtual void resize_nocpy(size_t num) { reshape_nocopy(num, 1); } ///< resize to hold n elements, discard original data
 		virtual void resize_nocpy(size_t nRows, size_t nCols) { reshape_nocopy(nRows, nCols); }///< resize to hold MxN elements, discard original data
 		virtual void resize_nocpy(const std::vector<size_t>& dim) { reshape_nocopy(dim); } ///< resize to n elements, discard original data
 

@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "barycenter", "..\+ParticleT
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleProcessor_ParamArgs", "ExampleProcessor_ParamArgs\ExampleProcessor_ParamArgs.vcxproj", "{4057B649-1BAC-4648-9869-C49AD107C869}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MxObjectTest", "MxObjectTest\MxObjectTest.vcxproj", "{A4E53C12-FAB4-471E-8A26-90DA50CA8638}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -93,6 +95,12 @@ Global
 		{4057B649-1BAC-4648-9869-C49AD107C869}.Release|x64.ActiveCfg = Release|x64
 		{4057B649-1BAC-4648-9869-C49AD107C869}.Release|x64.Build.0 = Release|x64
 		{4057B649-1BAC-4648-9869-C49AD107C869}.Release|x86.ActiveCfg = Release|x64
+		{A4E53C12-FAB4-471E-8A26-90DA50CA8638}.Debug|x64.ActiveCfg = Debug|x64
+		{A4E53C12-FAB4-471E-8A26-90DA50CA8638}.Debug|x64.Build.0 = Debug|x64
+		{A4E53C12-FAB4-471E-8A26-90DA50CA8638}.Debug|x86.ActiveCfg = Debug|x64
+		{A4E53C12-FAB4-471E-8A26-90DA50CA8638}.Release|x64.ActiveCfg = Release|x64
+		{A4E53C12-FAB4-471E-8A26-90DA50CA8638}.Release|x64.Build.0 = Release|x64
+		{A4E53C12-FAB4-471E-8A26-90DA50CA8638}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
