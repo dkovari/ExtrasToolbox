@@ -57,6 +57,15 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
+		// set by taking ownership
+		// after calling, src should not be deleted. It is now owned by persistenMxArray
+		persistentMxArray& takeOwnership(mxArray* src) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			_mxptr = src;
+			mexMakeArrayPersistent(_mxptr);
+			return *this;
+		}
+
 		/// set by copy
 		persistentMxArray& operator=(const persistentMxArray& src) {
 			std::lock_guard<std::mutex> lock_src(src._mxptrMutex); //lock _mxptr;

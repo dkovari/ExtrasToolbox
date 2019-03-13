@@ -9,8 +9,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imradialavg", "..\+Particle
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "splineroot", "..\+ParticleTracking\splineroot\splineroot.vcxproj", "{A56FB2B6-D66E-4EDB-83C9-90E94BE35971}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DiffractionTracker", "..\+ParticleTracking\+DiffractionTracker\DiffractionTracker.vcxproj", "{D070DDFC-0DB4-4305-83A1-658751DB4465}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCode", "TestCode\TestCode.vcxproj", "{227F1D92-9ECF-4058-85E9-4CEB8B229047}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleProcessor", "ExampleProcessor\ExampleProcessor.vcxproj", "{564F1C90-B517-49AB-8832-5EABAA7C797C}"
@@ -26,6 +24,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MxObjectTest", "MxObjectTest\MxObjectTest.vcxproj", "{A4E53C12-FAB4-471E-8A26-90DA50CA8638}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PersistentMapTest", "PersistentMapTest\PersistentMapTest.vcxproj", "{F5662312-E53C-4146-B580-9BA6ADA3F602}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RoiTracker", "..\+ParticleTracking\+RoiTracker\msvc\RoiTracker.vcxproj", "{D070DDFC-0DB4-4305-83A1-658751DB4465}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,12 +53,6 @@ Global
 		{A56FB2B6-D66E-4EDB-83C9-90E94BE35971}.Release|x64.ActiveCfg = Release|x64
 		{A56FB2B6-D66E-4EDB-83C9-90E94BE35971}.Release|x64.Build.0 = Release|x64
 		{A56FB2B6-D66E-4EDB-83C9-90E94BE35971}.Release|x86.ActiveCfg = Release|x64
-		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Debug|x64.ActiveCfg = Debug|x64
-		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Debug|x64.Build.0 = Debug|x64
-		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Debug|x86.ActiveCfg = Debug|x64
-		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x64.ActiveCfg = Release|x64
-		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x64.Build.0 = Release|x64
-		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x86.ActiveCfg = Release|x64
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Debug|x64.ActiveCfg = Debug|x64
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Debug|x64.Build.0 = Debug|x64
 		{227F1D92-9ECF-4058-85E9-4CEB8B229047}.Debug|x86.ActiveCfg = Debug|Win32
@@ -109,6 +103,12 @@ Global
 		{F5662312-E53C-4146-B580-9BA6ADA3F602}.Release|x64.ActiveCfg = Release|x64
 		{F5662312-E53C-4146-B580-9BA6ADA3F602}.Release|x64.Build.0 = Release|x64
 		{F5662312-E53C-4146-B580-9BA6ADA3F602}.Release|x86.ActiveCfg = Release|x64
+		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Debug|x64.ActiveCfg = Debug|x64
+		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Debug|x64.Build.0 = Debug|x64
+		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Debug|x86.ActiveCfg = Debug|x64
+		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x64.ActiveCfg = Release|x64
+		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x64.Build.0 = Release|x64
+		{D070DDFC-0DB4-4305-83A1-658751DB4465}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

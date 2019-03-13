@@ -12,6 +12,7 @@ All rights reserved.
 #include <extras/cmex/MxCellArray.hpp>
 #include <extras/cmex/mxArrayGroup.hpp>
 #include <memory>
+#include <extras/string_extras.hpp>
 
 namespace extras {namespace cmex {
 
@@ -22,12 +23,13 @@ namespace extras {namespace cmex {
 	//
 	// The class should be thread-safe
 	class ParameterMxMap {
+	private:
 		mutable std::mutex _mapMutex;
 		std::unordered_map<std::string, extras::cmex::persistentMxArray> _map;
-
+		std::atomic_bool _casesensitive = true;
 	public:
 		// destructor
-		~ParameterMxMap() {
+		virtual ~ParameterMxMap() {
 			std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
 			_map.clear();
 		}
@@ -37,6 +39,7 @@ namespace extras {namespace cmex {
 
 		// default constructor
 		ParameterMxMap() {};
+		ParameterMxMap(bool casesensitive) : _casesensitive(casesensitive) {};
 
 		////////////////////
 		// copy/move
@@ -67,7 +70,7 @@ namespace extras {namespace cmex {
 		// 
 
 		// set map entry
-		void setParameters(size_t nrhs, const mxArray* prhs[]) {
+		virtual void setParameters(size_t nrhs, const mxArray* prhs[]) {
 			if (nrhs % 2 != 0) {
 				throw(std::runtime_error("ParameterMxMap::setParameters() number of args must be even (specified as Name,Value pairs)."));
 			}
@@ -118,16 +121,20 @@ namespace extras {namespace cmex {
 		size_t size() const { return _map.size(); }
 
 		// return reference to parameter field
-		extras::cmex::persistentMxArray& operator[](const std::string& field) {
+		virtual extras::cmex::persistentMxArray& operator[](const std::string& field) {
 			std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
-
+			if (_casesensitive) {
+				return _map[extras::tolower(field)];
+			}
 			return _map[field];
 		}
 
 		// return const reference to parameter field
-		const extras::cmex::persistentMxArray& operator[](const std::string& field) const {
+		virtual const extras::cmex::persistentMxArray& operator[](const std::string& field) const {
 			std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
-
+			if (_casesensitive) {
+				return _map.at(extras::tolower(field));
+			}
 			return _map.at(field);
 		}
 

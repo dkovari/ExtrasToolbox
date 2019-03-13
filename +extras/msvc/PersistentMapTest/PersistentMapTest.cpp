@@ -5,6 +5,17 @@ All rights reserved.
 #include <extras/cmex/PersistentMxMap.hpp>
 #include <list>
 
+// ParameterMxMap with default values
+struct MyMap: public extras::cmex::ParameterMxMap {
+	double special_val = 1;
+	MyMap() {
+		_map["MyMap1"] = mxCreateDoubleScalar(1);
+		_map["MyMap2"] = mxCreateDoubleScalar(1);
+	}
+
+	virtual ~MyMap() {};
+};
+
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	using namespace extras::cmex;
@@ -60,6 +71,19 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	mexPrintf("List Size: %d\n", mapList.size());
 	mexPrintf("Front string: %s\n", mapList.front().first.c_str());
 
+	/////////////////
+	// MyMap
 
+	std::shared_ptr<ParameterMxMap> pMapBase = std::make_shared<MyMap>();
 
+	mexPrintf("pMapBase['MyMap1']: %f\n", mxGetScalar((*pMapBase)["MyMap1"]));
+
+	auto downCastPtr = std::dynamic_pointer_cast<MyMap>(pMapBase);
+	mexPrintf("downCastPtr['MyMap1']: %f\n", mxGetScalar((*downCastPtr)["MyMap1"]));
+	mexPrintf("specialVal: %f\n", downCastPtr->special_val);
+	downCastPtr->special_val = 2;
+	mexPrintf("specialVal: %f\n", downCastPtr->special_val);
+	auto upPtr = std::dynamic_pointer_cast<ParameterMxMap>(downCastPtr);
+	auto down2 = std::dynamic_pointer_cast<MyMap>(upPtr);
+	mexPrintf("down2->specialVal: %f\n", down2->special_val);
 }

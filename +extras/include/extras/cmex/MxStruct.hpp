@@ -151,12 +151,8 @@ namespace extras{namespace cmex{
         //////////////
         // Constructors
 
-        MxStruct(){
-            mxDestroyArray(_mxptr);
-            _mxptr = mxCreateStructMatrix(0, 0, 0, nullptr);
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
+        MxStruct():MxObject(){
+			own(mxCreateStructMatrix(0, 0, 0, nullptr));
         };
 
         MxStruct(const MxObject& src): MxObject(src){
@@ -230,6 +226,9 @@ namespace extras{namespace cmex{
 		}
 
         /// non-const access to field
+		// returns FieldWrapper
+		// NOTE: FieldWrappers may not be thread-safe
+		// if the parent MxStruct is changed by a different thread, the field wrapper will probably be corrupted
         FieldWrapper operator()(size_t idx, const char* fieldname){
 
             if(idx>=mxGetNumberOfElements(_mxptr)){

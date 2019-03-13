@@ -54,8 +54,6 @@ namespace extras {namespace async {
 			if (TaskParamList.size() > 0) {
 				auto& task = TaskParamList.front();
 
-
-
 				cmex::mxArrayGroup res;
 				if (!task.ParameterMapPtr) { // no pointer assigned
 					res = ProcessTask(task.TaskArrayGroup, extras::cmex::ParameterMxMap());
@@ -152,7 +150,6 @@ namespace extras {namespace async {
 		}
 
 		virtual size_t remainingTasks() const { return TaskParamList.size(); }
-
 		
 	};
 

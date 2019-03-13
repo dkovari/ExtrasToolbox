@@ -1,5 +1,5 @@
 /*--------------------------------------------------
-Copyright 2018-2019, Daniel T. Kovari, Emory University
+Copyright 2019, Daniel T. Kovari, Emory University
 All rights reserved.
 ----------------------------------------------------*/
 #pragma once
@@ -22,6 +22,10 @@ All rights reserved.
 
 namespace extras {namespace cmex {
 
+	// Wrapper around mxArray*
+	// has the ability to automatically handle mxArray construction and destruction
+	// The contained mxArray* (_mxptr) is protected by a mutex lock so the class *should* 
+	// be thread safe.
 	class MxObject {
 	protected:
 		std::mutex _mxptrMutex; //mutex for thread-safe locking of _mxptr;
@@ -111,6 +115,16 @@ namespace extras {namespace cmex {
 			deletemxptr_nolock();
 			_mxptr = psrc;
 			_managemxptr = false;
+			_setFromConst = false;
+			_isPersistent = persist;
+		}
+
+		// set with full ownership
+		virtual void setOwn(mxArray* psrc, bool persist) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+			_mxptr = psrc;
+			_managemxptr = true;
 			_setFromConst = false;
 			_isPersistent = persist;
 		}
@@ -219,6 +233,13 @@ namespace extras {namespace cmex {
 		/// set from (non-const) mxArray*, with optional ability to set persistent flag
 		virtual MxObject& set(mxArray* psrc, bool isPersist = false) {
 			setFrom(psrc, isPersist);
+			return *this;
+		}
+
+		// set non-const mxArray* with full ownership.
+		// do not delete psrc after calling
+		virtual MxObject& own(mxArray* psrc, bool isPersist = false) {
+			setOwn(psrc, isPersist);
 			return *this;
 		}
 

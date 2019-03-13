@@ -11,14 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\+RoiTracker\source\RoiTracker.cpp" />
+    <ClInclude Include="..\source\roiObject.hpp" />
+    <ClInclude Include="..\source\roiTracker.hpp" />
+    <ClInclude Include="RoiTracker2.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\RoiTracker.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{d070ddfc-0db4-4305-83a1-658751db4465}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>DiffractionTracker</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
-    <ProjectName>RoiTracker</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
