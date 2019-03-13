@@ -79,13 +79,18 @@ namespace extras{namespace async{
             // add task to the TaskList
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
 
-            TaskList.emplace_back(
+            TaskList.push_back(
                 std::make_pair(
                     std::move(AG),
                     CurrentArgs
                 )
             );
 
+			//// Auto start on first task
+			if (_firstTask) {
+				resume();
+				_firstTask = false;
+			}
         }
 
 		// redefine to force use of new TaskList
@@ -124,7 +129,12 @@ namespace extras{namespace async{
 		virtual extras::cmex::MxCellArray getPersistentArgs() const;
 
 	public:
-		virtual ~PersistentArgsProcessor() {};
+		virtual ~PersistentArgsProcessor() {
+#ifdef _DEBUG
+			mexPrintf("~PersistentArgsProcessor()\n");
+#endif
+			ProcessTasksAndEnd();
+		};
 
     };
 

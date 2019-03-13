@@ -18,20 +18,12 @@ namespace extras{namespace async{
     /// Abstract class defining an Asynchronous Processor object
     class AsyncProcessor{
     protected:
-        std::thread mThread;
-        std::atomic<bool> ProcessAndEnd; //flag specifying that all remaining processes should be run
-        std::atomic<bool> StopProcessingNow; //flag specifying that thread should stop immediately
-        std::atomic<bool> ProcessRunning; //flag if thread is running
 
-        std::atomic<bool> ErrorFlag;
-        std::mutex LastErrorMutex;
-        std::exception_ptr LastError=nullptr;
+		/////////////////////////////////////////////////////////////
+		// Task Related
 
-        std::mutex TaskListMutex;///mutex lock for accessing TaskList
-        std::list<cmex::mxArrayGroup> TaskList; //list of remaining tasks
-
-        std::mutex ResultsListMutex; ///mutex lock for accessing ResultsList
-        std::list<cmex::mxArrayGroup> ResultsList; ///results list
+		std::mutex TaskListMutex;///mutex lock for accessing TaskList
+		std::list<cmex::mxArrayGroup> TaskList; //list of remaining tasks
 
 		///Overloadable virtual method for Processing Tasks in the task list
         virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) = 0;
@@ -63,6 +55,8 @@ namespace extras{namespace async{
 		}
 
         /// Method called in processing thread to execute tasks
+		/// Calls ProceesLoopCore() and catches any errors thrown
+		/// You probably don't need to overload this function
         virtual void ProcessLoop(){
 			using namespace std;
             try
@@ -82,6 +76,22 @@ namespace extras{namespace async{
                 return;
             }
         }
+
+		///////////////////////////////////////////
+		// Results related
+
+		std::mutex ResultsListMutex; ///mutex lock for accessing ResultsList
+		std::list<cmex::mxArrayGroup> ResultsList; ///results list
+
+		/////////////////////////////////////////
+		// Thread control related
+
+		std::thread mThread;
+		std::atomic<bool> ProcessAndEnd; //flag specifying that all remaining processes should be run
+		std::atomic<bool> StopProcessingNow; //flag specifying that thread should stop immediately
+		std::atomic<bool> ProcessRunning; //flag if thread is running
+
+		bool _firstTask = true;
 
         virtual void StartProcessor() {
             ErrorFlag = false;
@@ -116,6 +126,13 @@ namespace extras{namespace async{
             ProcessRunning = false;
         }
 
+		////////////////////////////////////////////////////////
+		// Error related (also used in thead control methods)
+
+		std::atomic<bool> ErrorFlag;
+		std::mutex LastErrorMutex;
+		std::exception_ptr LastError = nullptr;
+
     public:
         // Destructor
         virtual ~AsyncProcessor(){
@@ -128,8 +145,14 @@ namespace extras{namespace async{
         //Constructor
         AsyncProcessor(){
             ProcessRunning = false;
-            StartProcessor();
+
+			// DON'T START PROCESSOR UNTIL FIRST TASK IS ADDED
+			_firstTask = true;
+            //StartProcessor();
         }
+
+		//////////////////////////////////////////////////
+		// Thread control related
 
         void pause() {
             StopProcessor();
@@ -140,6 +163,28 @@ namespace extras{namespace async{
                 StartProcessor();
             }
         }
+
+		bool running() const { return ProcessRunning; }
+
+		////////////////////////////////////////////////////
+		// Task Related
+
+		virtual void pushTask(size_t nrhs, const mxArray* prhs[])
+		{
+			//Convert mxArray list to array group
+			cmex::mxArrayGroup AG(nrhs, prhs);
+
+			// add task to the TaskList
+			std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
+
+			TaskList.push_back(std::move(AG)); //move task to back of task list
+
+			//// Auto start on first task
+			if (_firstTask) {
+				resume();
+				_firstTask = false;
+			}
+		}
 
         virtual void cancelRemainingTasks(){
 			mexPrintf("Trying to cancel tasks...\n");
@@ -155,20 +200,10 @@ namespace extras{namespace async{
 
         virtual size_t remainingTasks() const {return TaskList.size();}
 
-		size_t availableResults() const {return ResultsList.size();}
+        /////////////////////////////////////////////////////////
+		// Results Related
 
-		bool running() const {return ProcessRunning;}
-
-        virtual void pushTask(size_t nrhs, const mxArray* prhs[])
-        {
-            //Convert mxArray list to array group
-            cmex::mxArrayGroup AG(nrhs,prhs);
-
-            // add task to the TaskList
-            std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
-
-            TaskList.emplace_back(std::move(AG)); //move task to back of task list
-        }
+		size_t availableResults() const { return ResultsList.size(); }
 
         virtual cmex::mxArrayGroup popResult(){
             if(ResultsList.size()<1){
@@ -195,6 +230,9 @@ namespace extras{namespace async{
                 return ResultsList.back().size();
             }
         }
+
+		/////////////////////////////////////////////
+		// Error Related
 
         /// true if there was an error
         virtual bool wasErrorThrown() const{

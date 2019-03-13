@@ -8,7 +8,7 @@ All rights reserved.
 class ExampleProcessor : public extras::async::ParamProcessor {
 protected:
 	/// method for Processing Tasks in the task list
-	extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& TaskArgs, const ParameterMap& Params) {
+	extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& TaskArgs, const extras::cmex::ParameterMxMap& Params) {
 
 		// Create output containing args and parameters
 	
@@ -26,6 +26,8 @@ protected:
 		std::this_thread::sleep_for(std::chrono::milliseconds(500)); //let some time pass
 		return out;
 	}
+public:
+	ExampleProcessor() :extras::async::ParamProcessor() {};
 };
 
 extras::SessionManager::ObjectManager<ExampleProcessor> manager;

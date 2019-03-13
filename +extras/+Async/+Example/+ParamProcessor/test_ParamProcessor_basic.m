@@ -5,10 +5,15 @@ WIND = rand(1,4);
 p = extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('new');
 extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('pause',p);
 
+'press a key 1'
+pause
 %% push data
 extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('setParameters',p,'Window',WIND);
 extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('pushTask',p,I);
-pause(1);
+
+'press a key 2'
+pause();
+
 
 remTasks = extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('remainingTasks',p)
 
