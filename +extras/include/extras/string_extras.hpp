@@ -21,13 +21,13 @@ const auto& strcmpi = strcasecmp;
 // define tolower and toupper for strings ()
 namespace extras{
 
-    /// convert string to lowercase (in-place)
+    //! convert string to lowercase (in-place)
     std::string tolower(std::string && str) {
     	for (auto & c : str) c = std::tolower(c);
     	return str;
     }
 
-    /// convert string to lowercase (make copy)
+    //! convert string to lowercase (make copy)
     std::string tolower(const std::string & str) {
     	std::string out(str);
 
@@ -35,16 +35,34 @@ namespace extras{
     	return out;
     }
 
-    /// convert string to upper case (in-place)
+    //! convert string to upper case (in-place)
     std::string toupper(std::string && str) {
     	for (auto & c : str) c = std::toupper(c);
     	return str;
     }
 
-    /// convert string to upper case (make copy)
+    //! convert string to upper case (make copy)
     std::string toupper(const std::string &str) {
     	std::string out(str);
     	for (auto & c : out) c = std::toupper(c);
     	return out;
     }
+
+	//! return true if string is found in a vector of strings
+	//! optionally specify if search is case sensitive (default = true)
+	bool ismember(const std::string& str, const std::vector<std::string>& str_list,bool CaseSensitive=true) {
+		for (auto& s2 : str_list) {
+			if (CaseSensitive) {
+				if (strcmp(str.c_str(), s2.c_str())==0) {
+					return true;
+				}
+			}
+			else {
+				if (strcmpi(str.c_str(), s2.c_str()) == 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

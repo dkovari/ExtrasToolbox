@@ -33,10 +33,10 @@
 %   'splineroot_min_dR2frac'
 */
 
-#include "roiTracker.hpp"
+#include "RoiTracker2.hpp"
 
-extras::SessionManager::ObjectManager<roiTrackerXY<roiListXY>> manager;
-extras::async::PersistentArgsProcessorInterface<roiTrackerXY<roiListXY>, manager> mex_interface; //create interface manager for the processor
+extras::SessionManager::ObjectManager<extras::ParticleTracking::RoiTracker> manager;
+extras::async::ParamProcessorInterface<extras::ParticleTracking::RoiTracker, manager> mex_interface; //create interface manager for the ExampleProcessor
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	mex_interface.mexFunction(nlhs, plhs, nrhs, prhs);

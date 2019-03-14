@@ -10,12 +10,33 @@ All rights reserved.
 
 namespace extras {namespace cmex {
 
-	/// Typed NumericArray Wrapper for MxObjects.
-	/// Implements the ArrayBase<T> interface
-	/// NOTE: When creating integer type array be sure to specify the precision
-	/// e.g NumericArray<int32_t> because the type T=int is unsupported.
-	/// MATLAB does not have a default integet type therefore it does not make
-	/// make sense to include it as an option.
+	template<typename T>
+	struct NumericArray_elementHelper {
+		T* _pval = nullptr;
+		bool _isconst = false;
+
+		NumericArray_elementHelper(T* val_ptr, bool is_const) : _pval(val_ptr), _isconst(is_const) {};
+
+		//! convert to const reference
+		operator const T& () const {
+			return *_pval;
+		}
+
+		//! convert to (non-const) reference
+		operator T& () {
+			if (_isconst) {
+				throw(std::runtime_error("NumericArray_elementHelper::operator T& () cannot cast from NumericArray element for const mxArray* to non-const value"));
+			}
+		}
+
+	};
+
+	//! Typed NumericArray Wrapper for MxObjects.
+	//! Implements the ArrayBase<T> interface
+	//! NOTE: When creating integer type array be sure to specify the precision
+	//! e.g NumericArray<int32_t> because the type T=int is unsupported.
+	//! MATLAB does not have a default integet type therefore it does not make
+	//! make sense to include it as an option.
 	template <typename T>
 	class NumericArray : public MxObject, virtual public ArrayBase<T> {
 	protected:
@@ -68,7 +89,7 @@ namespace extras {namespace cmex {
 			NumericArray::copyFrom(src);
 		}
 
-		/// create deep copy of object
+		//! create deep copy of object
 		virtual void copyFrom(const MxObject& src) {
 			bool wasPersistent = _isPersistent;
 			if (sametype<T>(src)) { //if same type, use MxObject's copyFrom
@@ -102,7 +123,7 @@ namespace extras {namespace cmex {
 			}
 		}
 
-		/// set from const mxArray*
+		//! set from const mxArray*
 		virtual void setFromConst(const mxArray* psrc, bool persist) {
 			bool wasPersistent = _isPersistent;
 			if (sametype<T>(psrc)) {
@@ -122,11 +143,32 @@ namespace extras {namespace cmex {
 			}
 		}
 
-		/// set from (non-const) mxArray*
+		//! set from (non-const) mxArray*
 		virtual void setFrom(mxArray* psrc, bool persist) {
 			bool wasPersistent = _isPersistent;
 			if (sametype<T>(psrc)) {
 				MxObject::setFrom(psrc, persist);
+			}
+			else { //need to valuecopy
+				std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+				deletemxptr_nolock(); //delete old data
+				_mxptr = mxCreateNumericArray(mxGetNumberOfDimensions(psrc), mxGetDimensions(psrc), type2ClassID<T>(), mxREAL);
+				valueCopy((T*)mxGetData(_mxptr), psrc);
+				_managemxptr = true;
+				_setFromConst = false;
+				_isPersistent = false;
+			}
+			if (wasPersistent) {
+				makePersistent();
+			}
+		}
+
+		//! set from (non-const) mxArray*
+		virtual void setOwn(mxArray* psrc, bool persist) {
+			bool wasPersistent = _isPersistent;
+			if (sametype<T>(psrc)) {
+				MxObject::setFrom(psrc, persist);
+				_managemxptr = true;
 			}
 			else { //need to valuecopy
 				std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -154,14 +196,14 @@ namespace extras {namespace cmex {
 		virtual size_t nCols() const { return mxGetN(_mxptr); } //number of columns, is nd-array, nCols=numel/nRows
 		virtual std::vector<size_t> dims() const { return size(); } //returns size of data
 
-		/// get const pointer to raw data array
+		//! get const pointer to raw data array
 		virtual const T* getdata() const { 
 			if (_mxptr==nullptr) {
 				return nullptr;
 			}
 			return (T*)mxGetData(_mxptr);
 		};
-		/// get (non-const) pointer to raw data array
+		//! get (non-const) pointer to raw data array
 		virtual T* getdata() {
 			if (_mxptr == nullptr) {
 				return nullptr;
@@ -172,22 +214,19 @@ namespace extras {namespace cmex {
 			return (T*)mxGetData(_mxptr);
 		}
 
-		///< set n-th element
-		virtual T& operator[](size_t index) {
+		//! set n-th element
+		virtual NumericArray_elementHelper<T> operator[](size_t index) {
 			if (_mxptr == nullptr) {
 				throw(std::runtime_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
-			}
-			if (_setFromConst) {
-				throw(std::runtime_error("NumericArray::operator[](): cannot set data for MxObject that was set from const."));
 			}
 			if (index > numel()) {
 				throw(std::runtime_error("NumericArray::operator[](): index>numel()"));
 			}
 			T* dat = getdata();
-			return dat[index];
+			return NumericArray_elementHelper<T>(&(dat[index]), isConst());
 		}
 
-		///< get n-th element
+		//! get n-th element
 		virtual const T& operator[](size_t index) const {
 			if (_mxptr == nullptr) {
 				throw(std::runtime_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
@@ -199,21 +238,21 @@ namespace extras {namespace cmex {
 			return dat[index];
 		}
 
-		///< set n-th element
-		virtual T& operator()(size_t index) {return (*this)[index];}
+		//! set n-th element
+		virtual NumericArray_elementHelper<T> operator()(size_t index) {return (*this)[index];}
 
-		///< get n-th element
+		//! get n-th element
 		virtual const T& operator()(size_t index) const {return (*this)[index];}
 
-		///< set element [m,n]
-		virtual T& operator()(size_t row, size_t col) {
+		//! set element [m,n]
+		virtual NumericArray_elementHelper<T> operator()(size_t row, size_t col) {
 			size_t subs[2] = { row,col };
 
 			size_t ind = mxCalcSingleSubscript(_mxptr, 2, subs);
 			return (*this)[ind];
 		} 
 
-		///< get element [m,n]
+		//! get element [m,n]
 		virtual const T& operator()(size_t row, size_t col) const {
 			size_t subs[2] = { row,col };
 
@@ -221,13 +260,13 @@ namespace extras {namespace cmex {
 			return (*this)[ind];
 		}
 
-		///< set element at coordinate [x,y,z,...] specified by the vector elementCoord
-		virtual T& operator()(const std::vector<size_t>& elementCoord) { 
+		//! set element at coordinate [x,y,z,...] specified by the vector elementCoord
+		virtual NumericArray_elementHelper<T> operator()(const std::vector<size_t>& elementCoord) {
 			size_t ind = mxCalcSingleSubscript(_mxptr, elementCoord.size(), elementCoord.data());
 			return (*this)[ind];
 		} 
 		
-		///< get element at coordinate [x,y,z,...] specified by the vector elementCoord///< get element at coordinate [x,y,z,...] specified by the vector elementCoord
+		//! get element at coordinate [x,y,z,...] specified by the vector elementCoord///< get element at coordinate [x,y,z,...] specified by the vector elementCoord
 		virtual const T& operator()(const std::vector<size_t>& elementCoord) const {
 
 			size_t ind = mxCalcSingleSubscript(_mxptr, elementCoord.size(), elementCoord.data());
@@ -253,7 +292,7 @@ namespace extras {namespace cmex {
 		//////////////////////////////////
 		// Constructors
 
-		//defaul constructor
+		//! defaul constructor
 		NumericArray() : MxObject() {};
 
 		NumericArray(const NumericArray<T>& src) {
@@ -272,19 +311,54 @@ namespace extras {namespace cmex {
 			moveFrom<M>(src);
 		}
 
-		///copy assign;
+		//! copy assign;
 		template <typename M> NumericArray& operator=(const NumericArray<M>& src) {
 			copyFrom<M>(src);
 			return (*this);
 		}
 
-		///move assign
+		//! move assign
 		template <typename M> NumericArray& operator=(NumericArray<M>&& src) {
 			moveFrom<M>(src);
 			return (*this);
 		}
+		
+		
+		////////////////////////////////
+		//// mxArray* assignments
 
-		// construct vector of size num
+		//! set from const mxArray*, with optional ability to set persistent flag
+		virtual NumericArray& set(const mxArray* psrc, bool isPersist = false) {
+			setFromConst(psrc, isPersist);
+			return *this;
+		}
+
+		//! set from const mxArray*
+		virtual NumericArray& operator=(const mxArray* psrc) {
+			set(psrc);
+			return *this;
+		}
+
+		//! set from (non-const) mxArray*, with optional ability to set persistent flag
+		virtual NumericArray& set(mxArray* psrc, bool isPersist = false) {
+			setFrom(psrc, isPersist);
+			return *this;
+		}
+
+		//! set from (non-const) mxArray*
+		virtual NumericArray& operator=(mxArray* psrc) {
+			set(psrc);
+			return *this;
+		}
+
+		//! set non-const mxArray*, giving MxObject full ownership.
+		//! CATION: Do not delete psrc after calling this method!
+		virtual NumericArray& own(mxArray* psrc, bool isPersist = false) {
+			setOwn(psrc, isPersist);
+			return *this;
+		}
+
+		//! construct vector of size num
 		NumericArray(size_t num) {
 			resize(num);
 		}
@@ -295,28 +369,28 @@ namespace extras {namespace cmex {
 			resize(dim);
 		}
 
-		/// copy from MxObject
+		//! copy from MxObject
 		NumericArray(const MxObject& src) {
 			copyFrom(src);
 		}
 
-		///Construct from Generic ArrayBase
+		//! Construct from Generic ArrayBase
 		template <typename M> NumericArray(const ArrayBase<M>& src) {
 			copyFrom(src);
 		}
 
-		///Assign from Generic ArrayBase;
+		//! Assign from Generic ArrayBase;
 		template <typename M> NumericArray& operator=(const ArrayBase<M>& src) {
 			copyFrom(src);
 			return (*this);
 		}
 
-		///Move Construct from MxObject
+		//! Move Construct from MxObject
 		NumericArray(MxObject&& src) {
 			moveFrom(src);
 		}
 
-		/// overload disp() method
+		//! overload disp() method
 		void disp() const {
 			mexPrintf("NumericMatrix: %s [", mxGetClassName(_mxptr));
 			for (size_t n = 0; n<ndims() - 1; ++n) {

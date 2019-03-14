@@ -1,11 +1,11 @@
-classdef DiffractionTracker < extras.Async.PersistentArgsProcessor %extras.Async.AsyncProcessor %
+classdef RoiTracker < extras.Async.ParameterProcessor %extras.Async.AsyncProcessor %
 % Asynchronous Radialcenter image processor
 
     %% Create
     methods
-        function this = DiffractionTracker()
-            this@extras.Async.PersistentArgsProcessor(@extras.ParticleTracking.DiffractionTracker.DiffractionTracker_mex)
-            this.Name = 'DiffractionTracker'; %Change Name
+        function this = RoiTracker()
+            this@extras.Async.ParameterProcessor(@extras.ParticleTracking.RoiTracker.RoiTracker_mex)
+            this.Name = 'RoiTracker'; %Change Name
             this.ResultsCheckTimerPeriod = 1/20;
             this.ErrorCheckTimerPeriod = 1/20;
         end

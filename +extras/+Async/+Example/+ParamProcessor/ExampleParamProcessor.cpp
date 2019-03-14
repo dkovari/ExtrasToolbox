@@ -8,17 +8,20 @@ All rights reserved.
 class ExampleProcessor : public extras::async::ParamProcessor {
 protected:
 	/// method for Processing Tasks in the task list
-	extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& TaskArgs, const extras::cmex::ParameterMxMap& Params) {
+	extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& TaskArgs, std::shared_ptr<const extras::cmex::ParameterMxMap> Params) {
 
+		if (!Params) { //Params were not initialized, just use an empty map
+			Params = std::make_shared<extras::cmex::ParameterMxMap>();
+		}
 		// Create output containing args and parameters
 	
-		extras::cmex::mxArrayGroup out(TaskArgs.size()+2*Params.size());
+		extras::cmex::mxArrayGroup out(TaskArgs.size()+2*Params->size());
 		
 		size_t k;
 		for (k = 0; k < TaskArgs.size(); k++) {
 			out.setArray(k, TaskArgs.getArray(k));
 		}
-		for (const auto& p : Params) {
+		for (const auto& p : *Params) {
 			out.setArray(k, extras::cmex::MxObject(p.first).getmxarray());
 			out.setArray(k + 1, p.second.getConstArray());
 			k += 2;

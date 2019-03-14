@@ -28,18 +28,18 @@ namespace extras {namespace cmex {
 	// be thread safe.
 	class MxObject {
 	protected:
-		std::mutex _mxptrMutex; //mutex for thread-safe locking of _mxptr;
+		mutable std::mutex _mxptrMutex; //mutex for thread-safe locking of _mxptr;
 		mxArray* _mxptr = nullptr; //mxArray ptr
-		std::atomic_bool _managemxptr = true; //flag if data is managed
-		std::atomic_bool _isPersistent = false; //flag if data is persistent
-		std::atomic_bool _setFromConst = false; //flag if set from const
+		bool _managemxptr = true; //flag if data is managed
+		bool _isPersistent = false; //flag if data is persistent
+		bool _setFromConst = false; //flag if set from const
 
-		/// delete mxptr if needed
-		/// if not managed, set from constant, or not set (i.e. nullptr) memory is not freed
-		/// upon return:
-		///		_mxptr == nullptr
-		///		_mxptr == false
-		///		_mxptr == false
+		//! delete mxptr if needed
+		//! if not managed, set from constant, or not set (i.e. nullptr) memory is not freed
+		//! upon return:
+		//!		_mxptr == nullptr
+		//!		_mxptr == false
+		//!		_mxptr == false
 		void deletemxptr_nolock() {
 			// free memory if needed
 			if (_managemxptr && !_setFromConst && _mxptr != nullptr) {
@@ -52,13 +52,13 @@ namespace extras {namespace cmex {
 			_setFromConst = false;
 		}
 
-		/// creates a mutex lock on _mxptr before calling deletemxptr_nolock()
+		//! creates a mutex lock on _mxptr before calling deletemxptr_nolock()
 		void deletemxptr_withlock() {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
 		}
 
-		/// create deep copy of object
+		//! create deep copy of object
 		virtual void copyFrom(const MxObject& src) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
@@ -77,7 +77,7 @@ namespace extras {namespace cmex {
 			}
 		}
 
-		/// move object
+		//! move object
 		virtual void moveFrom(MxObject& src) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 
@@ -93,7 +93,7 @@ namespace extras {namespace cmex {
 			src.deletemxptr_withlock();
 		}
 
-		/// set from const mxArray*
+		//! set from const mxArray*
 		virtual void setFromConst(const mxArray* psrc, bool persist) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
@@ -109,7 +109,7 @@ namespace extras {namespace cmex {
 			_isPersistent = persist;
 		}
 
-		/// set from (non-const) mxArray*
+		//! set from (non-const) mxArray*
 		virtual void setFrom(mxArray* psrc, bool persist) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
@@ -129,15 +129,15 @@ namespace extras {namespace cmex {
 			_isPersistent = persist;
 		}
 
-		/// if linked mxArray is not managed, creates a copy and manages the new copy
-		/// if already managed or mxptr==nullptr then does nothing.
-		/// If the array was not managed, and a copy is created, the the previously linked array
-		/// is returned in a pair, along with a bool specifying if it was set from const.
-		///
-		///	Return:
-		//		out.first -> mxArray*
-		//		out.second -> bool specifying if out.first shoud be considered "const mxArray*"
-		std::pair<mxArray*,bool> takeOwnership() {
+		//! if linked mxArray is not managed, creates a copy and manages the new copy
+		//! if already managed or mxptr==nullptr then does nothing.
+		//! If the array was not managed, and a copy is created, the the previously linked array
+		//! is returned in a pair, along with a bool specifying if it was set from const.
+		//!
+		//!	Return:
+		//!		out.first -> mxArray*
+		//!		out.second -> bool specifying if out.first shoud be considered "const mxArray*"
+		std::pair<mxArray*,bool> selfManage() {
 
 			if (_mxptr == nullptr) { //nullptr, nothing to do
 				return std::make_pair<mxArray*,bool>(nullptr,false);
@@ -161,10 +161,12 @@ namespace extras {namespace cmex {
 
 	public:
 
-		/// destroy object
+		//! destroy object
 		virtual ~MxObject() { deletemxptr_withlock(); };
 
-		/// make mxArray persistent so that it survives different calls to a mexFunction
+		//! make mxArray persistent so that it survives different calls to a mexFunction
+		//! if linked mxArray was not managed by MxObject or set from const mxarray* 
+		//! then it will be duplicated and the MxObject will no longer be "set from const"
 		void makePersistent() {
 			if (_isPersistent) {
 				return;
@@ -185,26 +187,26 @@ namespace extras {namespace cmex {
 		///////////////////////////////////////////////////////////////////////////////////
 		// Constructors
 
-		/// Defaul Constructor
-		/// mxArray will be set to nullptr
+		//! Defaul Constructor
+		//! mxArray will be set to nullptr
 		MxObject() : _mxptr(nullptr), _managemxptr(true), _isPersistent(false), _setFromConst(false) {};
 
-		/// Construct by copy
+		//! Construct by copy
 		MxObject(const MxObject& src) {
 			copyFrom(src);
 		}
 
-		/// Construct by move
+		//! Construct by move
 		MxObject(MxObject&& src) {
 			moveFrom(src);
 		}
 
-		/// Construct from const mxArray*
+		//! Construct from const mxArray*
 		MxObject(const mxArray* psrc, bool persist = false) {
 			setFromConst(psrc, persist);
 		}
 
-		/// Construct from (non-const) mxArray*
+		//! Construct from (non-const) mxArray*
 		MxObject(mxArray* psrc, bool persist = false) {
 			setFrom(psrc, persist);
 		}
@@ -212,32 +214,38 @@ namespace extras {namespace cmex {
 		///////////////////////////////////////////////////////////////////////
 		// Set Operators
 
-		/// set by copy
+		//! set by copy
 		virtual MxObject& operator=(const MxObject& src) {
 			copyFrom(src);
 			return *this;
 		}
 
-		/// set by move
+		//! set by move
 		virtual MxObject& operator=(MxObject&& src) {
 			moveFrom(src);
 			return *this;
 		}
 
-		/// set from const mxArray*, with optional ability to set persistent flag
+		//! set from const mxArray*, with optional ability to set persistent flag
 		virtual MxObject& set(const mxArray* psrc, bool isPersist = false) {
 			setFromConst(psrc, isPersist);
 			return *this;
 		}
 
-		/// set from (non-const) mxArray*, with optional ability to set persistent flag
+		//! set from const mxArray*
+		virtual MxObject& operator=(const mxArray* psrc){
+			set(psrc);
+			return *this; 
+		}
+
+		//! set from (non-const) mxArray*, with optional ability to set persistent flag
 		virtual MxObject& set(mxArray* psrc, bool isPersist = false) {
 			setFrom(psrc, isPersist);
 			return *this;
 		}
 
-		// set non-const mxArray* with full ownership.
-		// do not delete psrc after calling
+		//! set non-const mxArray*, giving MxObject full ownership.
+		//! CATION: Do not delete psrc after calling this method!
 		virtual MxObject& own(mxArray* psrc, bool isPersist = false) {
 			setOwn(psrc, isPersist);
 			return *this;
@@ -246,14 +254,14 @@ namespace extras {namespace cmex {
 		////////////////////////////////////////////////////////////////////////////////////
 		// Cast Conversions
 
-		/// return mutable (non-const) mxArray*
-		/// returned array will not be persistent so it's ok to pass back to MATLAB
-		/// if object is persistent or setFromConst then a copy of mxArray is returned;
-		/// otherwise, the linked mxarray is returned and the management flag is changed.
-		/// CAUTION:
-		///		Once you call this function it is your responsibility to manage the memory pointed
-		///		by the resulting mxArray. Therefore, if you do not pass it back to MATLAB you MUST
-		///		call mxDeleteArray(...) on the array.
+		//! return mutable (non-const) mxArray*
+		//! returned array will not be persistent so it's ok to pass back to MATLAB
+		//! if object is persistent or setFromConst then a copy of mxArray is returned;
+		//! otherwise, the linked mxarray is returned and the management flag is changed.
+		//! CAUTION:
+		//!		Once you call this function it is your responsibility to manage the memory pointed
+		//!		by the resulting mxArray. Therefore, if you do not pass it back to MATLAB you MUST
+		//!		call mxDeleteArray(...) on the array.
 		virtual operator mxArray*() {
 			if (_mxptr == nullptr) { //nullptr, just return nullptr
 				return nullptr;
@@ -266,13 +274,13 @@ namespace extras {namespace cmex {
 			return _mxptr;
 		}
 
-		/// return const mxArray*
+		//! return const mxArray*
 		virtual operator const mxArray*() const {
 			return _mxptr;
 		}
 
-		/// returns const mxArray* linked to data
-		/// optionally specify a bool* in which the state of the persistence will be stored.
+		//! returns const mxArray* linked to data
+		//! optionally specify a bool* in which the state of the persistence will be stored.
 		virtual const mxArray* getmxarray(bool * wasPersistent = nullptr) const {
 			if (wasPersistent != nullptr) {
 				*wasPersistent = _isPersistent;
@@ -283,19 +291,19 @@ namespace extras {namespace cmex {
 		///////////////////////////////////////////////////////////////////////////////////////
 		// MxObject Info
 
-		/// is linked mxarray persistent?
+		//! is linked mxarray persistent?
 		bool isPersistent() const { return _isPersistent; }
 
-		/// is linked mxarray const?
+		//! is linked mxarray const?
 		bool isConst() const { return _setFromConst; }
 
-		/// is linked mxarray managed by mxobject?
+		//! is linked mxarray managed by mxobject?
 		bool isManaged() const { return _managemxptr; }
 
-		/// std::vector holding dimension of the mxArray object
+		//! std::vector holding dimension of the mxArray object
 		virtual std::vector<size_t> size() const { return cmex::size(_mxptr); }
 
-		/// number of elements
+		//! number of elements
 		virtual size_t numel() const {
 			if (_mxptr == nullptr) {
 				return 0;
@@ -303,7 +311,7 @@ namespace extras {namespace cmex {
 			return cmex::numel(_mxptr);
 		}
 
-		/// true if mxArray is a struct
+		//! true if mxArray is a struct
 		bool isstruct() const {
 			if (_mxptr == nullptr) {
 				return false;
@@ -311,19 +319,23 @@ namespace extras {namespace cmex {
 			return mxIsStruct(_mxptr);
 		}
 
-		/// true if is numeric
+		//! true if is numeric
 		bool isnumeric() const {
 			if (_mxptr == nullptr) {
 				return false;
 			}
 			return mxIsNumeric(_mxptr);
 		}
+
+		//! true if linked mxArray* is cell array
 		bool iscell() const {
 			if (_mxptr == nullptr) {
 				return false;
 			}
 			return mxIsCell(_mxptr);
 		}
+
+		//! true if linked mxArray* is a char array
 		bool ischar() const {
 			if (_mxptr == nullptr) {
 				return false;
@@ -339,7 +351,7 @@ namespace extras {namespace cmex {
 			return  mxGetNumberOfDimensions(_mxptr)<3;
 		}
 
-		/// number of dims
+		//! number of dims
 		virtual size_t ndims() const {
 			if (_mxptr == nullptr) {
 				return 0;
@@ -347,7 +359,7 @@ namespace extras {namespace cmex {
 			return mxGetNumberOfDimensions(_mxptr);
 		}
 
-		/// true if empty
+		//! true if empty
 		virtual bool isempty() const {
 			if (_mxptr == nullptr) {
 				return true;
@@ -355,7 +367,7 @@ namespace extras {namespace cmex {
 			return numel() == 0;
 		}
 
-		/// return data type held by mxArray pointer
+		//! return data type held by mxArray pointer
 		mxClassID mxType() const {
 			if (_mxptr == nullptr) {
 				return mxUNKNOWN_CLASS;
@@ -366,20 +378,20 @@ namespace extras {namespace cmex {
 		////////////////////////////////////////////////////////////////////////////////
 		// MISC Object Management
 
-		/// Take Ownership of array
-		/// if linked mxArray is not managed, creates a copy and manages the new copy
-		/// if already managed or mxptr==nullptr then does nothing.
-		/// If the array was not managed, and a copy is created, the the previously linked array
-		/// is returned in a pair, along with a bool specifying if it was set from const.
-		///
-		///	Return:
-		//		out.first -> mxArray*
-		//		out.second -> bool specifying if out.first shoud be considered "const mxArray*"
+		//! Take Ownership of array
+		//! if linked mxArray is not managed, creates a copy and manages the new copy
+		//! if already managed or mxptr==nullptr then does nothing.
+		//! If the array was not managed, and a copy is created, the the previously linked array
+		//! is returned in a pair, along with a bool specifying if it was set from const.
+		//!
+		//!	Return:
+		//!		out.first -> mxArray*
+		//!		out.second -> bool specifying if out.first shoud be considered "const mxArray*"
 		virtual std::pair<mxArray*, bool> managearray() {
-			return takeOwnership();
+			return selfManage();
 		}
 
-		/// Reshape using matlab-like syntax
+		//! Reshape using matlab-like syntax
 		virtual void reshape(const std::vector<size_t>& dims) {
 			if (_setFromConst) {
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
@@ -387,7 +399,7 @@ namespace extras {namespace cmex {
 
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 
-			/// nullptr -> return numeric real double
+			//! nullptr -> return numeric real double
 			if (_mxptr == nullptr) {
 				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
 				_managemxptr = true;
@@ -398,7 +410,7 @@ namespace extras {namespace cmex {
 				return;
 			}
 
-			/// Perform resize
+			//! Perform resize
 			mxArray* newPtr;
 			switch (mxGetClassID(_mxptr)) {
 			case mxDOUBLE_CLASS:
@@ -511,12 +523,12 @@ namespace extras {namespace cmex {
 
 		}
 
-		/// Resize
+		//! Resize
 		virtual void reshape(size_t nRows, size_t nCols) {
 			reshape({ nRows,nCols });
 		}
 
-		/// reshape without copy
+		//! reshape without copy
 		virtual void reshape_nocopy(const std::vector<size_t>& dims) {
 			if (_setFromConst) {
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
@@ -524,7 +536,7 @@ namespace extras {namespace cmex {
 
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 
-			/// nullptr -> return numeric real double
+			//! nullptr -> return numeric real double
 			if (_mxptr == nullptr) {
 				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
 				_managemxptr = true;
@@ -536,7 +548,7 @@ namespace extras {namespace cmex {
 			}
 
 			//////////////
-			/// Perform resize
+			//! Perform resize
 			mxArray* newPtr;
 			switch (mxGetClassID(_mxptr)) {
 			case mxDOUBLE_CLASS:
@@ -621,8 +633,7 @@ namespace extras {namespace cmex {
 
 		}
 
-
-		/// Resize
+		//! Resize
 		virtual void reshape_nocopy(size_t nRows, size_t nCols) {
 			reshape_nocopy({ nRows,nCols });
 		}
@@ -630,7 +641,7 @@ namespace extras {namespace cmex {
 		/////////////////////////////////////////////////////////////////
 		// specialized assignment/construction
 
-		/// construct from string
+		//! construct from string
 		MxObject(const std::string& str) {
 			_mxptr = mxCreateString(str.c_str());
 			_setFromConst = false;
@@ -638,7 +649,7 @@ namespace extras {namespace cmex {
 			_managemxptr = true;
 		}
 
-		/// assign from string
+		//! assign from string
 		virtual MxObject& operator=(const std::string& str) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
@@ -650,7 +661,19 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
-		/// assign from double
+
+		//! Construct from double scalar
+		MxObject(double val) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+			_mxptr = mxCreateDoubleScalar(val);
+
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+		}
+
+		//! assign from double
 		virtual MxObject& operator=(double val) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
@@ -663,7 +686,7 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
-		/// assign from numeric vector
+		//! assign from numeric vector
 		template <typename T>
 		MxObject& operator=(const std::vector<T>& vals) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -683,7 +706,7 @@ namespace extras {namespace cmex {
 	//////////////////////////////////////////////////
 	// MxObject Info functions
 
-	/// return data type held by mxArray pointer
+	//! return data type held by mxArray pointer
 	mxClassID mxType(const MxObject& mxo) { return mxo.mxType(); }
 
 	std::vector<size_t> size(const MxObject& mxo) { return mxo.size(); }

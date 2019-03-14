@@ -1,11 +1,22 @@
 % Test DiffractionTracker
-
-
-%% Generate Test Image
+try
+    delete(rcp)
+catch
+end
 close all;
 clear all;
 clear mex;
 clc;
+%% Create Processor
+
+'press a key to create roitracker'
+pause
+rcp = extras.ParticleTracking.RoiTracker.RoiTracker();
+'press a key to continue'
+pause
+
+%% Generate Test Image
+
 
 Nx = 5;
 Ny = 2;
@@ -48,13 +59,9 @@ RL = extras.roi.roiListUI(RM);
 RP = extras.roi.roiPlotUI(hAx,RM);
 
 
-%% Create Processor
-try
-    delete(rcp)
-catch
-end
+%% Setup callbacks
 
-rcp = extras.ParticleTracking.DiffractionTracker.DiffractionTracker();
+
 CBQ = extras.CallbackQueue; %create callback queue to listen to results from processor
 
 afterEach(CBQ,@(d) CB(d,hPlt)) %assign callback to the callback queue
@@ -72,7 +79,7 @@ addlistener(RM,'roiValueChanged',@(~,~) roiChanged(RM,rcp,I));
 
 
 %% Add delete listeners
-addlistener(hFig,'ObjectBeingDestroyed',@(~,~) delete(rcp));
+addlistener(hFig,'ObjectBeingDestroyed',@(~,~) delete_fn(rcp));
 addlistener(hFig,'ObjectBeingDestroyed',@(~,~) delete(RM));
 
 %% Add ROI
@@ -80,7 +87,14 @@ RM.AddROI();
 
 
 %% barycenter
-rcp.setPersistentArgs('xyMethod','barycenter')
+
+rcp.setParameters('xyMethod','barycenter')
+
+%% delete fn
+function delete_fn(rcp)
+delete(rcp);
+clear mex;
+end
 
 %% define callback function
 function CB(data,hPlt)
@@ -98,7 +112,7 @@ end
 
 function roiChanged(hRM,hdt,I)
 roiList = toStruct(hRM.roiList);
-hdt.setPersistentArgs(roiList);
+hdt.setParameters('roiList',roiList);
 hdt.pushTask(I);
 
 end

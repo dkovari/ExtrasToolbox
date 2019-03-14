@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\extras\Array.hpp" />
+    <ClInclude Include="..\..\include\extras\ArrayBase.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp" />
@@ -22,8 +24,11 @@
     <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\PersistentMxMap.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
+    <ClInclude Include="..\..\include\extras\MatlabTime.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
+    <ClInclude Include="..\..\include\extras\string_extras.hpp" />
+    <ClInclude Include="..\..\include\extras\traspose.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PersistentMapTest.cpp" />

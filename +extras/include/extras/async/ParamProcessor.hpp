@@ -43,7 +43,7 @@ namespace extras {namespace async {
 		std::list<TaskParamPair> TaskParamList; // List containing TaskParamPair struct
 
 		/// pure virtual method that must be defined for handling tasks
-		virtual cmex::mxArrayGroup ProcessTask(const  cmex::mxArrayGroup& TaskArgs, const extras::cmex::ParameterMxMap& Params) = 0;
+		virtual cmex::mxArrayGroup ProcessTask(const  cmex::mxArrayGroup& TaskArgs, std::shared_ptr<const extras::cmex::ParameterMxMap> MapPtr) = 0;
 
 		/// core method called by ProcessLoop() to handle tasks.
 		/// this function is responsible for getting the top element from the TaskList and calling ProcessTask
@@ -54,13 +54,7 @@ namespace extras {namespace async {
 			if (TaskParamList.size() > 0) {
 				auto& task = TaskParamList.front();
 
-				cmex::mxArrayGroup res;
-				if (!task.ParameterMapPtr) { // no pointer assigned
-					res = ProcessTask(task.TaskArrayGroup, extras::cmex::ParameterMxMap());
-				}
-				else { //pass the map
-					res = ProcessTask(task.TaskArrayGroup, *(task.ParameterMapPtr));
-				}
+				cmex::mxArrayGroup res = ProcessTask(task.TaskArrayGroup, task.ParameterMapPtr);
 
 				if (res.size()>0) {
 					std::lock_guard<std::mutex> rlock(ResultsListMutex);

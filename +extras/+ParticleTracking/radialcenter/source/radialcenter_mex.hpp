@@ -14,6 +14,31 @@ All rights reserved.
 
 namespace extras{namespace ParticleTracking{
 
+	//! Convert string into valid COMmethod
+	//! throws error if string does not correspond to valid method
+	//!
+	//! Valid Strings:
+	//!		"meanabs"
+	//!		"normal"
+	//!		"gradmag"
+	rcdefs::COM_METHOD string2COMmethod(std::string COMmeth) {
+		//validate COMmethod
+		COMmeth = tolower(COMmeth);
+
+		if (COMmeth.compare("meanabs") == 0) {
+			return rcdefs::MEAN_ABS;
+		}
+		else if (COMmeth.compare("normal") == 0) {
+			return rcdefs::NORMAL;
+		}
+		else if (COMmeth.compare("gradmag") == 0) {
+			return rcdefs::GRAD_MAG;
+		}
+		else {
+			throw(std::runtime_error("COMmethod invalid"));
+		}
+	}
+
     template<class OutContainerClass> //C must be and ArrayBase derived class
     std::vector<OutContainerClass> radialcenter(const mxArray* pI,
                                 const extras::ArrayBase<double>& WIND,
@@ -103,7 +128,8 @@ namespace extras{namespace ParticleTracking{
             return;
         }
 
-    	cmex::NumericArray<double> WIND;
+    	cmex::NumericArray<double> WIND; 
+
     	int ParamIndex = 1;
 
     	if (nrhs > 1 && !mxIsChar(prhs[1])) {
@@ -155,21 +181,9 @@ namespace extras{namespace ParticleTracking{
 
     		std::string COMmeth = cmex::getstring(Parser("COMmethod"));
 
-    		//validate COMmethod
-    		COMmeth = tolower(COMmeth);
+			//validate COMmethod
+			params.COMmethod = string2COMmethod(COMmeth);
 
-    		if (COMmeth.compare("meanabs") == 0) {
-    			params.COMmethod = rcdefs::MEAN_ABS;
-    		}
-    		else if (COMmeth.compare("normal") == 0) {
-    			params.COMmethod = rcdefs::NORMAL;
-    		}
-    		else if (COMmeth.compare("gradmag") == 0) {
-    			params.COMmethod = rcdefs::GRAD_MAG;
-    		}
-    		else {
-    			throw(std::runtime_error("COMmethod invalid"));
-    		}
     	}
 
     	//mexPrintf("About to run radial center...\n");

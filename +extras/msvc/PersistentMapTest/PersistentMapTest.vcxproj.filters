@@ -66,6 +66,21 @@
     <ClInclude Include="..\..\include\extras\cmex\PersistentMxMap.hpp">
       <Filter>Include\extras\cmex</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\Array.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\ArrayBase.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\MatlabTime.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\string_extras.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\traspose.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PersistentMapTest.cpp">

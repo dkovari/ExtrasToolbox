@@ -12,8 +12,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\roiObject.hpp" />
+    <ClInclude Include="..\source\RoiParameterMap.hpp" />
     <ClInclude Include="..\source\roiTracker.hpp" />
-    <ClInclude Include="RoiTracker2.hpp" />
+    <ClInclude Include="..\source\RoiTracker2.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\RoiTracker.cpp" />
@@ -52,10 +53,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)</OutDir>
+    <OutDir>$(ProjectDir)..\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
-    <TargetName>DiffractionTracker_mex</TargetName>
+    <IncludePath>$(SolutionDir)..\+ParticleTracking;$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <TargetName>RoiTracker_mex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

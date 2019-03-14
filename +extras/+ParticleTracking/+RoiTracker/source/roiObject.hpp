@@ -112,7 +112,7 @@ struct roiAgregator {
 				// set window
 				NumericArray<double> sXYc = MxObject((*newStruct)(n,"XYc"));
 				(*newXYc)(n,0) = sXYc[0];
-				(*newXYc)(n,0) = sXYc[1];
+				(*newXYc)(n,1) = sXYc[1];
 			}
 		}
 

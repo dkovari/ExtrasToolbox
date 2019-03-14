@@ -9,8 +9,8 @@ All rights reserved.
 struct MyMap: public extras::cmex::ParameterMxMap {
 	double special_val = 1;
 	MyMap() {
-		_map["MyMap1"] = mxCreateDoubleScalar(1);
-		_map["MyMap2"] = mxCreateDoubleScalar(1);
+		(*this)["MyMap1"] = mxCreateDoubleScalar(1);
+		(*this)["MyMap2"] = mxCreateDoubleScalar(1);
 	}
 
 	virtual ~MyMap() {};
