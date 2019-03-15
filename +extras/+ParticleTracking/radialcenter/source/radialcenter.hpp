@@ -128,7 +128,7 @@ namespace extras{namespace ParticleTracking{
 	///	RWR/N - the weighted-average distance between the estimated center and all the graident vectors in the sub-image
 	template<class OutContainerClass=extras::Array<double>,typename ImageType=double> //OutContainerClass should be class derived from extras::ArrayBase
 	std::vector<OutContainerClass> radialcenter(const extras::ArrayBase<ImageType>& I, //input image
-												const extras::ArrayBase<double>& WIND, //subwindows to use for finding particles: [X1,X2,Y1,Y2]
+												const extras::ArrayBase<double>& WIND, //subwindows to use for finding particles:[x0,y0,w,h]
 												const extras::ArrayBase<double>& GP, //gradient noise-sensitivity exponent
 												const rcdefs::RCparams& params=rcdefs::RCparams())//parameters
 	{

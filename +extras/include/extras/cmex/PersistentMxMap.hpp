@@ -64,10 +64,13 @@ namespace extras {namespace cmex {
 		////////////////////
 		// copy/move
 
+		//! copy construction
 		ParameterMxMap(const ParameterMxMap& src) {
 			std::lock_guard<std::mutex> lock_src(src._mapMutex); //lock source map, prevent deleting until everyone is done messing with map
 			_map = src._map;
 		}
+
+		//! copy assignment
 		ParameterMxMap& operator=(const ParameterMxMap& src) {
 			std::lock_guard<std::mutex> lock_src(src._mapMutex); //lock source map, prevent deleting until everyone is done messing with map
 			std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
@@ -75,10 +78,13 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
+		//! move construction
 		ParameterMxMap(ParameterMxMap&& src) {
 			std::lock_guard<std::mutex> lock_src(src._mapMutex); //lock source map, prevent deleting until everyone is done messing with map
 			_map = std::move(src._map);
 		}
+
+		//! move assignment
 		ParameterMxMap& operator=(ParameterMxMap&& src) {
 			std::lock_guard<std::mutex> lock_src(src._mapMutex); //lock source map, prevent deleting until everyone is done messing with map
 			std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
@@ -94,8 +100,8 @@ namespace extras {namespace cmex {
 		//! a derived class you don't necessarily need to redefine this method
 		virtual void setParameters(size_t nrhs, const mxArray* prhs[]) {
 
-			mexPrintf("Inside ParameterMxMap::setParameters()\n");
-			mexEvalString("pause(0.2)");
+			//mexPrintf("Inside ParameterMxMap::setParameters()\n");
+			//mexEvalString("pause(0.2)");
 
 			if (_setfromstruct && nrhs==1) { // set from struct allowed
 				if (!mxIsStruct(prhs[0])) {

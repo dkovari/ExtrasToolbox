@@ -11,10 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\roiObject.hpp" />
     <ClInclude Include="..\source\RoiParameterMap.hpp" />
-    <ClInclude Include="..\source\roiTracker.hpp" />
-    <ClInclude Include="..\source\RoiTracker2.hpp" />
+    <ClInclude Include="..\source\RoiTracker.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\RoiTracker.cpp" />

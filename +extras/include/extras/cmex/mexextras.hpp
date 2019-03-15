@@ -4,6 +4,9 @@ All rights reserved.
 ----------------------------------------------------*/
 #pragma once
 
+#include <cstddef>
+#include  <cstring>
+
 #include <mex.h>
 #include <vector>
 #include <string>

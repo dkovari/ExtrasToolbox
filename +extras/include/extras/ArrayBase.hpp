@@ -7,6 +7,7 @@ ArrayBase.hpp - Generic Interface Class for storing data arrays
 #include <stdexcept>
 
 namespace extras {
+	using std::size_t;
     ///ArrayBase Interface Class.
     ///Array classes should derive from this class and implement the public interface methods
     template<typename T> class ArrayBase {

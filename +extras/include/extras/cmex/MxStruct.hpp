@@ -46,21 +46,6 @@ namespace extras{namespace cmex{
 			delete[] names;
 		}
 
-		/*/! Construct MxStruct of size [numel,1] with fields specified by list of strings
-		MxStruct(size_t numel, const std::list<std::string>& fieldnames) :MxObject() {
-
-			const char** names = new const char*[fieldnames.size()];
-
-			size_t k = 0;
-			for (auto& nm : fieldnames) {
-				names[k] = nm.c_str();
-				k++;
-			}
-
-			own(mxCreateStructMatrix(numel, 1, fieldnames.size(), names));
-			delete[] names;
-		}*/
-
 		//! Construct MxStruct of size specified by dims with fields specified by vector of strings
 		MxStruct(const std::vector<size_t>& dims, const std::vector<std::string>& fieldnames) :MxObject() {
 
@@ -91,14 +76,14 @@ namespace extras{namespace cmex{
 
 		//! copy construction
         MxStruct(const MxObject& src): MxObject(src){
-            if(!mxIsStruct(_mxptr)){
+            if(!isstruct()){
                 throw(std::runtime_error("MxStruct(const MxObject& src): src is not a struct."));
             }
         }
        
 		//! move construction
 		MxStruct(MxObject&& src): MxObject(std::move(src)){
-            if(!mxIsStruct(_mxptr)){
+            if(!isstruct()){
                 throw(std::runtime_error("MxStruct(MxObject&& src): src is not a struct."));
             }
         }
@@ -160,7 +145,7 @@ namespace extras{namespace cmex{
 
 		//! returns true if fieldname is a valid field in the struct
 		bool isfield(const char* fieldname) {
-			return mxGetFieldNumber(_mxptr, fieldname) >= 0;
+			return mxGetFieldNumber(getmxarray(), fieldname) >= 0;
 		}
 
         //! non-const access to field
@@ -171,28 +156,27 @@ namespace extras{namespace cmex{
 
         //! const access to field
         const mxArray* operator()(size_t idx, const char* fieldname) const{
-            if(idx>=mxGetNumberOfElements(_mxptr)){
+            if(idx>=numel()){
                 throw(std::runtime_error("MxStruct::operator() index exceeds struct array dimension"));
             }
-            return mxGetField(_mxptr,idx,fieldname);
+            return mxGetField(getmxarray(),idx,fieldname);
         }
 
 		//! return number of fields
 		//! does not lock internal mutex
 		size_t number_of_fields() const {
-			return mxGetNumberOfFields(_mxptr);
+			return mxGetNumberOfFields(getmxarray());
 		}
 
 		//! return the fieldnames of the struct
 		//! locks internal mutex
 		std::vector<std::string> fieldnames() const {
-			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			size_t nfields = number_of_fields();
 			std::vector<std::string> out;
 			out.reserve(nfields);
 
 			for (size_t k = 0; k < nfields; ++k) {
-				out.push_back(mxGetFieldNameByNumber(_mxptr, k));
+				out.push_back(mxGetFieldNameByNumber(getmxarray(), k));
 			}
 			return out;
 		}
@@ -216,14 +200,14 @@ namespace extras{namespace cmex{
 			_parent(parent),
 			index(idx)
 		{
-			field_number = mxGetFieldNumber(_parent._mxptr, fieldname);
+			field_number = mxGetFieldNumber(_parent.getmxarray(), fieldname);
 			if (field_number<0) { //need to create field
 
-				if (_parent._setFromConst) {
+				if (_parent.isConst()) {
 					throw(std::runtime_error("FieldWrapper: Cannot add field to const mxArray*"));
 				}
 
-				field_number = mxAddField(_parent._mxptr, fieldname);
+				field_number = mxAddField(_parent.getmxarray(), fieldname);
 			}
 
 			if (field_number<0) {
@@ -242,36 +226,15 @@ namespace extras{namespace cmex{
 			}
 		}
 
-		/* BROKEN NOW THAT WE USE MxStruct& as parent
-		FieldWrapper(const mxArray* parentPtr, size_t idx, const char* fieldname) :
-			parent((mxArray*)parentPtr),
-			index(idx),
-			_setFromConst(true)
-		{
-			field_number = mxGetFieldNumber(parent, fieldname);
-			if (field_number<0) { //need to create field
-				if (_setFromConst) {
-					throw(std::runtime_error("FieldWrapper: Cannot add field to const mxArray*"));
-				}
-				field_number = mxAddField(parent, fieldname);
+		//! set the linked field
+		//! NOTE: src will be managed by the struct after this, so don't try to delete or rely on src after calling internalSet()
+		void internalSet(mxArray* src) {
+			if (_parent.isConst()) {
+				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
 			}
-
-			if (field_number<0) {
-				throw(std::runtime_error(std::string("FieldWrapper(): Could not create fieldname:") + std::string(fieldname)));
-			}
+			mxDestroyArray(mxGetFieldByNumber(_parent.getmxarray(), index, field_number));
+			mxSetFieldByNumber(_parent.getmxarray(), index, field_number, src);
 		}
-
-		FieldWrapper(const mxArray* parentPtr, size_t idx, int fieldnumber) :
-			parent((mxArray*)parentPtr),
-			field_number(fieldnumber),
-			index(idx),
-			_setFromConst(true)
-		{
-			if (field_number<0) {
-				throw(std::runtime_error("invalid field number"));
-			}
-		}
-		*/
 
 	public:
 		FieldWrapper(const FieldWrapper& src) = default;
@@ -283,73 +246,39 @@ namespace extras{namespace cmex{
 		//! get field
 		//! returns const mxArray*()
 		operator const mxArray*() const {
-			return mxGetFieldByNumber(_parent._mxptr, index, field_number);
+			return mxGetFieldByNumber(_parent.getmxarray(), index, field_number);
 		}
 
-		//! set field
+		//! move mxArray* into field
+		//! pvalue will be managed by the struct after operation
 		FieldWrapper& operator=(mxArray* pvalue) {
-
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
-			}
-
-
-			mxDestroyArray(mxGetFieldByNumber(_parent._mxptr, index, field_number));
-			//mxSetFieldByNumber(parent, index, field_number, nullptr);
-			//mexPrintf("pvalue: %p\n", pvalue);
-			mxSetFieldByNumber(_parent._mxptr, index, field_number, pvalue);
-			//mexPrintf("after set: %p\n", mxGetFieldByNumber(parent, index, field_number));
+			internalSet(pvalue);
 			return *this;
 		}
 
 		//! set field from const array
 		//! duplicated array
 		FieldWrapper& operator=(const mxArray* pvalue) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
-			}
-
-
-			mxDestroyArray(mxGetFieldByNumber(_parent._mxptr, index, field_number));
-			mxSetFieldByNumber(_parent._mxptr, index, field_number, mxDuplicateArray(pvalue));
+			internalSet(mxDuplicateArray(pvalue));
 			return *this;
 		}
 
 		//! set field equal to string
 		FieldWrapper& operator=(const char* str) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
-			}
-
-
-			mxDestroyArray(mxGetFieldByNumber(_parent._mxptr, index, field_number));
-			mxSetFieldByNumber(_parent._mxptr, index, field_number, mxCreateString(str));
+			internalSet(mxCreateString(str));
 			return *this;
 		}
 
 		//! set field equal to scalar double
 		FieldWrapper& operator=(double val) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
-			}
-
-
-			mxDestroyArray(mxGetFieldByNumber(_parent._mxptr, index, field_number));
-			mxSetFieldByNumber(_parent._mxptr, index, field_number, mxCreateDoubleScalar(val));
+			internalSet(mxCreateDoubleScalar(val));
 			return *this;
 		}
 
 		//! Move from MxObject
 		FieldWrapper& operator=(MxObject&& src) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
-			}
-
-
-			mxDestroyArray(mxGetFieldByNumber(_parent._mxptr, index, field_number));
-			mxSetFieldByNumber(_parent._mxptr, index, field_number, src);
+			internalSet(src);
 			return *this;
-
 		}
 
 	};
@@ -362,11 +291,10 @@ namespace extras{namespace cmex{
 	//! NOTE: FieldWrappers may not be thread-safe
 	//! if the parent MxStruct is changed by a different thread, the field wrapper will probably be corrupted
 	FieldWrapper MxStruct::operator()(size_t idx, const char* fieldname) {
-		if (idx >= mxGetNumberOfElements(_mxptr)) {
+		if (idx >= numel()) {
 			throw(std::runtime_error("MxStruct::operator() index exceeds struct array dimension"));
 		}
 		return FieldWrapper(*this, idx, fieldname);
 	}
-
 
 }}

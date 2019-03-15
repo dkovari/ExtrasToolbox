@@ -1,4 +1,4 @@
-classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox
+classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extras.RequireGuiLayoutToolbox
     
     %UI menu for editing ROI List
     

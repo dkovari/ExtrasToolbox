@@ -4,6 +4,7 @@ All rights reserved.
 ----------------------------------------------------*/
 #pragma once
 
+
 #define NOMINMAX //don't use the windows definition of min/max
 #include <algorithm> //use min/max from std
 
@@ -21,18 +22,20 @@ All rights reserved.
 
 
 namespace extras {namespace cmex {
+	using std::size_t;
 
 	// Wrapper around mxArray*
 	// has the ability to automatically handle mxArray construction and destruction
 	// The contained mxArray* (_mxptr) is protected by a mutex lock so the class *should* 
 	// be thread safe.
 	class MxObject {
-	protected:
+	private:
 		mutable std::mutex _mxptrMutex; //mutex for thread-safe locking of _mxptr;
 		mxArray* _mxptr = nullptr; //mxArray ptr
 		bool _managemxptr = true; //flag if data is managed
 		bool _isPersistent = false; //flag if data is persistent
 		bool _setFromConst = false; //flag if set from const
+	protected:
 
 		//! delete mxptr if needed
 		//! if not managed, set from constant, or not set (i.e. nullptr) memory is not freed
@@ -94,6 +97,7 @@ namespace extras {namespace cmex {
 		}
 
 		//! set from const mxArray*
+		//! creates a const link to psrc
 		virtual void setFromConst(const mxArray* psrc, bool persist) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
@@ -110,6 +114,8 @@ namespace extras {namespace cmex {
 		}
 
 		//! set from (non-const) mxArray*
+		//! Creates a link to psrc, but does not delete it
+		//! YOU ARE RESPONSIBLE FOR MANAGING THE LIFE OF psrc
 		virtual void setFrom(mxArray* psrc, bool persist) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
@@ -119,7 +125,9 @@ namespace extras {namespace cmex {
 			_isPersistent = persist;
 		}
 
-		// set with full ownership
+		//! set with full ownership
+		//! MxObject will automatically call mxDestroyArray(psrc) when it is destructed
+		//! DO NOT DELETE psrc or expect it to be valid after passing to MxObject
 		virtual void setOwn(mxArray* psrc, bool persist) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			deletemxptr_nolock();
@@ -157,6 +165,12 @@ namespace extras {namespace cmex {
 			}
 
 			return std::pair<mxArray*, bool>(oldPtr, bool(_setFromConst));
+		}
+
+		//! returns (non-const) mxArray* _mxptr, for internal use by derived classes
+		// does not change memory management rules
+		mxArray* getmxarray() {
+			return _mxptr;
 		}
 
 	public:
@@ -232,12 +246,6 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
-		//! set from const mxArray*
-		virtual MxObject& operator=(const mxArray* psrc){
-			set(psrc);
-			return *this; 
-		}
-
 		//! set from (non-const) mxArray*, with optional ability to set persistent flag
 		virtual MxObject& set(mxArray* psrc, bool isPersist = false) {
 			setFrom(psrc, isPersist);
@@ -301,7 +309,7 @@ namespace extras {namespace cmex {
 		bool isManaged() const { return _managemxptr; }
 
 		//! std::vector holding dimension of the mxArray object
-		virtual std::vector<size_t> size() const { return cmex::size(_mxptr); }
+		virtual std::vector<size_t> size() const { return extras::cmex::size(_mxptr); }
 
 		//! number of elements
 		virtual size_t numel() const {
@@ -425,12 +433,12 @@ namespace extras {namespace cmex {
 			case mxUINT64_CLASS:
 				if (!mxIsComplex(_mxptr)) { //real data just a simple copy
 					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
-					memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+					std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
 				}
 				else { // complex data
 					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
 #if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
-					memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+					std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
 #else
 					memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
 					memcpy(mxGetImagData(newPtr), mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
@@ -506,7 +514,7 @@ namespace extras {namespace cmex {
 			break;
 			case mxCHAR_CLASS:
 				newPtr = mxCreateCharArray(dims.size(), dims.data());
-				memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+				std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
 				if (_managemxptr && !_setFromConst) {
 					mxDestroyArray(_mxptr);
 				}

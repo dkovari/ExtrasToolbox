@@ -33,7 +33,7 @@
 %   'splineroot_min_dR2frac'
 */
 
-#include "RoiTracker2.hpp"
+#include "RoiTracker.hpp"
 
 extras::SessionManager::ObjectManager<extras::ParticleTracking::RoiTracker> manager;
 extras::async::ParamProcessorInterface<extras::ParticleTracking::RoiTracker, manager> mex_interface; //create interface manager for the ExampleProcessor

@@ -11,9 +11,41 @@ All rights reserved.
 #include <extras/string_extras.hpp>
 #include <extras/cmex/mexextras.hpp>
 #include <extras/cmex/NumericArray.hpp>
+#include <radialcenter/source/radialcenter_mex.hpp>
 
 namespace extras {namespace ParticleTracking {
 
+	//! enum specifying xy localization algorithm
+	enum XY_FUNCTION {
+		BARYCENTER,
+		RADIALCENTER
+	};
+
+	//! convert char array to XY_FUNCTION
+	XY_FUNCTION xyFunction(const char* name) {
+		if (strcmpi(name, "barycenter") == 0) {
+			return BARYCENTER;
+		}
+		else if (strcmpi(name, "radialcenter") == 0) {
+			return RADIALCENTER;
+		}
+		else {
+			throw(std::runtime_error(std::string("xyMethod is not valid. Revieved: ") + std::string(name)));
+		}
+	}
+
+	/** Specialized ParameterMxMap used by RoiTracker
+	 *	This ParameterMap can be set by any name,value argument pairs (just like the standard ParameterMxMap)
+	 *	However, it will always define the following fields
+	 *		roiList
+	 *		xyMethod
+	 *		COMmethod
+	 *		DistanceFactor
+	 *		LimFrac
+	 *
+	 *	If you want to extend RoiTracker in a subclass you should consider 
+	 *	redefining the virtual method setFieldValue()
+	 */
 	class RoiParameterMap : public extras::cmex::ParameterMxMap {
 	protected:
 		std::shared_ptr<extras::ArrayBase<double>> WIND = std::make_shared<extras::Array<double>>(0);
@@ -21,127 +53,88 @@ namespace extras {namespace ParticleTracking {
 		std::shared_ptr<extras::ArrayBase<double>> GP = std::make_shared<extras::Array<double>>(0);
 		std::shared_ptr<extras::ArrayBase<double>> RadiusFilter = std::make_shared<extras::Array<double>>(0);
 
-		std::vector<std::string> _valid_xyMethods = { "radialcenter","barycenter" };
-		std::vector<std::string> _valid_COMmethod = { "meanabs","gradmag","normal" };
+		rcdefs::COM_METHOD COMmethod = rcdefs::COM_METHOD::MEAN_ABS;
+		double DistanceFactor = INFINITY;
+		double LimFrac = 0.2;
+		XY_FUNCTION xyMethod = XY_FUNCTION::RADIALCENTER;
 
-		//! converts value to formatted xyMethod, throws error if value is valid
-		//! change behavior by redefining _valid_xyMethods at construction
-		cmex::MxObject valid_xyMethod(const cmex::MxObject& value) {
+		void set_xyMethod(const cmex::MxObject& value) {
 			if (!value.ischar()) {
 				throw("xyMethod must be a char specifying valid ");
 			}
-			std::string s_val = cmex::getstring(value);
-			if (!ismember(s_val, _valid_xyMethods, false)) {
-				throw(std::runtime_error(std::string("xyMethod is not valid. Revieved: ")+s_val));
-			}
-			return extras::tolower(s_val);
+			xyMethod = xyFunction(cmex::getstring(value).c_str());
+
+
+			(*this)["xyMethod"] = value;
 		}
 
-		//! converts value to formatted COMmethod, throws error if value is valid
-		//! change behavior by redefining _valid_xyMethods at construction
-		cmex::MxObject valid_COMmethod(const cmex::MxObject& value) {
+		void set_COMmethod(const cmex::MxObject& value) {
 			if (!value.ischar()) {
 				throw("COMmethod must be a char specifying valid ");
 			}
-			std::string s_val = cmex::getstring(value);
-			if (!ismember(s_val, _valid_COMmethod, false)) {
-				throw("COMmethod is not valid");
-			}
-			return extras::tolower(s_val);
+			COMmethod = string2COMmethod(cmex::getstring(value));
+
+			(*this)["COMmethod"] = value;
 		}
 
-		cmex::MxObject valid_DistanceFactor(const cmex::MxObject& value) {
+		void set_DistanceFactor(const cmex::MxObject& value) {
 			if (!value.isnumeric()) {
 				throw("DistanceFactor must be numeric");
 			}
 			if (value.numel() != 1) {
 				throw("DistanceFacor must be scalar numeric");
 			}
-
-			return value;
+			DistanceFactor = mxGetScalar(value);
+			(*this)["DistanceFactor"] = value;
 		}
 
-		cmex::MxObject valid_LimFrac(const cmex::MxObject& value) {
+		void set_LimFrac(const cmex::MxObject& value) {
 			if (!value.isnumeric()) {
 				throw("LimFrac must be numeric");
 			}
 			if (value.numel() != 1) {
 				throw("LimFrac must be scalar numeric");
 			}
-
-			return value;
+			LimFrac = mxGetScalar(value);
+			(*this)["LimFrac"] = value;
 		}
 
-		//! validate roiList
-		//! make sure Window field is present
-		cmex::MxStruct valid_roiList(cmex::MxObject&& value) {
-
-			mexPrintf("Inside RoiParameterMap::valid_roiList()\n");
-			mexEvalString("pause(0.2)");
-
-			if (!value.isstruct()) {
+		void set_roiList(const mxArray* mxa) {
+			if(!mxIsStruct(mxa)) {
 				throw("roiList must be a struct");
 			}
-			cmex::MxStruct rStruct(std::move(value));
 
-			if (!rStruct.isfield("Window")) {
+			cmex::MxStruct rS(mxa);
+
+			if (!rS.isfield("Window")) {
 				throw("roiList must contain 'Window' field");
 			}
 
-			return rStruct;
-		}
-
-		void setRoiList(cmex::MxObject&& value) {
-			mexPrintf("Inside RoiParameterMap::setRoiList()\n");
-			mexEvalString("pause(0.2)");
-
-			cmex::MxStruct rS = valid_roiList(std::move(value));
-
-			mexPrintf("Inside RoiParameterMap::setRoiList()...past valid_roiList\n");
-			mexEvalString("pause(0.2)");
+			////////////
+			// Convert to special format
 
 			size_t len = rS.numel();
 
-			mexPrintf("Inside RoiParameterMap::setRoiList()...past rS.numel()\n");
-			mexEvalString("pause(0.2)");
-
 			// convert Window to WIND
 			std::shared_ptr<extras::ArrayBase<double>> newWIND = std::make_shared<extras::Array<double>>(len, 4);
-
-			mexPrintf("Inside RoiParameterMap::setRoiList()...past  newWIND = std::make_shared<extras::Array<double>>(len, 4)\n");
-			mexEvalString("pause(0.2)");
-
 			for (size_t n = 0; n < len; ++n) {
-				
-				mexPrintf("Inside RoiParameterMap::setRoiList()...top of WIND loon n=%d\n",n);
-				mexEvalString("pause(0.2)");
-
 				const mxArray* pWindow = rS(n, "Window");
-
-				mexPrintf("Inside RoiParameterMap::setRoiList()...past rS(n, Window)\n" );
-				mexEvalString("pause(0.2)");
-
 				cmex::NumericArray<double> Window(pWindow);
-
-				mexPrintf("Inside RoiParameterMap::setRoiList()...past cmex::NumericArray<double> Window(pWindow);\n");
-				mexEvalString("pause(0.2)");
-
-				double val = Window[0];
-
-				mexPrintf("Inside RoiParameterMap::setRoiList()...past double val = Window[0];;\n");
-				mexEvalString("pause(0.2)");
-
-				// set window
+	
+				/* OLD WAY TO SET WIND
 				(*newWIND)(n, 0) = Window[0]; //X1
-
-
 				(*newWIND)(n, 1) = Window[0] + Window[2] - 1; //X2=x+w-1
 				(*newWIND)(n, 2) = Window[1]; //Y1
 				(*newWIND)(n, 3) = Window[1] + Window[3] - 1; //Y2=y+h-1
-			}
+				*/
 
-			mexPrintf("Inside RoiParameterMap::setRoiList()...past newWIND\n");
-			mexEvalString("pause(0.2)");
+				/* NEW WAY: [x0,y0,w,h]*/
+				(*newWIND)(n, 0) = Window[0];
+				(*newWIND)(n, 1) = Window[1];
+				(*newWIND)(n, 2) = Window[2];
+				(*newWIND)(n, 3) = Window[3];
+
+			}
 
 			// set XYc
 			std::shared_ptr<extras::ArrayBase<double>> newXYc = XYc;
@@ -158,9 +151,6 @@ namespace extras {namespace ParticleTracking {
 				}
 			}
 
-			mexPrintf("Inside RoiParameterMap::setRoiList()...past newXYc\n");
-			mexEvalString("pause(0.2)");
-
 			// set GP
 			std::shared_ptr<extras::ArrayBase<double>> newGP = GP;
 			if (rS.isfield("GP")) {
@@ -175,9 +165,6 @@ namespace extras {namespace ParticleTracking {
 				}
 			}
 
-			mexPrintf("Inside RoiParameterMap::setRoiList()...past newGP\n");
-			mexEvalString("pause(0.2)");
-
 			// set RadiusFilter
 			std::shared_ptr<extras::ArrayBase<double>> newRadiusFilter = RadiusFilter;
 			if (rS.isfield("RadiusFilter")) {
@@ -191,58 +178,66 @@ namespace extras {namespace ParticleTracking {
 					(*newRadiusFilter)(n, 0) = Arr[0];
 				}
 			}
-
-			mexPrintf("Inside RoiParameterMap::setRoiList()...past newGP\n");
-			mexEvalString("pause(0.2)");
-
-			/////////////
+			
+			/////////////////////////////////////////////////
 			// Made it here without errors, set the values
-
-			extras::cmex::ParameterMxMap::operator[]("roiList").takeOwnership(rS);
-
-			mexPrintf("Inside RoiParameterMap::setRoiList() ... About to set shared_ptrs\n");
-			mexEvalString("pause(0.2)");
-
+			
 			WIND = newWIND;
 			GP = newGP;
 			XYc = newXYc;
 			RadiusFilter = newRadiusFilter;
-
+			(*this)["roiList"] = mxa;
 		}
 
-		//! internal setField function
-		void setFieldValue(const std::string& field, const mxArray* mxa) {
-
-			mexPrintf("Inside RoiParameterMap::setFieldValue()\n");
-			mexEvalString("pause(0.2)");
+		/** internal setField function
+		* Redefine this method to add more functionality when user calls setParameters(...)
+		* 
+		*	The best approach is to intercept the field you want and pass the rest to this method
+		* Example:
+		*		yourMap::setFieldValue(...){
+		*			...
+		*			if(field=="YOUR_FIELD"){
+		*				doSomething(...);
+		*			}
+		*			else{
+		*				RoiParameterMap::setFieldValue(field,mxa);
+		*			}
+		*		}
+		 */
+		virtual void setFieldValue(const std::string& field, const mxArray* mxa) {
 
 			if (strcmpi("xyMethod", field.c_str()) == 0) {
-				extras::cmex::ParameterMxMap::operator[]("xyMethod").takeOwnership(valid_xyMethod(mxa));
+				set_xyMethod(mxa);
 			}
 			else if (strcmpi("COMmethod", field.c_str()) == 0) {
-				extras::cmex::ParameterMxMap::operator[]("COMmethod").takeOwnership(valid_COMmethod(mxa));
+				set_COMmethod(mxa);
 			}
 			else if (strcmpi("DistanceFactor", field.c_str()) == 0) {
-				extras::cmex::ParameterMxMap::operator[]("DistanceFactor").takeOwnership(valid_DistanceFactor(mxa));
+				set_DistanceFactor(mxa);
 			}
 			else if (strcmpi("LimFrac", field.c_str()) == 0) {
-				extras::cmex::ParameterMxMap::operator[]("LimFrac").takeOwnership(valid_LimFrac(mxa));
+				set_LimFrac(mxa);
 			}
 			else if (strcmpi("roiList", field.c_str()) == 0) {
 				// roiList requires special set
-				mexPrintf("Inside RoiParameterMap::setFieldValue()...about to call setRoiList()\n");
-				mexEvalString("pause(0.2)");
-				setRoiList(mxa);
+				set_roiList(mxa);
 			}
 			else {
-				throw("Invalid parameter name");
+				(*this)[field] = mxa;
 			}
 		}
-
 
 	public:
 		virtual ~RoiParameterMap() {};
 
+		/** Default Constructor
+		* Automatically adds fields:
+		*	'xyMethod'
+		*	'COMmethod'
+		*	'DistanceFactor'
+		*	'LimFrac'
+		*	'roiList'
+		*/
 		RoiParameterMap() :extras::cmex::ParameterMxMap(false) {
 			/// Add MAP Defaults
 			extras::cmex::ParameterMxMap::operator[]("xyMethod").takeOwnership(cmex::MxObject("radialcenter"));
@@ -254,24 +249,8 @@ namespace extras {namespace ParticleTracking {
 			extras::cmex::ParameterMxMap::operator[]("roiList").takeOwnership(cmex::MxStruct(0, { "Window","UUID" }));
 		}
 
-		//! redefine (settable) operator[] to check for valid args
-		virtual extras::cmex::persistentMxArray& operator[](const std::string& field) {
-			// validate fieldname
-			if (!isparameter(field)) {
-				throw(std::runtime_error("RoiParameterMap::operator[]: field is not valid"));
-			}
-			return extras::cmex::ParameterMxMap::operator[](field);
-		}
-
-		virtual const extras::cmex::persistentMxArray& operator[](const std::string& field)const {
-			return extras::cmex::ParameterMxMap::operator[](field);
-		}
-
 		//! refefine setParameters to validate the arguments
 		virtual void setParameters(size_t nrhs, const mxArray* prhs[]) {
-
-			mexPrintf("Inside RoiParameterMap::setParameters()\n");
-			mexEvalString("pause(0.2)");
 
 			if (canSetFromStruct() && nrhs == 1) { // set from struct allowed
 				if (!mxIsStruct(prhs[0])) {
@@ -289,7 +268,6 @@ namespace extras {namespace ParticleTracking {
 				}
 
 			}
-
 
 			if (nrhs % 2 != 0) {
 				throw(std::runtime_error("ParameterMxMap::setParameters() number of args must be even (specified as Name,Value pairs)."));
@@ -309,6 +287,13 @@ namespace extras {namespace ParticleTracking {
 		std::shared_ptr<extras::ArrayBase<double>> get_XYc() const { return XYc; }
 		std::shared_ptr<extras::ArrayBase<double>> get_GP() const { return GP; }
 		std::shared_ptr<extras::ArrayBase<double>> get_RadiusFilter() const { return RadiusFilter; }
+
+		const mxArray* get_roiList() const { return (*this)["roiList"]; }
+
+		rcdefs::COM_METHOD get_COMmethod() const { return COMmethod; }
+		double get_DistanceFactor() const {return DistanceFactor;}
+		double get_LimFrac() const { return LimFrac; }
+		XY_FUNCTION get_xyMethod() const { return xyMethod; }
 	};
 
 }}

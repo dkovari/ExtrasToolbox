@@ -9,13 +9,13 @@ All rights reserved.
 
 namespace extras {namespace cmex {
 
-	/// simple wrapper around mxArray which make the contained mxArray* persistent
+	//! simple wrapper around mxArray which make the contained mxArray* persistent
 	class persistentMxArray {
 		mutable std::mutex _mxptrMutex;
 		mxArray* _mxptr = nullptr; //pointer to managed mxArray
 	public:
 
-		/// destroy mxarray
+		//! destroy mxarray
 		~persistentMxArray() {
 			if (_mxptr != nullptr) {
 				std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -23,17 +23,17 @@ namespace extras {namespace cmex {
 			}
 		}
 
-		/// create uninitialized mxArray wrapper
+		//! create uninitialized mxArray wrapper
 		persistentMxArray() {};
 
-		/// create persistentMxarray by copying source mxArray
+		//! create persistentMxarray by copying source mxArray
 		persistentMxArray(const mxArray* src) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			_mxptr = mxDuplicateArray(src);
 			mexMakeArrayPersistent(_mxptr);
 		}
 
-		/// create by copy
+		//! create by copy
 		persistentMxArray(const persistentMxArray& src) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			std::lock_guard<std::mutex> lock_src(src._mxptrMutex); //lock _mxptr;
@@ -41,7 +41,7 @@ namespace extras {namespace cmex {
 			mexMakeArrayPersistent(_mxptr);
 		}
 
-		/// create by move
+		//! create by move
 		persistentMxArray(persistentMxArray&& src) {
 			std::lock_guard<std::mutex> lock_src(src._mxptrMutex); //lock _mxptr;
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -49,7 +49,7 @@ namespace extras {namespace cmex {
 			src._mxptr = nullptr;
 		}
 
-		/// set by copying source mxArray
+		//! set by copying source mxArray
 		persistentMxArray& operator=(const mxArray* src) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			_mxptr = mxDuplicateArray(src);
@@ -57,8 +57,8 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
-		// set by taking ownership
-		// after calling, src should not be deleted. It is now owned by persistenMxArray
+		//! set by taking ownership
+		//! after calling, src should not be deleted. It is now owned by persistenMxArray
 		persistentMxArray& takeOwnership(mxArray* src) {
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 			_mxptr = src;
@@ -66,7 +66,7 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
-		/// set by copy
+		//! set by copy
 		persistentMxArray& operator=(const persistentMxArray& src) {
 			std::lock_guard<std::mutex> lock_src(src._mxptrMutex); //lock _mxptr;
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -75,7 +75,7 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
-		/// set by move
+		//! set by move
 		persistentMxArray& operator=(persistentMxArray&& src) {
 			std::lock_guard<std::mutex> lock_src(src._mxptrMutex); //lock _mxptr;
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -84,12 +84,12 @@ namespace extras {namespace cmex {
 			return *this;
 		}
 
-		/// return const pointer to mxArray
+		//! return const pointer to mxArray
 		operator const mxArray*() const {
 			return _mxptr;
 		}
 
-		/// return a non-persistent copy of mxarray
+		//! return a non-persistent copy of mxarray
 		mxArray* getMxArray() const {
 			if (_mxptr == nullptr) {
 				return nullptr;
@@ -98,14 +98,14 @@ namespace extras {namespace cmex {
 			return mxDuplicateArray(_mxptr);
 		}
 
-		/// return non-const, persistent mxArray*
-		/// NOTE: the returned array will be managed by persistentMxArray()
+		//! return non-const, persistent mxArray*
+		//! NOTE: the returned array will be managed by persistentMxArray()
 		//	DO NOT DELETE THE ARRAY!
 		mxArray* getPersistentArray() {
 			return _mxptr;
 		}
 
-		/// return const, persistent mxArray*
+		//! return const, persistent mxArray*
 		const mxArray* getConstArray() const{
 			return _mxptr;
 		}

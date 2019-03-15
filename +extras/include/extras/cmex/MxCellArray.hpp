@@ -26,52 +26,36 @@ namespace extras{namespace cmex{
 
 		//! create empty cell array
         MxCellArray(){
-            mxDestroyArray(_mxptr);
-            _mxptr = mxCreateCellMatrix(0, 0);
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
+			own(mxCreateCellMatrix(0, 0));
         }
 
 		//! create cellstr array from array of const char*
         MxCellArray(size_t nStr, const char* str[]){
-            mxDestroyArray(_mxptr);
-            _mxptr = mxCreateCellMatrix(nStr, 1);
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
+            own(mxCreateCellMatrix(nStr, 1));
 
             for(size_t n=0;n<nStr;++n){
-                mxSetCell(_mxptr,n,mxCreateString(str[n]));
+                mxSetCell(getmxarray(),n,mxCreateString(str[n]));
             }
         }
 
 		//! create cellstr array from vector of strings
         MxCellArray(const std::vector<std::string>& str){
-            mxDestroyArray(_mxptr);
-            _mxptr = mxCreateCellMatrix(str.size(), 1);
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
-
+            own(mxCreateCellMatrix(str.size(), 1));
+            
             size_t n=0;
             for( auto& s : str){
-                mxSetCell(_mxptr,n,mxCreateString(s.c_str()));
+                mxSetCell(getmxarray(),n,mxCreateString(s.c_str()));
                 ++n;
             }
         }
 
 		//! create cellstr from list of strings
         MxCellArray(const std::list<std::string>& str){
-            mxDestroyArray(_mxptr);
-            _mxptr = mxCreateCellMatrix(str.size(), 1);
-            _managemxptr = true;
-			_isPersistent = false;
-			_setFromConst = false;
-
+            own(mxCreateCellMatrix(str.size(), 1));
+          
             size_t n=0;
             for( auto& s : str){
-                mxSetCell(_mxptr,n,mxCreateString(s.c_str()));
+                mxSetCell(getmxarray(),n,mxCreateString(s.c_str()));
                 ++n;
             }
         }
@@ -162,21 +146,21 @@ namespace extras{namespace cmex{
 
         //! const access to field
         const mxArray* operator()(size_t idx) const{
-            if(idx>=mxGetNumberOfElements(_mxptr)){
+            if(idx>=numel()){
                 throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
             }
-            return mxGetCell(_mxptr,idx);
+            return mxGetCell(getmxarray(),idx);
         }
 
 		//! const access to field
 		const mxArray* operator()(const std::vector<size_t>& subscripts) const {
 
-			size_t idx = mxCalcSingleSubscript(_mxptr, subscripts.size(), subscripts.data());
+			size_t idx = mxCalcSingleSubscript(getmxarray(), subscripts.size(), subscripts.data());
 
-			if (idx >= mxGetNumberOfElements(_mxptr)) {
+			if (idx >= numel()) {
 				throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
 			}
-			return mxGetCell(_mxptr, idx);
+			return mxGetCell(getmxarray(), idx);
 		}
     };
 
@@ -192,6 +176,15 @@ namespace extras{namespace cmex{
 		//! this should only be called by MxCellArray
 		CellWrapper(MxCellArray& parent, size_t idx) :_parent(parent), index(idx) {};
 
+		//! set the linked cell
+		//! NOTE: src will be managed by the cell array after this, so don't try to delete or rely on src after calling internalSet()
+		void internalSet(mxArray* src) {
+			if (_parent.isConst()) {
+				throw(std::runtime_error("CellWrapper: Cannot use operator= for MxCellArray created from const mxArray*"));
+			}
+			mxDestroyArray(mxGetCell(_parent.getmxarray(), index));
+			mxSetCell(_parent.getmxarray(), index, src);
+		}
 	public:
 		CellWrapper(const CellWrapper& src) = default;
 		CellWrapper(CellWrapper&& src) = default;
@@ -201,59 +194,38 @@ namespace extras{namespace cmex{
 		//! get cell
 		operator const mxArray* () const
 		{
-			std::lock_guard<std::mutex> lock(_parent._mxptrMutex); //!< lock _mxptr;
-			return mxGetCell(_parent._mxptr, index);
+			return mxGetCell(_parent.getmxarray(), index);
 		}
 
-		//! set field
+		//! move mxArray* into cell
+		//! pvalue will be managed by the cell array after operation
 		CellWrapper& operator=(mxArray* pvalue) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("MxCellArray::operator() Cannot set element of cell set from constant."));
-			}
-			mxDestroyArray(mxGetCell(_parent._mxptr, index));
-			mxSetCell(_parent._mxptr, index, pvalue);
+			internalSet(pvalue);
 			return *this;
 		}
 
 		//! set field from const
 		//! duplicates array
 		CellWrapper& operator=(const mxArray* pvalue) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("MxCellArray::operator() Cannot set element of cell set from constant."));
-			}
-			mxDestroyArray(mxGetCell(_parent._mxptr, index));
-			mxSetCell(_parent._mxptr, index, mxDuplicateArray(pvalue));
+			internalSet(mxDuplicateArray(pvalue));
 			return *this;
 		}
 
 		//! set field equal to string
 		CellWrapper& operator=(const char* str) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("MxCellArray::operator() Cannot set element of cell set from constant."));
-			}
-			mxDestroyArray(mxGetCell(_parent._mxptr, index));
-			mxSetCell(_parent._mxptr, index, mxCreateString(str));
+			internalSet(mxCreateString(str));
 			return *this;
 		}
 
 		//! set field equal to string
 		CellWrapper& operator=(double val) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("MxCellArray::operator() Cannot set element of cell set from constant."));
-			}
-			mxDestroyArray(mxGetCell(_parent._mxptr, index));
-			mxSetCell(_parent._mxptr, index, mxCreateDoubleScalar(val));
+			internalSet(mxCreateDoubleScalar(val));
 			return *this;
 		}
 
 		//! Move from MxObject
 		CellWrapper& operator=(MxObject&& src) {
-			if (_parent._setFromConst) {
-				throw(std::runtime_error("CellWrapper: Cannot use operator= for CellWrapper created from const mxArray*"));
-			}
-
-			mxDestroyArray(mxGetCell(_parent._mxptr, index));
-			mxSetCell(_parent._mxptr, index, src);
+			internalSet(src);
 			return *this;
 
 		}
@@ -266,7 +238,7 @@ namespace extras{namespace cmex{
 	CellWrapper MxCellArray::operator()(size_t idx) {
 
 
-		if (idx >= mxGetNumberOfElements(_mxptr)) {
+		if (idx >=numel()) {
 			throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
 		}
 
@@ -276,8 +248,8 @@ namespace extras{namespace cmex{
 	//! non-const access to field
 	CellWrapper MxCellArray::operator()(const std::vector<size_t>& subscripts) {
 
-		size_t idx = mxCalcSingleSubscript(_mxptr, subscripts.size(), subscripts.data());
-		if (idx >= mxGetNumberOfElements(_mxptr)) {
+		size_t idx = mxCalcSingleSubscript(getmxarray(), subscripts.size(), subscripts.data());
+		if (idx >= numel()) {
 			throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
 		}
 

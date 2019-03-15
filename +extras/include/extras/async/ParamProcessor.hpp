@@ -18,8 +18,6 @@ namespace extras {namespace async {
 		TaskParamPair(extras::cmex::mxArrayGroup&& ArrayGroup, std::shared_ptr<extras::cmex::ParameterMxMap> Params) {
 			TaskArrayGroup = std::move(ArrayGroup);
 			ParameterMapPtr = Params;
-
-			mexPrintf("Constructing TaskParamPair by ArrayGroup and shared_ptr\n");
 		}
 	};
 

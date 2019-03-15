@@ -6,14 +6,15 @@ end
 close all;
 clear all;
 clear mex;
+
 clc;
 %% Create Processor
 
-'press a key to create roitracker'
-pause
+%'press a key to create roitracker'
+%pause
 rcp = extras.ParticleTracking.RoiTracker.RoiTracker();
-'press a key to continue'
-pause
+%'press a key to continue'
+%pause
 
 %% Generate Test Image
 
@@ -88,7 +89,7 @@ RM.AddROI();
 
 %% barycenter
 
-rcp.setParameters('xyMethod','barycenter')
+%rcp.setParameters('xyMethod','barycenter')
 
 %% delete fn
 function delete_fn(rcp)
@@ -98,7 +99,8 @@ end
 
 %% define callback function
 function CB(data,hPlt)
-v =[data.X]
+%x =[data.X]
+%y = [data.Y]
 hPlt.XData = [data.X];
 hPlt.YData = [data.Y];
 persistent n;
