@@ -9,6 +9,8 @@ Array.hpp - Classes for storing 2D data arrays
 #include <cstring>
 #include <string>
 
+#include "numeric.hpp"
+
 // if mex.h is included, mexPrintf is just an alias of printf
 //if not included, include cstdio so that we can use printf()
 #ifndef mex_typedefs_h
@@ -17,18 +19,6 @@ Array.hpp - Classes for storing 2D data arrays
 
 
 namespace extras{
-
-	/// return the product of all elements in a vector
-	template <typename T> T prod(const std::vector<T>& vec){
-		if(vec.empty()){
-			return 0;
-		}
-		T out = 1;
-		for(size_t n=0;n<vec.size();++n){
-			out*=vec[n];
-		}
-		return out;
-	}
 
 	///C++ Native extras::ArrayBase with self-managed memory.
 	///with column-major data storage

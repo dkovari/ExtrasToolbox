@@ -16,6 +16,8 @@ namespace extras {namespace cmex {
 	//! e.g NumericArray<int32_t> because the type T=int is unsupported.
 	//! MATLAB does not have a default integet type therefore it does not make
 	//! make sense to include it as an option.
+	//! NOTE:
+	//! If the 
 	template <typename T>
 	class NumericArray : public MxObject, virtual public ArrayBase<T> {
 	protected:
@@ -61,11 +63,13 @@ namespace extras {namespace cmex {
 		}
 
 		//! set from const mxArray*
-		//! creates a copy of the mxarray
+		//! creates a link to the const mxArray* until calling (non-const) operator[]() or (non-const) getdata(),
+		//! at which point the array is duplicated
 		virtual void setFromConst(const mxArray* psrc, bool persist) {
 			bool wasPersistent = isPersistent();
 			if (sametype<T>(psrc)) {
-				own(mxDuplicateArray(psrc));
+				//own(mxDuplicateArray(psrc));
+				MxObject::setFromConst(psrc, persist);
 			}
 			else { //need to valuecopy
 				own(mxCreateNumericArray(mxGetNumberOfDimensions(psrc), mxGetDimensions(psrc), type2ClassID<T>(), mxREAL));
@@ -77,11 +81,21 @@ namespace extras {namespace cmex {
 		}
 
 		//! set from (non-const) mxArray*
-		//! Since numeric array are always editable, this just forwards to setFromConst()
 		//! NOTE: after calling psrc will still be valid (i.e. not managed by the NumericArray)
 		//! so it is your job to delete it.
 		virtual void setFrom(mxArray* psrc, bool persist) {
-			setFromConst(psrc,false);
+			bool wasPersistent = isPersistent();
+			if (sametype<T>(psrc)) {
+				//own(mxDuplicateArray(psrc));
+				MxObject::setFrom(psrc, persist);
+			}
+			else { //need to valuecopy
+				own(mxCreateNumericArray(mxGetNumberOfDimensions(psrc), mxGetDimensions(psrc), type2ClassID<T>(), mxREAL));
+				valueCopy((T*)mxGetData(getmxarray()), psrc);
+			}
+			if (wasPersistent) {
+				makePersistent();
+			}
 		}
 
 		//! set from (non-const) mxArray*
@@ -119,17 +133,28 @@ namespace extras {namespace cmex {
 			if (getmxarray() ==nullptr) {
 				return nullptr;
 			}
+
 			return (T*)mxGetData(getmxarray());
 		};
+
 		//! get (non-const) pointer to raw data array
+		//! if array was originally set from const mxArray* then it will be duplicated
 		virtual T* getdata() {
 			if (getmxarray() == nullptr) {
 				return nullptr;
 			}
+
+			if (isConst()) { //was const, need to make a copy so that we can edit values
+				bool wasPersistent = isPersistent();
+				own(mxDuplicateArray(getmxarray()));
+				makePersistent();
+			}
+
 			return (T*)mxGetData(getmxarray());
 		}
 
 		//! set n-th element
+		//! if array was originally set from const mxArray* then it will be duplicated
 		virtual T& operator[](size_t index) {
 			if (getmxarray() == nullptr) {
 				throw(std::runtime_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
@@ -137,6 +162,7 @@ namespace extras {namespace cmex {
 			if (index > numel()) {
 				throw(std::runtime_error("NumericArray::operator[](): index>numel()"));
 			}
+
 			T* dat = getdata();
 			return dat[index];
 		}
@@ -305,6 +331,19 @@ namespace extras {namespace cmex {
 		//! Move Construct from MxObject
 		NumericArray(MxObject&& src) {
 			moveFrom(src);
+		}
+
+		//! Construct from const mxArray*
+		//! array will be duplicated when  (non-const) getdata() or (non-const) operator[] are called.
+		NumericArray(const mxArray* psrc, bool persist = false) {
+			setFromConst(psrc, persist);
+		}
+
+		//! Construct from (non-const) mxArray*
+		//! NumericArray will not take ownership of the array
+		//! therefore it is your job to delete the array after NumericArray is done with it.
+		NumericArray(mxArray* psrc, bool persist = false) {
+			setFrom(psrc, persist);
 		}
 
 		//! overload disp() method

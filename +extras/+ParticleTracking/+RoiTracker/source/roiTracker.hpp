@@ -55,12 +55,12 @@ namespace extras { namespace ParticleTracking {
 			// Get Image
 			const mxArray* img = nullptr;
 			const mxArray* time = nullptr;
-			if (mxIsStruct(TaskArgs.getArray(0))) {
-				img = mxGetField(TaskArgs.getArray(0), 0, "ImageData");
-				time = mxGetField(TaskArgs.getArray(0), 0, "Time");
+			if (mxIsStruct(TaskArgs.getConstArray(0))) {
+				img = mxGetField(TaskArgs.getConstArray(0), 0, "ImageData");
+				time = mxGetField(TaskArgs.getConstArray(0), 0, "Time");
 			}
 			else {
-				img = TaskArgs.getArray(0);
+				img = TaskArgs.getConstArray(0);
 			}
 
 			MxStruct outStruct(ParamMap->get_roiList()); //create copy of roiList for output;

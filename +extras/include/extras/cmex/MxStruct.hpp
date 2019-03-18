@@ -281,6 +281,44 @@ namespace extras{namespace cmex{
 			return *this;
 		}
 
+		////////////////////////////
+		// Type Conversions
+
+		operator double() const {
+			if (!_parent.isnumeric() || !_parent.isscalar()) {
+				throw("FieldWrapper::double(): cannot non-numeric or non-scalar to double");
+			}
+			return mxGetScalar(_parent.getmxarray());
+		}
+
+		operator std::string() const {
+			return getstring(_parent.getmxarray());
+		}
+
+		bool isempty() const {
+			return _parent.isempty();
+		}
+
+		bool isscalar() const {
+			return _parent.isscalar();
+		}
+
+		bool iscell() const {
+			return _parent.iscell();
+		}
+
+		bool isnumeric() const {
+			return _parent.isnumeric();
+		}
+
+		bool isstruct() const {
+			return _parent.isstruct();
+		}
+
+		bool ischar() const {
+			return _parent.ischar();
+		}
+
 	};
 
 	////////////////////////

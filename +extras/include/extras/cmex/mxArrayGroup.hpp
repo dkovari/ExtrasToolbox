@@ -99,8 +99,11 @@ namespace extras{namespace cmex{
         //! return array of const mxArray*
         operator const mxArray**() const {return const_cast<const mxArray**>(pArray);}
 
-        //! get const array at index n
-        const mxArray* getArray(size_t n) const{
+        //! get array at index n
+		//! This will give you write access to the array
+		//! HOWEVER DO NOT DESTROY THE ARRAY!
+		//! the ArrayGroup will still try to manage the pointer
+        mxArray* getArray(size_t n) {
             if(n>=nArrays){
                 throw(std::runtime_error(
                     std::string("index exceeds ArrayGroup size n=")+std::to_string(n)
@@ -110,13 +113,18 @@ namespace extras{namespace cmex{
         }
 
 		//! get const array at index n
-		const mxArray* getConstArray(size_t n) const {
+		const mxArray* getArray(size_t n) const {
 			if (n >= nArrays) {
 				throw(std::runtime_error(
 					std::string("index exceeds ArrayGroup size n=") + std::to_string(n)
 				));
 			}
 			return pArray[n];
+		}
+
+		//! get const array at index n
+		const mxArray* getConstArray(size_t n) const {
+			return getArray(n);
 		}
 
         //! get array at index n

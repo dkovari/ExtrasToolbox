@@ -10,40 +10,40 @@ All rights reserved.
 namespace extras{namespace ParticleTracking{
     // template wrapper for radialavg<> so that mxArray is cast to the corresponding NumericArray<> type
     std::tuple<extras::cmex::NumericArray<double>, extras::cmex::NumericArray<double>, extras::cmex::NumericArray<double>>
-    radialavg(const mxArray* mxI, double x, double y, double Rmax, double Rmin, double BinWidth)
+    radialavg(const mxArray* mxI, double x, double y, double Rmax, double Rmin, double BinWidth, bool computeRloc = true)
     {
 
     	switch (mxGetClassID(mxI)) { //handle different image types seperatelys
     	case mxDOUBLE_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<double>(mxI), x, y,Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<double>(mxI), x, y,Rmax, Rmin, BinWidth, computeRloc);
     	case mxSINGLE_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<float>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<float>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	case mxINT8_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<int8_t>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<int8_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	case mxUINT8_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<uint8_t>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<uint8_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	case mxINT16_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<int16_t>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<int16_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	case mxUINT16_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<uint16_t>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<uint16_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	case mxINT32_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<int32_t>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<int32_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	case mxUINT32_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<uint32_t>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<uint32_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	case mxINT64_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<int64_t>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<int64_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	case mxUINT64_CLASS:
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
-    			(extras::cmex::NumericArray<uint64_t>(mxI), x, y, Rmax, Rmin, BinWidth);
+    			(extras::cmex::NumericArray<uint64_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	default:
     		throw(std::runtime_error("radialavg: Only numeric image types allowed"));
     	}

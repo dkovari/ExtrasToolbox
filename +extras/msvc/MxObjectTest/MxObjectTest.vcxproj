@@ -24,6 +24,7 @@
     <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
     <ClInclude Include="..\..\include\extras\MatlabTime.hpp" />
+    <ClInclude Include="..\..\include\extras\numeric.hpp" />
     <ClInclude Include="..\..\include\extras\string_extras.hpp" />
     <ClInclude Include="..\..\include\extras\traspose.hpp" />
   </ItemGroup>

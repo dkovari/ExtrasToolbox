@@ -27,7 +27,7 @@ namespace extras{namespace ParticleTracking{
 	/// get<2>(out) -> counts in each radial bin
 	///
 	/// Output types are determined by the template arguments
-	template<typename resultsT=double, class resultsArrayClass=extras::Array<resultsT>,
+	template<typename resultsT=double, class resultsArrayClass=extras::Array<double>,
 			typename locT=size_t, class locArrayClass=extras::Array<locT>,
 			typename countT=size_t, class countArrayClass=extras::Array<countT>,
 	        typename M=double>
