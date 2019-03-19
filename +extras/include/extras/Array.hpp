@@ -158,10 +158,11 @@ namespace extras{
 					continue;
 				}
 				if (n >= _dim.size()) {
-					throw("Array::sub2ind(): subs longer than array dim and sub[n]!=0")
+					throw("Array::sub2ind(): subs longer than array dim and sub[n]!=0");
 				}
 				idx += _dimOffset[n] * subs[n];
 			}
+			return idx;
 		}
 
 
@@ -320,18 +321,17 @@ namespace extras{
 			// Compute new size
 
 			auto thisSz = size();
-			auto thatSz = end_obj.size();
+			auto thatSz = b.size();
 			size_t thisSz_len = thisSz.size();
 			size_t thatSz_len = thatSz.size();
 
-			size_t maxDim = std::max(thisSz.size(), thatSz.size());
-
+			size_t maxDimLen = std::max(std::max(thisSz.size(), thatSz.size()), dim + 1);
 
 			// Loop over array dimensions and determine if sizes are compatible
-			thisSz.resize(maxDim);
-			thatSz.resize(maxDim);
+			thisSz.resize(maxDimLen);
+			thatSz.resize(maxDimLen);
 
-			for (size_t j = 0; j < maxDim; j++) {
+			for (size_t j = 0; j < maxDimLen; j++) {
 
 				if (j >= thisSz_len) {
 					thisSz[j] = 1;
@@ -355,7 +355,6 @@ namespace extras{
 
 			//////////////////////////////////////////////////
 			// Create Temporary array to hold new data
-
 			Array<T> newArray(newSz);
 
 			//////////////////
@@ -366,6 +365,9 @@ namespace extras{
 				//loop over other dims
 				for (size_t odim = 0; odim < newSz.size(); odim++) {
 					if (odim == dim) { //nothing to do for dim
+						continue;
+					}
+					if (thisSz[odim] == 1) {//nothing to do for singleton dimension
 						continue;
 					}
 					//loop over indecies of odim and copy
@@ -385,6 +387,9 @@ namespace extras{
 				//loop over other dims
 				for (size_t odim = 0; odim < newSz.size(); odim++) {
 					if (odim == dim) { //nothing to do for dim
+						continue;
+					}
+					if (thatSz[odim] == 1) {//nothing to do for singleton dimension
 						continue;
 					}
 					//loop over indecies of odim and copy

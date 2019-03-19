@@ -20,6 +20,7 @@ namespace extras {
     	virtual size_t nCols() const = 0; ///< number of columns
 
 		virtual std::vector<size_t> dims() const = 0; ///< returns dimensions of the data
+		virtual std::vector<size_t> size() const { return dims(); } ///< returns dimensions of the data
 		virtual size_t ndims() const = 0; ///< number of dimensions
 
     	virtual const T* getdata() const = 0; ///< get pointer to raw data array

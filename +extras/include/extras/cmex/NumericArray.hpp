@@ -126,7 +126,8 @@ namespace extras {namespace cmex {
 
 		virtual size_t nRows() const { return mxGetM(getmxarray()); } //number of rows
 		virtual size_t nCols() const { return mxGetN(getmxarray()); } //number of columns, is nd-array, nCols=numel/nRows
-		virtual std::vector<size_t> dims() const { return size(); } //returns size of data
+		virtual std::vector<size_t> dims() const { return MxObject::size(); } //returns size of data
+		virtual std::vector<size_t> size() const { return MxObject::size(); } //returns size of data
 
 		//! get const pointer to raw data array
 		virtual const T* getdata() const { 
@@ -375,20 +376,18 @@ namespace extras {namespace cmex {
 
 			////////////////////////////
 			// Compute new size
-
 			auto thisSz = size();
-			auto thatSz = end_obj.size();
+			auto thatSz = b.size();
 			size_t thisSz_len = thisSz.size();
 			size_t thatSz_len = thatSz.size();
 
-			size_t maxDim = std::max(thisSz.size(), thatSz.size());
-
+			size_t maxDimLen = std::max(std::max(thisSz.size(), thatSz.size()), dim + 1);
 
 			// Loop over array dimensions and determine if sizes are compatible
-			thisSz.resize(maxDim);
-			thatSz.resize(maxDim);
+			thisSz.resize(maxDimLen);
+			thatSz.resize(maxDimLen);
 
-			for (size_t j = 0; j < maxDim; j++) {
+			for (size_t j = 0; j < maxDimLen; j++) {
 
 				if (j >= thisSz_len) {
 					thisSz[j] = 1;
@@ -425,6 +424,9 @@ namespace extras {namespace cmex {
 					if (odim == dim) { //nothing to do for dim
 						continue;
 					}
+					if (thisSz[odim] == 1) {//nothing to do for singleton dimension
+						continue;
+					}
 					//loop over indecies of odim and copy
 					for (size_t od = 0; od < thisSz[odim]; od++) {
 						std::vector<size_t> subs(newSz.size(), 0.0); //create subscript array with all zeros
@@ -444,6 +446,9 @@ namespace extras {namespace cmex {
 					if (odim == dim) { //nothing to do for dim
 						continue;
 					}
+					if (thatSz[odim] == 1) {//nothing to do for singleton dimension
+						continue;
+					}
 					//loop over indecies of odim and copy
 					for (size_t od = 0; od < thatSz[odim]; od++) {
 						std::vector<size_t> subs(newSz.size(), 0.0); //create subscript array with all zeros
@@ -459,16 +464,15 @@ namespace extras {namespace cmex {
 				new_dim++;
 			}
 
-
 			// Set cleanup
 
 			mxFree(mxGetData(getmxarray()));
-			mxSetData(mxGetData(newArray.getmxarray()));
+			mxSetData(getmxarray(),mxGetData(newArray.getmxarray()));
 			mxSetData(newArray.getmxarray(), nullptr);
 			mxSetDimensions(getmxarray(), newSz.data(), newSz.size()); //change dimensions
 
 			if (isPersistent()) {
-				mxMakeMemoryPersistent(getdata());
+				mexMakeMemoryPersistent(getdata());
 			}
 
 			return *this;

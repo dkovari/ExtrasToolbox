@@ -3,6 +3,7 @@ Copyright 2018-2019, Daniel T. Kovari, Emory University
 All rights reserved.
 ----------------------------------------------------*/
 #include <extras/cmex/NumericArray.hpp>
+#include <extras/Array.hpp>
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
@@ -13,7 +14,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	out.reshape({ 5,1 });
 
-
 	out.disp();
 
 	mexPrintf("Concatenate\n");
@@ -22,6 +22,15 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	second[2] = 99;
 	second.disp();
 	out.concatenate(second, 2);
+
+	mexPrintf("cat with array\n");
+	extras::Array<double> A(5,1,true);
+	A[2] = 222;
+	A[3] = 666;
+
+	A.disp();
+
+	out.concatenate(A, 2);
 
 	out.disp();
 
