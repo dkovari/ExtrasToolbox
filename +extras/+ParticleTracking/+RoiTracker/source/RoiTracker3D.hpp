@@ -98,6 +98,8 @@ namespace extras {namespace ParticleTracking {
 				
 				//////////////////////////
 				// Use splineroot to compute z
+				//
+				// Will add "Z" and other fields to LUT 
 				if (outStruct(n, "LUT").isstruct()) {
 					MxStruct LUT(outStruct(n, "LUT"));
 
@@ -127,22 +129,6 @@ namespace extras {namespace ParticleTracking {
 					if (Params->isparameter("splineroot_MaxR2")) {
 						minR2frac = mxGetScalar(Params->operator[]("splineroot_MaxR2"));
 					}
-
-					/// Output Vectors (as 1x1xnum_lut)
-					NumericArray<double> Z;
-					Z.reshape({1,1,LUT.numel()});
-					NumericArray<double> varZ;
-					varZ.reshape({ 1,1,LUT.numel() });
-					NumericArray<uint64_t> nItr;
-					nItr.reshape({ 1,1,LUT.numel() });
-					NumericArray<double> s;
-					s.reshape({ 1,1,LUT.numel() });
-					NumericArray<double> R2;
-					R2.reshape({ 1,1,LUT.numel() });
-					NumericArray<double> dR2frac;
-					dR2frac.reshape({ 1,1,LUT.numel() });
-					NumericArray<double> initR2;
-					initR2.reshape({ 1,1,LUT.numel() });
 
 					/////////////
 					// Loop over LUT and compute
@@ -180,7 +166,30 @@ namespace extras {namespace ParticleTracking {
 							dpp_calc = (char*)calloc((dpp.nBreaks - 1), sizeof(char));
 						}
 
-						Z[k] = splineroot(imravg.getdata(), pp, dpp, dpp_calc, &varZ[k], pow(TOL, 2), maxItr, minStep, minR2frac, MaxR2, &nItr[k], &s[k], &R2[k], &dR2frac[k], &initR2[k]);
+						/// Output variables
+						double Z;
+						double varZ;
+						size_t nItr;
+						double s;
+						double R2;
+						double dR2frac;
+						double initR2;
+
+						Z = splineroot(imravg.getdata(), pp, dpp, dpp_calc, &varZ, pow(TOL, 2), maxItr, minStep, minR2frac, MaxR2, &nItr, &s, &R2, &dR2frac, &initR2);
+
+						/////////////
+						//set output fields
+						MxStruct lutRes(1, { "Z","varZ","nItr","s","R2","dR2frac","initR2" });
+
+						lutRes(0, "Z") = Z;
+						lutRes(0, "varZ") = varZ;
+						lutRes(0, "nItr") = nItr;
+						lutRes(0, "s") = s;
+						lutRes(0, "R2") = R2;
+						lutRes(0, "dR2frac") = dR2frac;
+						lutRes(0, "initR2") = initR2;
+
+						LUT(k, "Result") = lutRes;
 
 						//cleanup dpp arrays
 						free(dpp_calc);
@@ -188,9 +197,14 @@ namespace extras {namespace ParticleTracking {
 							free(dpp.coefs);
 						}
 					}
-
 				}
+
+
 			}
+
+			/////////////////
+			// Return ResultsGroup
+			return resultsGroup;
 		}
 	};
 }}

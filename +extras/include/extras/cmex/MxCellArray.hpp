@@ -26,7 +26,7 @@ namespace extras{namespace cmex{
 
 		//! create empty cell array
         MxCellArray(){
-			own(mxCreateCellMatrix(0, 0));
+			own(mxCreateCellMatrix(1, 0));
         }
 
 		//! create cellstr array from array of const char*

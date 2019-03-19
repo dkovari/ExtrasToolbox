@@ -39,6 +39,9 @@ namespace extras { namespace ParticleTracking {
 	*/
 	class RoiTracker : public extras::async::ParamProcessor {
 	protected:
+
+		std::atomic_bool _IncludeImageInResults = false;
+
 		//! Define ProcessTask method
 		extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& TaskArgs, std::shared_ptr<const extras::cmex::ParameterMxMap> Params) {
 			using namespace extras::cmex;
@@ -112,8 +115,15 @@ namespace extras { namespace ParticleTracking {
 
 			//////////////////
 			// Return result
-			mxArray* outmx = outStruct;
-			return mxArrayGroup(1, &outmx);
+
+			mxArrayGroup results(1);
+			results.ownArray(0,outStruct);
+
+			if (_IncludeImageInResults) {
+				results.push_back(TaskArgs.getConstArray(0));
+			}
+
+			return results;
 
 		}
 	public:
@@ -150,6 +160,15 @@ namespace extras { namespace ParticleTracking {
 			_pMap = std::make_shared<RoiParameterMap>(); // create new, empty parameter map;
 		}
 
+		//! check if image should be included with results (true=yes, false=no)
+		bool includeImageData() const { return _IncludeImageInResults; }
+
+		//! set if image should be included with results (true=yes, false=no)
+		bool includeImageData(bool includedImage) {
+			_IncludeImageInResults = includedImage;
+			return _IncludeImageInResults;
+		}
+
 		////////////////////////////////////////////////////////
 		// Task Related
 
@@ -179,6 +198,36 @@ namespace extras { namespace ParticleTracking {
 			extras::async::ParamProcessor::pushTask(nrhs, prhs);
 		}
 
+	};
+
+
+
+
+	// Extend the ParamProcessorInterface
+	template<extras::SessionManager::ObjectManager<RoiTracker>& ObjManager> /*ObjType should be a derivative of RoiTracker*/
+	class RoiTrackerInterface :public extras::async::ParamProcessorInterface<RoiTracker, ObjManager> {
+		typedef extras::async::ParamProcessorInterface<RoiTracker, ObjManager> ParentType;
+	protected:
+		void IncludeImageData(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			auto objPtr = ParentType::getObjectPtr(nrhs, prhs);
+			if (nrhs > 1) { //setting value
+				if (!mxIsScalar(prhs[1])) {
+					throw("Cannot set IncludeImageData. Argument must be scalar and convertable to logical.");
+				}
+				bool res = objPtr->includeImageData(mxGetScalar(prhs[1]));
+				plhs[0] = mxCreateLogicalScalar(res);
+			}
+			else {
+				bool res = objPtr->includeImageData();
+				plhs[0] = mxCreateLogicalScalar(res);
+			}
+		}
+
+	public:
+		RoiTrackerInterface() {
+			using namespace std::placeholders;
+			ParentType::addFunction("IncludeImageData", std::bind(&RoiTrackerInterface::IncludeImageData, this, _1, _2, _3, _4));
+		}
 	};
 
 }}

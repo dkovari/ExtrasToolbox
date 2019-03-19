@@ -35,6 +35,213 @@ namespace extras {namespace cmex {
 		bool _managemxptr = true; //flag if data is managed
 		bool _isPersistent = false; //flag if data is persistent
 		bool _setFromConst = false; //flag if set from const
+
+
+		//internal use, reshape real numeric or char array
+		template<bool copy_data> void reshape_real_char(const std::vector<size_t> dims) {
+			if (_setFromConst) { //cannot reshape const
+				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+			}
+
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+
+			//! nullptr -> return numeric real double
+			if (_mxptr == nullptr) {
+				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+				return;
+			}
+
+			//validate mxarray type
+			if (!(isnumeric() || ischar())) {
+				throw("MxObject::reshape_real_char(): mxptr is not real numeric or char");
+			}
+			if (iscomplex()) {
+				throw("MxObject::reshape_real_char(): mxptr is not real numeric or char");
+			}
+
+			size_t oldNumel = numel();
+			size_t newNumel = extras::prod(dims);
+			
+			if (oldNumel >= newNumel) { //same size or smaller
+				size_t elsz = mxGetElementSize(_mxptr);
+				void* newData = mxRealloc(mxGetData(_mxptr), newNumel*elsz);
+				mxSetData(_mxptr, newData);
+				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
+				if (_isPersistent) {
+					mexMakeMemoryPersistent(newData);
+				}
+			}
+			else { //bigger
+				mxArray* newPtr;
+				if (isnumeric()) {
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
+				}
+				else {
+					newPtr = mxCreateCharArray(dims.size(), dims.data());
+				}
+				if (copy_data) {
+					std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+				}
+				mxFree(mxGetData(_mxptr));
+				mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
+				mxSetData(newPtr, nullptr); //release pointer from newPtr's control
+				mxDestroyArray(newPtr);//delete newPtr
+				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
+
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+			}	
+		}
+
+
+		//internal use, reshape real numeric or char array
+		template<bool copy_data> void reshape_imag(const std::vector<size_t> dims) {
+			if (_setFromConst) { //cannot reshape const
+				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+			}
+
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+
+			//! nullptr -> return numeric real double
+			if (_mxptr == nullptr) {
+				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxCOMPLEX);
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+				return;
+			}
+
+			//validate mxarray type
+			if (!iscomplex()) {
+				throw("MxObject::reshape_imag(): mxptr is not complex");
+			}
+
+			size_t oldNumel = numel();
+			size_t newNumel = extras::prod(dims);
+
+			if (oldNumel >= newNumel) { //same size or smaller
+				size_t elsz = mxGetElementSize(_mxptr);
+				void* newData = mxRealloc(mxGetData(_mxptr), newNumel*elsz);
+				mxSetData(_mxptr, newData);
+#if !MX_HAS_INTERLEAVED_COMPLEX //not interleaved need to realloc imagdata
+				void* newImagData = mxRealloc(mxGetImagData(_mxptr), newNumel*elsz);
+				mxSetImagData(_mxptr, newImagData);
+#endif
+
+				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
+				if (_isPersistent) {
+					mexMakeMemoryPersistent(newData);
+#if !MX_HAS_INTERLEAVED_COMPLEX //not interleaved
+					mexMakeMemoryPersistent(newImagData);
+#endif
+				}
+			}
+			else { //bigger
+				mxArray* newPtr;
+				if (isnumeric()) {
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
+				}
+				else {
+					newPtr = mxCreateCharArray(dims.size(), dims.data());
+				}
+				if (copy_data) {
+#if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
+					std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+#else
+					std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+					std::memcpy(mxGetImagData(newPtr), mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+#endif
+				}
+
+				mxFree(mxGetData(_mxptr));
+				mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
+				mxSetData(newPtr, nullptr); //release pointer from newPtr's control
+
+#if !MX_HAS_INTERLEAVED_COMPLEX //not interleaved need to free imagdata
+				mxFree(mxGetImagData(_mxptr));
+				mxSetImagData(_mxptr, mxGetImagData(newPtr)); //set to new data pointer
+				mxSetImagData(newPtr, nullptr); //release pointer from newPtr's control
+#endif
+				mxDestroyArray(newPtr);//delete newPtr
+				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
+
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+			}
+		}
+
+		//internal use, reshape cell
+		template<bool copy_data> void reshape_cell(const std::vector<size_t> dims) {
+			if (_setFromConst) { //cannot reshape const
+				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+			}
+
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+
+			 //! nullptr -> return empty cell
+			if (_mxptr == nullptr) {
+				_mxptr = mxCreateCellMatrix(1, 0);
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+				return;
+			}
+
+			//validate
+			if (!iscell()) {
+				throw("MxObject::reshape_cell(): mxptr is not cell.");
+			}
+
+			size_t oldNumel = numel();
+			size_t newNumel = extras::prod(dims);
+
+			if (oldNumel >= newNumel) { //same size or smaller
+				for (size_t n = newNumel; n < oldNumel; n++) {
+					mxDestroyArray(mxGetCell(_mxptr, n));
+					mxSetCell(_mxptr, n, nullptr);
+				}
+				size_t elsz = mxGetElementSize(_mxptr);
+				void* cellData = mxGetData(_mxptr);
+				cellData = mxRealloc(cellData, newNumel*elsz);
+				mxSetData(_mxptr, cellData);
+				mxSetDimensions(_mxptr, dims.data(), dims.size());
+			}
+			else { //bigger
+				mxArray* newPtr = mxCreateCellArray(dims.size(), dims.data());
+				if (copy_data) {
+					for (size_t n = 0; n < oldNumel; n++) {
+						mxSetCell(newPtr, n, mxGetCell(_mxptr, n));
+						mxSetCell(_mxptr, n, nullptr);
+					}
+				}
+				for (size_t n = 0; n < oldNumel; n++) {
+					mxDestroyArray(mxGetCell(_mxptr, n)); //destroy old cells
+				}
+				mxFree(mxGetData(_mxptr)); //free array poiniting to cells
+				mxSetDimensions(_mxptr, dims.data(), dims.size());
+				mxSetData(_mxptr, mxGetData(newPtr));
+				mxSetData(newPtr, nullptr);
+				mxDestroyArray(newPtr);				
+			}
+			
+			if (_isPersistent) {
+				mexMakeArrayPersistent(_mxptr);
+			}
+
+		}
+
+		template<bool copy_data> void reshape_struct(const std::vector<size_t> dims) {};
 	protected:
 
 		//! delete mxptr if needed
@@ -417,13 +624,13 @@ namespace extras {namespace cmex {
 		//! For struct and cell arrays, the data will be copied to a new mxarray*
 		//! and the original pointer will be released/destroyed
 		void reshape(const std::vector<size_t>& dims) {
-			if (_setFromConst) {
+			if (_setFromConst) { //cannot reshape const
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 
-			//! nullptr -> return numeric real double
+			// nullptr -> return numeric real double
 			if (_mxptr == nullptr) {
 				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
 				_managemxptr = true;
@@ -433,14 +640,7 @@ namespace extras {namespace cmex {
 				}
 				return;
 			}
-
-			//////////////////
-			// old and new size
-			size_t newNumel = extras::prod(dims);
-			size_t oldNumel = numel();
-
-			//! Perform resize
-			mxArray* newPtr;
+			// Perform resize
 			switch (mxGetClassID(_mxptr)) {
 			case mxDOUBLE_CLASS:
 			case mxSINGLE_CLASS:
@@ -452,123 +652,20 @@ namespace extras {namespace cmex {
 			case mxUINT32_CLASS:
 			case mxINT64_CLASS:
 			case mxUINT64_CLASS:
-				
-
-				if (!mxIsComplex(_mxptr)) { //real data just a simple resize
-					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
-					if (newNumel > oldNumel) { // larger, perform copy
-						std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
-						mxFree(mxGetData(_mxptr)); //free old data
-						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-						mxDestroyArray(newPtr);//delete newPtr
-					}
-					else if (newNumel < oldNumel) { //smaller, just use reaaloc
-						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxSetData(_mxptr, _mxptrData);
-					}
-				}
-				else { // complex data
-					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
-					if (newNumel > oldNumel) { // larger, perform copy		
-#if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
-						std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
-
-						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-#else
-						memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
-						memcpy(mxGetImagData(newPtr), mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
-
-						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-						mxSetImagData(_mxptr, mxGetImagData(newPtr)); //set to new data pointer
-
-						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-						mxSetImagData(newPtr, nullptr);
-#endif
-						mxDestroyArray(newPtr);//delete newPtr
-					}
-					else if (newNumel < oldNumel) { //smaller, just use reaaloc
-#if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
-						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxSetData(_mxptr,_mxptrData);
-#else
-						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxSetData(_mxptr, _mxptrData);
-
-						_mxptrData = mxRealloc(mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxSetImagData(_mxptr, _mxptrData);
-#endif
-					}
-				}
-
-				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
-
-				if (_isPersistent) { //set persistent again if needed
-					mexMakeArrayPersistent(_mxptr);
-				}
-				
-				break;
 			case mxCHAR_CLASS:
-				newPtr = mxCreateCharArray(dims.size(), dims.data());
-				std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
-
-				mxFree(mxGetData(_mxptr));
-				mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-				mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-				mxDestroyArray(newPtr);//delete newPtr
-				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
-
-				if (_isPersistent) {
-					mexMakeArrayPersistent(_mxptr);
+				if (iscomplex()) {
+					reshape_imag<true>(dims);
+				}
+				else {
+					reshape_real_char<true>(dims);
 				}
 				break;
 			case mxCELL_CLASS:
-
-				if (oldNumel > newNumel) { //need to destroy extras cells
-					for (size_t n = newNumel; n < oldNumel; n++) {
-						mxDestroyArray(mxGetCell(_mxptr, n));
-					}
-				}
-				mxSetDimensions(_mxptr, dims.data(), dims.size());
-				for (size_t n = oldNumel; n < newNumel; n++) { //set new cells to empty
-					mxSetCell(_mxptr, n, mxCreateDoubleMatrix(0, 0, mxREAL));
-				}
-				if (_isPersistent) {
-					mexMakeArrayPersistent(_mxptr);
-				}
+				reshape_cell<true>(dims);
 				break;
 			case mxSTRUCT_CLASS:
-			{
-				//////////////// 
-				// Setup Field Names
-				size_t nfields = mxGetNumberOfFields(_mxptr);
-				const char* * fnames;
-				fnames = new const char*[nfields];
-				for (size_t n = 0; n < nfields; ++n) {
-					fnames[n] = mxGetFieldNameByNumber(_mxptr, n);
-				}
-
-				if (oldNumel > newNumel) { //need to destrop extra fields
-					for (size_t n = newNumel; n < oldNumel; n++) {
-						for (size_t f = 0; f < nfields; f++) {
-							mxDestroyArray(mxGetFieldByNumber(_mxptr, n, f));
-						}
-					}
-				}
-				mxSetDimensions(_mxptr, dims.data(), dims.size());
-				for (size_t n = oldNumel; n < newNumel; n++) { //set new fields to empty
-					for (size_t f = 0; f < nfields; f++) {
-						mxSetFieldByNumber(_mxptr, n, f, mxCreateDoubleMatrix(0, 0, mxREAL));
-					}
-				}
-				if (_isPersistent) {
-					mexMakeArrayPersistent(_mxptr);
-				}
-				delete[] fnames;
-			}
-			break;
-			
+				reshape_struct<true>(dims);
+				break;
 			default:
 				throw(std::runtime_error("reshape not implemented for class"));
 			}
@@ -583,13 +680,13 @@ namespace extras {namespace cmex {
 		//! reshape without copy
 		//! numeric array will contain zeros, cell and struct arrays will be have empty elements
 		void reshape_nocopy(const std::vector<size_t>& dims) {
-			if (_setFromConst) {
+			if (_setFromConst) { //cannot reshape const
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 
-			//! nullptr -> return numeric real double
+														   // nullptr -> return numeric real double
 			if (_mxptr == nullptr) {
 				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
 				_managemxptr = true;
@@ -599,14 +696,7 @@ namespace extras {namespace cmex {
 				}
 				return;
 			}
-
-			//////////////////
-			// old and new size
-			size_t newNumel = extras::prod(dims);
-			size_t oldNumel = numel();
-
-			//! Perform resize
-			mxArray* newPtr;
+			// Perform resize
 			switch (mxGetClassID(_mxptr)) {
 			case mxDOUBLE_CLASS:
 			case mxSINGLE_CLASS:
@@ -618,122 +708,20 @@ namespace extras {namespace cmex {
 			case mxUINT32_CLASS:
 			case mxINT64_CLASS:
 			case mxUINT64_CLASS:
-				if (!mxIsComplex(_mxptr)) { //real data just a simple resize
-					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
-					if (newNumel > oldNumel) { // larger, perform copy
-						
-						//std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
-						mxFree(mxGetData(_mxptr)); //free old data
-						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-						mxDestroyArray(newPtr);//delete newPtr
-					}
-					else if (newNumel < oldNumel) { //smaller, just use realloc
-						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxSetData(_mxptr, _mxptrData);
-					}
-				}
-				else { // complex data
-					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
-					if (newNumel > oldNumel) { // larger, perform copy
-#if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
-						//std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
-
-						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-#else
-						//memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
-						//memcpy(mxGetImagData(newPtr), mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
-
-						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-						mxSetImagData(_mxptr, mxGetImagData(newPtr)); //set to new data pointer
-
-						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-						mxSetImagData(newPtr, nullptr);
-#endif
-						mxDestroyArray(newPtr); //delete newPtr
-					}
-					else if (newNumel < oldNumel) { //smaller, just use reaaloc
-#if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
-						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxSetData(_mxptr, _mxptrData);
-#else
-						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxSetData(_mxptr, _mxptrData);
-
-						_mxptrData = mxRealloc(mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxSetImagData(_mxptr, _mxptrData);
-#endif
-					}
-				}
-
-				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
-
-				if (_isPersistent) { //set persistent again if needed
-					mexMakeArrayPersistent(_mxptr);
-				}
-
-				break;
 			case mxCHAR_CLASS:
-				newPtr = mxCreateCharArray(dims.size(), dims.data());
-				//std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
-
-				mxFree(mxGetData(_mxptr));
-				mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-				mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-				mxDestroyArray(newPtr);//delete newPtr
-				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
-
-				if (_isPersistent) {
-					mexMakeArrayPersistent(_mxptr);
+				if (iscomplex()) {
+					reshape_imag<false>(dims);
+				}
+				else {
+					reshape_real_char<false>(dims);
 				}
 				break;
 			case mxCELL_CLASS:
-
-				if (oldNumel > newNumel) { //need to destroy extras cells
-					for (size_t n = newNumel; n < oldNumel; n++) {
-						mxDestroyArray(mxGetCell(_mxptr, n));
-					}
-				}
-				mxSetDimensions(_mxptr, dims.data(), dims.size());
-				for (size_t n = oldNumel; n < newNumel; n++) { //set new cells to empty
-					mxSetCell(_mxptr, n, nullptr);
-				}
-				if (_isPersistent) {
-					mexMakeArrayPersistent(_mxptr);
-				}
+				reshape_cell<false>(dims);
 				break;
 			case mxSTRUCT_CLASS:
-			{
-				//////////////// 
-				// Setup Field Names
-				size_t nfields = mxGetNumberOfFields(_mxptr);
-				const char* * fnames;
-				fnames = new const char*[nfields];
-				for (size_t n = 0; n < nfields; ++n) {
-					fnames[n] = mxGetFieldNameByNumber(_mxptr, n);
-				}
-
-				if (oldNumel > newNumel) { //need to destrop extra fields
-					for (size_t n = newNumel; n < oldNumel; n++) {
-						for (size_t f = 0; f < nfields; f++) {
-							mxDestroyArray(mxGetFieldByNumber(_mxptr, n, f));
-						}
-					}
-				}
-				mxSetDimensions(_mxptr, dims.data(), dims.size());
-				for (size_t n = oldNumel; n < newNumel; n++) { //set new fields to empty
-					for (size_t f = 0; f < nfields; f++) {
-						mxSetFieldByNumber(_mxptr, n, f,nullptr);
-					}
-				}
-				if (_isPersistent) {
-					mexMakeArrayPersistent(_mxptr);
-				}
-				delete[] fnames;
-			}
-			break;
-
+				reshape_struct<false>(dims);
+				break;
 			default:
 				throw(std::runtime_error("reshape not implemented for class"));
 			}
