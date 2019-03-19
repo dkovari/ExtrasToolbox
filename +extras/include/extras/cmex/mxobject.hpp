@@ -21,7 +21,6 @@ All rights reserved.
 #include "type2ClassID.hpp"
 #include <extras/numeric.hpp>
 
-
 namespace extras {namespace cmex {
 	using std::size_t;
 
@@ -320,6 +319,9 @@ namespace extras {namespace cmex {
 			return cmex::numel(_mxptr);
 		}
 
+		//! true if numeric and complex
+		bool iscomplex() const { return isnumeric() && mxIsComplex(_mxptr); }
+
 		//! isscalar
 		bool isscalar() const {
 			return numel() == 1;
@@ -389,6 +391,11 @@ namespace extras {namespace cmex {
 			return mxGetClassID(_mxptr);
 		}
 
+		//! return 1-d index corresponding to subscript
+		size_t sub2ind(std::vector<size_t> subs) const {
+			return mxCalcSingleSubscript(_mxptr, subs.size(), subs.data());
+		}
+
 		////////////////////////////////////////////////////////////////////////////////
 		// MISC Object Management
 
@@ -427,6 +434,11 @@ namespace extras {namespace cmex {
 				return;
 			}
 
+			//////////////////
+			// old and new size
+			size_t newNumel = extras::prod(dims);
+			size_t oldNumel = numel();
+
 			//! Perform resize
 			mxArray* newPtr;
 			switch (mxGetClassID(_mxptr)) {
@@ -440,26 +452,25 @@ namespace extras {namespace cmex {
 			case mxUINT32_CLASS:
 			case mxINT64_CLASS:
 			case mxUINT64_CLASS:
-				size_t newNumel = extras::prod(dims);
-				size_t oldNumel = numel();
+				
 
 				if (!mxIsComplex(_mxptr)) { //real data just a simple resize
-
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
 					if (newNumel > oldNumel) { // larger, perform copy
-						newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
 						std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
+						mxFree(mxGetData(_mxptr)); //free old data
 						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
 						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
 						mxDestroyArray(newPtr);//delete newPtr
 					}
 					else if (newNumel < oldNumel) { //smaller, just use reaaloc
-						mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						mxSetData(_mxptr, _mxptrData);
 					}
 				}
 				else { // complex data
-
-					if (newNumel > oldNumel) { // larger, perform copy
-						newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
+					if (newNumel > oldNumel) { // larger, perform copy		
 #if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
 						std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
 
@@ -479,10 +490,14 @@ namespace extras {namespace cmex {
 					}
 					else if (newNumel < oldNumel) { //smaller, just use reaaloc
 #if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
-						mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						mxSetData(_mxptr,_mxptrData);
 #else
-						mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxRealloc(mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						mxSetData(_mxptr, _mxptrData);
+
+						_mxptrData = mxRealloc(mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						mxSetImagData(_mxptr, _mxptrData);
 #endif
 					}
 				}
@@ -494,29 +509,39 @@ namespace extras {namespace cmex {
 				}
 				
 				break;
-			case mxCELL_CLASS:
-				newPtr = mxCreateCellArray(dims.size(), dims.data());
-				if (_managemxptr && !_setFromConst) { //just move the arrays
-					for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
-						mxSetCell(newPtr, n, mxGetCell(_mxptr, n));
-						mxSetCell(_mxptr, n, nullptr);
-					}
-					mxDestroyArray(_mxptr);
-				}
-				else { //need copy
-					for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
-						mxSetCell(newPtr, n, mxDuplicateArray(mxGetCell(_mxptr, n)));
-					}
-				}
-				_mxptr = newPtr;
-				_managemxptr = true;
-				_setFromConst = false;
+			case mxCHAR_CLASS:
+				newPtr = mxCreateCharArray(dims.size(), dims.data());
+				std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+
+				mxFree(mxGetData(_mxptr));
+				mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
+				mxSetData(newPtr, nullptr); //release pointer from newPtr's control
+				mxDestroyArray(newPtr);//delete newPtr
+				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
+
 				if (_isPersistent) {
-					mexMakeArrayPersistent(newPtr);
+					mexMakeArrayPersistent(_mxptr);
+				}
+				break;
+			case mxCELL_CLASS:
+
+				if (oldNumel > newNumel) { //need to destroy extras cells
+					for (size_t n = newNumel; n < oldNumel; n++) {
+						mxDestroyArray(mxGetCell(_mxptr, n));
+					}
+				}
+				mxSetDimensions(_mxptr, dims.data(), dims.size());
+				for (size_t n = oldNumel; n < newNumel; n++) { //set new cells to empty
+					mxSetCell(_mxptr, n, mxCreateDoubleMatrix(0, 0, mxREAL));
+				}
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
 				}
 				break;
 			case mxSTRUCT_CLASS:
 			{
+				//////////////// 
+				// Setup Field Names
 				size_t nfields = mxGetNumberOfFields(_mxptr);
 				const char* * fnames;
 				fnames = new const char*[nfields];
@@ -524,46 +549,26 @@ namespace extras {namespace cmex {
 					fnames[n] = mxGetFieldNameByNumber(_mxptr, n);
 				}
 
-				newPtr = mxCreateStructArray(dims.size(), dims.data(), nfields, fnames);
-				if (_managemxptr && !_setFromConst) { //just move the arrays
-					for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
-						for (size_t f = 0; f < nfields; ++f) {
-							mxSetFieldByNumber(newPtr, n, f, mxGetFieldByNumber(_mxptr, n, f));
-							mxSetFieldByNumber(_mxptr, n, f, nullptr);
+				if (oldNumel > newNumel) { //need to destrop extra fields
+					for (size_t n = newNumel; n < oldNumel; n++) {
+						for (size_t f = 0; f < nfields; f++) {
+							mxDestroyArray(mxGetFieldByNumber(_mxptr, n, f));
 						}
 					}
-					mxDestroyArray(_mxptr);
 				}
-				else { //need copy
-					for (size_t n = 0; n<std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)); ++n) {
-						for (size_t f = 0; f < nfields; ++f) {
-							mxSetFieldByNumber(newPtr, n, f, mxDuplicateArray(mxGetFieldByNumber(_mxptr, n, f)));
-							mxSetFieldByNumber(_mxptr, n, f, nullptr);
-						}
+				mxSetDimensions(_mxptr, dims.data(), dims.size());
+				for (size_t n = oldNumel; n < newNumel; n++) { //set new fields to empty
+					for (size_t f = 0; f < nfields; f++) {
+						mxSetFieldByNumber(_mxptr, n, f, mxCreateDoubleMatrix(0, 0, mxREAL));
 					}
+				}
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
 				}
 				delete[] fnames;
-
-				_mxptr = newPtr;
-				_managemxptr = true;
-				_setFromConst = false;
-				if (_isPersistent) {
-					mexMakeArrayPersistent(newPtr);
-				}
 			}
 			break;
-			case mxCHAR_CLASS:
-				newPtr = mxCreateCharArray(dims.size(), dims.data());
-				std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
-				mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-				mxSetData(newPtr, nullptr); //release pointer from newPtr's control
-				mxDestroyArray(newPtr);//delete newPtr
-				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
-
-				if (_isPersistent) {
-					mexMakeArrayPersistent(newPtr);
-				}
-				break;
+			
 			default:
 				throw(std::runtime_error("reshape not implemented for class"));
 			}
@@ -576,6 +581,7 @@ namespace extras {namespace cmex {
 		}
 
 		//! reshape without copy
+		//! numeric array will contain zeros, cell and struct arrays will be have empty elements
 		void reshape_nocopy(const std::vector<size_t>& dims) {
 			if (_setFromConst) {
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
@@ -594,7 +600,11 @@ namespace extras {namespace cmex {
 				return;
 			}
 
-			//////////////
+			//////////////////
+			// old and new size
+			size_t newNumel = extras::prod(dims);
+			size_t oldNumel = numel();
+
 			//! Perform resize
 			mxArray* newPtr;
 			switch (mxGetClassID(_mxptr)) {
@@ -608,45 +618,51 @@ namespace extras {namespace cmex {
 			case mxUINT32_CLASS:
 			case mxINT64_CLASS:
 			case mxUINT64_CLASS:
-				size_t newNumel = extras::prod(dims);
-				size_t oldNumel = numel();
-
 				if (!mxIsComplex(_mxptr)) { //real data just a simple resize
-
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
 					if (newNumel > oldNumel) { // larger, perform copy
-						newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxREAL);
-
+						
+						//std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
+						mxFree(mxGetData(_mxptr)); //free old data
 						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
 						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
 						mxDestroyArray(newPtr);//delete newPtr
 					}
-					else if (newNumel < oldNumel) { //smaller, just use reaaloc
-						mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+					else if (newNumel < oldNumel) { //smaller, just use realloc
+						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						mxSetData(_mxptr, _mxptrData);
 					}
 				}
 				else { // complex data
-
+					newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
 					if (newNumel > oldNumel) { // larger, perform copy
-						newPtr = mxCreateNumericArray(dims.size(), dims.data(), mxGetClassID(_mxptr), mxCOMPLEX);
 #if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
+						//std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
 
 						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
 						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
 #else
+						//memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
+						//memcpy(mxGetImagData(newPtr), mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*oldNumel);
+
 						mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
 						mxSetImagData(_mxptr, mxGetImagData(newPtr)); //set to new data pointer
 
 						mxSetData(newPtr, nullptr); //release pointer from newPtr's control
 						mxSetImagData(newPtr, nullptr);
 #endif
-						mxDestroyArray(newPtr);//delete newPtr
+						mxDestroyArray(newPtr); //delete newPtr
 					}
 					else if (newNumel < oldNumel) { //smaller, just use reaaloc
 #if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
-						mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						mxSetData(_mxptr, _mxptrData);
 #else
-						mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
-						mxRealloc(mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						void* _mxptrData = mxRealloc(mxGetData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						mxSetData(_mxptr, _mxptrData);
+
+						_mxptrData = mxRealloc(mxGetImagData(_mxptr), mxGetElementSize(_mxptr)*newNumel);
+						mxSetImagData(_mxptr, _mxptrData);
 #endif
 					}
 				}
@@ -656,21 +672,41 @@ namespace extras {namespace cmex {
 				if (_isPersistent) { //set persistent again if needed
 					mexMakeArrayPersistent(_mxptr);
 				}
+
+				break;
+			case mxCHAR_CLASS:
+				newPtr = mxCreateCharArray(dims.size(), dims.data());
+				//std::memcpy(mxGetData(newPtr), mxGetData(_mxptr), mxGetElementSize(_mxptr)*std::min(mxGetNumberOfElements(_mxptr), mxGetNumberOfElements(newPtr)));
+
+				mxFree(mxGetData(_mxptr));
+				mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
+				mxSetData(newPtr, nullptr); //release pointer from newPtr's control
+				mxDestroyArray(newPtr);//delete newPtr
+				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
+
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
 				break;
 			case mxCELL_CLASS:
-				newPtr = mxCreateCellArray(dims.size(), dims.data());
-				if (_managemxptr && !_setFromConst) {
-					mxDestroyArray(_mxptr);
+
+				if (oldNumel > newNumel) { //need to destroy extras cells
+					for (size_t n = newNumel; n < oldNumel; n++) {
+						mxDestroyArray(mxGetCell(_mxptr, n));
+					}
 				}
-				_mxptr = newPtr;
-				_managemxptr = true;
-				_setFromConst = false;
+				mxSetDimensions(_mxptr, dims.data(), dims.size());
+				for (size_t n = oldNumel; n < newNumel; n++) { //set new cells to empty
+					mxSetCell(_mxptr, n, nullptr);
+				}
 				if (_isPersistent) {
-					mexMakeArrayPersistent(newPtr);
+					mexMakeArrayPersistent(_mxptr);
 				}
 				break;
 			case mxSTRUCT_CLASS:
 			{
+				//////////////// 
+				// Setup Field Names
 				size_t nfields = mxGetNumberOfFields(_mxptr);
 				const char* * fnames;
 				fnames = new const char*[nfields];
@@ -678,35 +714,29 @@ namespace extras {namespace cmex {
 					fnames[n] = mxGetFieldNameByNumber(_mxptr, n);
 				}
 
-				newPtr = mxCreateStructArray(dims.size(), dims.data(), nfields, fnames);
-				if (_managemxptr && !_setFromConst) {
-					mxDestroyArray(_mxptr);
+				if (oldNumel > newNumel) { //need to destrop extra fields
+					for (size_t n = newNumel; n < oldNumel; n++) {
+						for (size_t f = 0; f < nfields; f++) {
+							mxDestroyArray(mxGetFieldByNumber(_mxptr, n, f));
+						}
+					}
 				}
-
-				delete[] fnames;
-
-				_mxptr = newPtr;
-				_managemxptr = true;
-				_setFromConst = false;
-				if (_isPersistent) {
-					mexMakeArrayPersistent(newPtr);
+				mxSetDimensions(_mxptr, dims.data(), dims.size());
+				for (size_t n = oldNumel; n < newNumel; n++) { //set new fields to empty
+					for (size_t f = 0; f < nfields; f++) {
+						mxSetFieldByNumber(_mxptr, n, f,nullptr);
+					}
 				}
-			}
-			break;
-			case mxCHAR_CLASS:
-				newPtr = mxCreateCharArray(dims.size(), dims.data());
-				mxSetData(_mxptr, mxGetData(newPtr)); //set to new data pointer
-				mxSetData(newPtr, nullptr); //release pointer from newPtr's contro
-				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size	
-				mxDestroyArray(newPtr);
 				if (_isPersistent) {
 					mexMakeArrayPersistent(_mxptr);
 				}
-				break;
+				delete[] fnames;
+			}
+			break;
+
 			default:
 				throw(std::runtime_error("reshape not implemented for class"));
 			}
-
 		}
 
 		//! Resize
@@ -715,10 +745,259 @@ namespace extras {namespace cmex {
 		}
 
 		//! Concatenate with matlab-like syntax
-		MxObject& concatenate(const MxObject& end_obj) {
+		//! Input:
+		//!		end_obj: object to place at end
+		//!		dim: dimension along which to concatenate
+		virtual MxObject& concatenate(const MxObject& end_obj, size_t dim) {
 
-			if()
+			if (isConst()) { //this array is const, throw error
+				throw("MxObject::concantenate(): cannot cat object is const");
+			}
 
+			if (mxGetClassID(end_obj) != mxGetClassID(_mxptr)) {
+				throw(std::runtime_error(
+					std::string("Cannot concatenate ") + std::string(mxGetClassName(_mxptr))
+					+ std::string("with ") + std::string(mxGetClassName(end_obj))));
+			}
+			if (iscomplex() != end_obj.iscomplex()) {
+				throw("concatenate(): either both arrays must be real or both must be complex");
+			}
+
+			//////////////////
+			// Struct NOT IMPLEMENTED ----> REMOVE WHEN FIXED
+			if (mxIsStruct(_mxptr)) {
+				throw("MxObject::concatenate(): concatenate with struct not implemented yet.");
+			}
+
+			mxArray* end_ptr = (mxArray*)end_obj.getmxarray(); //mxArray* for end_obj
+			bool destroy_end_ptr = false;
+			if (&end_obj == this) { //cat with self, need to make a copy of the data
+				end_ptr = mxDuplicateArray(end_ptr);
+				destroy_end_ptr = true;
+			}
+
+			////////////////////////////
+			// Compute new size
+
+			auto thisSz = size();
+			auto thatSz = end_obj.size();
+			size_t thisSz_len = thisSz.size();
+			size_t thatSz_len = thatSz.size();
+
+			size_t maxDim = std::max(thisSz.size(), thatSz.size());
+
+
+			// Loop over array dimensions and determine if sizes are compatible
+			thisSz.resize(maxDim);
+			thatSz.resize(maxDim);
+			
+			for (size_t j = 0; j < maxDim; j++) {
+
+				if (j >= thisSz_len) {
+					thisSz[j] = 1;
+				}
+
+				if (j >= thatSz_len) {
+					thatSz[j] = 1;
+				}
+
+				if (j == dim) {
+					continue;
+				}
+
+				if (thisSz[j] != thatSz[j]) {
+					throw(std::runtime_error("incompatible sizes for concatenate"));
+				}
+			}
+
+			auto newSz = thisSz;
+			newSz[dim] = thisSz[dim] + thatSz[dim];
+
+			//////////////////////////////////////////////////
+			// Create Temporary array to hold new data
+			mxArray* newPtr = nullptr;
+			switch (mxGetClassID(_mxptr)) {
+			case mxDOUBLE_CLASS:
+			case mxSINGLE_CLASS:
+			case mxINT8_CLASS:
+			case mxUINT8_CLASS:
+			case mxINT16_CLASS:
+			case mxUINT16_CLASS:
+			case mxINT32_CLASS:
+			case mxUINT32_CLASS:
+			case mxINT64_CLASS:
+			case mxUINT64_CLASS:
+			case mxCHAR_CLASS:
+			{
+				if (mxIsComplex(_mxptr)) {
+					newPtr = mxCreateNumericArray(newSz.size(), newSz.data(), mxGetClassID(_mxptr), mxCOMPLEX);
+				}
+				else {
+					newPtr = mxCreateNumericArray(newSz.size(), newSz.data(), mxGetClassID(_mxptr), mxREAL);
+				}				
+			}
+				break;
+			case mxCELL_CLASS:
+				newPtr = mxCreateCellArray(newSz.size(), newSz.data());
+				break;
+			case mxSTRUCT_CLASS:
+				throw("concentate not implemented for struct");
+			default:
+				throw(std::runtime_error(std::string("concatenate not implemented for ")+std::string(mxGetClassName(_mxptr))));
+			}
+
+			//////////////////
+			// Loop over dimension dim and copy data for all other dimensions
+
+			size_t new_dim = 0; //accumulator for current position in newPtr
+			for (size_t d = 0; d < thisSz[dim]; d++) { //first loop over mxptr elements
+				//loop over other dims
+				for (size_t odim = 0; odim < newSz.size(); odim++) {
+					if (odim == dim) { //nothing to do for dim
+						continue;
+					}
+					//loop over indecies of odim and copy
+					for (size_t od = 0; od < thisSz[odim]; od++) {
+						std::vector<size_t> subs(newSz.size(),0.0); //create subscript array with all zeros
+						subs[odim] = od; //index for dimension being copied
+						subs[dim] = d; //index for dimension being concatenated
+						/// NOTE: all other dims will point to first element
+
+						size_t srcIndex = mxCalcSingleSubscript(_mxptr, subs.size(), subs.data());
+						subs[dim] = new_dim; //index for cat dim of new array is different
+						size_t dstIndex = mxCalcSingleSubscript(newPtr, subs.size(), subs.data());
+
+						if (isnumeric()) { /// COPY Numerics
+							if (!mxIsComplex(_mxptr)) { //real
+								const uint8_t* src = (const uint8_t*)mxGetData(_mxptr);
+								uint8_t* dst = (uint8_t*)mxGetData(newPtr);
+								size_t elm_sz = mxGetElementSize(newPtr);
+								memcpy(&dst[dstIndex*elm_sz], &src[srcIndex*elm_sz], elm_sz);
+							}
+							else { //complex
+#if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
+								const uint8_t* src = (const uint8_t*)mxGetData(_mxptr);
+								uint8_t* dst = (uint8_t*)mxGetData(newPtr);
+								size_t elm_sz = mxGetElementSize(newPtr);
+								memcpy(&dst[dstIndex*elm_sz], &src[srcIndex*elm_sz], elm_sz);
+#else
+								const uint8_t* src = (const uint8_t*)mxGetData(_mxptr);
+								uint8_t* dst = (uint8_t*)mxGetData(newPtr);
+								size_t elm_sz = mxGetElementSize(newPtr);
+								memcpy(&dst[dstIndex*elm_sz], &src[srcIndex*elm_sz], elm_sz);
+
+								src = (const uint8_t*)mxGetImagData(_mxptr);
+								dst = (uint8_t*)mxGetImagData(newPtr);
+								memcpy(&dst[dstIndex*elm_sz], &src[srcIndex*elm_sz], elm_sz);
+#endif
+							}
+						}
+						else if (iscell()) { /// copy cell array
+							// move elements into new array
+							mxSetCell(newPtr, dstIndex, mxGetCell(_mxptr, srcIndex));
+							mxSetCell(_mxptr, srcIndex, nullptr);
+						}
+					}
+				}
+				new_dim++;
+			}
+
+			for (size_t d = 0; d < thatSz[dim]; d++) { //second loop over end_obj elements
+				//loop over other dims
+				for (size_t odim = 0; odim < newSz.size(); odim++) {
+					if (odim == dim) { //nothing to do for odim==dim, the outloop handles the copy on that dimension
+						continue;
+					}
+					//loop over indecies of odim and copy
+					for (size_t od = 0; od < thatSz[odim]; od++) {
+						std::vector<size_t> subs(newSz.size(), 0.0); //create subscript array with all zeros
+						subs[odim] = od; //index for dimension being copied
+						subs[dim] = d; //index for dimension being concatenated
+						/// NOTE: all other dims will point to first element
+
+						size_t srcIndex = mxCalcSingleSubscript(end_ptr, subs.size(), subs.data());
+						subs[dim] = new_dim; //index for cat dim of new array is different
+						size_t dstIndex = mxCalcSingleSubscript(newPtr, subs.size(), subs.data());
+
+						if (isnumeric()) { /// COPY Numerics
+							if (!mxIsComplex(end_ptr)) { //real
+								const uint8_t* src = (const uint8_t*)mxGetData(end_ptr);
+								uint8_t* dst = (uint8_t*)mxGetData(newPtr);
+								size_t elm_sz = mxGetElementSize(newPtr);
+								memcpy(&dst[dstIndex*elm_sz], &src[srcIndex*elm_sz], elm_sz);
+							}
+							else { //complex
+#if MX_HAS_INTERLEAVED_COMPLEX //interleaved, just use standard copy because elementsize is 2x
+								const uint8_t* src = (const uint8_t*)mxGetData(end_ptr);
+								uint8_t* dst = (uint8_t*)mxGetData(newPtr);
+								size_t elm_sz = mxGetElementSize(newPtr);
+								memcpy(&dst[dstIndex*elm_sz], &src[srcIndex*elm_sz], elm_sz);
+#else
+								const uint8_t* src = (const uint8_t*)mxGetData(end_ptr);
+								uint8_t* dst = (uint8_t*)mxGetData(newPtr);
+								size_t elm_sz = mxGetElementSize(newPtr);
+								memcpy(&dst[dstIndex*elm_sz], &src[srcIndex*elm_sz], elm_sz);
+
+								src = (const uint8_t*)mxGetImagData(end_ptr);
+								dst = (uint8_t*)mxGetImagData(newPtr);
+								memcpy(&dst[dstIndex*elm_sz], &src[srcIndex*elm_sz], elm_sz);
+#endif
+							}
+						}
+						else if (iscell()) { /// copy cell array
+							// copy elements into new array
+							mxSetCell(newPtr, dstIndex, mxDuplicateArray(mxGetCell(end_ptr, srcIndex)));
+						}
+					}
+				}
+				new_dim++;
+			}
+
+
+			////////////////////
+			// Done with copy/merge
+			// cleanup
+
+			if (isnumeric()) { //change data ptr
+				mxSetDimensions(_mxptr, newSz.data(), newSz.size()); //change dimensions
+				if (iscomplex()) { //complex
+#if MX_HAS_INTERLEAVED_COMPLEX
+					mxFree(mxGetData(_mxptr)); //free old data
+					mxSetData(_mxptr, mxGetData(newPtr)); //set new data
+					mxSetData(newPtr, nullptr); //reset newPtr				
+#else
+					mxFree(mxGetData(_mxptr)); //free old data
+					mxFree(mxGetImagData(_mxptr)); //free old data
+					mxSetData(_mxptr, mxGetData(newPtr)); //set new data
+					mxSetImagData(_mxptr, mxGetImagData(newPtr)); //set new data
+					mxSetData(newPtr, nullptr); //reset newPtr
+					mxSetImagData(newPtr, nullptr); //reset newPtr
+#endif
+				}
+				else { //real
+					mxFree(mxGetData(_mxptr)); //free old data
+					mxSetData(_mxptr, mxGetData(newPtr)); //set new data
+					mxSetData(newPtr, nullptr); //reset newPtr
+				}
+			}
+			else if (iscell()) {
+				/// move results from newptr to _mxptr
+				for (size_t i = 0; i < mxGetNumberOfElements(_mxptr); i++) {
+					mxSetCell(_mxptr, i, mxGetCell(newPtr, i));
+					mxSetCell(newPtr, i, nullptr);
+				}
+			}
+
+			mxDestroyArray(newPtr); //delete newPtr
+
+			if (destroy_end_ptr) { //destroy end_ptr if needed
+				mxDestroyArray(end_ptr);
+			}
+
+			//reset persistent
+			if (_isPersistent) {
+				mexMakeArrayPersistent(_mxptr);
+			}
 			return *this;
 		}
 
@@ -744,7 +1023,6 @@ namespace extras {namespace cmex {
 
 			return *this;
 		}
-
 
 		//! Construct from double scalar
 		MxObject(double val) {
@@ -804,4 +1082,9 @@ namespace extras {namespace cmex {
 
 	std::string getstring(const MxObject& mxo) { return getstring(mxo.getmxarray()); }
 
+	//! concatenate two objects, return as a new object
+	MxObject concatenate(MxObject A, const MxObject& B, size_t dim) {
+		A.concatenate(B, dim);
+		return A;
+	}
 }}

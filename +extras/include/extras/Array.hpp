@@ -148,7 +148,24 @@ namespace extras{
 
     	virtual const T* getdata() const {return _data;} ///< get pointer to raw data array
     	virtual T* getdata() {return _data;} ///< get pointer to raw data array
-    	virtual T& operator[](size_t index) {
+    	
+		
+		//! returns index corresponding to subscript
+		virtual size_t sub2ind(std::vector<size_t> subs) const {
+			size_t idx = subs[0];
+			for (size_t n = 1; n < subs.size(); ++n) {
+				if (subs[n] == 0) { //ignore singleton dimensions
+					continue;
+				}
+				if (n >= _dim.size()) {
+					throw("Array::sub2ind(): subs longer than array dim and sub[n]!=0")
+				}
+				idx += _dimOffset[n] * subs[n];
+			}
+		}
+
+
+		virtual T& operator[](size_t index) {
 			using namespace std;
 			if(index>=_numel){
 				throw(runtime_error(string("Array::operator[")+to_string(index)+string("] index exceeds numel=")+to_string(_numel)));
@@ -168,28 +185,10 @@ namespace extras{
     	virtual const T& operator()(size_t row, size_t col) const {return (*this)[row+col*_rows];} ///< get element [m,n]
 
 		///< set element at coordinate [x,y,z,...] specified by the vector elementCoord
-		virtual T& operator()(const std::vector<size_t>& el){
-			if(el.size()>_dim.size()){
-				throw(std::runtime_error("Array::operator() el longer than array dim"));
-			}
-			size_t idx = el[0];
-			for(size_t n=1;n<el.size();++n){
-				idx+=_dimOffset[n]*el[n];
-			}
-			return (*this)[idx];
-		}
+		virtual T& operator()(const std::vector<size_t>& el){return (*this)[sub2ind(el)];}
 
 		///< get element at coordinate [x,y,z,...] specified by the vector elementCoord
-    	virtual const T& operator()(const std::vector<size_t>& el) const{
-			if(el.size()>_dim.size()){
-				throw(std::runtime_error("Array::operator() el longer than array dim"));
-			}
-			size_t idx = el[0];
-			for(size_t n=1;n<el.size();++n){
-				idx+=_dimOffset[n]*el[n];
-			}
-			return (*this)[idx];
-		}
+    	virtual const T& operator()(const std::vector<size_t>& el) const{return (*this)[sub2ind(el)];}
 
 		///< resize to hold n elements, keep old data, new data set to zeros
     	virtual void resize(size_t numel){
@@ -308,6 +307,104 @@ namespace extras{
 					printf("\n");
 				}
 			}
+		}
+
+		/////////////////////////////
+		//
+
+		//! Concatenate with generic array
+		template <typename M>
+		Array& concatenate(const ArrayBase<M>& b, size_t dim) {
+
+			////////////////////////////
+			// Compute new size
+
+			auto thisSz = size();
+			auto thatSz = end_obj.size();
+			size_t thisSz_len = thisSz.size();
+			size_t thatSz_len = thatSz.size();
+
+			size_t maxDim = std::max(thisSz.size(), thatSz.size());
+
+
+			// Loop over array dimensions and determine if sizes are compatible
+			thisSz.resize(maxDim);
+			thatSz.resize(maxDim);
+
+			for (size_t j = 0; j < maxDim; j++) {
+
+				if (j >= thisSz_len) {
+					thisSz[j] = 1;
+				}
+
+				if (j >= thatSz_len) {
+					thatSz[j] = 1;
+				}
+
+				if (j == dim) {
+					continue;
+				}
+
+				if (thisSz[j] != thatSz[j]) {
+					throw(std::runtime_error("incompatible sizes for concatenate"));
+				}
+			}
+
+			auto newSz = thisSz;
+			newSz[dim] = thisSz[dim] + thatSz[dim];
+
+			//////////////////////////////////////////////////
+			// Create Temporary array to hold new data
+
+			Array<T> newArray(newSz);
+
+			//////////////////
+			// Loop over dimension dim and copy data for all other dimensions
+
+			size_t new_dim = 0; //accumulator for current position in newPtr
+			for (size_t d = 0; d < thisSz[dim]; d++) { //first loop over mxptr elements
+				//loop over other dims
+				for (size_t odim = 0; odim < newSz.size(); odim++) {
+					if (odim == dim) { //nothing to do for dim
+						continue;
+					}
+					//loop over indecies of odim and copy
+					for (size_t od = 0; od < thisSz[odim]; od++) {
+						std::vector<size_t> subs(newSz.size(), 0.0); //create subscript array with all zeros
+						subs[odim] = od; //index for dimension being copied
+						subs[dim] = d; //index for dimension being concatenated
+
+						newArray(subs) = (*this)(subs); //copy values
+
+					}
+				}
+				new_dim++;
+			}
+
+			for (size_t d = 0; d < thatSz[dim]; d++) { //second loop over end_obj elements
+				//loop over other dims
+				for (size_t odim = 0; odim < newSz.size(); odim++) {
+					if (odim == dim) { //nothing to do for dim
+						continue;
+					}
+					//loop over indecies of odim and copy
+					for (size_t od = 0; od < thatSz[odim]; od++) {
+						std::vector<size_t> subs(newSz.size(), 0.0); //create subscript array with all zeros
+						subs[odim] = od; //index for dimension being copied
+						subs[dim] = d; //index for dimension being concatenated
+
+						auto val = b(subs); //make tmp copy of data
+
+						subs[dim] = new_dim; //change the sub, since newArray has different dim
+						newArray(subs) = val; //set value
+					}
+				}
+				new_dim++;
+			}
+
+			moveFrom(newArray);
+
+			return *this;
 		}
 
 

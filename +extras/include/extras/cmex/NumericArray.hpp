@@ -153,6 +153,11 @@ namespace extras {namespace cmex {
 			return (T*)mxGetData(getmxarray());
 		}
 
+		//! returns index corresponding to subscript
+		virtual size_t sub2ind(std::vector<size_t> subs) const {
+			return MxObject::sub2ind(subs);
+		}
+
 		//! set n-th element
 		//! if array was originally set from const mxArray* then it will be duplicated
 		virtual T& operator[](size_t index) {
@@ -186,34 +191,16 @@ namespace extras {namespace cmex {
 		virtual const T& operator()(size_t index) const {return (*this)[index];}
 
 		//! set element [m,n]
-		virtual T& operator()(size_t row, size_t col) {
-			size_t subs[2] = { row,col };
-
-			size_t ind = mxCalcSingleSubscript(getmxarray(), 2, subs);
-			return (*this)[ind];
-		} 
+		virtual T& operator()(size_t row, size_t col) { return (*this)({ row,col }); }
 
 		//! get element [m,n]
-		virtual const T& operator()(size_t row, size_t col) const {
-			size_t subs[2] = { row,col };
-
-			size_t ind = mxCalcSingleSubscript(getmxarray(), 2, subs);
-			return (*this)[ind];
-		}
+		virtual const T& operator()(size_t row, size_t col) const { return (*this)({ row,col }); }
 
 		//! set element at coordinate [x,y,z,...] specified by the vector elementCoord
-		virtual T& operator()(const std::vector<size_t>& elementCoord) {
-			size_t ind = mxCalcSingleSubscript(getmxarray(), elementCoord.size(), elementCoord.data());
-			return (*this)[ind];
-		} 
+		virtual T& operator()(const std::vector<size_t>& sub) { return (*this)[sub2ind(sub)]; }
 		
 		//! get element at coordinate [x,y,z,...] specified by the vector elementCoord///< get element at coordinate [x,y,z,...] specified by the vector elementCoord
-		virtual const T& operator()(const std::vector<size_t>& elementCoord) const {
-
-			size_t ind = mxCalcSingleSubscript(getmxarray(), elementCoord.size(), elementCoord.data());
-
-			return (*this)[ind]; 
-		} 
+		virtual const T& operator()(const std::vector<size_t>& sub) const {return (*this)[sub2ind(sub)];} 
 
 		virtual void resize(size_t num) { reshape(num,1); } ///< resize to hold n elements, keep old data, new data set to zeros
 		virtual void resize(size_t nRows, size_t nCols) { reshape(nRows, nCols); } ///< resize to hold MxN elements, keep old data, new data set to zeros
@@ -361,6 +348,130 @@ namespace extras {namespace cmex {
 					mexPrintf("\n");
 				}
 			}
+		}
+
+		///////////////////////////
+		//
+
+		//! concatenate with MxObject
+		//! just inherits default behavior from MxObject
+		NumericArray& concatenate(const MxObject& b, size_t dim) {
+			if (isConst()) { //self-manage the data
+				selfManage();
+			}
+			MxObject::concatenate(b, dim);
+			return *this;
+		}
+
+		//! Concatenate with generic array
+		template <typename M>
+		NumericArray& concatenate(const ArrayBase<M>& b, size_t dim) {
+			if (iscomplex()) { //error on complex data ---------> change in the future
+				throw("NumericArray::concatenate(): cat for complex data not implemented.");
+			}
+			if (isConst()) { //self-manage the data
+				selfManage();
+			}
+
+			////////////////////////////
+			// Compute new size
+
+			auto thisSz = size();
+			auto thatSz = end_obj.size();
+			size_t thisSz_len = thisSz.size();
+			size_t thatSz_len = thatSz.size();
+
+			size_t maxDim = std::max(thisSz.size(), thatSz.size());
+
+
+			// Loop over array dimensions and determine if sizes are compatible
+			thisSz.resize(maxDim);
+			thatSz.resize(maxDim);
+
+			for (size_t j = 0; j < maxDim; j++) {
+
+				if (j >= thisSz_len) {
+					thisSz[j] = 1;
+				}
+
+				if (j >= thatSz_len) {
+					thatSz[j] = 1;
+				}
+
+				if (j == dim) {
+					continue;
+				}
+
+				if (thisSz[j] != thatSz[j]) {
+					throw(std::runtime_error("incompatible sizes for concatenate"));
+				}
+			}
+
+			auto newSz = thisSz;
+			newSz[dim] = thisSz[dim] + thatSz[dim];
+
+			//////////////////////////////////////////////////
+			// Create Temporary array to hold new data
+
+			NumericArray<T> newArray(newSz);
+
+			//////////////////
+			// Loop over dimension dim and copy data for all other dimensions
+
+			size_t new_dim = 0; //accumulator for current position in newPtr
+			for (size_t d = 0; d < thisSz[dim]; d++) { //first loop over mxptr elements
+				//loop over other dims
+				for (size_t odim = 0; odim < newSz.size(); odim++) {
+					if (odim == dim) { //nothing to do for dim
+						continue;
+					}
+					//loop over indecies of odim and copy
+					for (size_t od = 0; od < thisSz[odim]; od++) {
+						std::vector<size_t> subs(newSz.size(), 0.0); //create subscript array with all zeros
+						subs[odim] = od; //index for dimension being copied
+						subs[dim] = d; //index for dimension being concatenated
+
+						newArray(subs) = (*this)(subs); //copy values
+						
+					}
+				}
+				new_dim++;
+			}
+
+			for (size_t d = 0; d < thatSz[dim]; d++) { //second loop over end_obj elements
+				//loop over other dims
+				for (size_t odim = 0; odim < newSz.size(); odim++) {
+					if (odim == dim) { //nothing to do for dim
+						continue;
+					}
+					//loop over indecies of odim and copy
+					for (size_t od = 0; od < thatSz[odim]; od++) {
+						std::vector<size_t> subs(newSz.size(), 0.0); //create subscript array with all zeros
+						subs[odim] = od; //index for dimension being copied
+						subs[dim] = d; //index for dimension being concatenated
+
+						auto val = b(subs); //make tmp copy of data
+
+						subs[dim] = new_dim; //change the sub, since newArray has different dim
+						newArray(subs) = val; //set value
+					}
+				}
+				new_dim++;
+			}
+
+
+			// Set cleanup
+
+			mxFree(mxGetData(getmxarray()));
+			mxSetData(mxGetData(newArray.getmxarray()));
+			mxSetData(newArray.getmxarray(), nullptr);
+			mxSetDimensions(getmxarray(), newSz.data(), newSz.size()); //change dimensions
+
+			if (isPersistent()) {
+				mxMakeMemoryPersistent(getdata());
+			}
+
+			return *this;
 		}
 
 	};

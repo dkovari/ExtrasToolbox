@@ -11,6 +11,18 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	out[5] = 5;
 	out(3, 0) = 33;
 
+	out.reshape({ 5,1 });
+
+
+	out.disp();
+
+	mexPrintf("Concatenate\n");
+	extras::cmex::NumericArray<double> second(5,1);
+	second[1] = 77;
+	second[2] = 99;
+	second.disp();
+	out.concatenate(second, 2);
+
 	out.disp();
 
 	plhs[0] = out;
