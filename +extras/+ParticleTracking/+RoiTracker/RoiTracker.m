@@ -10,4 +10,17 @@ classdef RoiTracker < extras.Async.ParameterProcessor %extras.Async.AsyncProcess
             this.ErrorCheckTimerPeriod = 1/20;
         end
     end
+    
+    %% IncludeImage
+    properties(Dependent)
+        IncludeImageInResult (1,1) logical;
+    end
+    methods
+        function tf = get.IncludeImageInResult(this)
+            tf = this.runMethod('IncludeImageData');
+        end
+        function set.IncludeImageInResult(this,val)
+            this.runMethod('IncludeImageData',val);
+        end
+    end
 end

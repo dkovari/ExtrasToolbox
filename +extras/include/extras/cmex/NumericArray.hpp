@@ -155,7 +155,7 @@ namespace extras {namespace cmex {
 		}
 
 		//! returns index corresponding to subscript
-		virtual size_t sub2ind(std::vector<size_t> subs) const {
+		virtual size_t sub2ind(const std::vector<size_t>& subs) const {
 			return MxObject::sub2ind(subs);
 		}
 

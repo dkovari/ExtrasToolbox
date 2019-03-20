@@ -251,8 +251,7 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
                                      'Period',this.ErrorCheckTimerPeriod,...
                                      'ErrorFcn',@(~,err) disp(err),...
                                      'TimerFcn',@(~,~) this.ErrorCheckTimerCallback);
-                
-
+             
              %% Setup the Results TImer
              try
                  delete(this.ResultsCheckTimer)

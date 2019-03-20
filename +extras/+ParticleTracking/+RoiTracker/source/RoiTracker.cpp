@@ -36,7 +36,7 @@
 #include "RoiTracker.hpp"
 
 extras::SessionManager::ObjectManager<extras::ParticleTracking::RoiTracker> manager;
-extras::ParticleTracking::RoiTrackerInterface<manager> mex_interface;
+extras::ParticleTracking::RoiTrackerInterface<extras::ParticleTracking::RoiTracker,manager> mex_interface;
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	mex_interface.mexFunction(nlhs, plhs, nrhs, prhs);

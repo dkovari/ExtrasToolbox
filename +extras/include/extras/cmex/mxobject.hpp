@@ -36,9 +36,8 @@ namespace extras {namespace cmex {
 		bool _isPersistent = false; //flag if data is persistent
 		bool _setFromConst = false; //flag if set from const
 
-
 		//internal use, reshape real numeric or char array
-		template<bool copy_data> void reshape_real_char(const std::vector<size_t> dims) {
+		template<bool copy_data> void reshape_real_char(const std::vector<size_t>& dims) {
 			if (_setFromConst) { //cannot reshape const
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
@@ -99,9 +98,8 @@ namespace extras {namespace cmex {
 			}	
 		}
 
-
 		//internal use, reshape real numeric or char array
-		template<bool copy_data> void reshape_imag(const std::vector<size_t> dims) {
+		template<bool copy_data> void reshape_imag(const std::vector<size_t>& dims) {
 			if (_setFromConst) { //cannot reshape const
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
@@ -180,7 +178,7 @@ namespace extras {namespace cmex {
 		}
 
 		//internal use, reshape cell
-		template<bool copy_data> void reshape_cell(const std::vector<size_t> dims) {
+		template<bool copy_data> void reshape_cell(const std::vector<size_t>& dims) {
 			if (_setFromConst) { //cannot reshape const
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
@@ -206,42 +204,86 @@ namespace extras {namespace cmex {
 			size_t oldNumel = numel();
 			size_t newNumel = extras::prod(dims);
 
+			size_t elsz = mxGetElementSize(_mxptr);
+
 			if (oldNumel >= newNumel) { //same size or smaller
 				for (size_t n = newNumel; n < oldNumel; n++) {
-					mxDestroyArray(mxGetCell(_mxptr, n));
-					mxSetCell(_mxptr, n, nullptr);
+					mxDestroyArray(mxGetCell(_mxptr,n));
 				}
-				size_t elsz = mxGetElementSize(_mxptr);
-				void* cellData = mxGetData(_mxptr);
-				cellData = mxRealloc(cellData, newNumel*elsz);
-				mxSetData(_mxptr, cellData);
-				mxSetDimensions(_mxptr, dims.data(), dims.size());
+				void* data = mxRealloc(mxGetData(_mxptr), newNumel*elsz);
+				mxSetData(_mxptr, data);
+				if (_isPersistent) {
+					mexMakeMemoryPersistent(data);
+				}
 			}
-			else { //bigger
-				mxArray* newPtr = mxCreateCellArray(dims.size(), dims.data());
+			else {
+				void* data = mxCalloc(newNumel, elsz);
 				if (copy_data) {
-					for (size_t n = 0; n < oldNumel; n++) {
-						mxSetCell(newPtr, n, mxGetCell(_mxptr, n));
-						mxSetCell(_mxptr, n, nullptr);
-					}
+					memcpy(data, mxGetData(_mxptr), elsz*oldNumel);
 				}
-				for (size_t n = 0; n < oldNumel; n++) {
-					mxDestroyArray(mxGetCell(_mxptr, n)); //destroy old cells
+				mxFree(mxGetData(_mxptr));
+				mxSetData(_mxptr, data);
+
+				if (_isPersistent) {
+					mexMakeMemoryPersistent(data);
 				}
-				mxFree(mxGetData(_mxptr)); //free array poiniting to cells
-				mxSetDimensions(_mxptr, dims.data(), dims.size());
-				mxSetData(_mxptr, mxGetData(newPtr));
-				mxSetData(newPtr, nullptr);
-				mxDestroyArray(newPtr);				
 			}
-			
-			if (_isPersistent) {
-				mexMakeArrayPersistent(_mxptr);
-			}
+			mxSetDimensions(_mxptr, dims.data(), dims.size());
 
 		}
 
-		template<bool copy_data> void reshape_struct(const std::vector<size_t> dims) {};
+		template<bool copy_data> void reshape_struct(const std::vector<size_t>& dims) {
+			if (_setFromConst) { //cannot reshape const
+				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+			}
+
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+
+			 //! nullptr -> return empty cell
+			if (_mxptr == nullptr) {
+				_mxptr = mxCreateStructArray(dims.size(), dims.data(), 0, nullptr);
+				_managemxptr = true;
+				_setFromConst = false;
+				if (_isPersistent) {
+					mexMakeArrayPersistent(_mxptr);
+				}
+				return;
+			}
+
+			if (!isstruct()) {
+				throw("MxObject::reshape_struct(): mxptr is not struct");
+			}
+
+			size_t oldNumel = numel();
+			size_t newNumel = extras::prod(dims);
+			size_t nfields = mxGetNumberOfFields(_mxptr);
+			size_t elsz = mxGetElementSize(_mxptr);
+			if (oldNumel >= newNumel) { //same size or smaller
+				for (size_t f = 0; f < nfields; f++) {
+					for (size_t n = newNumel; n < oldNumel; n++) {
+						mxDestroyArray(mxGetFieldByNumber(_mxptr, n, f));
+					}
+					void* data = mxRealloc(mxGetData(_mxptr), newNumel*nfields*elsz);
+					mxSetData(_mxptr, data);
+					if (_isPersistent) {
+						mexMakeMemoryPersistent(data);
+					}
+				}
+			}
+			else {
+				void* data = mxCalloc(nfields*newNumel, elsz);
+				if (copy_data) {
+					memcpy(data, mxGetData(_mxptr), elsz*oldNumel*nfields);
+				}
+				mxFree(mxGetData(_mxptr));
+				mxSetData(_mxptr, data);
+
+				if (_isPersistent) {
+					mexMakeMemoryPersistent(data);
+				}
+			}
+			mxSetDimensions(_mxptr, dims.data(), dims.size());
+		};
 	protected:
 
 		//! delete mxptr if needed
@@ -599,7 +641,7 @@ namespace extras {namespace cmex {
 		}
 
 		//! return 1-d index corresponding to subscript
-		size_t sub2ind(std::vector<size_t> subs) const {
+		size_t sub2ind(const std::vector<size_t>& subs) const {
 			return mxCalcSingleSubscript(_mxptr, subs.size(), subs.data());
 		}
 
@@ -628,10 +670,9 @@ namespace extras {namespace cmex {
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
-			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
-
 			// nullptr -> return numeric real double
 			if (_mxptr == nullptr) {
+				std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
 				_managemxptr = true;
 				_setFromConst = false;
@@ -640,6 +681,7 @@ namespace extras {namespace cmex {
 				}
 				return;
 			}
+
 			// Perform resize
 			switch (mxGetClassID(_mxptr)) {
 			case mxDOUBLE_CLASS:
@@ -684,10 +726,9 @@ namespace extras {namespace cmex {
 				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
-			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
-
-														   // nullptr -> return numeric real double
+			// nullptr -> return numeric real double
 			if (_mxptr == nullptr) {
+				std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
 				_mxptr = mxCreateNumericArray(dims.size(), dims.data(), mxDOUBLE_CLASS, mxREAL);
 				_managemxptr = true;
 				_setFromConst = false;
@@ -696,6 +737,7 @@ namespace extras {namespace cmex {
 				}
 				return;
 			}
+
 			// Perform resize
 			switch (mxGetClassID(_mxptr)) {
 			case mxDOUBLE_CLASS:

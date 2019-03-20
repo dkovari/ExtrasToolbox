@@ -27,7 +27,7 @@ namespace extras {
     	virtual T* getdata() = 0; ///< get pointer to raw data array
 
 		//! returns index corresponding to subscript
-		virtual size_t sub2ind(std::vector<size_t> subs) const = 0;
+		virtual size_t sub2ind(const std::vector<size_t>& subs) const = 0;
 
     	virtual T& operator[](size_t index) = 0; ///< set n-th element
     	virtual const T& operator[](size_t index) const = 0; ///< get n-th element

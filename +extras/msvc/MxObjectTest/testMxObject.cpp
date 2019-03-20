@@ -7,8 +7,9 @@ All rights reserved.
 #include <extras/cmex/MxCellArray.hpp>
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
-	/*
+
 	extras::cmex::NumericArray<double> out(10);
+
 
 	out[5] = 5;
 	out(3, 0) = 33;
@@ -16,6 +17,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	out.reshape({ 5,1 });
 
 	out.disp();
+
 
 	mexPrintf("Concatenate\n");
 	extras::cmex::NumericArray<double> second(5,1);
@@ -44,7 +46,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 		in.disp();
 	}
 
-
 	//////////////
 	// Test CellArray
 
@@ -52,7 +53,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	CA.reshape(2, 1);
 
 	plhs[1] = CA;
-	*/
+	
 
 	mxArray* c = mxCreateCellMatrix(2, 1);
 	mxSetCell(c, 0, mxCreateDoubleScalar(1));
@@ -99,9 +100,5 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 	mexPrintf("Sp0: %p\n", Sp0);
 	mexPrintf("Sp1: %p\n", Sp1);
-
-
-
-
 
 }

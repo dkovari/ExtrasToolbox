@@ -200,13 +200,14 @@ namespace extras { namespace ParticleTracking {
 
 	};
 
-
-
-
-	// Extend the ParamProcessorInterface
-	template<extras::SessionManager::ObjectManager<RoiTracker>& ObjManager> /*ObjType should be a derivative of RoiTracker*/
-	class RoiTrackerInterface :public extras::async::ParamProcessorInterface<RoiTracker, ObjManager> {
-		typedef extras::async::ParamProcessorInterface<RoiTracker, ObjManager> ParentType;
+	/** Extend the ParamProcessorInterface for use with RoiTracker type objects
+	 * Adds IncludeImageData method to the mexInterface
+	 * 
+	 * Usage: template ObjManager should be a reference to a manager for RoiTracker-class.
+	*/
+	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager>
+	class RoiTrackerInterface :public extras::async::ParamProcessorInterface<ObjType, ObjManager> {
+		typedef extras::async::ParamProcessorInterface<ObjType, ObjManager> ParentType;
 	protected:
 		void IncludeImageData(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			auto objPtr = ParentType::getObjectPtr(nrhs, prhs);

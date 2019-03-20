@@ -151,7 +151,7 @@ namespace extras{
     	
 		
 		//! returns index corresponding to subscript
-		virtual size_t sub2ind(std::vector<size_t> subs) const {
+		virtual size_t sub2ind(const std::vector<size_t>& subs) const {
 			size_t idx = subs[0];
 			for (size_t n = 1; n < subs.size(); ++n) {
 				if (subs[n] == 0) { //ignore singleton dimensions

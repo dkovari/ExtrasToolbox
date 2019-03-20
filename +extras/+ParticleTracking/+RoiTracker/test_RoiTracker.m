@@ -99,10 +99,19 @@ end
 
 %% define callback function
 function CB(data,hPlt)
+
+if ~iscell(data)
+    res=data;
+else
+    res=data{1};
+    figure(200);gcf;
+    imagesc(data{2});
+end
+
 %x =[data.X]
 %y = [data.Y]
-hPlt.XData = [data.X];
-hPlt.YData = [data.Y];
+hPlt.XData = [res.X];
+hPlt.YData = [res.Y];
 persistent n;
 if isempty(n)
     n=1;

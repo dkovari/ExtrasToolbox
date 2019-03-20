@@ -35,11 +35,8 @@ namespace extras{namespace cmex{
 
 		void moveFrom(mxArrayGroup& src) {
 			destroyArrays();
-			_mxptrs.resize(src.size(), nullptr);
-			for (size_t n = 0; n < src.size(); n++) {
-				_mxptrs[n] = src[n];
-				src._mxptrs.clear();
-			}
+			_mxptrs = std::move(src._mxptrs);
+			src._mxptrs.clear();
 		}
 
 	public:
@@ -140,8 +137,8 @@ namespace extras{namespace cmex{
 			_mxptrs.push_back(pA);
 		}
 
-		//! push (non-const) mxArray* to back
-		//! will take ownership of array;
+		//! push const mxArray* to back
+		//! makes copy of array
 		void push_back(const mxArray* pA) {
 			mxArray* p = mxDuplicateArray(pA);
 			mexMakeArrayPersistent(p);
