@@ -416,12 +416,6 @@ namespace extras {namespace cmex {
 			return std::pair<mxArray*, bool>(oldPtr, bool(_setFromConst));
 		}
 
-		//! returns (non-const) mxArray* _mxptr, for internal use by derived classes
-		// does not change memory management rules
-		mxArray* getmxarray() {
-			return _mxptr;
-		}
-
 	public:
 
 		//! destroy object
@@ -545,6 +539,12 @@ namespace extras {namespace cmex {
 			return _mxptr;
 		}
 
+		//! returns (non-const) mxArray* _mxptr, for internal use by derived classes
+		// does not change memory management rules
+		mxArray* getmxarray() {
+			return _mxptr;
+		}
+
 		///////////////////////////////////////////////////////////////////////////////////////
 		// MxObject Info
 
@@ -639,6 +639,9 @@ namespace extras {namespace cmex {
 			}
 			return mxGetClassID(_mxptr);
 		}
+
+		//! return number of bytes used to represent data element
+		size_t elementBytes() const { mxGetElementSize(_mxptr); }
 
 		//! return 1-d index corresponding to subscript
 		size_t sub2ind(const std::vector<size_t>& subs) const {

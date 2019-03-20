@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RoiTracker", "..\+ParticleT
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RoiTracker3D", "..\+ParticleTracking\+RoiTracker\msvc\RoiTracker3D\RoiTracker3D.vcxproj", "{13C8E17C-7159-40C8-8C88-0A824A96FF21}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsyncMxFileWriter", "..\+mxfile\msvc\AsyncMxFileWriter.vcxproj", "{3679A19A-48CB-4A07-9A90-F0225256D9AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -117,6 +119,12 @@ Global
 		{13C8E17C-7159-40C8-8C88-0A824A96FF21}.Release|x64.ActiveCfg = Release|x64
 		{13C8E17C-7159-40C8-8C88-0A824A96FF21}.Release|x64.Build.0 = Release|x64
 		{13C8E17C-7159-40C8-8C88-0A824A96FF21}.Release|x86.ActiveCfg = Release|x64
+		{3679A19A-48CB-4A07-9A90-F0225256D9AF}.Debug|x64.ActiveCfg = Debug|x64
+		{3679A19A-48CB-4A07-9A90-F0225256D9AF}.Debug|x64.Build.0 = Debug|x64
+		{3679A19A-48CB-4A07-9A90-F0225256D9AF}.Debug|x86.ActiveCfg = Debug|x64
+		{3679A19A-48CB-4A07-9A90-F0225256D9AF}.Release|x64.ActiveCfg = Release|x64
+		{3679A19A-48CB-4A07-9A90-F0225256D9AF}.Release|x64.Build.0 = Release|x64
+		{3679A19A-48CB-4A07-9A90-F0225256D9AF}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
