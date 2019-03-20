@@ -16,7 +16,7 @@ All rights reserved.
 
 namespace extras{ namespace cmex{
 
-	///get dimensions of the mxArray* as a std::vector
+	//! get dimensions of the mxArray* as a std::vector
     std::vector<size_t> size(const mxArray* mxptr){
         std::vector<size_t> out;
         if(mxptr==nullptr){
@@ -30,7 +30,7 @@ namespace extras{ namespace cmex{
         return out;
     }
 
-	///number of elements in an mxArray*
+	//! number of elements in an mxArray*
 	size_t numel(const mxArray* mxptr){
 		if (mxptr == nullptr) {
 			throw(std::runtime_error("numel mxArray* == nullptr, cannot get numel."));
@@ -38,7 +38,7 @@ namespace extras{ namespace cmex{
         return mxGetNumberOfElements(mxptr);
     }
 
-	///convert mxArray* with ClassID=mxCHAR_CLASS to a std::string
+	//! convert mxArray* with ClassID=mxCHAR_CLASS to a std::string
     std::string getstring(const mxArray* mxptr){
 		if (!mxIsChar(mxptr)) {
 			throw(std::runtime_error("extras::cmex::getstring(): cannot return string from mxArray that is not mxCHAR type."));
@@ -49,12 +49,12 @@ namespace extras{ namespace cmex{
         return out;
     }
 
-    ///copy array
+    //! copy array
     template<typename T> void valueCopy(T* dst, const T* src, size_t numel){
         memcpy(dst,src,numel*sizeof(T));
     }
 
-    ///copy array by value, element-by-element
+    //! copy array by value, element-by-element
     template<typename T, typename M> void valueCopy(T* dst, const M* src, size_t numel){
         //mexPrintf("valueCopy(T*, M*,...)\n");
         for(size_t n=0;n<numel;++n){
@@ -63,9 +63,9 @@ namespace extras{ namespace cmex{
         }
     }
 
-  	///copy array by value
-  	// sametype<T>(src_mxClassID) is true, then memcpy is used to copy data between src and dst
-  	// otherwise values copied element by element, using standard type conversion
+  	//! copy array by value
+  	//! sametype<T>(src_mxClassID) is true, then memcpy is used to copy data between src and dst
+  	//! otherwise values copied element by element, using standard type conversion
   	template<typename T> void valueCopy(T* dst, const void* src,size_t numel, mxClassID src_mxClassID) {
   		if (sametype<T>(src_mxClassID)){
   			memcpy((void*)dst, src, numel * sizeof(T));
@@ -109,21 +109,20 @@ namespace extras{ namespace cmex{
   		}
   	}
 
-    ///copy mxArray by value
+    /// copy mxArray by value
     template <typename T> void valueCopy(T* dst, const mxArray* src){
         valueCopy(dst,mxGetData(src),mxGetNumberOfElements(src),mxGetClassID(src));
     }
 
 
-	/// check if mxSTRUCT has field
+	//! check if mxSTRUCT has field
 	bool hasField(const mxArray* mxptr,const char* fieldname) {
 		if (!mxIsStruct(mxptr)) { return false; }
 		return mxGetFieldNumber(mxptr, fieldname) >= 0;
 
 	}
 
-
-	/// check for array equality
+	//! check for array equality
 	// arrays must be same type, size, and have same elements
 	// passing cell or struct throws error
 	bool isequal(const mxArray* A, const mxArray* B) {

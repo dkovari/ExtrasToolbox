@@ -641,7 +641,7 @@ namespace extras {namespace cmex {
 		}
 
 		//! return number of bytes used to represent data element
-		size_t elementBytes() const { mxGetElementSize(_mxptr); }
+		size_t elementBytes() const { return mxGetElementSize(_mxptr); }
 
 		//! return 1-d index corresponding to subscript
 		size_t sub2ind(const std::vector<size_t>& subs) const {
@@ -893,7 +893,7 @@ namespace extras {namespace cmex {
 					}
 					//loop over indecies of odim and copy
 					for (size_t od = 0; od < thisSz[odim]; od++) {
-						std::vector<size_t> subs(newSz.size(),0.0); //create subscript array with all zeros
+						std::vector<size_t> subs(newSz.size(),0); //create subscript array with all zeros
 						subs[odim] = od; //index for dimension being copied
 						subs[dim] = d; //index for dimension being concatenated
 						/// NOTE: all other dims will point to first element
@@ -948,7 +948,7 @@ namespace extras {namespace cmex {
 					}
 					//loop over indecies of odim and copy
 					for (size_t od = 0; od < thatSz[odim]; od++) {
-						std::vector<size_t> subs(newSz.size(), 0.0); //create subscript array with all zeros
+						std::vector<size_t> subs(newSz.size(), 0); //create subscript array with all zeros
 						subs[odim] = od; //index for dimension being copied
 						subs[dim] = d; //index for dimension being concatenated
 						/// NOTE: all other dims will point to first element

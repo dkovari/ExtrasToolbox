@@ -12,79 +12,150 @@ All rights reserved.
 namespace extras{namespace cmex{
 
 
-/// Return element size from mxclassID
-size_t elementsize(mxClassID ClassID);
+//! returns number of bytes used by data element for give type
+size_t elementBytes(mxClassID cid, bool isComplex = false);
 
-/// return true if mxClassID is numeric type
+//! return true if mxClassID is numeric type
 bool isnumeric(mxClassID ClassID);
 
-/// convert mxClassID to char array
+//! convert mxClassID to char array
 const char* classname(mxClassID ClassID);
 
-/// return true if mxClassID is integer type
+//! return true if mxClassID is integer type
 bool isint(mxClassID ClassID);
 
 
 /////////////////////////////
 // Implementation Below
 
-size_t elementsize(mxClassID ClassID){
-	switch (ClassID) {
-	case mxDOUBLE_CLASS:
+//! returns number of bytes used by data element for give type
+size_t elementBytes(mxClassID cid, bool isComplex) {
+	switch (cid) {
+	case mxLOGICAL_CLASS:
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * sizeof(bool);
+		}
+		else {
+			return sizeof(bool);
+		}
+#else
 		return sizeof(double);
+#endif
+	case mxDOUBLE_CLASS:
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * sizeof(double);
+		}
+		else {
+			return sizeof(double);
+		}
+#else
+		return sizeof(double);
+#endif
 	case mxSINGLE_CLASS:
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * sizeof(float);
+		}
+		else {
+			return sizeof(float);
+		}
+#else
 		return sizeof(float);
+#endif
 	case mxINT8_CLASS:
-		return sizeof(int8_t);
 	case mxUINT8_CLASS:
-		return sizeof(uint8_t);
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * sizeof(int8_t);
+		}
+		else {
+			return sizeof(int8_t);
+		}
+#else
+		return sizeof(int8_t);
+#endif
 	case mxINT16_CLASS:
-		return sizeof(int16_t);
 	case mxUINT16_CLASS:
-		return sizeof(uint16_t);
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * sizeof(int16_t);
+		}
+		else {
+			return sizeof(int16_t);
+		}
+#else
+		return sizeof(int16_t);
+#endif
 	case mxINT32_CLASS:
-		return sizeof(int32_t);
 	case mxUINT32_CLASS:
-		return sizeof(uint32_t);
-		break;
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * sizeof(int32_t);
+		}
+		else {
+			return sizeof(int32_t);
+		}
+#else
+		return sizeof(int32_t);
+#endif
 	case mxINT64_CLASS:
-		return sizeof(int64_t);
 	case mxUINT64_CLASS:
-		return sizeof(uint64_t);
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * sizeof(int64_t);
+		}
+		else {
+			return sizeof(int64_t);
+		}
+#else
+		return sizeof(int64_t);
+#endif
+	case mxCHAR_CLASS:
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * 2;
+		}
+		else {
+			return 2;
+		}
+#else
+		return 2;
+#endif
+	case mxCELL_CLASS:
+	case mxSTRUCT_CLASS:
+#if MX_HAS_INTERLEAVED_COMPLEX
+		if (isComplex) {
+			return 2 * sizeof(void*);
+		}
+		else {
+			return sizeof(void*);
+		}
+#else
+		return sizeof(void*);
+#endif
 	default:
-		return 0;
+		throw(std::runtime_error(std::string("elementByte(): not implemented for mxClassID=") + std::string(classname(cid))));
 	}
 }
 
 bool isnumeric(mxClassID ClassID) {
 	switch (ClassID) {
 	case mxDOUBLE_CLASS:
-		return true;
 	case mxSINGLE_CLASS:
-		return true;
 	case mxINT8_CLASS:
-		return true;
 	case mxUINT8_CLASS:
-		return true;
 	case mxINT16_CLASS:
-		return true;
 	case mxUINT16_CLASS:
-		return true;
 	case mxINT32_CLASS:
-		return true;
 	case mxUINT32_CLASS:
-		return true;
 	case mxINT64_CLASS:
-		return true;
 	case mxUINT64_CLASS:
 		return true;
 	default:
 		return false;
 	}
-}
-
-bool isnumeric(const mxArray* mxa){
-	return isnumeric(mxGetClassID(mxa));
 }
 
 const char* classname(mxClassID ClassID) {
