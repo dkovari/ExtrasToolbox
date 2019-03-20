@@ -226,11 +226,11 @@ namespace extras{namespace ParticleTracking{
 
         // Jacobean
         double * J = (double*) malloc(dpp.dim*sizeof(double));
-        double J2;
+        double J2; //|Jacobean|^2
 
-        size_t itr = 0;
-        double s = INFINITY;
-    	double lastR2;
+        size_t itr = 0; //iteration count
+        double s = INFINITY; //step_size
+    	double lastR2; //last sq. residual
         do{
     		lastR2 = R2_N;
             // Jacobean & residual

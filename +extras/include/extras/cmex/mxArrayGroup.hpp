@@ -161,14 +161,19 @@ namespace extras{namespace cmex{
 		//! get array at index n
 		//! does not release array from mxarraygroup control
 		//! so DO NOT DELETE, also ptr will not live past the mxarraygroup
-		mxArray* operator[](size_t n) const {
+		mxArray* operator[](size_t n) {
+			return _mxptrs[n];
+		}
+
+		//! get const mxarray* at index n
+		const mxArray* operator[](size_t n) const{
 			return _mxptrs[n];
 		}
 
 		//! get array at index n
 		//! does not release array from mxarraygroup control
 		//! so DO NOT DELETE, also ptr will not live past the mxarraygroup
-		mxArray* getArray(size_t n) const {
+		mxArray* getArray(size_t n){
 			return _mxptrs[n];
 		}
 

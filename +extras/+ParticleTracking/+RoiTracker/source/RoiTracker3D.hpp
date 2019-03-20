@@ -12,7 +12,29 @@ namespace extras {namespace ParticleTracking {
 
 	/** RoiTracker for 3D Tracking using splineroot LUT search
 	 * In addition to the roiList fields used by RoiTracker (which are passed to RoiTracker to find XY locations),
-	 * this class also checks if each 
+	 * this class also checks if each LUT are defined for each roi. If they are, it computes the imradialavd around the
+	 * determined XY coordinate and then finds the position in the LUT using splineroot.
+	 *
+	 * LUT results are added to each roi's LUT struct field
+	 *
+	 * The Structure of the resulting data will look like this:
+	 *		result(n).
+	 *				 .Window
+	 *				 .UUID
+	 *				 ... % all input fields, passed to output
+	 *				 .X
+	 *				 .Y
+	 *				 .RadialAverage
+	 *				 .LUT(k).
+	 *						.... % all input fields passed to output
+	 *						.Result.
+	 *								.Z -> calculated position in lut
+	 *								.varZ -> statistical variance of Z
+	 *								.nItr -> number of iterations
+	 *								.s -> last newton step size
+	 *								.R2 -> last sq. residual
+	 *								.dR2frac -> fractional change in sq residual at last step
+	 *								.initR2 -> initial sq. residual from initial nearest knot guess
 	*/
 	class RoiTracker3D : public RoiTracker {
 	protected:
@@ -38,11 +60,11 @@ namespace extras {namespace ParticleTracking {
 			////////////////
 			// Get image
 			const mxArray* mxI = nullptr;
-			if (mxIsStruct(TaskArgs.getArray(0))) {
-				mxI = mxGetField(TaskArgs.getArray(0), 0, "ImageData");
+			if (mxIsStruct(TaskArgs.getConstArray(0))) {
+				mxI = mxGetField(TaskArgs.getConstArray(0), 0, "ImageData");
 			}
 			else {
-				mxI = TaskArgs.getArray(0);
+				mxI = TaskArgs.getConstArray(0);
 			}
 			
 			//loop over roi and calc z if needed
@@ -198,8 +220,6 @@ namespace extras {namespace ParticleTracking {
 						}
 					}
 				}
-
-
 			}
 
 			/////////////////
