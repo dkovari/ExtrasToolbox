@@ -12,6 +12,8 @@ All rights reserved.
 #include <radialcenter/source/radialcenter_mex.hpp>
 #include <barycenter/source/barycenter_mex.hpp>
 
+#include <extras/mxfile/mxfile_writer.hpp>
+
 
 namespace extras { namespace ParticleTracking {
 
@@ -126,6 +128,9 @@ namespace extras { namespace ParticleTracking {
 			return results;
 
 		}
+
+		std::atomic_bool _SaveResults = false;
+		extras::mxfile::AsyncMxFileWriter _AsyncWriter;
 	public:
 
 		//! default constructor changes pMap to point to an RoiParameterMap
@@ -197,6 +202,21 @@ namespace extras { namespace ParticleTracking {
 			// add task to the TaskList
 			extras::async::ParamProcessor::pushTask(nrhs, prhs);
 		}
+
+		///////////////////////////////
+		// File Writer
+
+		void setResultFilepath(std::string filepath) {
+
+		}
+
+		std::string getResultsFilepath() const { return _AsyncWriter.filepath(); }
+
+		void pauseResultsWriter() { _AsyncWriter.pause(); }
+		void resumeResultsWriter() { _AsyncWriter.resume();}
+
+		void saveResults(bool tf) {_SaveResults = tf;}
+		bool saveResults() const { return _SaveResults; }
 
 	};
 
