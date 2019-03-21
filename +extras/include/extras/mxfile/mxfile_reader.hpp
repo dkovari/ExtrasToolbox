@@ -15,6 +15,8 @@ All rights reserved.
 #include <extras/cmex/mxClassIDhelpers.hpp>
 #include <extras/numeric.hpp>
 #include <extras/SessionManager/mexInterface.hpp>
+#include <extras/cmex/mxArrayGroup.hpp>
+#include <extras/cmex/MxCellArray.hpp>
 
 /********************************************************************
 COMPRESSION Includes & Libs
@@ -98,6 +100,11 @@ namespace extras { namespace mxfile {
 		//! return gzFile (hides inherited getFP()
 		gzFile getFP() const {
 			return _fp;
+		}
+
+		//! return byte offset in the file;
+		size_t getOffset() const {
+			return gzoffset(_fp);
 		}
 	};
 
@@ -345,6 +352,8 @@ namespace extras { namespace mxfile {
 		std::mutex _RPmutex; //mutex protecting _ReadPointer
 		mutable GZFILE_ReadPointer _ReadPointer; //pointer class for gzFile, proteced by locks using _RPmutex
 		std::string _filepath;
+		size_t _compressedSize;
+		size_t _currentCompressedPosition;
 	public:
 		//! return true if file is open
 		bool isFileOpen() const {
@@ -382,9 +391,23 @@ namespace extras { namespace mxfile {
 			}
 		}
 
-		//! open specified file for writing
+		//! open specified file for reading
 		void openFile(std::string fpth) {
 			closeFile();
+
+			//determine size of file
+			FILE* fp = fopen(fpth.c_str(), "rb");
+			if (fp == nullptr) {
+				throw(std::runtime_error(std::string("MxFileReader::openFile(): returned null, file:'") + std::string(fpth) + std::string("' could not be opened.")));
+			}
+			if (fseek(fp, 0, SEEK_END) != 0) {
+				fclose(fp);
+				throw(std::runtime_error(std::string("MxFileReader::openFile(): file:'") + std::string(fpth) + std::string("' Could not determine file size.")));
+			}
+			_compressedSize = ftell(fp);
+			fclose(fp); //close
+
+
 			gzFile gzf = gzopen(fpth.c_str(), "rb");
 			if (gzf == NULL) {
 				throw(std::runtime_error(std::string("MxFileReader::openFile(): returned null, file:'") + std::string(fpth) + std::string("' could not be opened.")));
@@ -410,7 +433,34 @@ namespace extras { namespace mxfile {
 			if (isEOF()) {
 				throw(std::runtime_error(std::string("MxFileReader::readNextArray() File:'") + _filepath + std::string("'. Reached End of File.")));
 			}
-			return readNext(_ReadPointer);
+			cmex::MxObject out = readNext(_ReadPointer);
+			_currentCompressedPosition = _ReadPointer.getOffset();
+			return out;
+		}
+
+		//! get compressed size of file
+		size_t getCompressedSize() const {
+			if (!isFileOpen()) {
+				throw(std::runtime_error(std::string("MxFileReader::readNextArray() file:'") + _filepath + std::string("' is not open.")));
+			}
+			return _compressedSize;
+		}
+
+		//! get current (compressed) position in file
+		size_t getPositionInFile() const {
+			if (!isFileOpen()) {
+				throw(std::runtime_error(std::string("MxFileReader::readNextArray() file:'") + _filepath + std::string("' is not open.")));
+			}
+			return _currentCompressedPosition;
+		}
+
+		//! fraction of load progress (via ratio remaining compressed data)
+		double loadProgress() const {
+			if (!isFileOpen()) {
+				return 0;
+			}
+			return (double)_currentCompressedPosition / (double)_compressedSize;
+			
 		}
 	};
 
@@ -442,6 +492,19 @@ namespace extras { namespace mxfile {
 			bool isopen = ParentType::getObjectPtr(nrhs, prhs)->isFileOpen();
 			plhs[0] = mxCreateLogicalScalar(isopen);
 		}
+		void getCompressedSize(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			size_t val = ParentType::getObjectPtr(nrhs, prhs)->getCompressedSize();
+			plhs[0] = mxCreateDoubleScalar(val);
+		}
+		void getPositionInFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			size_t val = ParentType::getObjectPtr(nrhs, prhs)->getPositionInFile();
+			plhs[0] = mxCreateDoubleScalar(val);
+		}
+		void loadProgress(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			size_t val = ParentType::getObjectPtr(nrhs, prhs)->loadProgress();
+			plhs[0] = mxCreateDoubleScalar(val);
+		}
+
 	public:
 		MxFileReaderInterface() {
 			using namespace std::placeholders;
@@ -451,7 +514,196 @@ namespace extras { namespace mxfile {
 			ParentType::addFunction("readNextArray", std::bind(&MxFileReaderInterface::readNextArray, this, _1, _2, _3, _4));
 			ParentType::addFunction("isEOF", std::bind(&MxFileReaderInterface::isEOF, this, _1, _2, _3, _4));
 			ParentType::addFunction("isFileOpen", std::bind(&MxFileReaderInterface::isFileOpen, this, _1, _2, _3, _4));
+			ParentType::addFunction("getCompressedSize", std::bind(&MxFileReaderInterface::getCompressedSize, this, _1, _2, _3, _4));
+			ParentType::addFunction("getPositionInFile", std::bind(&MxFileReaderInterface::getPositionInFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("loadProgress", std::bind(&MxFileReaderInterface::loadProgress, this, _1, _2, _3, _4));
 		}
 	};
 
+
+	////////////////////////////////////////////
+	// Async Reader
+
+	//! Asynchronous File Reader
+	class AsyncMxFileReader {
+	protected:
+		mutable std::mutex _ResultsGroupMutex; //mutex lock for _ResultsGroup
+		cmex::mxArrayGroup _ResultsGroup; //protected by _ResultsGroupMutex
+
+
+		MxFileReader _Reader; //read for loading data from file
+
+		std::thread mThread;
+		std::atomic_bool ProcessRunning = false; //flag for stopping to processing loop
+		std::atomic_bool _atEOF = false;
+
+		std::atomic_bool ErrorFlag;
+		std::mutex LastErrorMutex;
+		std::exception_ptr LastError = nullptr;
+
+		void LoadDataLoop() {
+			try {
+				while (_Reader.isFileOpen() && ProcessRunning) {
+					if (_Reader.isEOF()) {
+						_atEOF = true;
+						ProcessRunning = false;
+						return;
+					}
+					cmex::MxObject res = _Reader.readNextArray(); //read next data
+					std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results
+					_ResultsGroup.push_back(res); //move data to back of results list
+				}
+			}
+			catch (...) {
+				ProcessRunning = false;
+				ErrorFlag = true;
+				std::lock_guard<std::mutex> lock(LastErrorMutex);
+				LastError = std::current_exception();
+				return;
+			}
+			ProcessRunning = false;
+		}
+
+		//! immediately halts LoadDataLoop
+		virtual void StopProcessor() {
+			ProcessRunning = false;
+			std::this_thread::sleep_for(std::chrono::microseconds(1000)); //let some time pass
+			if (mThread.joinable()) {
+				mexPrintf("\tHalting AsyncMxFileReader");
+				mexEvalString("pause(0.2)");
+				mThread.join();
+				mexPrintf("...done.\n");
+				mexEvalString("pause(0.1)");
+			}
+		}
+
+		//! launch thread
+		virtual void StartProcessor() {
+			if (!_Reader.isFileOpen()) {
+				throw("File is not open, cannot StartProcessor()");
+			}
+			_atEOF = false;
+			ErrorFlag = false;
+			ProcessRunning = true;
+			try {
+				mThread = std::thread(&AsyncMxFileReader::LoadDataLoop, this);
+			}
+			catch (...) {
+				ProcessRunning = false;
+				throw;
+			}
+		}
+	public:
+		//! destructor
+		virtual ~AsyncMxFileReader() {
+			StopProcessor();
+			_Reader.closeFile();
+		}
+
+		//! get compressed size of file
+		size_t getCompressedSize() const {return _Reader.getCompressedSize();}
+
+		//! get current (compressed) position in file
+		size_t getPositionInFile() const {return _Reader.getPositionInFile;}
+
+		//! fraction of load progress (via ratio remaining compressed data)
+		double loadProgress() const {return _Reader.loadProgress();}
+
+		//! filepath used by reader
+		std::string filepath() const {
+			return _Reader.filepath();
+		}
+
+		//check if reached end of file
+		bool isEOF() const { return _atEOF; }
+
+		//! check if thread is still running
+		bool threadRunning() const { return ProcessRunning; }
+
+		//! open specified file for reading
+		void openFile(std::string fpth) {
+			StopProcessor();
+			_Reader.openFile(fpth);
+			_atEOF = false;
+		}
+
+		//! open specified file for reading
+		void closeFile() {
+			StopProcessor();
+			_Reader.closeFile();
+		}
+
+		//!start or continue loading data
+		void loadData() {
+			if (!ProcessRunning) {
+				StartProcessor();
+			}
+		}
+		//!start or continue loading data
+		void resume() { loadData(); }
+
+		//!pause data loading
+		void pause() {
+			StopProcessor();
+		}
+
+		//! stop loading and reset position back to begining
+		//! also frees any data remaining in the result array
+		void cancel() {
+			if (!_Reader.isFileOpen()) {
+				return;
+			}
+			StopProcessor();
+			auto fpth = filepath();
+			closeFile();
+			{
+				std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results
+				_ResultsGroup = cmex::mxArrayGroup();
+			}
+			
+			openFile(fpth);
+		}
+
+		//! gets loaded data but does not clear the mxArrayGroup holding results
+		cmex::MxObject getLoadedData() const {
+			std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results (pauses loading loop)
+			if (_ResultsGroup.size() < 0) {
+				return cmex::MxCellArray(); //return empty cell;
+			}
+
+		}
+
+		//! gets loaded data and clears the mxArrayGroup
+		cmex::MxObject getLoadedDataAndClear() const {
+
+		}
+
+
+		/// true if there was an error
+		virtual bool wasErrorThrown() const {
+			return ErrorFlag;
+		}
+
+		/// Clears the error pointer and error flag.
+		/// After calling ErroFlag=false and LastError=nullptr
+		virtual void clearError() {
+			ErrorFlag = false;
+			std::lock_guard<std::mutex> lock(LastErrorMutex);
+			LastError = nullptr;
+		}
+
+		///check for errors thrown within the processing loop
+		///returns exception_ptr to the thrown exception
+		///if there aren't any exceptions, returns nullptr
+		virtual std::exception_ptr getError() const {
+			//read exception flags
+			//see discussion here: https://stackoverflow.com/questions/41288428/is-stdexception-ptr-thread-safe
+			if (ErrorFlag) { //yes, exception was thrown
+				return LastError;
+			}
+			else {//no exception, return nullptr
+				return nullptr;
+			}
+		}
+	};
 }}

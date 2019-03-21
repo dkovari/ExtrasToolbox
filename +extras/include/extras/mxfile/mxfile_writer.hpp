@@ -16,6 +16,7 @@ All rights reserved.
 #include <extras/cmex/mxobject.hpp>
 #include <extras/SessionManager/mexInterface.hpp>
 #include <extras/string_extras.hpp>
+#include <extras/async/AsyncProcessor.hpp>
 
 /********************************************************************
 COMPRESSION Includes
@@ -299,7 +300,7 @@ namespace extras {namespace mxfile {
 		}
 
 		//! close the file
-		void closeFile() {
+		virtual void closeFile() {
 			if (isFileOpen()) {
 				std::lock_guard<std::mutex> lock(_WPmutex);
 				gzclose(_WritePointer.getFP());
@@ -309,7 +310,7 @@ namespace extras {namespace mxfile {
 
 		//! open specified file for writing
 		//! automatically adds ".mxf.gz" file extension if not included
-		void openFile(std::string fpth) {
+		virtual void openFile(std::string fpth) {
 			closeFile();
 			std::lock_guard<std::mutex> lock(_WPmutex);
 			auto fp_ext = validateFileExt(fpth);
@@ -319,7 +320,7 @@ namespace extras {namespace mxfile {
 
 		//!open file for writing (using MATLAB args)
 		//! automatically add ".mxf.gz" file extension if not included
-		void openFile(size_t nrhs, const mxArray** prhs) {
+		virtual void openFile(size_t nrhs, const mxArray** prhs) {
 			if (nrhs < 1) {
 				throw("MxFileWriter::openWriter() expected one argument");
 			}
@@ -340,7 +341,6 @@ namespace extras {namespace mxfile {
 			writeList(Serialize(nrhs, prhs), _WritePointer);
 		}
 	};
-
 
 	//! implement mexInterface for MxFileWriter
 	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of MxFileWriter*/
@@ -374,4 +374,91 @@ namespace extras {namespace mxfile {
 			ParentType::addFunction("isFileOpen", std::bind(&MxFileWriterInterface::isFileOpen, this, _1, _2, _3, _4));
 		}
 	};
+
+
+	///////////////////////////////////////////////
+	// Async Writer
+	class AsyncMxFileWriter : public MxFileWriter, virtual public extras::async::AsyncProcessor {
+	protected:
+		//! redefine StartProcessor to check if file is open
+		virtual void StartProcessor() {
+			if (!isFileOpen()) {
+				throw(std::runtime_error(std::string("AsyncMxFileWriter::StartProcessor() file:'") + _filepath + std::string("' is not open. Cannot start processor.")));
+			}
+			extras::async::AsyncProcessor::StartProcessor();
+		}
+
+		///Overloadable virtual method for Processing Tasks in the task list
+		virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) {
+			MxFileWriter::writeArrays(args.size(), args);
+		}
+
+	public:
+		//! destructor
+		virtual ~AsyncMxFileWriter() { 
+			ProcessTasksAndEnd();
+			closeFile();
+		}
+
+		//! default constructor
+		AsyncMxFileWriter() {
+			_firstTask = false;  //change first task flag, so that processor is not automatically started.
+		}
+
+		//! close the file
+		//! stops processor before closing
+		virtual void closeFile() {
+			extras::async::AsyncProcessor::StopProcessor();
+			MxFileWriter::closeFile();
+		}
+
+		//! open specified file for writing
+		//! automatically adds ".mxf.gz" file extension if not included
+		//! starts processor
+		virtual void openFile(std::string fpth) {
+			MxFileWriter::openFile(std::move(fpth));
+			resume();
+		}
+
+		//! write the matlab arrays to the file
+		virtual void writeArrays(size_t nrhs, const mxArray** prhs) {
+			pushTask(nrhs, prhs);
+		}
+
+	};
+
+
+	//! implement mexInterface for AsyncMxFileWriter
+	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of AsyncMxFileWriter*/
+	class AsyncMxFileWriterInterface : public extras::async::AsyncMexInterface<ObjType, ObjManager> {
+		typedef extras::async::AsyncMexInterface<ObjType, ObjManager> ParentType;
+	protected:
+		void openFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->openFile(nrhs - 1, &prhs[1]);
+		}
+		void closeFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->closeFile();
+		}
+		void filepath(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			cmex::MxObject fpth = ParentType::getObjectPtr(nrhs, prhs)->filepath();
+			plhs[0] = fpth;
+		}
+		void writeArrays(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->writeArrays(nrhs - 1, &prhs[1]);
+		}
+		void isFileOpen(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			bool isopen = ParentType::getObjectPtr(nrhs, prhs)->isFileOpen();
+			plhs[0] = mxCreateLogicalScalar(isopen);
+		}
+	public:
+		AsyncMxFileWriterInterface() {
+			using namespace std::placeholders;
+			ParentType::addFunction("openFile", std::bind(&AsyncMxFileWriterInterface::openFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("closeFile", std::bind(&AsyncMxFileWriterInterface::closeFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("filepath", std::bind(&AsyncMxFileWriterInterface::filepath, this, _1, _2, _3, _4));
+			ParentType::addFunction("writeArrays", std::bind(&AsyncMxFileWriterInterface::writeArrays, this, _1, _2, _3, _4));
+			ParentType::addFunction("isFileOpen", std::bind(&AsyncMxFileWriterInterface::isFileOpen, this, _1, _2, _3, _4));
+		}
+	};
+
 }}

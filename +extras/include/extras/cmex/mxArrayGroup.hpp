@@ -201,6 +201,11 @@ namespace extras{namespace cmex{
 			mexMakeArrayPersistent(_mxptrs[i]);
 		}
 
+		//! get array of  const mxArray*
+		operator const mxArray **() const{
+			return (const mxArray **)_mxptrs.data();
+		}
+
 		//////////////////
 		// Iterators
 
