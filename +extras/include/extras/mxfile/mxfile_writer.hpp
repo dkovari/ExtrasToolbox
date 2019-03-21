@@ -391,6 +391,7 @@ namespace extras {namespace mxfile {
 		///Overloadable virtual method for Processing Tasks in the task list
 		virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) {
 			MxFileWriter::writeArrays(args.size(), args);
+			return cmex::mxArrayGroup(); //return empty results array
 		}
 
 	public:
@@ -427,14 +428,16 @@ namespace extras {namespace mxfile {
 
 	};
 
-
 	//! implement mexInterface for AsyncMxFileWriter
 	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of AsyncMxFileWriter*/
 	class AsyncMxFileWriterInterface : public extras::async::AsyncMexInterface<ObjType, ObjManager> {
 		typedef extras::async::AsyncMexInterface<ObjType, ObjManager> ParentType;
 	protected:
 		void openFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			ParentType::getObjectPtr(nrhs, prhs)->openFile(nrhs - 1, &prhs[1]);
+			if (nrhs < 2) {
+				throw("AsyncMxFileWriterInterface::openFile() two arguments required");
+			}
+			ParentType::getObjectPtr(nrhs, prhs)->openFile(extras::cmex::getstring(prhs[1]));
 		}
 		void closeFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			ParentType::getObjectPtr(nrhs, prhs)->closeFile();

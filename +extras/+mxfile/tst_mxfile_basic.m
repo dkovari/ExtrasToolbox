@@ -46,3 +46,5 @@ extras.mxfile.MxFileReader_mex('closeFile',r)
 isOpen = extras.mxfile.MxFileReader_mex('isFileOpen',r)
 'delete'
 extras.mxfile.MxFileReader_mex('delete',r)
+
+clear mex

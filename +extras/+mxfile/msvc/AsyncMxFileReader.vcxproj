@@ -15,10 +15,10 @@
     <ClInclude Include="..\..\include\extras\mxfile\mxfile_writer.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\AsyncMxFileWriter.cpp" />
+    <ClCompile Include="..\source\AsyncMxFileReader.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2C8D4DD0-1AC1-4822-A67D-B1540EF74B59}</ProjectGuid>
+    <ProjectGuid>{5ED4B84A-2C04-46F4-9140-B8110E09784E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>AsyncMxFileWriter</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>

@@ -1,7 +1,10 @@
-/*--------------------------------------------------
+/*-----------------------------------------------------
 Copyright 2018-2019, Daniel T. Kovari, Emory University
 All rights reserved.
-----------------------------------------------------*/
+------------------------------------------------------*/
+/** mexFunction Class wrapper *************************************************
+* Use this to wrap c++ objects so that their methods can be called from MATLAB
+******************************************************************************/
 #pragma once
 
 #include <extras/cmex/mexextras.hpp>
@@ -13,7 +16,7 @@ All rights reserved.
 namespace extras{namespace SessionManager{
 	typedef std::unordered_map<std::string, std::function<void(int, mxArray*[], int, const mxArray*[])>> MapT_mexI; /// map type used in mexInterface
 
-    /* mexFunction Class wrapper
+    /** mexFunction Class wrapper
     * Use this to wrap c++ objects so that their methods can be called from MATLAB
     *
     * Usage:
@@ -21,33 +24,38 @@ namespace extras{namespace SessionManager{
     *
 	*	  extras::SessionManager::ObjectManager<YOUR_CLASS_TYPE> manager; //object manager, persists between mexFunction calls
     *     mexInterface<YOUR_CLASS_TYPE,manager> MexInt; //global instance of mexInterface, persists between mexFunction calls
-    /
-    /     void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
-    /         MexInt.mexFunction(nlhs,plhs,nrhs,prhs);
-    /     }
-    /
-    / In MATLAB you would call
-    /     >> p_obj = YOUR_MEX_FUNCTION('new'); %get pointer to c++ object
-    /     >> YOUR_MEX_FUNCTION('your_method',p_obj,Arg1,Arg2,...); %run method, note: must have extended mexInterface to implement your_method
-    /     >> YOUR_MEX_FUNCTION('delete',p_obj); %delete associated object
-    /
-    / Extending mexInterface:
-    /  You should extend mexInterface for your object as follows
-    /
-    /     class yourMexInterface: public mexInterface<yourClass,manager>{ //note: manager in template corresponds to globa object manager above
-    /         /// implement function named 'your_method'
-    /         void your_method(int nlhs, mxArray* plhs[],int nrhs, const mxArray* prhs[]){
-    /            if (nrhs < 1) {
-    /                 throw(std::runtime_error("requires intptr argument specifying object to destruct"));
-    /             }
-    /             ObjManager.get(prhs[0])->yourMethod(...); //yourClass should have public member function yourMethod(...)
-    /         }
-    /     public:
-    /         yourMexInterface(){
-    /             using namespace std::placeholders;
-    /             addFunction('your_method',std::bind(&yourMexInterface::your_method,*this,_1,_2,_3,_4)); //add your_method to function list
-    /         }
-    /     }
+    *
+    *     void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
+    *         MexInt.mexFunction(nlhs,plhs,nrhs,prhs);
+    *     }
+    *
+    * In MATLAB you would call
+    *     >> p_obj = YOUR_MEX_FUNCTION('new'); %get pointer to c++ object
+    *     >> YOUR_MEX_FUNCTION('your_method',p_obj,Arg1,Arg2,...); %run method, note: must have extended mexInterface to implement your_method
+    *     >> YOUR_MEX_FUNCTION('delete',p_obj); %delete associated object
+	*
+	* You can get A list of the methods by calling
+	*	  >> metNames = YOU_MEX_FUNCTION('getMethodNames');
+	* which will return a cellstr array specifying all of the method names
+    *
+    * Extending mexInterface:
+    *  You should extend mexInterface for your object as follows
+    *
+	*     // <template extras::SessionManager::ObjectManager<ObjType>& manager> // <-------- optionlly make the manager field a template so that class can be defined in a header
+    *     class yourMexInterface: public mexInterface<yourClass,manager>{ //note: if you are not using templated version manager corresponds to global object manager
+    *         /// implement function named 'your_method'
+    *         void your_method(int nlhs, mxArray* plhs[],int nrhs, const mxArray* prhs[]){
+    *            if (nrhs < 1) {
+    *                 throw(std::runtime_error("requires intptr argument specifying object to destruct"));
+    *             }
+    *             ObjManager.get(prhs[0])->yourMethod(...); //yourClass should have public member function yourMethod(...)
+    *         }
+    *     public:
+    *         yourMexInterface(){
+    *             using namespace std::placeholders;
+    *             addFunction('your_method',std::bind(&yourMexInterface::your_method,*this,_1,_2,_3,_4)); //add your_method to function list
+    *         }
+    *     }
     */
     template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager>
     class mexInterface{
@@ -133,6 +141,14 @@ namespace extras{namespace SessionManager{
 			ObjManager.clearObjects();
 		}
 
+		void getMethodNames(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			mxArray* out = mxCreateCellMatrix(functionMap.size(), 1);
+			size_t k = 0;
+			for (auto& f : functionMap) {
+				mxSetCell(out, k, mxCreateString(f.first.c_str()));
+			}
+			plhs[0] = out;
+		}
     public:
 
 		virtual ~mexInterface() {
@@ -144,20 +160,12 @@ namespace extras{namespace SessionManager{
 
         mexInterface(){
             using namespace std::placeholders;
-#ifdef DAN_DEBUG
-			mexPrintf("Creating mexInterface<%s>\n", typeid(ObjType).name());
-			mexPrintf("\t press a key to continue\n");
-			mexEvalString("pause()");
-#endif
+
             addFunction("new",std::bind(&mexInterface::new_object,this,_1,_2,_3,_4));  //add 'new' command
             addFunction("delete",std::bind(&mexInterface::delete_object,this,_1,_2,_3,_4));  //add 'delete' command
 			addFunction("clear_mex_objects", std::bind(&mexInterface::clearObjects, this, _1, _2, _3, _4));  //add 'clear_mex_objects' command
+			addFunction("getMethodNames", std::bind(&mexInterface::getMethodNames, this, _1, _2, _3, _4)); //return cellstr specifying method names
 
-#ifdef DAN_DEBUG
-			mexPrintf("\tdone creating mexInterface\n");
-			mexPrintf("\t press a key to continue\n");
-			mexEvalString("pause()");
-#endif
         }
 
         void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){

@@ -76,6 +76,11 @@ namespace extras{namespace cmex{
             moveFrom(src);
         }
 
+		//! construct with specified dimensions
+		MxCellArray(const std::vector<size_t>& dims) {
+			own(mxCreateCellArray(dims.size(), dims.data()));
+		}
+
         //! copy assignment
         MxCellArray& operator=(const MxObject& src){
             if(!src.iscell()){

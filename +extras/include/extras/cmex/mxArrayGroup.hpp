@@ -146,7 +146,16 @@ namespace extras{namespace cmex{
 		}
 
 		void resize(size_t n) {
+			if (n < _mxptrs.size()) { //clear extra ptrs
+				for (size_t i = n; i < _mxptrs.size(); i++) {
+					mxDestroyArray(_mxptrs[i]);
+				}
+			}
 			_mxptrs.resize(n, nullptr);
+		}
+
+		void clear() {
+			destroyArrays();
 		}
 
 		///////////////////////

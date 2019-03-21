@@ -15,7 +15,7 @@ All rights reserved.
 
 namespace extras{namespace async{
 
-    /// Abstract class defining an Asynchronous Processor object
+    //! Abstract class defining an Asynchronous Processor object
     class AsyncProcessor{
     protected:
 
@@ -28,10 +28,10 @@ namespace extras{namespace async{
 		///Overloadable virtual method for Processing Tasks in the task list
         virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) = 0;
 
-		/// core method called by ProcessLoop() to handle tasks.
-		/// this function is responsible for getting the top element from the TaskList and calling ProcessTask
-		/// it should return a bool specifying if there are more tasks to process
-		/// this function is responsible for handling the TaskListMutex lock
+		//! core method called by ProcessLoop() to handle tasks.
+		//! this function is responsible for getting the top element from the TaskList and calling ProcessTask
+		//! it should return a bool specifying if there are more tasks to process
+		//! this function is responsible for handling the TaskListMutex lock
 		virtual bool ProcessLoopCore() {
 			std::lock_guard<std::mutex> lock(TaskListMutex);
 			if (TaskList.size() > 0) {
@@ -54,9 +54,9 @@ namespace extras{namespace async{
 			return true;
 		}
 
-        /// Method called in processing thread to execute tasks
-		/// Calls ProceesLoopCore() and catches any errors thrown
-		/// You probably don't need to overload this function
+        //! Method called in processing thread to execute tasks
+		//! Calls ProceesLoopCore() and catches any errors thrown
+		//! You probably don't need to overload this function
         virtual void ProcessLoop(){
 			using namespace std;
             try
@@ -134,7 +134,7 @@ namespace extras{namespace async{
 		std::exception_ptr LastError = nullptr;
 
     public:
-        // Destructor
+        //! Destructor
         virtual ~AsyncProcessor(){
 #ifdef _DEBUG
 			mexPrintf("~AsyncProcessor()\n");
@@ -142,7 +142,7 @@ namespace extras{namespace async{
             ProcessTasksAndEnd();
         }
 
-        //Constructor
+        //! Constructor
         AsyncProcessor(){
             ProcessRunning = false;
 
@@ -179,7 +179,7 @@ namespace extras{namespace async{
 
 			TaskList.push_back(std::move(AG)); //move task to back of task list
 
-			//// Auto start on first task
+			///! Auto start on first task
 			if (_firstTask) {
 				resume();
 				_firstTask = false;
@@ -222,7 +222,7 @@ namespace extras{namespace async{
             ResultsList.clear();
         }
 
-        /// number of results output arguments for next result
+        //! number of results output arguments for next result
         virtual size_t numResultOutputArgs() const{
             if(ResultsList.size()<1){
                 return 0;
@@ -234,13 +234,13 @@ namespace extras{namespace async{
 		/////////////////////////////////////////////
 		// Error Related
 
-        /// true if there was an error
+        //! true if there was an error
         virtual bool wasErrorThrown() const{
             return ErrorFlag;
         }
 
-        /// Clears the error pointer and error flag.
-        /// After calling ErroFlag=false and LastError=nullptr
+        //! Clears the error pointer and error flag.
+        //! After calling ErroFlag=false and LastError=nullptr
         virtual void clearError() {
             ErrorFlag = false;
             std::lock_guard<std::mutex> lock(LastErrorMutex);
@@ -263,7 +263,7 @@ namespace extras{namespace async{
 
     };
 
-    /// Implement mexInterface for AsyncProcessor
+    //! Implement mexInterface for AsyncProcessor
     template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of AsyncProcessor*/
     class AsyncMexInterface: public SessionManager::mexInterface<ObjType, ObjManager>{
         typedef SessionManager::mexInterface<ObjType, ObjManager> ParentType;

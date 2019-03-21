@@ -2,9 +2,9 @@
 Mex framework for creating C++ object which live past the end of each mex call,
 allowing the object to be used across multiple calls.
 
-Couple this the mexDispatch to create a class interface
+Couple this the mexInterface to create a class interface
 
-This is intended to be used with Session.m
+This is intended to be used with +extras\+SessionManager\Session.m
 
 /*--------------------------------------------------
 Copyright 2018, Daniel T. Kovari, Emory University

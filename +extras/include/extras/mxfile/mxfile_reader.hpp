@@ -109,7 +109,13 @@ namespace extras { namespace mxfile {
 	};
 
 	//! Read next mxArray from the file
-	extras::cmex::MxObject readNext(FILE_ReadPointer& FP) {
+	//! FP: reference to file pointer wrapper
+	//! (optional) calledRecursively=false: specify if readNext is beinging called by recursion
+	//!		when called recursively the function will throw an exception if EOF is reached when trying to read
+	//!		the first byte of the mxarray header
+	//!
+	//! Otherwise, (default) the function simply returns and empty mxArray
+	extras::cmex::MxObject readNext(FILE_ReadPointer& FP,bool calledRecursively=false) {
 		extras::cmex::MxObject out;
 
 		// read type
@@ -117,8 +123,10 @@ namespace extras { namespace mxfile {
 		uint8_t tmp;
 		if (FP.read(&tmp, 1) < 1) {
 			if (FP.eof()) {
-				throw("readNext(): at EOF");
-				//return out;//return empty array;
+				if (calledRecursively) {
+					throw("readNext(): at EOF");
+				}
+				return (mxArray*)nullptr;//return empty array;
 			}
 			else {
 				throw(FP.error_msg());
@@ -154,7 +162,7 @@ namespace extras { namespace mxfile {
 			{
 				out.own(mxCreateCellArray(ndim, dims.data()));
 				for (size_t n = 0; n < out.numel(); n++) {
-					mxSetCell(out.getmxarray(), n, readNext(FP));
+					mxSetCell(out.getmxarray(), n, readNext(FP,true));
 				}
 			}
 				break;
@@ -201,7 +209,7 @@ namespace extras { namespace mxfile {
 				/// Loop and read fields
 				for (size_t j = 0; j < out.numel(); ++j) {
 					for (size_t k = 0; k < nfields; ++k) {
-						mxSetFieldByNumber(out.getmxarray(), j, k, readNext(FP));
+						mxSetFieldByNumber(out.getmxarray(), j, k, readNext(FP,true));
 					}
 				}
 
@@ -415,6 +423,7 @@ namespace extras { namespace mxfile {
 			std::lock_guard<std::mutex> lock(_RPmutex);
 			_ReadPointer = GZFILE_ReadPointer(gzf);
 			_filepath = fpth;
+			_currentCompressedPosition = _ReadPointer.getOffset();
 		}
 
 		//!open file for writing (using MATLAB args)
@@ -486,7 +495,15 @@ namespace extras { namespace mxfile {
 			plhs[0] = mxCreateLogicalScalar(iseof);
 		}
 		void readNextArray(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			plhs[0] = ParentType::getObjectPtr(nrhs, prhs)->readNextArray();
+			cmex::MxObject out = ParentType::getObjectPtr(nrhs, prhs)->readNextArray();
+			if (out.getmxarray() == nullptr) {
+				if (ParentType::getObjectPtr(nrhs, prhs)->isEOF()) {
+					plhs[0] = mxCreateCellMatrix(0, 0);
+					return;
+				}
+				throw(std::runtime_error(std::string("MxFileReader::readNextArray() File:'") + ParentType::getObjectPtr(nrhs, prhs)->filepath() + std::string("'. Recieved Nullptr and not at EOF.")));
+			}
+			plhs[0] = out;
 		}
 		void isFileOpen(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			bool isopen = ParentType::getObjectPtr(nrhs, prhs)->isFileOpen();
@@ -550,12 +567,25 @@ namespace extras { namespace mxfile {
 						return;
 					}
 					cmex::MxObject res = _Reader.readNextArray(); //read next data
+					if (res.getmxarray() == nullptr) {
+						if (_Reader.isEOF()) {
+							_atEOF = true;
+							ProcessRunning = false;
+							return;
+						}
+						throw("LoadDataLoop(): Recieved MxObject with _mxptr==nullptr and not at EOF");
+					}
 					std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results
 					_ResultsGroup.push_back(res); //move data to back of results list
 				}
 			}
 			catch (...) {
 				ProcessRunning = false;
+				if (_Reader.isEOF()) { //just at end of file, no more data to read
+					_atEOF = true;
+					ProcessRunning = false;
+					return;
+				}
 				ErrorFlag = true;
 				std::lock_guard<std::mutex> lock(LastErrorMutex);
 				LastError = std::current_exception();
@@ -604,7 +634,7 @@ namespace extras { namespace mxfile {
 		size_t getCompressedSize() const {return _Reader.getCompressedSize();}
 
 		//! get current (compressed) position in file
-		size_t getPositionInFile() const {return _Reader.getPositionInFile;}
+		size_t getPositionInFile() const {return _Reader.getPositionInFile();}
 
 		//! fraction of load progress (via ratio remaining compressed data)
 		double loadProgress() const {return _Reader.loadProgress();}
@@ -617,13 +647,17 @@ namespace extras { namespace mxfile {
 		//check if reached end of file
 		bool isEOF() const { return _atEOF; }
 
+		bool isFileOpen() const{ return _Reader.isFileOpen(); }
+
 		//! check if thread is still running
 		bool threadRunning() const { return ProcessRunning; }
 
 		//! open specified file for reading
+		//! clears any loaded arrays waiting in the Results buffer
 		void openFile(std::string fpth) {
 			StopProcessor();
 			_Reader.openFile(fpth);
+			_ResultsGroup.clear();
 			_atEOF = false;
 		}
 
@@ -658,26 +692,48 @@ namespace extras { namespace mxfile {
 			closeFile();
 			{
 				std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results
-				_ResultsGroup = cmex::mxArrayGroup();
+				_ResultsGroup.clear();
 			}
 			
 			openFile(fpth);
 		}
 
+		//! returns number of arrays loaded and awaiting copy to MATLAB
+		size_t numberOfArraysLoaded() const {
+			return _ResultsGroup.size();
+		}
+
 		//! gets loaded data but does not clear the mxArrayGroup holding results
+		//!if a single array is loaded it is returned
+		//! otherwise a cell containing all the loaded arrays are returned;
 		cmex::MxObject getLoadedData() const {
 			std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results (pauses loading loop)
 			if (_ResultsGroup.size() < 0) {
 				return cmex::MxCellArray(); //return empty cell;
+				//throw("AsyncMxFileReader::getLoadedData(): No Arrays to copy");
 			}
 
+			if (_ResultsGroup.size() == 1) { //only one array, don't return cell
+				return _ResultsGroup[0];
+			}
+
+			cmex::MxCellArray out = cmex::MxCellArray({ _ResultsGroup.size(),1 });
+			//copy results to cell array
+			for (size_t n = 0; n < _ResultsGroup.size(); n++) {
+				out(n) = _ResultsGroup[n];
+			}
+			return out;
 		}
 
 		//! gets loaded data and clears the mxArrayGroup
-		cmex::MxObject getLoadedDataAndClear() const {
-
+		//!if a single array is loaded it is returned
+		//! otherwise a cell containing all the loaded arrays are returned;
+		cmex::MxObject getLoadedDataAndClear() {
+			cmex::MxObject out = getLoadedData();
+			std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results (pauses loading loop)
+			_ResultsGroup.clear();
+			return out;
 		}
-
 
 		/// true if there was an error
 		virtual bool wasErrorThrown() const {
@@ -704,6 +760,118 @@ namespace extras { namespace mxfile {
 			else {//no exception, return nullptr
 				return nullptr;
 			}
+		}
+	};
+
+	///////////
+	// Mex Interface for AsyncReader
+
+	//! implement mexInterface for AsyncMxFileReader
+	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of AsyncMxFileReader*/
+	class AsyncMxFileReaderInterface : public SessionManager::mexInterface<ObjType, ObjManager> {
+		typedef SessionManager::mexInterface<ObjType, ObjManager> ParentType;
+	protected:
+		void getCompressedSize(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateDoubleScalar(ParentType::getObjectPtr(nrhs, prhs)->getCompressedSize());
+		}
+		void getPositionInFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateDoubleScalar(ParentType::getObjectPtr(nrhs, prhs)->getPositionInFile());
+		}
+		void loadProgress(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateDoubleScalar(ParentType::getObjectPtr(nrhs, prhs)->loadProgress());
+		}
+		void filepath(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateString(ParentType::getObjectPtr(nrhs, prhs)->filepath().c_str());
+		}
+		void isEOF(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->isEOF());
+		}
+		void threadRunning(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->threadRunning());
+		}
+		void openFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			if (nrhs < 2) {
+				throw("AsyncMxFileReaderInterface::openFile() required 2 inputs");
+			}
+			ParentType::getObjectPtr(nrhs, prhs)->openFile(extras::cmex::getstring(prhs[1]));
+		}
+		void closeFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->closeFile();
+		}
+		void loadData(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->loadData();
+		}
+		void resume(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->resume();
+		}
+		void pause(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->pause();
+		}
+		void cancel(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->cancel();
+		}
+		void numberOfArraysLoaded(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateDoubleScalar(ParentType::getObjectPtr(nrhs, prhs)->numberOfArraysLoaded());
+		}
+		void getLoadedData(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = ParentType::getObjectPtr(nrhs, prhs)->getLoadedData();
+		}
+		void getLoadedDataAndClear(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = ParentType::getObjectPtr(nrhs, prhs)->getLoadedDataAndClear();
+		}
+		void wasErrorThrown(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->wasErrorThrown());
+		}
+		void clearError(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->clearError();
+		}
+		void getError(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			std::exception_ptr err = ParentType::getObjectPtr(nrhs, prhs)->getError();
+
+			if (err == nullptr) { //no errors, return empty
+				plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
+				return;
+			}
+
+			//convert exception ptr to struct
+			try {
+				rethrow_exception(err);
+			}
+			catch (const std::exception& e) {
+				const char* fields[] = { "identifier","message" };
+				mxArray* out = mxCreateStructMatrix(1, 1, 2, fields);
+				mxSetField(out, 0, "identifier", mxCreateString("ProcessingError"));
+				mxSetField(out, 0, "message", mxCreateString(e.what()));
+
+				plhs[0] = out;
+			}
+		}
+		void isFileOpen(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			bool isopen = ParentType::getObjectPtr(nrhs, prhs)->isFileOpen();
+			plhs[0] = mxCreateLogicalScalar(isopen);
+		}
+	public:
+		AsyncMxFileReaderInterface() {
+			using namespace std::placeholders;
+			ParentType::addFunction("isFileOpen", std::bind(&AsyncMxFileReaderInterface::isFileOpen, this, _1, _2, _3, _4));
+			ParentType::addFunction("getCompressedSize", std::bind(&AsyncMxFileReaderInterface::getCompressedSize, this, _1, _2, _3, _4));
+			ParentType::addFunction("getPositionInFile", std::bind(&AsyncMxFileReaderInterface::getPositionInFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("loadProgress", std::bind(&AsyncMxFileReaderInterface::loadProgress, this, _1, _2, _3, _4));
+			ParentType::addFunction("filepath", std::bind(&AsyncMxFileReaderInterface::filepath, this, _1, _2, _3, _4));
+			ParentType::addFunction("isEOF", std::bind(&AsyncMxFileReaderInterface::isEOF, this, _1, _2, _3, _4));
+			ParentType::addFunction("threadRunning", std::bind(&AsyncMxFileReaderInterface::threadRunning, this, _1, _2, _3, _4));
+			ParentType::addFunction("openFile", std::bind(&AsyncMxFileReaderInterface::openFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("closeFile", std::bind(&AsyncMxFileReaderInterface::closeFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("loadData", std::bind(&AsyncMxFileReaderInterface::loadData, this, _1, _2, _3, _4));
+			ParentType::addFunction("resume", std::bind(&AsyncMxFileReaderInterface::resume, this, _1, _2, _3, _4));
+			ParentType::addFunction("pause", std::bind(&AsyncMxFileReaderInterface::pause, this, _1, _2, _3, _4));
+			ParentType::addFunction("cancel", std::bind(&AsyncMxFileReaderInterface::cancel, this, _1, _2, _3, _4));
+			ParentType::addFunction("numberOfArraysLoaded", std::bind(&AsyncMxFileReaderInterface::numberOfArraysLoaded, this, _1, _2, _3, _4));
+			ParentType::addFunction("getLoadedData", std::bind(&AsyncMxFileReaderInterface::getLoadedData, this, _1, _2, _3, _4));
+			ParentType::addFunction("getLoadedDataAndClear", std::bind(&AsyncMxFileReaderInterface::getLoadedDataAndClear, this, _1, _2, _3, _4));
+			ParentType::addFunction("wasErrorThrown", std::bind(&AsyncMxFileReaderInterface::wasErrorThrown, this, _1, _2, _3, _4));
+			ParentType::addFunction("clearError", std::bind(&AsyncMxFileReaderInterface::clearError, this, _1, _2, _3, _4));
+			ParentType::addFunction("getError", std::bind(&AsyncMxFileReaderInterface::getError, this, _1, _2, _3, _4));
 		}
 	};
 }}

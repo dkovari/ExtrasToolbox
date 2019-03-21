@@ -1,11 +1,18 @@
 classdef Session < handle
-% extras.SessionManager.Session
+%% extras.SessionManager.Session
 % Class interface for communicating with C++ objects that outlive calls to
 % a mex function built using the SessionManager framework.
 % 
 % Mex function should be written using the framework included in
 % mexDispatch.h and ObjectManager.h
 %
+% NOTE: Do not use Session objects in a diamon hierarchy.
+%       The destruct for every initialized Session object must be called,
+%       otherwise the c++ objects created by the mex file will not be
+%       destroyed and the mex file cannot be cleared.
+%       If a diamond is used, then multiple Session objects will
+%       be created, but only one may be deleted, meaning there will be an
+%       unreferenceable c++ object floating around.
 %
 % Example C++ Code
 %=================================
@@ -56,6 +63,28 @@ classdef Session < handle
         MEX_function;
     end
     
+    %% Change MEX_function
+%     methods(Access=protected)
+%         function change_MEX_function(this,MEX_NAME,varargin)
+%             % use this method to change the underlying MEX_function
+%             % provides the ability for a subclass to redefine the
+%             % MEX_function instead of using the one inherited
+%             
+%             this.MEX_function('delete',this.intPointer);
+%             assert(isa(MEX_NAME,'function_handle')||...
+%                 exist(MEX_NAME,'file')==3,...
+%                 'MEX_NAME must be a function handle to a mex function or the name of a mex function');
+%             
+%             if ischar(MEX_NAME)
+%                 this.MEX_function = str2func(MEX_NAME);
+%             else
+%                 this.MEX_function = MEX_NAME;
+%             end
+%             
+%             this.intPointer = this.MEX_function('new',varargin{:});
+%         end
+%     end
+    
     %% Create/Delete
     methods
         function this = Session(MEX_NAME,varargin)
@@ -89,6 +118,11 @@ classdef Session < handle
                 disp(ME.getReport);
                 rethrow(ME);
             end
+        end
+        function methNames = getMethodNames(this)
+            %hidden method which returns a list of the valid method
+            %names
+            methNames = runMethod(this,'getMethodNames');
         end
     end
 end
