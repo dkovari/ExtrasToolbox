@@ -17,22 +17,31 @@ namespace extras{namespace cmex{
 	private:
 		std::vector<mxArray*> _mxptrs; //vector of mxarray*
 
+		//!destroy arrays owned by the arraygroup
+		//! _mxptrs will be cleared after calling
 		void destroyArrays() {
-			for (auto p : _mxptrs) {
+			for (auto& p : _mxptrs) {
 				mxDestroyArray(p);
+				p = nullptr;
 			}
 			_mxptrs.clear();
 		}
 
+		//! internal copyFrom
+		//! source will be copied into arraygroup
+		//! source will still be valid after calling
 		void copyFrom(const mxArrayGroup& src) {
 			destroyArrays();
-			_mxptrs.resize(src.size(), nullptr);
-			for (size_t n = 0; n < src.size(); n++) {
-				_mxptrs[n] = mxDuplicateArray(src[n]);
-				mexMakeArrayPersistent(_mxptrs[n]);
+			_mxptrs.reserve(src.size());
+			for (auto s : src._mxptrs) {
+				_mxptrs.push_back(mxDuplicateArray(s));
+				mexMakeArrayPersistent(_mxptrs.back());
 			}
 		}
 
+		//! internal moveFrom
+		//! moves source mxArrayGroup into this arraygroup
+		//! source arraygroup will be cleared after calling
 		void moveFrom(mxArrayGroup& src) {
 			destroyArrays();
 			_mxptrs = std::move(src._mxptrs);
@@ -62,11 +71,14 @@ namespace extras{namespace cmex{
 		}
 
 		//! construct by taking ownership of array of mxarray*
+		//! after calling the arrays in pArrays will be managed by the arraygroup
+		//! do not delete the pArrays after calling
 		mxArrayGroup(size_t n, mxArray** pArrays) {
 			moveFrom(n, pArrays);
 		}
 
 		//! construct by making copy of array of const mxarray*
+		// makes copies of the arrays in prhs[]
 		mxArrayGroup(size_t n, const mxArray* prhs[]) {
 			copyFrom(n, prhs);
 		}
@@ -132,7 +144,7 @@ namespace extras{namespace cmex{
 
 		//! push (non-const) mxArray* to back
 		//! will take ownership of array;
-		void push_back(mxArray* pA) {
+		void move_back(mxArray* pA) {
 			mexMakeArrayPersistent(pA);
 			_mxptrs.push_back(pA);
 		}
@@ -156,6 +168,10 @@ namespace extras{namespace cmex{
 
 		void clear() {
 			destroyArrays();
+		}
+
+		const mxArray* getBack() const {
+			return _mxptrs.back();
 		}
 
 		///////////////////////

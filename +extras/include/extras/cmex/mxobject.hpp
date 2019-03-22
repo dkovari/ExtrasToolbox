@@ -525,6 +525,33 @@ namespace extras {namespace cmex {
 			return _mxptr;
 		}
 
+		//! release array from MxObject's control
+		//! if was setFromConst, a copy of the data is created
+		//! You can check if the data is persistent by passing 
+		//! the pointer wasPersistent, which will be set to T/F based on isPersistent()
+		//! NOTE: After calling YOU are responsible for deleting the returned mxArray*
+		mxArray* releaseArray(bool* wasPersistent = nullptr) {
+			if (_mxptr == nullptr) { //nullptr, just return nullptr
+				if (wasPersistent != nullptr) {
+					*wasPersistent = false;
+				}
+				return nullptr;
+			}
+			
+			if (_setFromConst) {
+				if (wasPersistent != nullptr) {
+					*wasPersistent = false;
+				}
+				return mxDuplicateArray(_mxptr);
+			}
+
+			if (wasPersistent != nullptr) {
+				*wasPersistent = isPersistent();
+			}
+			_managemxptr = false;
+			return _mxptr;
+		}
+
 		//! return const mxArray*
 		virtual operator const mxArray*() const {
 			return _mxptr;
@@ -645,7 +672,11 @@ namespace extras {namespace cmex {
 
 		//! return 1-d index corresponding to subscript
 		size_t sub2ind(const std::vector<size_t>& subs) const {
-			return mxCalcSingleSubscript(_mxptr, subs.size(), subs.data());
+			size_t idx = mxCalcSingleSubscript(_mxptr, subs.size(), subs.data());
+			if (idx >= numel()) {
+				throw(std::runtime_error("MxObjecy::sub2ind() subscript exceeds array dimension"));
+			}
+			return idx;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////

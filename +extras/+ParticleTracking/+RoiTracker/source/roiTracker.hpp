@@ -125,6 +125,10 @@ namespace extras { namespace ParticleTracking {
 				results.push_back(TaskArgs.getConstArray(0));
 			}
 
+			if (_SaveResults) {
+				_AsyncWriter.writeArrays(results.size(), results);
+			}
+
 			return results;
 
 		}
@@ -132,6 +136,12 @@ namespace extras { namespace ParticleTracking {
 		std::atomic_bool _SaveResults = false;
 		extras::mxfile::AsyncMxFileWriter _AsyncWriter;
 	public:
+
+		~RoiTracker() {
+			if (!_AsyncWriter.isFileOpen()) {
+				_AsyncWriter.cancelRemainingTasks();
+			}
+		}
 
 		//! default constructor changes pMap to point to an RoiParameterMap
 		RoiTracker() {
@@ -206,18 +216,45 @@ namespace extras { namespace ParticleTracking {
 		///////////////////////////////
 		// File Writer
 
-		void setResultFilepath(std::string filepath) {
-
+		void openResultsFile(std::string filepath) {
+			_AsyncWriter.openFile(filepath);
 		}
 
-		std::string getResultsFilepath() const { return _AsyncWriter.filepath(); }
+		bool isResultsFileOpen() const {
+			return _AsyncWriter.isFileOpen();
+		}
+
+		void closeResultsFile() {
+			_AsyncWriter.closeFile();
+		}
+
+		void clearUnsavedResults() {
+			_AsyncWriter.cancelRemainingTasks();
+		}
+
+		void clearResultsWriterError() {
+			_AsyncWriter.clearError();
+		}
+
+		std::exception_ptr getResultsWriterError() {
+			return _AsyncWriter.getError();
+		}
+
+		bool wasResultsWriterErrorThrown() {
+			return _AsyncWriter.wasErrorThrown();
+		}
+
+		bool isResultsWriterRunning() {
+			return _AsyncWriter.running();
+		}
+
+		std::string ResultsFilepath() const { return _AsyncWriter.filepath(); }
 
 		void pauseResultsWriter() { _AsyncWriter.pause(); }
 		void resumeResultsWriter() { _AsyncWriter.resume();}
 
 		void saveResults(bool tf) {_SaveResults = tf;}
 		bool saveResults() const { return _SaveResults; }
-
 	};
 
 	/** Extend the ParamProcessorInterface for use with RoiTracker type objects
@@ -243,11 +280,86 @@ namespace extras { namespace ParticleTracking {
 				plhs[0] = mxCreateLogicalScalar(res);
 			}
 		}
+		void openResultsFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			if (nrhs < 2) {
+				throw("AsyncMxFileReaderInterface::openFile() required 2 inputs");
+			}
+			ParentType::getObjectPtr(nrhs, prhs)->openResultsFile(cmex::getstring(prhs[1]));
+		}
+		void isResultsFileOpen(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			bool isopen = ParentType::getObjectPtr(nrhs, prhs)->isResultsFileOpen();
+			plhs[0] = mxCreateLogicalScalar(isopen);
+		}
+		void closeResultsFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->closeResultsFile();
+		}
+		void clearUnsavedResults(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->clearUnsavedResults();
+		}
+		void clearResultsWriterError(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->clearResultsWriterError();
+		}
+		void getResultsWriterError(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			std::exception_ptr err = ParentType::getObjectPtr(nrhs, prhs)->getResultsWriterError();
 
+			if (err == nullptr) { //no errors, return empty
+				plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
+				return;
+			}
+
+			//convert exception ptr to struct
+			try {
+				rethrow_exception(err);
+			}
+			catch (const std::exception& e) {
+				const char* fields[] = { "identifier","message" };
+				mxArray* out = mxCreateStructMatrix(1, 1, 2, fields);
+				mxSetField(out, 0, "identifier", mxCreateString("ProcessingError"));
+				mxSetField(out, 0, "message", mxCreateString(e.what()));
+
+				plhs[0] = out;
+			}
+		}
+		void wasResultsWriterErrorThrown(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->wasResultsWriterErrorThrown());
+		}
+		void isResultsWriterRunning(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->isResultsWriterRunning());
+		}
+		void ResultsFilepath(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			cmex::MxObject fpth = ParentType::getObjectPtr(nrhs, prhs)->ResultsFilepath();
+			plhs[0] = fpth;
+		}
+		void pauseResultsWriter(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->pauseResultsWriter();
+		}
+		void resumeResultsWriter(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->resumeResultsWriter();
+		}
+		void saveResults(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			if (nrhs < 2) {
+				plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->saveResults());
+			}
+			else {
+				ParentType::getObjectPtr(nrhs, prhs)->saveResults(mxGetScalar(prhs[1]));
+			}
+		}
 	public:
 		RoiTrackerInterface() {
 			using namespace std::placeholders;
 			ParentType::addFunction("IncludeImageData", std::bind(&RoiTrackerInterface::IncludeImageData, this, _1, _2, _3, _4));
+			ParentType::addFunction("openResultsFile", std::bind(&RoiTrackerInterface::openResultsFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("isResultsFileOpen", std::bind(&RoiTrackerInterface::isResultsFileOpen, this, _1, _2, _3, _4));
+			ParentType::addFunction("closeResultsFile", std::bind(&RoiTrackerInterface::closeResultsFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("clearUnsavedResults", std::bind(&RoiTrackerInterface::clearUnsavedResults, this, _1, _2, _3, _4));
+			ParentType::addFunction("clearResultsWriterError", std::bind(&RoiTrackerInterface::clearResultsWriterError, this, _1, _2, _3, _4));
+			ParentType::addFunction("getResultsWriterError", std::bind(&RoiTrackerInterface::getResultsWriterError, this, _1, _2, _3, _4));
+			ParentType::addFunction("wasResultsWriterErrorThrown", std::bind(&RoiTrackerInterface::wasResultsWriterErrorThrown, this, _1, _2, _3, _4));
+			ParentType::addFunction("isResultsWriterRunning", std::bind(&RoiTrackerInterface::isResultsWriterRunning, this, _1, _2, _3, _4));
+			ParentType::addFunction("ResultsFilepath", std::bind(&RoiTrackerInterface::ResultsFilepath, this, _1, _2, _3, _4));
+			ParentType::addFunction("pauseResultsWriter", std::bind(&RoiTrackerInterface::pauseResultsWriter, this, _1, _2, _3, _4));
+			ParentType::addFunction("resumeResultsWriter", std::bind(&RoiTrackerInterface::resumeResultsWriter, this, _1, _2, _3, _4));
+			ParentType::addFunction("saveResults", std::bind(&RoiTrackerInterface::saveResults, this, _1, _2, _3, _4));
 		}
 	};
 

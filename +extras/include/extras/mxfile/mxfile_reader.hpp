@@ -124,7 +124,7 @@ namespace extras { namespace mxfile {
 		if (FP.read(&tmp, 1) < 1) {
 			if (FP.eof()) {
 				if (calledRecursively) {
-					throw("readNext(): at EOF");
+					throw("readNext(): at EOF and called recursively");
 				}
 				return (mxArray*)nullptr;//return empty array;
 			}
@@ -546,7 +546,10 @@ namespace extras { namespace mxfile {
 	protected:
 		mutable std::mutex _ResultsGroupMutex; //mutex lock for _ResultsGroup
 		cmex::mxArrayGroup _ResultsGroup; //protected by _ResultsGroupMutex
-
+#ifdef _DEBUG
+		std::vector<const mxArray*> _ResPtrs;
+		std::vector<const mxArray*> _ResultsPtrs;
+#endif
 
 		MxFileReader _Reader; //read for loading data from file
 
@@ -575,8 +578,15 @@ namespace extras { namespace mxfile {
 						}
 						throw("LoadDataLoop(): Recieved MxObject with _mxptr==nullptr and not at EOF");
 					}
+#ifdef _DEBUG
+					_ResPtrs.push_back(res.getmxarray());
+#endif
 					std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results
-					_ResultsGroup.push_back(res); //move data to back of results list
+					_ResultsGroup.move_back(res.releaseArray()); //move data to back of results list
+
+#ifdef _DEBUG
+					_ResultsPtrs.push_back(_ResultsGroup.getBack());
+#endif
 				}
 			}
 			catch (...) {
@@ -607,12 +617,12 @@ namespace extras { namespace mxfile {
 			}
 		}
 
-		//! launch thread
+		//! (re)launch thread
 		virtual void StartProcessor() {
+			StopProcessor();
 			if (!_Reader.isFileOpen()) {
 				throw("File is not open, cannot StartProcessor()");
 			}
-			_atEOF = false;
 			ErrorFlag = false;
 			ProcessRunning = true;
 			try {
@@ -623,6 +633,13 @@ namespace extras { namespace mxfile {
 				throw;
 			}
 		}
+
+		//! clear loaded data
+		void clearLoadedData() {
+			std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results
+			_ResultsGroup.clear();
+		}
+
 	public:
 		//! destructor
 		virtual ~AsyncMxFileReader() {
@@ -656,9 +673,9 @@ namespace extras { namespace mxfile {
 		//! clears any loaded arrays waiting in the Results buffer
 		void openFile(std::string fpth) {
 			StopProcessor();
+			clearLoadedData();
 			_Reader.openFile(fpth);
-			_ResultsGroup.clear();
-			_atEOF = false;
+			_atEOF = _Reader.isEOF();
 		}
 
 		//! open specified file for reading
@@ -690,11 +707,6 @@ namespace extras { namespace mxfile {
 			StopProcessor();
 			auto fpth = filepath();
 			closeFile();
-			{
-				std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results
-				_ResultsGroup.clear();
-			}
-			
 			openFile(fpth);
 		}
 
@@ -717,10 +729,11 @@ namespace extras { namespace mxfile {
 				return _ResultsGroup[0];
 			}
 
-			cmex::MxCellArray out = cmex::MxCellArray({ _ResultsGroup.size(),1 });
+			cmex::MxCellArray out;// = cmex::MxCellArray({ _ResultsGroup.size(),1 });
+			out.own(mxCreateCellMatrix(_ResultsGroup.size(), 1));
 			//copy results to cell array
 			for (size_t n = 0; n < _ResultsGroup.size(); n++) {
-				out(n) = _ResultsGroup[n];
+				mxSetCell(out.getmxarray(), n, mxDuplicateArray(_ResultsGroup[n]));
 			}
 			return out;
 		}
@@ -729,9 +742,60 @@ namespace extras { namespace mxfile {
 		//!if a single array is loaded it is returned
 		//! otherwise a cell containing all the loaded arrays are returned;
 		cmex::MxObject getLoadedDataAndClear() {
-			cmex::MxObject out = getLoadedData();
+			//cmex::MxObject out = getLoadedData();
+			//::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results (pauses loading loop)
 			std::lock_guard<std::mutex> rlock(_ResultsGroupMutex); //lock results (pauses loading loop)
+			if (_ResultsGroup.size() < 0) {
+				return cmex::MxCellArray(); //return empty cell;
+				//throw("AsyncMxFileReader::getLoadedData(): No Arrays to copy");
+			}
+
+			if (_ResultsGroup.size() == 1) { //only one array, don't return cell
+				return _ResultsGroup[0];
+			}
+
+			cmex::MxObject out;// = cmex::MxCellArray({ _ResultsGroup.size(),1 });
+			out.own(mxCreateCellMatrix(_ResultsGroup.size(), 1));
+			//copy results to cell array
+			for (size_t n = 0; n < _ResultsGroup.size(); n++) {
+#ifdef _DEBUG
+				mexPrintf("in getLoadedDataAndClear() loop, n=%d\n", n);
+				mexEvalString("pause(0.2);");
+#endif
+				const mxArray* thisRes = _ResultsGroup.getConstArray(n);
+#ifdef _DEBUG
+				mexPrintf("thisRes=%p\n", thisRes);
+				mexPrintf("_ResPtrs[%d]=%p\n", n, _ResPtrs[n]);
+				mexPrintf("_ResultsPtrs[%d]=%p\n", n, _ResultsPtrs[n]);
+
+				mexEvalString("pause(0.2);");
+
+				mexPrintf("classID: %s\n", mxGetClassName(thisRes));
+				mexEvalString("pause(0.2);");
+#endif
+				mxArray* nonConstCopy = mxDuplicateArray(thisRes);
+#ifdef _DEBUG
+				mexPrintf("nonConstCopy=%p\n", nonConstCopy);
+				mexEvalString("pause(0.2);");
+#endif
+#ifdef _DEBUG
+				mexPrintf("out.getmxarray()=%p\n", out.getmxarray());
+				mexEvalString("pause(0.2);");
+#endif
+				mxSetCell(out.getmxarray(), n, nonConstCopy);
+			}
+
+#ifdef _DEBUG
+			mexPrintf("about to _ResultsGroup.clear();\n");
+			mexEvalString("pause(0.2);");
+#endif
 			_ResultsGroup.clear();
+#ifdef _DEBUG
+			_ResPtrs.clear();
+			_ResultsPtrs.clear();
+			mexPrintf("cleared _ResultsGroup.size()=%d\n",_ResultsGroup.size());
+			mexEvalString("pause(0.2);");
+#endif
 			return out;
 		}
 

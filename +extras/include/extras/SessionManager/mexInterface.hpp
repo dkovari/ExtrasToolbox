@@ -82,11 +82,6 @@ namespace extras{namespace SessionManager{
         /// implement 'delete' function interface
         void delete_object(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[])
         {
-#ifdef DAN_DEBUG
-			mexPrintf("mexInterface<%s>::delete_object\n", typeid(ObjType).name());
-			mexPrintf("\t press a key to continue\n");
-			mexEvalString("pause()");
-#endif
             if (nrhs < 1) {
                 throw(std::runtime_error("requires intptr argument specifying object to destruct"));
             }
@@ -95,18 +90,7 @@ namespace extras{namespace SessionManager{
 
         /// method for adding name-function pair to the methods list
         void addFunction(std::string name, std::function<void(int,mxArray**,int,const mxArray* *)> func){
-#ifdef DAN_DEBUG
-			mexPrintf("mexInterface:addFunction(%s,...)\n", name.c_str());
-			mexPrintf("\t press a key to continue\n");
-			mexEvalString("pause()");
-#endif
             functionMap.insert(MapT_mexI::value_type(name, func));
-
-#ifdef DAN_DEBUG
-			mexPrintf("\tcompelted\n", name.c_str());
-			mexPrintf("\t press a key to continue\n");
-			mexEvalString("pause()");
-#endif
         }
 
         /// Exception handler for errors thrown when executing a method from matlab
@@ -146,6 +130,7 @@ namespace extras{namespace SessionManager{
 			size_t k = 0;
 			for (auto& f : functionMap) {
 				mxSetCell(out, k, mxCreateString(f.first.c_str()));
+				k++;
 			}
 			plhs[0] = out;
 		}

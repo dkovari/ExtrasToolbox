@@ -159,13 +159,7 @@ namespace extras{namespace cmex{
 
 		//! const access to field
 		const mxArray* operator()(const std::vector<size_t>& subscripts) const {
-
-			size_t idx = mxCalcSingleSubscript(getmxarray(), subscripts.size(), subscripts.data());
-
-			if (idx >= numel()) {
-				throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
-			}
-			return mxGetCell(getmxarray(), idx);
+			return mxGetCell(getmxarray(), sub2ind(subscripts));
 		}
     };
 
@@ -279,23 +273,14 @@ namespace extras{namespace cmex{
 
 	//! non-const access to field
 	CellWrapper MxCellArray::operator()(size_t idx) {
-
-
 		if (idx >=numel()) {
 			throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
 		}
-
 		return CellWrapper(*this, idx);
 	}
 
 	//! non-const access to field
 	CellWrapper MxCellArray::operator()(const std::vector<size_t>& subscripts) {
-
-		size_t idx = mxCalcSingleSubscript(getmxarray(), subscripts.size(), subscripts.data());
-		if (idx >= numel()) {
-			throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
-		}
-
-		return CellWrapper(*this, idx);
+		return CellWrapper(*this, sub2ind(subscripts));
 	}
 }}

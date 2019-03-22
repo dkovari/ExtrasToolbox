@@ -17,10 +17,7 @@ classdef AsyncMxFileReader < extras.SessionManager.Session
             % automatically adds mxf.gz extension if not present
             
             this@extras.SessionManager.Session(@extras.mxfile.AsyncMxFileReader_mex);
-            if nargin>0
-                this.openFile(filepath);
-            end
-            
+                        
             %% setup error timer
             try
                 delete(this.ErrorCheckTimer);
@@ -46,15 +43,16 @@ classdef AsyncMxFileReader < extras.SessionManager.Session
                                         'Period',this.ResultsCheckTimerPeriod,...
                                         'ErrorFcn',@(~,err) disp(err),...
                                         'TimerFcn',@(~,~) this.ResultsCheckTimerCallback);
-                                    
+           
+            if nargin>0
+                this.openFile(filepath);
+            end
         end
     end
     
     %%Destructor
     methods
         function delete(this)
-            
-            this.cancel() %cancel fileread
             
             %% stop and delete timers
             try
