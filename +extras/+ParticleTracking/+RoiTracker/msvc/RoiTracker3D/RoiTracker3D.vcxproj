@@ -13,6 +13,9 @@
   <ItemGroup>
     <ClInclude Include="..\..\source\RoiTracker3D.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\RoiTracker3D.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{13c8e17c-7159-40c8-8c88-0a824a96ff21}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

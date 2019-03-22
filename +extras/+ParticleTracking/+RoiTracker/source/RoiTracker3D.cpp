@@ -49,10 +49,10 @@ When building, be sure to include the location of zlib.h and to link to
 the compiled zlib-lib files.
 ************************************************************************/
 
-#include "RoiTracker.hpp"
+#include "RoiTracker3D.hpp"
 
-extras::SessionManager::ObjectManager<extras::ParticleTracking::RoiTracker> manager;
-extras::ParticleTracking::RoiTrackerInterface<extras::ParticleTracking::RoiTracker,manager> mex_interface;
+extras::SessionManager::ObjectManager<extras::ParticleTracking::RoiTracker3D> manager;
+extras::ParticleTracking::RoiTrackerInterface<extras::ParticleTracking::RoiTracker3D, manager> mex_interface;
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	mex_interface.mexFunction(nlhs, plhs, nrhs, prhs);
