@@ -14,6 +14,13 @@
     <ClCompile Include="source\radialcenter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\extras\Array.hpp" />
+    <ClInclude Include="..\..\include\extras\ArrayBase.hpp" />
+    <ClInclude Include="..\..\include\extras\assert.hpp" />
+    <ClInclude Include="..\..\include\extras\MatlabTime.hpp" />
+    <ClInclude Include="..\..\include\extras\numeric.hpp" />
+    <ClInclude Include="..\..\include\extras\string_extras.hpp" />
+    <ClInclude Include="..\..\include\extras\traspose.hpp" />
     <ClInclude Include="source\radialcenter.hpp" />
     <ClInclude Include="source\radialcenter_mex.hpp" />
   </ItemGroup>
@@ -51,15 +58,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)</OutDir>
+    <OutDir>$(ProjectDir)..\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)</OutDir>
+    <OutDir>$(ProjectDir)..\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\include;$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

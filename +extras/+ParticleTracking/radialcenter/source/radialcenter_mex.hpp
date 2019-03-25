@@ -42,30 +42,29 @@ namespace extras{namespace ParticleTracking{
     template<class OutContainerClass> //C must be and ArrayBase derived class
     std::vector<OutContainerClass> radialcenter(const mxArray* pI,
                                 const extras::ArrayBase<double>& WIND,
-                                const extras::ArrayBase<double>& GP,
                                 const rcdefs::RCparams& params)
     {
         switch (mxGetClassID(pI)) { //handle different image types seperatelys
     	case mxDOUBLE_CLASS:
-    		return radialcenter<OutContainerClass,double>(cmex::NumericArray<double>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,double>(cmex::NumericArray<double>(pI), WIND, params);
     	case mxSINGLE_CLASS:
-    		return radialcenter<OutContainerClass,float_t>(cmex::NumericArray<float>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,float_t>(cmex::NumericArray<float>(pI), WIND, params);
     	case mxINT8_CLASS:
-    		return radialcenter<OutContainerClass,int8_t>(cmex::NumericArray<int8_t>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,int8_t>(cmex::NumericArray<int8_t>(pI), WIND, params);
     	case mxUINT8_CLASS:
-    		return radialcenter<OutContainerClass,uint8_t>(cmex::NumericArray<uint8_t>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,uint8_t>(cmex::NumericArray<uint8_t>(pI), WIND, params);
     	case mxINT16_CLASS:
-    		return radialcenter<OutContainerClass,int16_t>(cmex::NumericArray<int16_t>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,int16_t>(cmex::NumericArray<int16_t>(pI), WIND, params);
     	case mxUINT16_CLASS:
-    		return radialcenter<OutContainerClass,uint16_t>(cmex::NumericArray<uint16_t>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,uint16_t>(cmex::NumericArray<uint16_t>(pI), WIND, params);
     	case mxINT32_CLASS:
-    		return radialcenter<OutContainerClass,int32_t>(cmex::NumericArray<int32_t>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,int32_t>(cmex::NumericArray<int32_t>(pI), WIND, params);
     	case mxUINT32_CLASS:
-    		return radialcenter<OutContainerClass,uint32_t>(cmex::NumericArray<uint32_t>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,uint32_t>(cmex::NumericArray<uint32_t>(pI), WIND, params);
     	case mxINT64_CLASS:
-    		return radialcenter<OutContainerClass,int64_t>(cmex::NumericArray<int64_t>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,int64_t>(cmex::NumericArray<int64_t>(pI), WIND, params);
     	case mxUINT64_CLASS:
-    		return radialcenter<OutContainerClass,uint64_t>(cmex::NumericArray<uint64_t>(pI), WIND, GP, params);
+    		return radialcenter<OutContainerClass,uint64_t>(cmex::NumericArray<uint64_t>(pI), WIND, params);
     	default:
     		throw(std::runtime_error("radialcenter: Only numeric image types allowed"));
     	}
@@ -73,7 +72,7 @@ namespace extras{namespace ParticleTracking{
 
     /// Wrapper for radialcenter, accepting the standard arguments for a mexFunction
     /*
-    % [x,y,varXY,d2] = radialcenter(I,WIND,GP)
+    % [x,y,varXY,d2] = radialcenter(I,WIND)
     %                = radialcenter(__,name,value);
     %
     % Estimate the center of radial symmetry of an image
@@ -81,8 +80,6 @@ namespace extras{namespace ParticleTracking{
     % Input:
     %   I: the image to process
     %   WIND: [N x 4] specifying windows [x,y,w,h], default is entire image
-    %   GP (default=5): optional exponent factor to use for magnitude weighting
-    %       GP must be either scalar, or numel(GP)==size(WIND,1)
     %
     % Output:
     %   x,y: center positions
@@ -102,21 +99,17 @@ namespace extras{namespace ParticleTracking{
     %
     % Name,Value Parameters:
     % -------------------------
-    %   'RadiusFilter',val or [v1,v2,...vN]
+    %   'RadiusCutoff',val or [v1,v2,...vN]: fringe size cutoff
+	%	'CutoffFactor',val or [v1,v2,...vN]: size cutoff is applied by wieghting using a logistic function :1/(1 + exp(CutoffFactor*(r_guess - RadiusCutoff)));
+	%		where r_guess is the estimated center of symmetry (either supplied via XYC or found by Image central moment, aka image "center of mass")
+	%		default = INFINITY (i.e. top-hat function)
     %   'XYc',[X,Y] : particle center estimates
     %   'COMmethod',method
     %       method='meanABS' : use COM on |I-mean(I)| to estimate center for radius filter
     %       method='normal': use COM on unmodified I to estimate center
-    %       method='gradmag': use magnitude of image gradient to find COM
-    %   'DistanceFactor',value
-    %       Rate to use in logistic function defining the filter window around xc,yc
-    %       Default value is Inf, which indicates the Hat-function:
-    %           W=double(r<Radius) is used instead of a logistic function.
-    %       If RadiusFilter==0 DistanceFactor is the exponent of the inverse
-    %       distance function use to weight the pixels:
-    %           w = w/r^DF
-    %       where r is the distance of a pixel from the extimated com or the
-    %       specified XYc(n,:) coordinate
+    %       method='gradmag': use magnitude of image gradient to find COM (defalut)
+    %   'DistanceExponent',value or [v1,v2,...,vN]: distance scaling from center guess Wii *= 1/r_guess^(DistanceExponent)
+    %	'GradientExponent',value or [v1,v2,...,vN]: gradient scaling from center guess Wii *= |GradI_i|^(DistanceExponent)
     */
     void radialcenter_mex(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     {
@@ -148,22 +141,16 @@ namespace extras{namespace ParticleTracking{
 
     	}
 
-
-    	cmex::NumericArray<double> GP;
-
-    	if (nrhs > 2 && ParamIndex>1 && !mxIsChar(prhs[2])) {
-    		GP = prhs[2];
-    		ParamIndex = 3;
-    	}
-
     	rcdefs::RCparams params;
 
     	/// Parse value pair inputs
     	cmex::MxInputParser Parser(false); //create non-case sensitive input parser
-    	Parser.AddParameter("RadiusFilter"); //create empty parameter
+    	Parser.AddParameter("RadiusCutoff",INFINITY); //default to no radius cutoff
+		Parser.AddParameter("CutoffFactor", INFINITY); //default to top-hat function
+		Parser.AddParameter("DistanceExponent", 1); //default to top-hat function
+		Parser.AddParameter("GradientExponent", 5); //default to top-hat function
     	Parser.AddParameter("XYc");
     	Parser.AddParameter("COMmethod", "gradmag");
-    	Parser.AddParameter("DistanceFactor", INFINITY);
 
     	if (ParamIndex < nrhs) {
     		int res = Parser.Parse(nrhs - ParamIndex, &prhs[ParamIndex]);
@@ -171,24 +158,25 @@ namespace extras{namespace ParticleTracking{
     			throw(std::runtime_error("could not parse input parameters"));
     		}
 
-    		params.RadiusFilter = std::make_shared<cmex::NumericArray<double>>(Parser("RadiusFilter"));
+			cmex::NumericArray<double> tmp_RC(Parser("RadiusCutoff"));
+    		params.RadiusCutoff = std::make_shared<cmex::NumericArray<double>>(Parser("RadiusCutoff"));
+			
+
+			params.CutoffFactor = std::make_shared<cmex::NumericArray<double>>(Parser("CutoffFactor"));
+			params.DistanceExponent = std::make_shared<cmex::NumericArray<double>>(Parser("DistanceExponent"));
+			params.GradientExponent = std::make_shared<cmex::NumericArray<double>>(Parser("GradientExponent"));
     		params.XYc = std::make_shared<cmex::NumericArray<double>>(Parser("XYc"));
     		//shift from 1-indexing
     		(*params.XYc.get())-=1;
 
-    		params.DistanceFactor = fabs(mxGetScalar(Parser("DistanceFactor")));
-    		//mexPrintf("Using params.DistanceFactor=%f\n",params.DistanceFactor);
-
-    		std::string COMmeth = cmex::getstring(Parser("COMmethod"));
-
 			//validate COMmethod
-			params.COMmethod = string2COMmethod(COMmeth);
+			params.COMmethod = string2COMmethod(cmex::getstring(Parser("COMmethod")));
 
     	}
 
     	//mexPrintf("About to run radial center...\n");
     	try {
-    		auto out = radialcenter<cmex::NumericArray<double>>(prhs[0], WIND, GP, params);
+    		auto out = radialcenter<cmex::NumericArray<double>>(prhs[0], WIND, params);
 
     		if (nlhs > 0) {
     			out[0]+=1;

@@ -1,13 +1,11 @@
-% [x,y,varXY,d2] = radialcenter(I,WIND,GP)
+% [x,y,varXY,d2] = radialcenter(I,WIND)
 %                = radialcenter(__,name,value);
 %
 % Estimate the center of radial symmetry of an image
 %
 % Input:
 %   I: the image to process
-%   WIND: [N x 4] specifying windows [X1,X2,Y1,Y2], default is entire image
-%   GP (default=5): optional exponent factor to use for magnitude weighting
-%       GP must be either scalar, or numel(GP)==size(WIND,1)
+%   WIND: [N x 4] specifying windows [x,y,w,h], default is entire image
 %
 % Output:
 %   x,y: center positions
@@ -27,20 +25,16 @@
 %
 % Name,Value Parameters:
 % -------------------------
-%   'RadiusFilter',val or [v1,v2,...vN]
+%   'RadiusCutoff',val or [v1,v2,...vN]: fringe size cutoff
+%	'CutoffFactor',val or [v1,v2,...vN]: size cutoff is applied by wieghting using a logistic function :1/(1 + exp(CutoffFactor*(r_guess - RadiusCutoff)));
+%		where r_guess is the estimated center of symmetry (either supplied via XYC or found by Image central moment, aka image "center of mass")
+%		default = INFINITY (i.e. top-hat function)
 %   'XYc',[X,Y] : particle center estimates
 %   'COMmethod',method
 %       method='meanABS' : use COM on |I-mean(I)| to estimate center for radius filter
 %       method='normal': use COM on unmodified I to estimate center
-%       method='gradmag': use magnitude of image gradient to find COM
-%   'DistanceFactor',value
-%       Rate to use in logistic function defining the filter window around xc,yc
-%       Default value is Inf, which indicates the Hat-function:
-%           W=double(r<Radius) is used instead of a logistic function.
-%       If RadiusFilter==0 DistanceFactor is the exponent of the inverse
-%       distance function use to weight the pixels:
-%           w = w/r^DF
-%       where r is the distance of a pixel from the estimated com or the
-%       specified XYc(n,:) coordinate
-
-%This file is a stub for a MEX function
+%       method='gradmag': use magnitude of image gradient to find COM (defalut)
+%   'DistanceExponent',value or [v1,v2,...,vN]: distance scaling from center guess Wii *= 1/r_guess^(DistanceExponent)
+%	'GradientExponent',value or [v1,v2,...,vN]: gradient scaling from center guess Wii *= |GradI_i|^(DistanceExponent)
+%
+%% This file is a stub for a MEX function

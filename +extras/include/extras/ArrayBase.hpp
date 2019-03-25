@@ -15,7 +15,7 @@ namespace extras {
     	virtual ~ArrayBase(){};
 
     	virtual size_t numel() const = 0; ///< number of elements
-    	virtual bool isempty() const = 0; ///< is array empty
+		virtual bool isempty() const { return numel() == 0; }
     	virtual size_t nRows() const = 0; ///< number of rows
     	virtual size_t nCols() const = 0; ///< number of columns
 

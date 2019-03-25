@@ -250,7 +250,7 @@ namespace extras{
 		Array(){};//NOTHIG TO DO
 
 		/// construct from vector specifying dims
-		Array(const std::vector<size_t>& dim, bool SET_TO_ZERO=false){
+		Array(const std::vector<size_t>& dim, bool SET_TO_ZERO){
 			if(SET_TO_ZERO){
 				resize_clear(dim);
 			}else{
@@ -270,6 +270,14 @@ namespace extras{
 		/// construct vector size:[numel x 1]
 		Array(size_t numel){
 			resize_nocpy(numel);
+		}
+
+		// construct from vector of values
+		Array(const std::vector<T>& vals) {
+			resize_nocpy(vals.size());
+			for (size_t n = 0; n<vals.size(); ++n) {
+				(*this)[n] = vals[n];
+			}
 		}
 
 		/// copy constructor

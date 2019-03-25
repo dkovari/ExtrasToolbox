@@ -50,22 +50,22 @@ XYc = [Xc,Yc];
 XYc = XYc + randn(size(XYc));
 plot(XYc(:,1),XYc(:,2),'sc','DisplayName','Guess Point');
 [X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,'XYc',XYc);
-plot(X,Y,'xc','DisplayName','From Guess Point');
+plot(X,Y,'xc','DisplayName','From Guess Point (uses whole image)');
 
 
 %%
 XYc = [Xc,Yc];
 XYc = XYc + 10*randn(size(XYc));
-[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,[],3,'XYc',XYc,'RadiusFilter',20);
-plot(XYc(:,1),XYc(:,2),'+m','DisplayName','Guess2');
-plot(X,Y,'xg','DisplayName','From Guess2 with RadiusFilter');
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,[],'GradientExponent',3,'XYc',XYc,'RadiusCutoff',20);
+plot(XYc(:,1),XYc(:,2),'sm','DisplayName','Guess2');
+plot(X,Y,'xg','DisplayName','From Guess2 with RadiusFilter and GradExp=3');
 
 
 %% Test other types
 typename = 'uint8';
 Ityp = cast(double(intmax(typename))*mat2gray(I),typename);
-[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(Ityp,[],3,'XYc',XYc,'RadiusFilter',20);
-plot(X,Y,'og','DisplayName','From Guess2 with RF, typecast');
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(Ityp,[],'GradientExponent',3,'XYc',XYc,'RadiusCutoff',20);
+plot(X,Y,'og','DisplayName','From Guess2 with RF, typecast and GradExp=3');
 %plot(XYc(:,1),XYc(:,2),'om');
 
 %% END

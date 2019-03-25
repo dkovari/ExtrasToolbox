@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{1e3740fe-6d84-4d75-9883-419f66850586}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\extras">
+      <UniqueIdentifier>{4c3a967e-f39a-4abf-b035-386f76f67caf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\radialcenter.cpp">
@@ -25,6 +31,27 @@
     </ClInclude>
     <ClInclude Include="source\radialcenter_mex.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\Array.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\ArrayBase.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\MatlabTime.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\numeric.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\string_extras.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\traspose.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\assert.hpp">
+      <Filter>Include\extras</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

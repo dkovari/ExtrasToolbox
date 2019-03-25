@@ -36,7 +36,10 @@ namespace extras {namespace cmex {
 		//! create deep copy of object
 		virtual void copyFrom(const MxObject& src) {
 			bool wasPersistent = isPersistent();
-			if (sametype<T>(src)) { //if same type, use MxObject's copyFrom
+			if (src.getmxarray() == nullptr) {
+				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+			}
+			else if (sametype<T>(src)) { //if same type, use MxObject's copyFrom
 				MxObject::copyFrom(src);
 			}
 			else {
@@ -51,7 +54,10 @@ namespace extras {namespace cmex {
 		// try to move from MxObject, if different type perform copy
 		virtual void moveFrom(MxObject& src) {
 			bool wasPersistent = isPersistent();
-			if (sametype<T>(src)) {
+			if (src.getmxarray() == nullptr) {
+				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+			}
+			else if (sametype<T>(src)) {
 				MxObject::moveFrom(src);
 			}
 			else {
@@ -67,7 +73,10 @@ namespace extras {namespace cmex {
 		//! at which point the array is duplicated
 		virtual void setFromConst(const mxArray* psrc, bool persist) {
 			bool wasPersistent = isPersistent();
-			if (sametype<T>(psrc)) {
+			if (psrc == nullptr) {
+				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+			}
+			else if (sametype<T>(psrc)) {
 				//own(mxDuplicateArray(psrc));
 				MxObject::setFromConst(psrc, persist);
 			}
@@ -85,7 +94,10 @@ namespace extras {namespace cmex {
 		//! so it is your job to delete it.
 		virtual void setFrom(mxArray* psrc, bool persist) {
 			bool wasPersistent = isPersistent();
-			if (sametype<T>(psrc)) {
+			if (psrc == nullptr) {
+				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+			}
+			else if (sametype<T>(psrc)) {
 				//own(mxDuplicateArray(psrc));
 				MxObject::setFrom(psrc, persist);
 			}
@@ -103,7 +115,10 @@ namespace extras {namespace cmex {
 		//! DO NOT DELETE PSRC. DO NOT EXPECT PSRC TO BE VALID AFTER CALLING!
 		virtual void setOwn(mxArray* psrc, bool persist) {
 			bool wasPersistent = isPersistent();
-			if (sametype<T>(psrc)) {
+			if (psrc == nullptr) {
+				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+			}
+			else if (sametype<T>(psrc)) {
 				MxObject::setOwn(psrc, persist);
 			}
 			else { //need to valuecopy
@@ -337,6 +352,10 @@ namespace extras {namespace cmex {
 		//! overload disp() method
 		void disp() const {
 			mexPrintf("NumericMatrix: %s [", mxGetClassName(getmxarray()));
+			if (getmxarray() == nullptr) {
+				mexPrintf("Empty Array (mxArray*=nullptr)]\n");
+				return;
+			}
 			for (size_t n = 0; n<ndims() - 1; ++n) {
 				mexPrintf("%zu x ", dims()[n]);
 			}
