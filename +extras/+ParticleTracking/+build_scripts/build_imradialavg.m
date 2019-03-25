@@ -7,7 +7,11 @@ OUTDIR = fullfile(THIS_PATH,'..'); %output to .../+extras/+ParticleTracking
 
 
 %% Compiler options
-compiler_options ='-std=c++14';
+if ispc
+compiler_options ='/std:c++17';
+else
+compiler_options ='-std=c++17';
+end
 
 %% Setup Source Path
 [pth,~,~] = fileparts(mfilename('fullpath'));
