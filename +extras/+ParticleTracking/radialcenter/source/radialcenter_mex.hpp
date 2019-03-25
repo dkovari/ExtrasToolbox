@@ -162,7 +162,7 @@ namespace extras{namespace ParticleTracking{
     	cmex::MxInputParser Parser(false); //create non-case sensitive input parser
     	Parser.AddParameter("RadiusFilter"); //create empty parameter
     	Parser.AddParameter("XYc");
-    	Parser.AddParameter("COMmethod", "meanABS");
+    	Parser.AddParameter("COMmethod", "gradmag");
     	Parser.AddParameter("DistanceFactor", INFINITY);
 
     	if (ParamIndex < nrhs) {

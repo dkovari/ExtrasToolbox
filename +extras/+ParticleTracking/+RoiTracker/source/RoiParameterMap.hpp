@@ -241,7 +241,7 @@ namespace extras {namespace ParticleTracking {
 		RoiParameterMap() :extras::cmex::ParameterMxMap(false) {
 			/// Add MAP Defaults
 			extras::cmex::ParameterMxMap::operator[]("xyMethod").takeOwnership(cmex::MxObject("radialcenter"));
-			extras::cmex::ParameterMxMap::operator[]("COMmethod").takeOwnership(cmex::MxObject("meanABS"));
+			extras::cmex::ParameterMxMap::operator[]("COMmethod").takeOwnership(cmex::MxObject("gradmag"));
 			extras::cmex::ParameterMxMap::operator[]("DistanceFactor").takeOwnership(mxCreateDoubleScalar(INFINITY));
 			extras::cmex::ParameterMxMap::operator[]("LimFrac").takeOwnership(mxCreateDoubleScalar(0.2));
 

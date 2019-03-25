@@ -26,6 +26,10 @@ namespace extras {namespace ParticleTracking {
 	 *				 .Y
 	 *				 .RadialAverage
 	 *				 .LUT(k).
+	 *						.MinR
+	 *						.MaxR
+	 *						.pp
+	 *						.dpp
 	 *						.... % all input fields passed to output
 	 *						.Result.
 	 *								.Z -> calculated position in lut

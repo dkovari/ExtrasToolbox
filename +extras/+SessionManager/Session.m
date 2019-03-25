@@ -58,7 +58,7 @@ classdef Session < handle
 % MEX_DISPATCH
 
     
-    properties(SetAccess=immutable,Hidden)
+    properties(SetAccess=private,Hidden)
         intPointer = 0;
         MEX_function;
     end
@@ -123,6 +123,23 @@ classdef Session < handle
             %hidden method which returns a list of the valid method
             %names
             methNames = runMethod(this,'getMethodNames');
+        end
+    end
+    methods(Access=protected,Hidden)
+        function change_MEX_FUNCTION(this,MEX_NAME,varargin)
+            assert(isa(MEX_NAME,'function_handle')||...
+                exist(MEX_NAME,'file')==3,...
+                'MEX_NAME must be a function handle to a mex function or the name of a mex function');
+            
+            this.MEX_function('delete',this.intPointer);
+            
+            if ischar(MEX_NAME)
+                this.MEX_function = str2func(MEX_NAME);
+            else
+                this.MEX_function = MEX_NAME;
+            end
+            
+            this.intPointer = this.MEX_function('new',varargin{:});
         end
     end
 end
