@@ -121,7 +121,7 @@ namespace extras{namespace ParticleTracking{
             return;
         }
 
-    	cmex::NumericArray<double> WIND; 
+    	cmex::NumericArray<double> WIND;
 
     	int ParamIndex = 1;
 
@@ -143,25 +143,24 @@ namespace extras{namespace ParticleTracking{
 
     	rcdefs::RCparams params;
 
-    	/// Parse value pair inputs
-    	cmex::MxInputParser Parser(false); //create non-case sensitive input parser
-    	Parser.AddParameter("RadiusCutoff",INFINITY); //default to no radius cutoff
-		Parser.AddParameter("CutoffFactor", INFINITY); //default to top-hat function
-		Parser.AddParameter("DistanceExponent", 1); //default to top-hat function
-		Parser.AddParameter("GradientExponent", 5); //default to top-hat function
-    	Parser.AddParameter("XYc");
-    	Parser.AddParameter("COMmethod", "gradmag");
+
 
     	if (ParamIndex < nrhs) {
+			/// Parse value pair inputs
+			cmex::MxInputParser Parser(false); //create non-case sensitive input parser
+			Parser.AddParameter("RadiusCutoff",INFINITY); //default to no radius cutoff
+			Parser.AddParameter("CutoffFactor", INFINITY); //default to top-hat function
+			Parser.AddParameter("DistanceExponent", 1); //default to top-hat function
+			Parser.AddParameter("GradientExponent", 5); //default to top-hat function
+			Parser.AddParameter("XYc");
+			Parser.AddParameter("COMmethod", "gradmag");
+
     		int res = Parser.Parse(nrhs - ParamIndex, &prhs[ParamIndex]);
     		if (res != 0) {
     			throw(std::runtime_error("could not parse input parameters"));
     		}
 
-			cmex::NumericArray<double> tmp_RC(Parser("RadiusCutoff"));
     		params.RadiusCutoff = std::make_shared<cmex::NumericArray<double>>(Parser("RadiusCutoff"));
-			
-
 			params.CutoffFactor = std::make_shared<cmex::NumericArray<double>>(Parser("CutoffFactor"));
 			params.DistanceExponent = std::make_shared<cmex::NumericArray<double>>(Parser("DistanceExponent"));
 			params.GradientExponent = std::make_shared<cmex::NumericArray<double>>(Parser("GradientExponent"));

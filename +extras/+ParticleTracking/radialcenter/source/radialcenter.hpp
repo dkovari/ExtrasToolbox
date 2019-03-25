@@ -170,7 +170,7 @@ namespace extras{namespace ParticleTracking{
 			single_RadiusCutoff = true;
 		}
 		else { //was empty, set to default
-			params.RadiusCutoff = std::make_shared<extras::Array<double>>(INFINITY);
+			params.RadiusCutoff = std::make_shared<extras::Array<double>>(std::vector<double>({ INFINITY }));
 			single_RadiusCutoff = true;
 		}
 
@@ -183,7 +183,7 @@ namespace extras{namespace ParticleTracking{
 			single_CutoffFactor = true;
 		}
 		else { //was empty, set to default
-			params.CutoffFactor = std::make_shared<extras::Array<double>>(INFINITY);
+			params.CutoffFactor = std::make_shared<extras::Array<double>>(std::vector<double>({ INFINITY }));
 			single_CutoffFactor = true;
 		}
 
@@ -196,7 +196,7 @@ namespace extras{namespace ParticleTracking{
 			single_DistanceExponent = true;
 		}
 		else { //was empty, set to default
-			params.DistanceExponent = std::make_shared<extras::Array<double>>(1);
+			params.DistanceExponent = std::make_shared<extras::Array<double>>(std::vector<double>({ 1 }));
 			single_DistanceExponent = true;
 		}
 
@@ -209,7 +209,7 @@ namespace extras{namespace ParticleTracking{
 			single_GradientExponent = true;
 		}
 		else { //was empty, set to default
-			params.GradientExponent = std::make_shared<extras::Array<double>>(5);
+			params.GradientExponent = std::make_shared<extras::Array<double>>(std::vector<double>({ 5 }));
 			single_GradientExponent = true;
 		}
 
@@ -261,19 +261,19 @@ namespace extras{namespace ParticleTracking{
 
 			double this_RadiusCutoff;
 			if (single_RadiusCutoff) {
-				this_RadiusCutoff = params.RadiusCutoff->operator[](0);
+				this_RadiusCutoff = params.RadiusCutoff->getElement(0);
 			}
 			else {
-				this_RadiusCutoff = params.RadiusCutoff->operator[](n);
+				this_RadiusCutoff = params.RadiusCutoff->getElement(n);
 			}
 			assert_condition(this_RadiusCutoff >= 0, "RadiusCutoff must be >=0");
 
 			double this_CutoffFactor;
 			if (single_CutoffFactor) {
-				this_CutoffFactor = params.CutoffFactor->operator[](0);
+				this_CutoffFactor = params.CutoffFactor->getElement(0);
 			}
 			else {
-				this_CutoffFactor = params.CutoffFactor->operator[](n);
+				this_CutoffFactor = params.CutoffFactor->getElement(n);
 			}
 			assert_condition(this_CutoffFactor >= 0, "CutoffFactor must be >=0");
 			if (this_CutoffFactor == 0) {
@@ -282,20 +282,20 @@ namespace extras{namespace ParticleTracking{
 
 			double this_DistanceExponent;
 			if (single_DistanceExponent) {
-				this_DistanceExponent = params.DistanceExponent->operator[](0);
+				this_DistanceExponent = params.DistanceExponent->getElement(0);
 			}
 			else {
-				this_DistanceExponent = params.DistanceExponent->operator[](n);
+				this_DistanceExponent = params.DistanceExponent->getElement(n);
 			}
-			
+
 			double this_GradientExponent;
 			if (single_GradientExponent) {
-				this_GradientExponent = params.GradientExponent->operator[](0);
+				this_GradientExponent = params.GradientExponent->getElement(0);
 			}
 			else {
-				this_GradientExponent = params.GradientExponent->operator[](n);
+				this_GradientExponent = params.GradientExponent->getElement(n);
 			}
-			
+
 			//////////////////////////////////
 			//Get Sub window range
 
@@ -369,9 +369,9 @@ namespace extras{namespace ParticleTracking{
 				//nothing to do
 				need_COM = false;
 			}
-			else if( !params.XYc->isempty() && isfinite(params.XYc->operator()(n,0)) && isfinite(params.XYc->operator()(n,1))){ //dont need because we were valid told XYc
-				Xcom = (*params.XYc.get())(n, 0) - Ix1;
-				Ycom = (*params.XYc.get())(n, 1) - Iy1;
+			else if( !params.XYc->isempty() && isfinite(params.XYc->getElement(n,0)) && isfinite(params.XYc->getElement(n,1))){ //dont need because we were valid told XYc
+				Xcom = params.XYc->getElement(n, 0) - Ix1;
+				Ycom = params.XYc->getElement(n, 1) - Iy1;
 				need_COM = true;
 			}
 			else { //need to calculate COM
@@ -573,7 +573,7 @@ namespace extras{namespace ParticleTracking{
 			y[n] = (A*XWy2 - B*XWy1);
 
 			/////////////////////////
-			// calc variance 
+			// calc variance
 
 			double RWR = 0;
 			for (int i = 0; i<dNx*dNy; ++i) {

@@ -31,15 +31,18 @@ namespace extras {
 
     	virtual T& operator[](size_t index) = 0; ///< set n-th element
     	virtual const T& operator[](size_t index) const = 0; ///< get n-th element
+		const T& getElement(size_t index) const{return (*this)[index];}; //alias for operator[] const
 
     	virtual T& operator()(size_t index) = 0; ///< set n-th element
     	virtual const T& operator()(size_t index) const = 0; ///< get n-th element
 
     	virtual T& operator()(size_t row, size_t col) = 0; ///< set element [m,n]
     	virtual const T& operator()(size_t row, size_t col) const = 0; ///< get element [m,n]
+		const T& getElement(size_t row, size_t col) const{return (*this)(row,col);} //alias to operator(r,c) const;
 
 		virtual T& operator()(const std::vector<size_t>& elementCoord) = 0; ///< set element at coordinate [x,y,z,...] specified by the vector elementCoord
 		virtual const T& operator()(const std::vector<size_t>& elementCoord) const = 0; ///< get element at coordinate [x,y,z,...] specified by the vector elementCoord
+		const T& getElement(const std::vector<size_t>& subs) const{return (*this)(subs);} //alias to operator() const;
 
     	virtual void resize(size_t numel) = 0; ///< resize to hold n elements, keep old data, new data set to zeros
     	virtual void resize(size_t nRows, size_t nCols) = 0; ///< resize to hold MxN elements, keep old data, new data set to zeros
