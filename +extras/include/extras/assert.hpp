@@ -4,7 +4,7 @@
 
 namespace extras {
 	//throws exception if cond==false
-	void assert_condition(bool cond, std::exception& except) {
+	void assert_condition(bool cond, const std::exception& except) {
 		if (!cond) {
 			throw(except);
 		}
