@@ -148,8 +148,8 @@ namespace extras{
 
     	virtual const T* getdata() const {return _data;} ///< get pointer to raw data array
     	virtual T* getdata() {return _data;} ///< get pointer to raw data array
-    	
-		
+
+
 		//! returns index corresponding to subscript
 		virtual size_t sub2ind(const std::vector<size_t>& subs) const {
 			size_t idx = subs[0];
@@ -320,7 +320,7 @@ namespace extras{
 			////////////////////////////
 			// Compute new size
 
-			auto thisSz = size();
+			auto thisSz = this->size();
 			auto thatSz = b.size();
 			size_t thisSz_len = thisSz.size();
 			size_t thatSz_len = thatSz.size();

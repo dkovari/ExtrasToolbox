@@ -7,6 +7,8 @@ All rights reserved.
 #include <string>
 #include <cctype>
 #include <string.h>
+#include <string>
+#include <vector>
 
 #ifndef _WIN32 //on mac use strcasecmp
 #ifndef strcmpi
@@ -51,7 +53,7 @@ namespace extras{
 	//! return true if string is found in a vector of strings
 	//! optionally specify if search is case sensitive (default = true)
 	bool ismember(const std::string& str, const std::vector<std::string>& str_list,bool CaseSensitive=true) {
-		for (auto& s2 : str_list) {
+		for (const auto& s2 : str_list) {
 			if (CaseSensitive) {
 				if (strcmp(str.c_str(), s2.c_str())==0) {
 					return true;

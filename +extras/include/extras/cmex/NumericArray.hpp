@@ -5,7 +5,7 @@ All rights reserved.
 #pragma once
 
 #include <mex.h>
-#include "MxObject.hpp"
+#include "mxobject.hpp"
 #include <extras/ArrayBase.hpp>
 
 namespace extras {namespace cmex {
@@ -17,7 +17,7 @@ namespace extras {namespace cmex {
 	//! MATLAB does not have a default integet type therefore it does not make
 	//! make sense to include it as an option.
 	//! NOTE:
-	//! If the 
+	//! If the
 	template <typename T>
 	class NumericArray : public MxObject, virtual public ArrayBase<T> {
 	protected:
@@ -32,7 +32,7 @@ namespace extras {namespace cmex {
 			}
 		}
 
-		
+
 		//! create deep copy of object
 		virtual void copyFrom(const MxObject& src) {
 			bool wasPersistent = isPersistent();
@@ -130,7 +130,7 @@ namespace extras {namespace cmex {
 		virtual std::vector<size_t> size() const { return MxObject::size(); } //returns size of data
 
 		//! get const pointer to raw data array
-		virtual const T* getdata() const { 
+		virtual const T* getdata() const {
 			if (getmxarray() ==nullptr) {
 				return nullptr;
 			}
@@ -199,9 +199,9 @@ namespace extras {namespace cmex {
 
 		//! set element at coordinate [x,y,z,...] specified by the vector elementCoord
 		virtual T& operator()(const std::vector<size_t>& sub) { return (*this)[sub2ind(sub)]; }
-		
+
 		//! get element at coordinate [x,y,z,...] specified by the vector elementCoord///< get element at coordinate [x,y,z,...] specified by the vector elementCoord
-		virtual const T& operator()(const std::vector<size_t>& sub) const {return (*this)[sub2ind(sub)];} 
+		virtual const T& operator()(const std::vector<size_t>& sub) const {return (*this)[sub2ind(sub)];}
 
 		virtual void resize(size_t num) { reshape(num,1); } ///< resize to hold n elements, keep old data, new data set to zeros
 		virtual void resize(size_t nRows, size_t nCols) { reshape(nRows, nCols); } ///< resize to hold MxN elements, keep old data, new data set to zeros
@@ -229,7 +229,7 @@ namespace extras {namespace cmex {
 		NumericArray(const NumericArray<T>& src) {
 			copyFrom(src);
 		}
-		
+
 		template<typename M> NumericArray(const NumericArray<M>& src) {
 			copyFrom<M>(src);
 		}
@@ -239,7 +239,7 @@ namespace extras {namespace cmex {
 		}
 
 		template<typename M> NumericArray(NumericArray<M>&& src) {
-			moveFrom<M>(src);
+			moveFrom(src);
 		}
 
 		//! copy assign;
@@ -250,11 +250,11 @@ namespace extras {namespace cmex {
 
 		//! move assign
 		template <typename M> NumericArray& operator=(NumericArray<M>&& src) {
-			moveFrom<M>(src);
+			moveFrom(src);
 			return (*this);
 		}
-		
-		
+
+
 		////////////////////////////////
 		//// mxArray* assignments
 
@@ -434,7 +434,7 @@ namespace extras {namespace cmex {
 						subs[dim] = d; //index for dimension being concatenated
 
 						newArray(subs) = (*this)(subs); //copy values
-						
+
 					}
 				}
 				new_dim++;
