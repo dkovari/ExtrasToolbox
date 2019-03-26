@@ -1,6 +1,5 @@
 /*//////////////////////////////
 /// Wrapper for radialcenter, accepting the standard arguments for a mexFunction
-/*
 % [x,y,varXY,d2] = radialcenter(I,WIND)
 %                = radialcenter(__,name,value);
 %

@@ -41,30 +41,29 @@ namespace extras{namespace ParticleTracking{
 
     template<class OutContainerClass> //C must be and ArrayBase derived class
     std::vector<OutContainerClass> radialcenter(const mxArray* pI,
-                                const extras::ArrayBase<double>& WIND,
-                                const rcdefs::RCparams& params)
+                                const RadialcenterParameters_Shared& params = RadialcenterParameters_Shared())
     {
         switch (mxGetClassID(pI)) { //handle different image types seperatelys
     	case mxDOUBLE_CLASS:
-    		return radialcenter<OutContainerClass,double>(cmex::NumericArray<double>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,double>(cmex::NumericArray<double>(pI), params);
     	case mxSINGLE_CLASS:
-    		return radialcenter<OutContainerClass,float_t>(cmex::NumericArray<float>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,float_t>(cmex::NumericArray<float>(pI), params);
     	case mxINT8_CLASS:
-    		return radialcenter<OutContainerClass,int8_t>(cmex::NumericArray<int8_t>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,int8_t>(cmex::NumericArray<int8_t>(pI), params);
     	case mxUINT8_CLASS:
-    		return radialcenter<OutContainerClass,uint8_t>(cmex::NumericArray<uint8_t>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,uint8_t>(cmex::NumericArray<uint8_t>(pI), params);
     	case mxINT16_CLASS:
-    		return radialcenter<OutContainerClass,int16_t>(cmex::NumericArray<int16_t>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,int16_t>(cmex::NumericArray<int16_t>(pI), params);
     	case mxUINT16_CLASS:
-    		return radialcenter<OutContainerClass,uint16_t>(cmex::NumericArray<uint16_t>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,uint16_t>(cmex::NumericArray<uint16_t>(pI), params);
     	case mxINT32_CLASS:
-    		return radialcenter<OutContainerClass,int32_t>(cmex::NumericArray<int32_t>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,int32_t>(cmex::NumericArray<int32_t>(pI), params);
     	case mxUINT32_CLASS:
-    		return radialcenter<OutContainerClass,uint32_t>(cmex::NumericArray<uint32_t>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,uint32_t>(cmex::NumericArray<uint32_t>(pI), params);
     	case mxINT64_CLASS:
-    		return radialcenter<OutContainerClass,int64_t>(cmex::NumericArray<int64_t>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,int64_t>(cmex::NumericArray<int64_t>(pI), params);
     	case mxUINT64_CLASS:
-    		return radialcenter<OutContainerClass,uint64_t>(cmex::NumericArray<uint64_t>(pI), WIND, params);
+    		return radialcenter<OutContainerClass,uint64_t>(cmex::NumericArray<uint64_t>(pI), params);
     	default:
     		throw(std::runtime_error("radialcenter: Only numeric image types allowed"));
     	}
@@ -122,6 +121,7 @@ namespace extras{namespace ParticleTracking{
         }
 
     	cmex::NumericArray<double> WIND;
+		bool found_wind = false;
 
     	int ParamIndex = 1;
 
@@ -138,10 +138,10 @@ namespace extras{namespace ParticleTracking{
                     WIND(n,1)-=1;
                 }
             }
-
+			found_wind = true;
     	}
 
-    	rcdefs::RCparams params;
+    	RadialcenterParameters_Shared params;
 		cmex::MxInputParser Parser(false); //create non-case sensitive input parser
 		Parser.AddParameter("RadiusCutoff",INFINITY); //default to no radius cutoff
 		Parser.AddParameter("CutoffFactor", INFINITY); //default to top-hat function
@@ -149,6 +149,9 @@ namespace extras{namespace ParticleTracking{
 		Parser.AddParameter("GradientExponent", 5); //default to top-hat function
 		Parser.AddParameter("XYc");
 		Parser.AddParameter("COMmethod", "gradmag");
+		if(!found_wind){
+			Parser.AddParameter("Window");
+		}
 
     	if (ParamIndex < nrhs) {
 			/// Parse value pair inputs
@@ -169,9 +172,15 @@ namespace extras{namespace ParticleTracking{
 			params.COMmethod = string2COMmethod(cmex::getstring(Parser("COMmethod")));
     	}
 
+		if(found_wind){
+			params.WIND = std::make_shared<cmex::NumericArray<double>>(WIND.getmxarray());
+		}else{
+			params.WIND = std::make_shared<cmex::NumericArray<double>>(Parser("Window"));
+		}
+
     	//mexPrintf("About to run radial center...\n");
     	try {
-    		auto out = radialcenter<cmex::NumericArray<double>>(prhs[0], WIND, params);
+    		auto out = radialcenter<cmex::NumericArray<double>>(prhs[0], params);
 
     		if (nlhs > 0) {
     			out[0]+=1;

@@ -163,7 +163,9 @@ namespace extras {namespace cmex {
 			if (isConst()) { //was const, need to make a copy so that we can edit values
 				bool wasPersistent = isPersistent();
 				own(mxDuplicateArray(getmxarray()));
-				makePersistent();
+				if(wasPersistent){
+					makePersistent();
+				}
 			}
 
 			return (T*)mxGetData(getmxarray());
