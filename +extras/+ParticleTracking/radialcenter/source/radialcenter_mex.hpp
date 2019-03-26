@@ -142,19 +142,16 @@ namespace extras{namespace ParticleTracking{
     	}
 
     	rcdefs::RCparams params;
-
-
+		cmex::MxInputParser Parser(false); //create non-case sensitive input parser
+		Parser.AddParameter("RadiusCutoff",INFINITY); //default to no radius cutoff
+		Parser.AddParameter("CutoffFactor", INFINITY); //default to top-hat function
+		Parser.AddParameter("DistanceExponent", 1); //default to top-hat function
+		Parser.AddParameter("GradientExponent", 5); //default to top-hat function
+		Parser.AddParameter("XYc");
+		Parser.AddParameter("COMmethod", "gradmag");
 
     	if (ParamIndex < nrhs) {
 			/// Parse value pair inputs
-			cmex::MxInputParser Parser(false); //create non-case sensitive input parser
-			Parser.AddParameter("RadiusCutoff",INFINITY); //default to no radius cutoff
-			Parser.AddParameter("CutoffFactor", INFINITY); //default to top-hat function
-			Parser.AddParameter("DistanceExponent", 1); //default to top-hat function
-			Parser.AddParameter("GradientExponent", 5); //default to top-hat function
-			Parser.AddParameter("XYc");
-			Parser.AddParameter("COMmethod", "gradmag");
-
     		int res = Parser.Parse(nrhs - ParamIndex, &prhs[ParamIndex]);
     		if (res != 0) {
     			throw(std::runtime_error("could not parse input parameters"));
@@ -170,7 +167,6 @@ namespace extras{namespace ParticleTracking{
 
 			//validate COMmethod
 			params.COMmethod = string2COMmethod(cmex::getstring(Parser("COMmethod")));
-
     	}
 
     	//mexPrintf("About to run radial center...\n");
