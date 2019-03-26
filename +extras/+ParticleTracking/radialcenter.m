@@ -37,4 +37,4 @@
 %   'DistanceExponent',value or [v1,v2,...,vN]: distance scaling from center guess Wii *= 1/r_guess^(DistanceExponent)
 %	'GradientExponent',value or [v1,v2,...,vN]: gradient scaling from center guess Wii *= |GradI_i|^(DistanceExponent)
 %
-%% This file is a stub for a MEX function
+% This file is a stub for a MEX function

@@ -41,7 +41,7 @@ for n=1:numel(Xc)
     rectangle('Position',WIND(n,:));
 end
 
-[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,WIND);
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,WIND,'GradientExponent',1,'DistanceExponent',0,'COMmethod','gradmag','RadiusCutoff',20);
 plot(Xc,Yc,'*y','DisplayName','True Center');
 plot(X,Y,'+r','DisplayName','From Windows');
 
