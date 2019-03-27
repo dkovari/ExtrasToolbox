@@ -7,6 +7,7 @@ Version of radial center which does not use extras::ArrayBase class
 #include <math.h>
 #include <cstring>
 #include <cstdint>
+#include <cstdlib>
 
 #include <algorithm>
 #include <memory>
@@ -325,29 +326,26 @@ namespace extras{ namespace ParticleTracking{
 			if (n == 0 || calc_grad) {
 
                 //resize du
-                delete[] du;
-                du = new double[dNy*dNx];
+				du = (double*)std::realloc(du, dNy*dNx * sizeof(double));
 
                 //resize dv
-                delete[] dv;
-                dv = new double[dNy*dNx];
+				dv = (double*)std::realloc(dv, dNy*dNx * sizeof(double));
 
 				//calculate new gradient data
 				const M * thisI = &( img[Iy1+Ix1*nRows]); //I(Iy1,Ix1)); //I(y1,x1)
 				rcdefs::smoothgrad(thisI, nRows, du, dv, dNy, dNx);
                 calc_grad = false;
 
-                delete[] GradMag;
+				std::free(GradMag);
+				GradMag = nullptr;
                 calced_grad_mag = false;
 
 
                 //resize sqWX
-                delete[] sqWX;
-                sqWX = new double[dNx*dNy*2];
+				sqWX = (double*)std::realloc(sqWX, 2*dNy*dNx * sizeof(double));
 
                 //resize sqWy
-                delete[] sqWX;
-                sqWy = new double[dNx*dNy];
+				sqWy = (double*)std::realloc(sqWy, dNy*dNx * sizeof(double));
 			}
 
 			// Determine if we need to calculate COM
@@ -370,13 +368,9 @@ namespace extras{ namespace ParticleTracking{
 				{
 				case rcdefs::GRAD_MAG: //COM from magnitude of gradient
 				{
-					//mexPrintf("about to calc com from grad mag\n");
-					//mexEvalString("pause(0.1)");
-
 					//GradMag.resize_nocpy(dNy, dNx);
                     if(!calced_grad_mag){
-                        delete[] GradMag;
-                        GradMag = new double[dNy*dNx];
+						GradMag = (double*)std::realloc(GradMag, dNy*dNx * sizeof(double));
                     }
 
 					double grad_acc = 0;
@@ -607,5 +601,15 @@ namespace extras{ namespace ParticleTracking{
 			y[n] += Iy1;
 
 		}
+
+
+		///////////
+		// Cleanup memory
+		std::free(du);
+		std::free(dv);
+		std::free(sqWX);
+		std::free(sqWy);
+		std::free(GradMag);
+
     }
 }}

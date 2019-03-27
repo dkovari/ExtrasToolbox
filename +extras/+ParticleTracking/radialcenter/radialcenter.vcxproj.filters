@@ -53,5 +53,8 @@
     <ClInclude Include="..\..\include\extras\assert.hpp">
       <Filter>Include\extras</Filter>
     </ClInclude>
+    <ClInclude Include="source\radialcenter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

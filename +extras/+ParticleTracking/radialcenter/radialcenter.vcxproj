@@ -21,6 +21,7 @@
     <ClInclude Include="..\..\include\extras\numeric.hpp" />
     <ClInclude Include="..\..\include\extras\string_extras.hpp" />
     <ClInclude Include="..\..\include\extras\traspose.hpp" />
+    <ClInclude Include="source\radialcenter.h" />
     <ClInclude Include="source\radialcenter.hpp" />
     <ClInclude Include="source\radialcenter_mex.hpp" />
   </ItemGroup>
