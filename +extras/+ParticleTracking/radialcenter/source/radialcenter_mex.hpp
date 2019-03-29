@@ -6,67 +6,97 @@ All rights reserved.
 
 #include <mex.h>
 #include <extras/string_extras.hpp>
-#include "radialcenter.hpp"
+#include "radialcenter.h"
 
+#include <vector>
 #include <extras/Array.hpp>
 #include <extras/cmex/NumericArray.hpp>
 #include <extras/cmex/mxparamparse.hpp>
 
 namespace extras{namespace ParticleTracking{
 
-	//! Convert string into valid COMmethod
-	//! throws error if string does not correspond to valid method
-	//!
-	//! Valid Strings:
-	//!		"meanabs"
-	//!		"normal"
-	//!		"gradmag"
-	rcdefs::COM_METHOD string2COMmethod(std::string COMmeth) {
-		//validate COMmethod
-		COMmeth = tolower(COMmeth);
-
-		if (COMmeth.compare("meanabs") == 0) {
-			return rcdefs::MEAN_ABS;
-		}
-		else if (COMmeth.compare("normal") == 0) {
-			return rcdefs::NORMAL;
-		}
-		else if (COMmeth.compare("gradmag") == 0) {
-			return rcdefs::GRAD_MAG;
-		}
-		else {
-			throw(std::runtime_error("COMmethod invalid"));
-		}
-	}
-
-    template<class OutContainerClass> //C must be and ArrayBase derived class
+    template<class OutContainerClass> //OutContainerClass must be and ArrayBase derived class with template type=double
     std::vector<OutContainerClass> radialcenter(const mxArray* pI,
-                                const RadialcenterParameters_Shared& params = RadialcenterParameters_Shared())
+                                const RadialcenterParameters& params = RadialcenterParameters())
     {
+		//number of particles to find
+		size_t nPart = std::max(std::max(size_t(1), params.nWIND),params.nXYc);
+
+		//Setup Output variables
+		//----------------------------
+		std::vector<OutContainerClass> out;
+		out.resize(4);
+
+		auto& x = out[0];
+		auto& y = out[1];
+		auto& varXY = out[2];
+		auto& RWR_N = out[3];
+
+		// Resize output vars
+		x.resize(nPart, 1);
+		y.resize(nPart, 1);
+
+		varXY.resize(nPart, 2);
+		RWR_N.resize(nPart, 1);
+
+		//Call radialcenter
+		//---------------------
         switch (mxGetClassID(pI)) { //handle different image types seperatelys
     	case mxDOUBLE_CLASS:
-    		return radialcenter<OutContainerClass,double>(cmex::NumericArray<double>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(double*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxSINGLE_CLASS:
-    		return radialcenter<OutContainerClass,float_t>(cmex::NumericArray<float>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(float*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxINT8_CLASS:
-    		return radialcenter<OutContainerClass,int8_t>(cmex::NumericArray<int8_t>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(int8_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxUINT8_CLASS:
-    		return radialcenter<OutContainerClass,uint8_t>(cmex::NumericArray<uint8_t>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(uint8_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxINT16_CLASS:
-    		return radialcenter<OutContainerClass,int16_t>(cmex::NumericArray<int16_t>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(int16_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxUINT16_CLASS:
-    		return radialcenter<OutContainerClass,uint16_t>(cmex::NumericArray<uint16_t>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(uint16_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxINT32_CLASS:
-    		return radialcenter<OutContainerClass,int32_t>(cmex::NumericArray<int32_t>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(int32_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxUINT32_CLASS:
-    		return radialcenter<OutContainerClass,uint32_t>(cmex::NumericArray<uint32_t>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(uint32_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxINT64_CLASS:
-    		return radialcenter<OutContainerClass,int64_t>(cmex::NumericArray<int64_t>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(int64_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	case mxUINT64_CLASS:
-    		return radialcenter<OutContainerClass,uint64_t>(cmex::NumericArray<uint64_t>(pI), params);
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				(uint64_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
+				params);
+			break;
     	default:
     		throw(std::runtime_error("radialcenter: Only numeric image types allowed"));
     	}
+
+		return out;
     }
 
     /// Wrapper for radialcenter, accepting the standard arguments for a mexFunction
@@ -141,7 +171,7 @@ namespace extras{namespace ParticleTracking{
 			found_wind = true;
     	}
 
-    	RadialcenterParameters_Shared params;
+		RadialcenterParameters params;
 		cmex::MxInputParser Parser(false); //create non-case sensitive input parser
 		Parser.AddParameter("RadiusCutoff",INFINITY); //default to no radius cutoff
 		Parser.AddParameter("CutoffFactor", INFINITY); //default to top-hat function
@@ -153,30 +183,46 @@ namespace extras{namespace ParticleTracking{
 			Parser.AddParameter("Window");
 		}
 
-    	if (ParamIndex < nrhs) {
+		//parse parameters
+		if (ParamIndex < nrhs) {
 			/// Parse value pair inputs
-    		int res = Parser.Parse(nrhs - ParamIndex, &prhs[ParamIndex]);
-    		if (res != 0) {
-    			throw(std::runtime_error("could not parse input parameters"));
-    		}
-
-    		params.RadiusCutoff = std::make_shared<cmex::NumericArray<double>>(Parser("RadiusCutoff"));
-			params.CutoffFactor = std::make_shared<cmex::NumericArray<double>>(Parser("CutoffFactor"));
-			params.DistanceExponent = std::make_shared<cmex::NumericArray<double>>(Parser("DistanceExponent"));
-			params.GradientExponent = std::make_shared<cmex::NumericArray<double>>(Parser("GradientExponent"));
-    		params.XYc = std::make_shared<cmex::NumericArray<double>>(Parser("XYc"));
-    		//shift from 1-indexing
-    		(*params.XYc.get())-=1;
-
-			//validate COMmethod
-			params.COMmethod = string2COMmethod(cmex::getstring(Parser("COMmethod")));
-    	}
-
-		if(found_wind){
-			params.WIND = std::make_shared<cmex::NumericArray<double>>(WIND.getmxarray());
-		}else{
-			params.WIND = std::make_shared<cmex::NumericArray<double>>(Parser("Window"));
+			int res = Parser.Parse(nrhs - ParamIndex, &prhs[ParamIndex]);
+			if (res != 0) {
+				throw(std::runtime_error("could not parse input parameters"));
+			}
 		}
+
+		cmex::NumericArray<double> RadiusCutoff(Parser("RadiusCutoff"));
+		params.RadiusCutoff = RadiusCutoff.getdata();
+		params.nRadiusCutoff = RadiusCutoff.numel();
+
+		cmex::NumericArray<double> CutoffFactor(Parser("CutoffFactor"));
+		params.CutoffFactor = CutoffFactor.getdata();
+		params.nCutoffFactor = CutoffFactor.numel();
+
+		cmex::NumericArray<double> DistanceExponent(Parser("DistanceExponent"));
+		params.DistanceExponent = DistanceExponent.getdata();
+		params.nDistanceExponent = DistanceExponent.numel();
+
+		cmex::NumericArray<double> GradientExponent(Parser("GradientExponent"));
+		params.GradientExponent = GradientExponent.getdata();
+		params.nGradientExponent = GradientExponent.numel();
+
+		cmex::NumericArray<double> XYc(Parser("XYc"));
+		XYc -= 1;//shift from 1-indexing
+		params.XYc = XYc.getdata();
+		params.nXYc = XYc.nRows();
+
+		params.COMmethod = string2COMmethod(cmex::getstring(Parser("COMmethod")));
+
+		if (!found_wind) {
+			WIND = Parser("Window");
+		}
+		if (!WIND.isempty()) {
+			assert_condition(WIND.nCols() == 4, "radialcenter(): WIND must have nCols==4");
+		}
+		params.WIND = WIND.getdata();
+		params.nWIND = WIND.nRows();
 
     	//mexPrintf("About to run radial center...\n");
     	try {

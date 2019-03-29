@@ -1,4 +1,4 @@
-classdef RoiTracker < extras.Async.ParameterProcessor %extras.Async.AsyncProcessor %
+classdef RoiTracker < extras.Async.ParameterProcessor & dynamicprops 
 % Asynchronous Radialcenter image processor
 
     %% Create
@@ -10,6 +10,7 @@ classdef RoiTracker < extras.Async.ParameterProcessor %extras.Async.AsyncProcess
             this.ErrorCheckTimerPeriod = 1/20;
         end
     end
+
     
     %% IncludeImage
     properties(Dependent)

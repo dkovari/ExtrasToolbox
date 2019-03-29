@@ -108,9 +108,45 @@ namespace rcdefs {
     M& getElement(M* data, size_t stride, size_t r, size_t c){
         return data[r+c*stride];
     }*/
+
+	//!safely realloc memory
+	//throws bad_alloc if realloc fails
+	inline void* safe_realloc(void* p, size_t sz) {
+		void * p2 = std::realloc(p, sz);
+		if (sz!=0 && p2 == nullptr) {
+			std::free(p);
+			throw std::bad_alloc();
+		}
+		return p2;
+	}
 }
 
 namespace extras{ namespace ParticleTracking{
+
+	//! Convert string into valid COMmethod
+	//! throws error if string does not correspond to valid method
+	//!
+	//! Valid Strings:
+	//!		"meanabs"
+	//!		"normal"
+	//!		"gradmag"
+	rcdefs::COM_METHOD string2COMmethod(std::string COMmeth) {
+		//validate COMmethod
+		COMmeth = tolower(COMmeth);
+
+		if (COMmeth.compare("meanabs") == 0) {
+			return rcdefs::MEAN_ABS;
+		}
+		else if (COMmeth.compare("normal") == 0) {
+			return rcdefs::NORMAL;
+		}
+		else if (COMmeth.compare("gradmag") == 0) {
+			return rcdefs::GRAD_MAG;
+		}
+		else {
+			throw(std::runtime_error("COMmethod invalid"));
+		}
+	}
 
     struct RadialcenterParameters{
         double default_RadiusCutoff = INFINITY;
@@ -219,6 +255,8 @@ namespace extras{ namespace ParticleTracking{
 		size_t dNx = Ix2 - Ix1; //width of gradient image
 		size_t dNy = Iy2 - Iy1; //height of gradient image
 
+		size_t last_WindSz = 0;
+
         // loop over particles and compute
         for (size_t n = 0; n < nPart; ++n) {
             ///////////////////////////
@@ -273,10 +311,23 @@ namespace extras{ namespace ParticleTracking{
 				this_GradientExponent = params.GradientExponent[n];
 			}
 
+			//determine extent of image needed
+			double RadExtents = this_RadiusCutoff;
+			if (isfinite(this_CutoffFactor)) { //non-inf Logistic Factor
+				double eLRF = exp(this_CutoffFactor*this_RadiusCutoff);
+				double eLRFpow = pow(eLRF + 1, 0.99);
+				RadExtents = -(log(1 + eLRF - eLRFpow) - log(eLRF*eLRFpow)) / this_CutoffFactor;
+			}
+
             //////////////////////////////////
 			//Get Sub window range
 			bool calc_grad = false; //flag saying gradient needs to be calculated
+			
 			size_t newIx1, newIx2,newIy1,newIy2;
+			last_WindSz = dNx * dNy;
+			if (n == 0) {
+				last_WindSz = 0;
+			}
 			if (params.nWIND!=0) { //we have window
 				/* Old WIND=[X1,X2,Y1,Y2]
 				newIx1 = fmax(0,fmin(I.nCols()-1,floor(WIND(n, 0))));
@@ -292,12 +343,6 @@ namespace extras{ namespace ParticleTracking{
 			}
 			else if(params.nXYc!=0 && isfinite(this_RadiusCutoff)&& this_RadiusCutoff !=0){ //using region around XY center
 
-				double RadExtents = this_RadiusCutoff;
-				if(isfinite(this_CutoffFactor)){ //non-inf Logistic Factor
-					double eLRF = exp(this_CutoffFactor*this_RadiusCutoff);
-					double eLRFpow= pow(eLRF+1,0.99);
-					RadExtents = -( log( 1+eLRF - eLRFpow ) - log(eLRF*eLRFpow) )/ this_CutoffFactor;
-				}
 				newIx1 = fmax(0,fmin(nCols-1,floor( params.XYc[n+0*params.nXYc] - RadExtents)));//(*params.XYc.get())(n,0) - RadExtents )));
 				newIx2 = fmax(0,fmin(nCols-1,ceil( params.XYc[n+0*params.nXYc] + RadExtents)));///(*params.XYc.get())(n,0) + RadExtents )));
 				newIy1 = fmax(0,fmin(nRows-1,floor(params.XYc[n+1*params.nXYc] - RadExtents)));///(*params.XYc.get())(n,1) - RadExtents )));
@@ -308,7 +353,6 @@ namespace extras{ namespace ParticleTracking{
 				newIy1 = 0; //starting y-coord of the window
 				newIx2 = nCols - 1;//ending x-coord of the window
 				newIy2 = nRows - 1;//ending y-coord of the window
-
 			}
 
 			if(newIx1!=Ix1 || newIx2!=Ix2 || newIy1!=Iy1 || newIy2!=Iy2){ //check if we need to calc grad again
@@ -324,12 +368,22 @@ namespace extras{ namespace ParticleTracking{
 
 			// update the gradient image on first pass, or if we are using sub-windows
 			if (n == 0 || calc_grad) {
+				if (last_WindSz != dNy * dNx) {
+					//resize du
+					du = (double*)rcdefs::safe_realloc(du, dNy*dNx * sizeof(double));
 
-                //resize du
-				du = (double*)std::realloc(du, dNy*dNx * sizeof(double));
+					//resize dv
+					dv = (double*)rcdefs::safe_realloc(dv, dNy*dNx * sizeof(double));
 
-                //resize dv
-				dv = (double*)std::realloc(dv, dNy*dNx * sizeof(double));
+					//resize sqWX
+					sqWX = (double*)rcdefs::safe_realloc(sqWX, 2 * dNy*dNx * sizeof(double));
+
+					//resize sqWy
+					sqWy = (double*)rcdefs::safe_realloc(sqWy, dNy*dNx * sizeof(double));
+					
+					//set lastsz
+					last_WindSz = dNy * dNx;
+				}
 
 				//calculate new gradient data
 				const M * thisI = &( img[Iy1+Ix1*nRows]); //I(Iy1,Ix1)); //I(y1,x1)
@@ -339,38 +393,26 @@ namespace extras{ namespace ParticleTracking{
 				std::free(GradMag);
 				GradMag = nullptr;
                 calced_grad_mag = false;
-
-
-                //resize sqWX
-				sqWX = (double*)std::realloc(sqWX, 2*dNy*dNx * sizeof(double));
-
-                //resize sqWy
-				sqWy = (double*)std::realloc(sqWy, dNy*dNx * sizeof(double));
 			}
 
 			// Determine if we need to calculate COM
 			double Xcom, Ycom;//x any y center relative to windows edge
-			bool need_COM = true;
-
 
 			if (this_DistanceExponent == 0 && ((this_RadiusCutoff == 0 || !isfinite(this_RadiusCutoff)) || this_CutoffFactor == 0)) { //dont need COM because we aren't using distance dependence
-				//nothing to do
-				need_COM = false;
+
 			}
 			else if( params.nXYc != 0 && isfinite(params.XYc[n+0*params.nXYc]) && isfinite(params.XYc[n+1*params.nXYc])){ //dont need because we were valid told XYc
 				Xcom = params.XYc[n+0*params.nXYc]-Ix1;//params.XYc->getElement(n, 0) - Ix1;
 				Ycom = params.XYc[n+1*params.nXYc]-Iy1;//params.XYc->getElement(n, 1) - Iy1;
-				need_COM = true;
 			}
 			else { //need to calculate COM
-				need_COM = true;
 				switch (params.COMmethod)
 				{
 				case rcdefs::GRAD_MAG: //COM from magnitude of gradient
 				{
 					//GradMag.resize_nocpy(dNy, dNx);
                     if(!calced_grad_mag){
-						GradMag = (double*)std::realloc(GradMag, dNy*dNx * sizeof(double));
+						GradMag = (double*)rcdefs::safe_realloc(GradMag, dNy*dNx * sizeof(double));
                     }
 
 					double grad_acc = 0;
@@ -397,8 +439,6 @@ namespace extras{ namespace ParticleTracking{
 				break;
 				case rcdefs::MEAN_ABS: //com from absolute of mean-shifted image
 				{
-					//mexPrintf("about to calc com from mean abs\n");
-					//mexEvalString("pause(0.1)");
 
 					//est im mean
 					double I_mean = 0;
@@ -496,78 +536,178 @@ namespace extras{ namespace ParticleTracking{
 				}
 			}
 			else { //use weighting
-				for (size_t yi = 0; yi<dNy; ++yi) {
-					double yk = yi + 0.5;
-					for (size_t xi = 0; xi<dNx; ++xi) {
-						size_t ind = yi + xi*dNy;
-						double xk = xi + 0.5;
+				double RE2 = pow(RadExtents, 2);
+				if (isfinite(this_RadiusCutoff) || this_DistanceExponent != 0) { //has distance dependence
+					if (isfinite(this_RadiusCutoff) ) { //using radius cutoff, only sum over circle
+						for (size_t yi = 0; yi < dNy; ++yi) {
+							double yk = yi + 0.5;
+							double dy2 = pow(Ycom - yk, 2);
+							double xr = sqrt(RE2 - dy2);
+							for (size_t xi = (size_t)(Xcom - xr - 0.5); xi < min(dNy, (size_t)(Xcom + xr - 0.5)); xi++) {
+								size_t ind = yi + xi * dNy;
+								double xk = xi + 0.5;
 
-						//calc mag^2, sqrt(w)/mag, w
-						double sqw_mag; //sqrt(w)/mag
-                        double mag;
-                        if(!calced_grad_mag){
-                            mag= sqrt( pow(du[ind],2) + pow(dv[ind],2) );
+								double sqw_mag = 1; //sqrt(w)/mag
+								double mag = 1; //|grad(I)|
+								double w = 1; //weight factor
 
-                        }else{
-                            mag = GradMag[ind];
-                        }
+								if (isfinite(this_CutoffFactor) || this_DistanceExponent!=0) { //need to compute radius
+									double this_r = sqrt(pow(Xcom - xk, 2) + dy2);
+									if (this_DistanceExponent != 0) {
+										w /= pow(this_r, this_DistanceExponent);
+									}
+									if (isfinite(this_CutoffFactor)) { //using logistic filter
+										w *= 1.0 / (1.0 + exp(this_CutoffFactor*(this_r - this_RadiusCutoff)));
+									}
+									else {
+										if (this_r > this_RadiusCutoff) {
+											w = 0;
+										}
+									}
+								}
 
-						double w = pow(mag, this_GradientExponent); //weight factor
+								if (w != 0) { //haven't been excluded by radius filter yet
+									//calc mag^2, sqrt(w)/mag, w
+									if (!calced_grad_mag) {
+										mag = sqrt(pow(du[ind], 2) + pow(dv[ind], 2));
+									}
+									else {
+										mag = GradMag[ind];
+									}
 
-						// Apply distance weight
-						if (!isfinite(this_RadiusCutoff) && this_DistanceExponent==0) { //no distance dependence
-							//do nothing
-						}
-						else { //has distance dependence
-							double this_r = sqrt(pow(Xcom - xk, 2) + pow(Ycom - yk, 2));
-							if (!isfinite(this_CutoffFactor) && this_r > this_RadiusCutoff) { //use top-hat filter and outside cutoff
+									if (mag == 0) { //special case when gradient was exactly zero (probably rare)
+										sqw_mag = 0;
+										w = 0;
+									}
+									else {
+										w *= pow(mag, this_GradientExponent); //weight factor;
+										sqw_mag = sqrt(w) / mag;
+									}
+								}
+								else {
+									sqw_mag = 0;
+								}
+
+								sw2 += w * w;
+								sw += w;
+
+								sqWX[ind + dNy * dNx * 0] = (du[ind] + dv[ind])*sqw_mag;//sqWX(ind, 0) = (du(yi, xi) + dv(yi, xi))*sqw_mag;
+								sqWX[ind + dNy * dNx * 1] = (dv[ind] - du[ind])*sqw_mag;//sqWX(ind, 1) = (dv(yi, xi) - du(yi, xi))*sqw_mag;
+
+								sqWy[ind] = xk * sqWX[ind + dNy * dNx * 0] + yk * sqWX[ind + dNy * dNx * 1];//xk*sqWX(ind, 0) + yk*sqWX(ind, 1);
+
+								A += pow(sqWX[ind + dNy * dNx * 0], 2);//sqWX(ind, 0)*sqWX(ind, 0);
+								D += pow(sqWX[ind + dNy * dNx * 1], 2);//sqWX(ind, 1)*sqWX(ind, 1);
+								B += sqWX[ind + dNy * dNx * 0] * sqWX[ind + dNy * dNx * 1];//sqWX(ind, 0)*sqWX(ind, 1);
+
+								XWy1 += sqWX[ind + dNy * dNx * 0] * sqWy[ind];//sqWX(ind, 0)*sqWy(ind);
+								XWy2 += sqWX[ind + dNy * dNx * 1] * sqWy[ind];//qWX(ind, 1)*sqWy(ind);
+							}//end xi loop
+						}//end yi loop
+					}//end has distance dependence
+					else { // not using radius cutoff, only sum whole thing
+						for (size_t yi = 0; yi < dNy; ++yi) {
+							double yk = yi + 0.5;
+							double dy2 = pow(Ycom - yk, 2);
+							for (size_t xi = 0; xi < dNx; ++xi) {
+								size_t ind = yi + xi * dNy;
+								double xk = xi + 0.5;
+
+								double sqw_mag; //sqrt(w)/mag
+								double mag; //|grad(I)|
+								double w = 1; //weight factor
+
+								if (this_DistanceExponent != 0) {
+									w /= pow(sqrt(pow(Xcom - xk, 2) + dy2), this_DistanceExponent);
+								}
+
+								if (w != 0) { //haven't been excluded by radius filter yet
+											  //calc mag^2, sqrt(w)/mag, w
+									if (!calced_grad_mag) {
+										mag = sqrt(pow(du[ind], 2) + pow(dv[ind], 2));
+									}
+									else {
+										mag = GradMag[ind];
+									}
+
+									if (mag == 0) { //special case when gradient was exactly zero (probably rare)
+										sqw_mag = 0;
+										w = 0;
+									}
+									else {
+										w *= pow(mag, this_GradientExponent); //weight factor;
+										sqw_mag = sqrt(w) / mag;
+									}
+								}
+								else {
+									sqw_mag = 0;
+								}
+
+								sw2 += w * w;
+								sw += w;
+
+								sqWX[ind + dNy * dNx * 0] = (du[ind] + dv[ind])*sqw_mag;//sqWX(ind, 0) = (du(yi, xi) + dv(yi, xi))*sqw_mag;
+								sqWX[ind + dNy * dNx * 1] = (dv[ind] - du[ind])*sqw_mag;//sqWX(ind, 1) = (dv(yi, xi) - du(yi, xi))*sqw_mag;
+
+								sqWy[ind] = xk * sqWX[ind + dNy * dNx * 0] + yk * sqWX[ind + dNy * dNx * 1];//xk*sqWX(ind, 0) + yk*sqWX(ind, 1);
+
+								A += pow(sqWX[ind + dNy * dNx * 0], 2);//sqWX(ind, 0)*sqWX(ind, 0);
+								D += pow(sqWX[ind + dNy * dNx * 1], 2);//sqWX(ind, 1)*sqWX(ind, 1);
+								B += sqWX[ind + dNy * dNx * 0] * sqWX[ind + dNy * dNx * 1];//sqWX(ind, 0)*sqWX(ind, 1);
+
+								XWy1 += sqWX[ind + dNy * dNx * 0] * sqWy[ind];//sqWX(ind, 0)*sqWy(ind);
+								XWy2 += sqWX[ind + dNy * dNx * 1] * sqWy[ind];//qWX(ind, 1)*sqWy(ind);
+
+							} //end xi loop
+						} //end yi loop
+					}//end not using rad cutoff
+				} else { //no distance dependence
+					for (size_t yi = 0; yi < dNy; ++yi) {
+						double yk = yi + 0.5;
+						for (size_t xi = 0; xi < dNx; ++xi) {
+							size_t ind = yi + xi * dNy;
+							double xk = xi + 0.5;
+
+							double sqw_mag; //sqrt(w)/mag
+							double mag; //|grad(I)|
+							double w = 1; //weight factor
+
+							//calc mag^2, sqrt(w)/mag, w
+							if (!calced_grad_mag) {
+								mag = sqrt(pow(du[ind], 2) + pow(dv[ind], 2));
+							}
+							else {
+								mag = GradMag[ind];
+							}
+
+							if (mag == 0) { //special case when gradient was exactly zero (probably rare)
+								sqw_mag = 0;
 								w = 0;
 							}
 							else {
-								if (this_DistanceExponent != 0) {
-									w /= pow(this_r, this_DistanceExponent);
-								}
-								if (isfinite(this_CutoffFactor)) { //using logistic filter
-									w *= 1.0 / (1.0 + exp(this_CutoffFactor*(this_r - this_RadiusCutoff)));
-								}
+								w = pow(mag, this_GradientExponent); //weight factor;
+								sqw_mag = sqrt(w) / mag;
 							}
-						}
-						if (mag == 0) { //special case when gradient was exactly zero (probably rare)
-							sqw_mag = 0;
-						}
-						else {
-							sqw_mag = sqrt(w) / mag;
-						}
 
-						double w2 = w*w;
+							sw2 += w*w;
+							sw += w;
 
-						sw2 += w2;
-						sw += w;
+							sqWX[ind + dNy * dNx * 0] = (du[ind] + dv[ind])*sqw_mag;//sqWX(ind, 0) = (du(yi, xi) + dv(yi, xi))*sqw_mag;
+							sqWX[ind + dNy * dNx * 1] = (dv[ind] - du[ind])*sqw_mag;//sqWX(ind, 1) = (dv(yi, xi) - du(yi, xi))*sqw_mag;
 
-						sqWX[ind+dNy*dNx*0] = (du[ind] + dv[ind])*sqw_mag;//sqWX(ind, 0) = (du(yi, xi) + dv(yi, xi))*sqw_mag;
-						sqWX[ind+dNy*dNx*1] = (dv[ind] - du[ind])*sqw_mag;//sqWX(ind, 1) = (dv(yi, xi) - du(yi, xi))*sqw_mag;
+							sqWy[ind] = xk * sqWX[ind + dNy * dNx * 0] + yk * sqWX[ind + dNy * dNx * 1];//xk*sqWX(ind, 0) + yk*sqWX(ind, 1);
 
-						/*sqWy(ind) = xk*sqWX(ind, 0) + yk*sqWX(ind, 1);
+							A += pow(sqWX[ind + dNy * dNx * 0], 2);//sqWX(ind, 0)*sqWX(ind, 0);
+							D += pow(sqWX[ind + dNy * dNx * 1], 2);//sqWX(ind, 1)*sqWX(ind, 1);
+							B += sqWX[ind + dNy * dNx * 0] * sqWX[ind + dNy * dNx * 1];//sqWX(ind, 0)*sqWX(ind, 1);
 
-						A += sqWX(ind, 0)*sqWX(ind, 0);
-						D += sqWX(ind, 1)*sqWX(ind, 1);
-						B += sqWX(ind, 0)*sqWX(ind, 1);
+							XWy1 += sqWX[ind + dNy * dNx * 0] * sqWy[ind];//sqWX(ind, 0)*sqWy(ind);
+							XWy2 += sqWX[ind + dNy * dNx * 1] * sqWy[ind];//qWX(ind, 1)*sqWy(ind);
 
-						XWy1 += sqWX(ind, 0)*sqWy(ind);
-						XWy2 += sqWX(ind, 1)*sqWy(ind);*/
-
-						sqWy[ind] = xk*sqWX[ind+dNy*dNx*0] + yk*sqWX[ind+dNy*dNx*1];//xk*sqWX(ind, 0) + yk*sqWX(ind, 1);
-
-						A += pow(sqWX[ind+dNy*dNx*0],2);//sqWX(ind, 0)*sqWX(ind, 0);
-						D += pow(sqWX[ind+dNy*dNx*1],2);//sqWX(ind, 1)*sqWX(ind, 1);
-						B += sqWX[ind+dNy*dNx*0]*sqWX[ind+dNy*dNx*1];//sqWX(ind, 0)*sqWX(ind, 1);
-
-						XWy1 += sqWX[ind+dNy*dNx*0]*sqWy[ind];//sqWX(ind, 0)*sqWy(ind);
-						XWy2 += sqWX[ind+dNy*dNx*1]*sqWy[ind];//qWX(ind, 1)*sqWy(ind);
-					}
-				}
-			}
-
+						}//end xi loop
+					}//end yi loop
+				}//end if distance dependence
+			}// end if use weight
 
 			double det = (A*D - B*B); //calc determinant for inverse
 
@@ -587,8 +727,9 @@ namespace extras{ namespace ParticleTracking{
 
 			//calc variance
 			double denom = sw*sw / sw2;
-			if (denom>2)
+			if (denom > 2) {
 				denom -= 2;
+			}
 
 			RWR_N[n] = RWR / (sw - 2 * sw2 / sw);
 
@@ -601,7 +742,6 @@ namespace extras{ namespace ParticleTracking{
 			y[n] += Iy1;
 
 		}
-
 
 		///////////
 		// Cleanup memory

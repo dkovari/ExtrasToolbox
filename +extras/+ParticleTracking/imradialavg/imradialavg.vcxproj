@@ -93,6 +93,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="source\imradialavg_mex.hpp" />
+    <ClInclude Include="source\radialavg.h" />
     <ClInclude Include="source\radialavg.hpp" />
   </ItemGroup>
   <ItemGroup>

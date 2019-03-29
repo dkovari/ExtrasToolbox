@@ -9,7 +9,8 @@ All rights reserved.
 //////
 // ParticleTracking Includes
 // Be sure to add .../+extras/+ParticleTracking to your Include Path
-#include <radialcenter/source/radialcenter_mex.hpp>
+#include <extras/cmex/NumericArray.hpp>
+#include <radialcenter/source/radialcenter.hpp>
 #include <barycenter/source/barycenter_mex.hpp>
 
 #include <extras/mxfile/mxfile_writer.hpp>
@@ -78,24 +79,16 @@ namespace extras { namespace ParticleTracking {
 			switch (ParamMap->get_xyMethod()) {
 			case XY_FUNCTION::RADIALCENTER:
 			{
-				rcdefs::RCparams rcP;
-				rcP.XYc = ParamMap->get_XYc();
-				rcP.RadiusFilter = ParamMap->get_RadiusFilter();
-				rcP.COMmethod = ParamMap->get_COMmethod();
-				rcP.DistanceFactor = ParamMap->get_DistanceFactor();
-
 				auto rcOut = radialcenter<extras::Array<double>>(
-									img,
-									*(ParamMap->get_WIND()),
-									*(ParamMap->get_GP()),
-									rcP
+									cmex::DynamicTypeMxArray(img,true), //image converted to DynamicMxArray
+									*ParamMap //parameters
 							);
 
 				rcOut[0] += 1; //shift for 1-indexing
 				rcOut[1] += 1; //shift for 1-indexing
 
 							   //set field values
-				for (size_t n = 0; n < ParamMap->get_WIND()->nRows(); ++n) {
+				for (size_t n = 0; n < ParamMap->WIND->nRows(); ++n) {
 					outStruct(n, "X") = rcOut[0][n];
 					outStruct(n, "Y") = rcOut[1][n];
 

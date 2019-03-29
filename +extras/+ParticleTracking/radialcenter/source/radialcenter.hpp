@@ -16,7 +16,6 @@ All rights reserved.
 
 #include "radialcenter.h"
 
-
 namespace extras{namespace ParticleTracking{
 
 	struct RadialcenterParameters_Shared{
@@ -112,6 +111,128 @@ namespace extras{namespace ParticleTracking{
 					I.getdata(),I.nRows(),I.nCols(),
 					rc_params);
 
+		// Return output
+		return out;
+	}
+
+	template<class OutContainerClass = extras::Array<double>> //OutContainerClass should be class derived from extras::ArrayBase
+	std::vector<OutContainerClass> radialcenter(const extras::DynamicTypeArrayBase& I, //input image
+		const RadialcenterParameters_Shared& params = RadialcenterParameters_Shared())//parameters
+	{
+		// Check Input Dimensions and Parameters
+		//---------------------------------------
+		using namespace std;
+
+		// Validate WIND
+		if (!params.WIND->isempty() && params.WIND->nCols() != 4) {
+			throw(runtime_error("radialcenter: WIND must be empty or Mx4 extras::Array."));
+		}
+		size_t nPart = max(size_t(1), params.WIND->nRows());//number of particles to find
+
+															//validate XYc
+		if (!params.XYc->isempty()) {
+			if (params.XYc->nCols() != 2) {
+				throw(std::runtime_error("radialcenter: XYc must have two columns"));
+			}
+			if (!params.WIND->isempty()) {
+				if (params.XYc->nRows() != params.WIND->nRows()) {
+					throw(std::runtime_error("radialcenter: nRows XYc must match nRows WIND"));
+				}
+			}
+			else {
+				//nPart_via_WIND = false;
+				nPart = params.XYc->nRows();
+			}
+		}
+
+		//Create Params Struct
+		RadialcenterParameters rc_params;
+		rc_params.COMmethod = params.COMmethod;
+		rc_params.nRadiusCutoff = params.RadiusCutoff->numel();
+		rc_params.RadiusCutoff = params.RadiusCutoff->getdata();
+		rc_params.nCutoffFactor = params.CutoffFactor->numel();
+		rc_params.CutoffFactor = params.CutoffFactor->getdata();
+		rc_params.nDistanceExponent = params.DistanceExponent->numel();
+		rc_params.DistanceExponent = params.DistanceExponent->getdata();
+		rc_params.nGradientExponent = params.GradientExponent->numel();
+		rc_params.GradientExponent = params.GradientExponent->getdata();
+		rc_params.nWIND = params.WIND->nRows();
+		rc_params.WIND = params.WIND->getdata();
+		rc_params.nXYc = params.XYc->nRows();
+		rc_params.XYc = params.XYc->getdata();
+
+		//Setup Output variables
+		//----------------------------
+		vector<OutContainerClass> out;
+		out.resize(4);
+
+		auto& x = out[0];
+		auto& y = out[1];
+		auto& varXY = out[2];
+		auto& RWR_N = out[3];
+
+		// Resize output vars
+		x.resize(nPart, 1);
+		y.resize(nPart, 1);
+
+		varXY.resize(nPart, 2);
+		RWR_N.resize(nPart, 1);
+
+		//Call radialcenter
+		//---------------------
+		switch (I.getValueType()) {
+		case vt_double:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<double>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_float:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<float>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_int8:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<int8_t>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_uint8:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<uint8_t>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_int16:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<int16_t>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_uint16:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<uint16_t>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_int32:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<int32_t>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_uint32:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<uint32_t>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_int64:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<int64_t>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		case vt_uint64:
+			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
+				I.typed_data<uint64_t>(), I.nRows(), I.nCols(),
+				rc_params);
+			break;
+		}
+		
 		// Return output
 		return out;
 	}

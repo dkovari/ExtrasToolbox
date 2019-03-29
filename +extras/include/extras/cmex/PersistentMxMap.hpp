@@ -175,8 +175,12 @@ namespace extras {namespace cmex {
 		//!	since the original version handles the internal map and mutex
 		virtual extras::cmex::persistentMxArray& operator[](const std::string& field) {
 			//std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
-			if (_casesensitive) {
-				return _map[extras::tolower(field)];
+			if (!_casesensitive) {
+				for (auto m : _map) {
+					if (strcmpi(m.first.c_str(), field.c_str())==0) {
+						return m.second;
+					}
+				}
 			}
 			return _map[field];
 		}
@@ -185,8 +189,12 @@ namespace extras {namespace cmex {
 		//! can be overloaded by derived class
 		virtual const extras::cmex::persistentMxArray& operator[](const std::string& field) const {
 			//std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
-			if (_casesensitive) {
-				return _map.at(extras::tolower(field));
+			if (!_casesensitive) {
+				for (auto m : _map) {
+					if (strcmpi(m.first.c_str(), field.c_str()) == 0) {
+						return m.second;
+					}
+				}
 			}
 			return _map.at(field);
 		}
@@ -194,6 +202,14 @@ namespace extras {namespace cmex {
 		//! return true if string is existing parameter name
 		//! does not lock interal mutex
 		bool isparameter(const std::string& field) const {
+			if (!_casesensitive) {
+				for (auto m : _map) {
+					if (strcmpi(m.first.c_str(), field.c_str()) == 0) {
+						return true;
+					}
+				}
+				return false;
+			}
 			return _map.find(field) != _map.end();
 		}
 

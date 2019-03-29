@@ -149,6 +149,8 @@ namespace extras{
     	virtual const T* getdata() const {return _data;} ///< get pointer to raw data array
     	virtual T* getdata() {return _data;} ///< get pointer to raw data array
 
+		virtual const void* untyped_data() const { return (const void*)getdata(); } ///< get pointer to raw data array
+		virtual void* untyped_data() { return (void*)getdata(); } ///< get pointer to raw data array
 
 		//! returns index corresponding to subscript
 		virtual size_t sub2ind(const std::vector<size_t>& subs) const {
@@ -247,10 +249,10 @@ namespace extras{
 		// Constructors
 
 		/// Construct from no args, create empty array
-		Array(){};//NOTHIG TO DO
+		Array() :DynamicTypeArrayBase(type2valueType<T>()) {};//NOTHIG TO DO
 
 		/// construct from vector specifying dims
-		Array(const std::vector<size_t>& dim, bool SET_TO_ZERO){
+		Array(const std::vector<size_t>& dim, bool SET_TO_ZERO) :DynamicTypeArrayBase(type2valueType<T>()) {
 			if(SET_TO_ZERO){
 				resize_clear(dim);
 			}else{
@@ -259,7 +261,7 @@ namespace extras{
 		}
 
 		///construct matrix with size [rows x cols]
-		Array(size_t rows, size_t cols, bool SET_TO_ZERO=false){
+		Array(size_t rows, size_t cols, bool SET_TO_ZERO=false):DynamicTypeArrayBase(type2valueType<T>()){
 			if(SET_TO_ZERO){
 				resize_clear(rows,cols);
 			}else{
@@ -268,12 +270,12 @@ namespace extras{
 		}
 
 		/// construct vector size:[numel x 1]
-		Array(size_t numel){
+		Array(size_t numel) :DynamicTypeArrayBase(type2valueType<T>()) {
 			resize_nocpy(numel);
 		}
 
 		// construct from vector of values
-		Array(const std::vector<T>& vals) {
+		Array(const std::vector<T>& vals) :DynamicTypeArrayBase(type2valueType<T>()) {
 			resize_nocpy(vals.size());
 			for (size_t n = 0; n<vals.size(); ++n) {
 				(*this)[n] = vals[n];
@@ -281,13 +283,13 @@ namespace extras{
 		}
 
 		/// copy constructor
-		template<typename M> Array(const extras::ArrayBase<M>& src){ copyFrom(src);}
+		template<typename M> Array(const extras::ArrayBase<M>& src) :DynamicTypeArrayBase(type2valueType<T>()) { copyFrom(src);}
 
 		/// copy assignment
 		template<typename M> Array& operator=(const extras::ArrayBase<M>& src){ copyFrom(src); return *this;}
 
 		/// move constructor
-		Array(extras::Array<T>&& src){moveFrom(src);}
+		Array(extras::Array<T>&& src) :DynamicTypeArrayBase(type2valueType<T>()) {moveFrom(src);}
 
 		/// move assignment
 		Array& operator=(extras::Array<T>&& src){moveFrom(src);}

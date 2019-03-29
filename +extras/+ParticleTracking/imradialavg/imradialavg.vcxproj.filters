@@ -21,6 +21,9 @@
     <ClInclude Include="source\radialavg.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\radialavg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\imradialavg.cpp">

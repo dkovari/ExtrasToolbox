@@ -41,9 +41,13 @@ for n=1:numel(Xc)
     rectangle('Position',WIND(n,:));
 end
 
-[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,WIND,'GradientExponent',1,'DistanceExponent',0,'COMmethod','gradmag','RadiusCutoff',20);
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,WIND,'GradientExponent',0,'DistanceExponent',0,'COMmethod','gradmag','RadiusCutoff',Inf);
 plot(Xc,Yc,'*y','DisplayName','True Center');
 plot(X,Y,'+r','DisplayName','From Windows');
+
+%% test again using defaults args
+[X,Y,varXY,d2] = extras.ParticleTracking.radialcenter(I,WIND);
+plot(X,Y,'^r','DisplayName','From Windows, defaults');
 
 %% Test again using XYc estimates
 XYc = [Xc,Yc];

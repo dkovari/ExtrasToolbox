@@ -10,6 +10,239 @@ All rights reserved.
 
 namespace extras {namespace cmex {
 
+	class DynamicTypeMxArray : public MxObject, virtual public DynamicTypeArrayBase{
+	protected:
+		template <typename M> void copyFrom(const ArrayBase<M>& src) {
+			bool wasPersistent = isPersistent();
+
+			own(mxCreateNumericArray(src.ndims(), src.dims().data(), type2ClassID<M>(), mxREAL));
+			valueCopy((M*)mxGetData(getmxarray()), src.getdata(), src.numel());
+			changeValueType(mxType());
+
+			if (wasPersistent) {
+				makePersistent();
+			}
+		}
+
+		//! create deep copy of object
+		virtual void copyFrom(const MxObject& src) {
+			bool wasPersistent = isPersistent();
+			if (src.getmxarray() == nullptr) {
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, mxDOUBLE_CLASS, mxREAL),false);
+			}
+			else{ //if same type, use MxObject's copyFrom
+				MxObject::copyFrom(src);
+			}
+			changeValueType(mxType());
+
+			if (wasPersistent) {
+				makePersistent();
+			}
+		}
+
+		// try to move from MxObject, if different type perform copy
+		virtual void moveFrom(MxObject& src) {
+			bool wasPersistent = isPersistent();
+			if (src.getmxarray() == nullptr) {
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, mxDOUBLE_CLASS, mxREAL),false);
+			}
+			else{
+				MxObject::moveFrom(src);
+			}
+			changeValueType(mxType());
+
+			if (wasPersistent) {
+				makePersistent();
+			}
+		}
+
+		//! set from const mxArray*
+		//! creates a link to the const mxArray* until calling (non-const) operator[]() or (non-const) getdata(),
+		//! at which point the array is duplicated
+		virtual void setFromConst(const mxArray* psrc, bool persist) {
+			bool wasPersistent = isPersistent();
+			if (psrc == nullptr) {
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, mxDOUBLE_CLASS, mxREAL),false);
+			}
+			else {
+				//own(mxDuplicateArray(psrc));
+				MxObject::setFromConst(psrc, persist);
+			}
+			changeValueType(mxType());
+
+			if (wasPersistent) {
+				makePersistent();
+			}
+		}
+
+		//! set from (non-const) mxArray*
+		//! NOTE: after calling psrc will still be valid (i.e. not managed by the NumericArray)
+		//! so it is your job to delete it.
+		virtual void setFrom(mxArray* psrc, bool persist) {
+			bool wasPersistent = isPersistent();
+			if (psrc == nullptr) {
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, mxDOUBLE_CLASS, mxREAL),false);
+			}
+			else{
+				//own(mxDuplicateArray(psrc));
+				MxObject::setFrom(psrc, persist);
+			}
+			
+			changeValueType(mxType());
+
+			if (wasPersistent) {
+				makePersistent();
+			}
+		}
+
+		//! set from (non-const) mxArray*
+		//! NumericArray will take ownership of the mxArray*
+		//! DO NOT DELETE PSRC. DO NOT EXPECT PSRC TO BE VALID AFTER CALLING!
+		virtual void setOwn(mxArray* psrc, bool persist) {
+			bool wasPersistent = isPersistent();
+			if (psrc == nullptr) {
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, mxDOUBLE_CLASS, mxREAL),false);
+			}
+			else{
+				MxObject::setOwn(psrc, persist);
+			}
+			changeValueType(mxType());
+			if (wasPersistent) {
+				makePersistent();
+			}
+		}
+
+	public:
+		//////////////////////////////////////////////////////////////////////////////////
+		// Methods from ArrayBase that must be defined
+
+		virtual size_t numel() const { return MxObject::numel(); } ///< number of elements, inhereted from MxObject
+		virtual bool isempty() const { return MxObject::isempty(); } ///< is array empty, inhereted from MxObject
+		virtual size_t ndims() const { return MxObject::ndims(); } ///< number of dimensions
+
+		virtual size_t nRows() const { return mxGetM(getmxarray()); } //number of rows
+		virtual size_t nCols() const { return mxGetN(getmxarray()); } //number of columns, is nd-array, nCols=numel/nRows
+		virtual std::vector<size_t> dims() const { return MxObject::size(); } //returns size of data
+		virtual std::vector<size_t> size() const { return MxObject::size(); } //returns size of data
+
+		 //! get const pointer to raw data array
+		const void* untyped_data() const {
+			if (getmxarray() == nullptr) {
+				return nullptr;
+			}
+
+			return mxGetData(getmxarray());
+		};
+
+		//! get (non-const) pointer to raw data array
+		//! if array was originally set from const mxArray* then it will be duplicated
+		void* untyped_data() {
+			if (getmxarray() == nullptr) {
+				return nullptr;
+			}
+
+			if (isConst()) { //was const, need to make a copy so that we can edit values
+				bool wasPersistent = isPersistent();
+				own(mxDuplicateArray(getmxarray()));
+				if (wasPersistent) {
+					makePersistent();
+				}
+			}
+
+			return mxGetData(getmxarray());
+		}
+
+
+		////////////////////////////////////
+		// destructor
+		virtual ~DynamicTypeMxArray() {};
+
+		//////////////////////////////////
+		// Constructors
+
+		//! defaul constructor
+		DynamicTypeMxArray() :DynamicTypeArrayBase(vt_double), MxObject() {
+			own(mxCreateNumericMatrix(0, 0, mxDOUBLE_CLASS, mxREAL));
+		};
+
+
+		////////////////////////////////
+		//// mxArray* assignments
+
+		//! set from const mxArray*, with optional ability to set persistent flag
+		virtual DynamicTypeMxArray& set(const mxArray* psrc, bool isPersist = false) {
+			setFromConst(psrc, isPersist);
+			return *this;
+		}
+
+		//! set from const mxArray*
+		virtual DynamicTypeMxArray& operator=(const mxArray* psrc) {
+			set(psrc);
+			return *this;
+		}
+
+		//! set from (non-const) mxArray*, with optional ability to set persistent flag
+		virtual DynamicTypeMxArray& set(mxArray* psrc, bool isPersist = false) {
+			setFrom(psrc, isPersist);
+			return *this;
+		}
+
+		//! set from (non-const) mxArray*
+		virtual DynamicTypeMxArray& operator=(mxArray* psrc) {
+			set(psrc);
+			return *this;
+		}
+
+		//! set non-const mxArray*, giving MxObject full ownership.
+		//! CATION: Do not delete psrc after calling this method!
+		virtual DynamicTypeMxArray& own(mxArray* psrc, bool isPersist = false) {
+			setOwn(psrc, isPersist);
+			return *this;
+		}
+
+		//! construct vector of size num
+		DynamicTypeMxArray(size_t num) :DynamicTypeArrayBase(vt_double), MxObject(mxCreateDoubleMatrix(num, 1, mxREAL)) {};
+		DynamicTypeMxArray(size_t rows, size_t cols, bool setZeros = false) :DynamicTypeArrayBase(vt_double), MxObject(mxCreateDoubleMatrix(rows, cols, mxREAL)) {};
+		DynamicTypeMxArray(const std::vector<size_t>& dim, bool setZeros = false) :DynamicTypeArrayBase(vt_double), MxObject(mxCreateNumericArray(dim.size(),dim.data(),mxDOUBLE_CLASS,mxREAL)) {};
+
+
+		//! copy from MxObject
+		DynamicTypeMxArray(const MxObject& src): DynamicTypeArrayBase(mxClassID2valueType(src.mxType())) {
+			copyFrom(src);
+		}
+
+		//! Construct from Generic ArrayBase
+		template <typename M> DynamicTypeMxArray(const ArrayBase<M>& src): DynamicTypeArrayBase(type2valueType<M>()){
+			copyFrom(src);
+		}
+
+		//! Assign from Generic ArrayBase;
+		template <typename M> DynamicTypeMxArray& operator=(const ArrayBase<M>& src) {
+			copyFrom(src);
+			return (*this);
+		}
+
+		//! Move Construct from MxObject
+		DynamicTypeMxArray(MxObject&& src) : DynamicTypeArrayBase(mxClassID2valueType(src.mxType())) {
+			moveFrom(src);
+		}
+
+		//! Construct from const mxArray*
+		//! NumericArray will not take ownership of the array
+		DynamicTypeMxArray(const mxArray* psrc, bool persist = false) : DynamicTypeArrayBase(vt_double) {
+			setFromConst(psrc, persist);
+		}
+
+		//! Construct from (non-const) mxArray*
+		//! NumericArray will not take ownership of the array
+		//! therefore it is your job to delete the array after NumericArray is done with it.
+		DynamicTypeMxArray(mxArray* psrc, bool persist = false) : DynamicTypeArrayBase(vt_double) {
+			setFrom(psrc, persist);
+		}
+
+
+	};
+
 	//! Typed NumericArray Wrapper for MxObjects.
 	//! Implements the ArrayBase<T> interface
 	//! NOTE: When creating integer type array be sure to specify the precision
@@ -19,7 +252,7 @@ namespace extras {namespace cmex {
 	//! NOTE:
 	//! If the
 	template <typename T>
-	class NumericArray : public MxObject, virtual public ArrayBase<T> {
+	class NumericArray : public DynamicTypeMxArray, virtual public ArrayBase<T> {
 	protected:
 		template <typename M> void copyFrom(const ArrayBase<M>& src) {
 			bool wasPersistent = isPersistent();
@@ -37,7 +270,7 @@ namespace extras {namespace cmex {
 		virtual void copyFrom(const MxObject& src) {
 			bool wasPersistent = isPersistent();
 			if (src.getmxarray() == nullptr) {
-				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL),false);
 			}
 			else if (sametype<T>(src)) { //if same type, use MxObject's copyFrom
 				MxObject::copyFrom(src);
@@ -49,13 +282,14 @@ namespace extras {namespace cmex {
 			if (wasPersistent) {
 				makePersistent();
 			}
+			changeValueType(mxType());
 		}
 
 		// try to move from MxObject, if different type perform copy
 		virtual void moveFrom(MxObject& src) {
 			bool wasPersistent = isPersistent();
 			if (src.getmxarray() == nullptr) {
-				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL),false);
 			}
 			else if (sametype<T>(src)) {
 				MxObject::moveFrom(src);
@@ -66,6 +300,7 @@ namespace extras {namespace cmex {
 			if (wasPersistent) {
 				makePersistent();
 			}
+			changeValueType(mxType());
 		}
 
 		//! set from const mxArray*
@@ -74,7 +309,7 @@ namespace extras {namespace cmex {
 		virtual void setFromConst(const mxArray* psrc, bool persist) {
 			bool wasPersistent = isPersistent();
 			if (psrc == nullptr) {
-				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL),false);
 			}
 			else if (sametype<T>(psrc)) {
 				//own(mxDuplicateArray(psrc));
@@ -87,6 +322,7 @@ namespace extras {namespace cmex {
 			if (wasPersistent) {
 				makePersistent();
 			}
+			changeValueType(mxType());
 		}
 
 		//! set from (non-const) mxArray*
@@ -95,7 +331,7 @@ namespace extras {namespace cmex {
 		virtual void setFrom(mxArray* psrc, bool persist) {
 			bool wasPersistent = isPersistent();
 			if (psrc == nullptr) {
-				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL),false);
 			}
 			else if (sametype<T>(psrc)) {
 				//own(mxDuplicateArray(psrc));
@@ -108,6 +344,7 @@ namespace extras {namespace cmex {
 			if (wasPersistent) {
 				makePersistent();
 			}
+			changeValueType(mxType());
 		}
 
 		//! set from (non-const) mxArray*
@@ -116,7 +353,7 @@ namespace extras {namespace cmex {
 		virtual void setOwn(mxArray* psrc, bool persist) {
 			bool wasPersistent = isPersistent();
 			if (psrc == nullptr) {
-				own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
+				MxObject::setOwn(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL),false);
 			}
 			else if (sametype<T>(psrc)) {
 				MxObject::setOwn(psrc, persist);
@@ -129,6 +366,7 @@ namespace extras {namespace cmex {
 			if (wasPersistent) {
 				makePersistent();
 			}
+			changeValueType(mxType());
 		}
 
 	public:
@@ -239,23 +477,23 @@ namespace extras {namespace cmex {
 		// Constructors
 
 		//! defaul constructor
-		NumericArray() : MxObject() {
+		NumericArray() :DynamicTypeArrayBase(type2valueType<T>()){
 			own(mxCreateNumericMatrix(0, 0, type2ClassID<T>(), mxREAL));
 		};
 
-		NumericArray(const NumericArray<T>& src) {
+		NumericArray(const NumericArray<T>& src) :DynamicTypeArrayBase(type2valueType<T>()) {
 			copyFrom(src);
 		}
 
-		template<typename M> NumericArray(const NumericArray<M>& src) {
+		template<typename M> NumericArray(const NumericArray<M>& src) : DynamicTypeArrayBase(type2valueType<T>()) {
 			copyFrom<M>(src);
 		}
 
-		NumericArray(NumericArray<T>&& src) {
+		NumericArray(NumericArray<T>&& src) :DynamicTypeArrayBase(type2valueType<T>()) {
 			moveFrom(src);
 		}
 
-		template<typename M> NumericArray(NumericArray<M>&& src) {
+		template<typename M> NumericArray(NumericArray<M>&& src) : DynamicTypeArrayBase(type2valueType<T>()) {
 			moveFrom(src);
 		}
 
@@ -307,13 +545,13 @@ namespace extras {namespace cmex {
 		}
 
 		//! construct vector of size num
-		NumericArray(size_t num) {
+		NumericArray(size_t num) :DynamicTypeArrayBase(type2valueType<T>()) {
 			resize(num);
 		}
-		NumericArray(size_t rows, size_t cols, bool setZeros = false) {
+		NumericArray(size_t rows, size_t cols, bool setZeros = false) :DynamicTypeArrayBase(type2valueType<T>()) {
 			resize(rows,cols);
 		}
-		NumericArray(const std::vector<size_t>& dim, bool setZeros = false) {
+		NumericArray(const std::vector<size_t>& dim, bool setZeros = false) :DynamicTypeArrayBase(type2valueType<T>()) {
 			resize(dim);
 		}
 
@@ -334,20 +572,20 @@ namespace extras {namespace cmex {
 		}
 
 		//! Move Construct from MxObject
-		NumericArray(MxObject&& src) {
+		NumericArray(MxObject&& src) :DynamicTypeArrayBase(type2valueType<T>()) {
 			moveFrom(src);
 		}
 
 		//! Construct from const mxArray*
 		//! array will be duplicated when  (non-const) getdata() or (non-const) operator[] are called.
-		NumericArray(const mxArray* psrc, bool persist = false) {
+		NumericArray(const mxArray* psrc, bool persist = false) :DynamicTypeArrayBase(type2valueType<T>()) {
 			setFromConst(psrc, persist);
 		}
 
 		//! Construct from (non-const) mxArray*
 		//! NumericArray will not take ownership of the array
 		//! therefore it is your job to delete the array after NumericArray is done with it.
-		NumericArray(mxArray* psrc, bool persist = false) {
+		NumericArray(mxArray* psrc, bool persist = false) :DynamicTypeArrayBase(type2valueType<T>()) {
 			setFrom(psrc, persist);
 		}
 

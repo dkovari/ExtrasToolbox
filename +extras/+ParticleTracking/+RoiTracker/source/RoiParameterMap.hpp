@@ -11,7 +11,7 @@ All rights reserved.
 #include <extras/string_extras.hpp>
 #include <extras/cmex/mexextras.hpp>
 #include <extras/cmex/NumericArray.hpp>
-#include <radialcenter/source/radialcenter_mex.hpp>
+#include <radialcenter/source/radialcenter.hpp>
 
 namespace extras {namespace ParticleTracking {
 
@@ -46,17 +46,16 @@ namespace extras {namespace ParticleTracking {
 	 *	If you want to extend RoiTracker in a subclass you should consider 
 	 *	redefining the virtual method setFieldValue()
 	 */
-	class RoiParameterMap : public extras::cmex::ParameterMxMap {
+	class RoiParameterMap : public extras::cmex::ParameterMxMap, public RadialcenterParameters_Shared {
 	protected:
-		std::shared_ptr<extras::ArrayBase<double>> WIND = std::make_shared<extras::Array<double>>(0);
-		std::shared_ptr<extras::ArrayBase<double>> XYc = std::make_shared<extras::Array<double>>(0);
-		std::shared_ptr<extras::ArrayBase<double>> GP = std::make_shared<extras::Array<double>>(0);
-		std::shared_ptr<extras::ArrayBase<double>> RadiusFilter = std::make_shared<extras::Array<double>>(0);
 
-		rcdefs::COM_METHOD COMmethod = rcdefs::COM_METHOD::MEAN_ABS;
-		double DistanceFactor = INFINITY;
 		double LimFrac = 0.2;
 		XY_FUNCTION xyMethod = XY_FUNCTION::RADIALCENTER;
+
+		double default_DistanceExponent = 0;
+		double default_GradientExponent = 5;
+		double default_RadiusCutoff = INFINITY;
+		double default_CutoffFactor = INFINITY;
 
 		void set_xyMethod(const cmex::MxObject& value) {
 			if (!value.ischar()) {
@@ -77,15 +76,48 @@ namespace extras {namespace ParticleTracking {
 			(*this)["COMmethod"] = value;
 		}
 
-		void set_DistanceFactor(const cmex::MxObject& value) {
+		void set_DistanceExponent(const cmex::MxObject& value) {
 			if (!value.isnumeric()) {
-				throw("DistanceFactor must be numeric");
+				throw("DistanceExponent must be numeric");
 			}
 			if (value.numel() != 1) {
-				throw("DistanceFacor must be scalar numeric");
+				throw("DistanceExponent must be scalar numeric");
 			}
-			DistanceFactor = mxGetScalar(value);
-			(*this)["DistanceFactor"] = value;
+			default_DistanceExponent = mxGetScalar(value);
+			(*this)["DistanceExponent"] = value;
+		}
+
+		void set_GradientExponent(const cmex::MxObject& value) {
+			if (!value.isnumeric()) {
+				throw("GradientExponent must be numeric");
+			}
+			if (value.numel() != 1) {
+				throw("GradientExponent must be scalar numeric");
+			}
+			default_GradientExponent = mxGetScalar(value);
+			(*this)["GradientExponent"] = value;
+		}
+
+		void set_RadiusCutoff(const cmex::MxObject& value) {
+			if (!value.isnumeric()) {
+				throw("RadiusCutoff must be numeric");
+			}
+			if (value.numel() != 1) {
+				throw("RadiusCutoff must be scalar numeric");
+			}
+			default_RadiusCutoff = mxGetScalar(value);
+			(*this)["RadiusCutoff"] = value;
+		}
+
+		void set_CutoffFactor(const cmex::MxObject& value) {
+			if (!value.isnumeric()) {
+				throw("CutoffFactor must be numeric");
+			}
+			if (value.numel() != 1) {
+				throw("CutoffFactor must be scalar numeric");
+			}
+			default_CutoffFactor = mxGetScalar(value);
+			(*this)["CutoffFactor"] = value;
 		}
 
 		void set_LimFrac(const cmex::MxObject& value) {
@@ -145,47 +177,93 @@ namespace extras {namespace ParticleTracking {
 					const mxArray* pMa = rS(n, "XYc");
 					cmex::NumericArray<double> Arr(pMa);
 
-					// set window
+					// set
 					(*newXYc)(n, 0) = Arr[0];
 					(*newXYc)(n, 1) = Arr[1];
 				}
 			}
 
-			// set GP
-			std::shared_ptr<extras::ArrayBase<double>> newGP = GP;
-			if (rS.isfield("GP")) {
-				newGP = std::make_shared<extras::Array<double>>(len, 1);
+			// DistanceExponent
+			std::shared_ptr<extras::ArrayBase<double>> newDistanceExponent = DistanceExponent;
+			if (rS.isfield("DistanceExponent")) {
+				newDistanceExponent = std::make_shared<extras::Array<double>>(len,1);
 				for (size_t n = 0; n < len; ++n) {
 
-					const mxArray* pMa = rS(n, "GP");
+					const mxArray* pMa = rS(n, "DistanceExponent");
 					cmex::NumericArray<double> Arr(pMa);
 
-					// set window
-					(*newGP)(n, 0) = Arr[0];
+					// set
+					(*newDistanceExponent)(n, 0) = Arr[0];
 				}
 			}
-
-			// set RadiusFilter
-			std::shared_ptr<extras::ArrayBase<double>> newRadiusFilter = RadiusFilter;
-			if (rS.isfield("RadiusFilter")) {
-				newRadiusFilter = std::make_shared<extras::Array<double>>(len, 1);
-				for (size_t n = 0; n < len; ++n) {
-
-					const mxArray* pMa = rS(n, "RadiusFilter");
-					cmex::NumericArray<double> Arr(pMa);
-
-					// set window
-					(*newRadiusFilter)(n, 0) = Arr[0];
-				}
+			else {
+				newDistanceExponent->operator=(default_DistanceExponent);
 			}
+
 			
+			// GradientExponent
+			std::shared_ptr<extras::ArrayBase<double>> newGradientExponent = GradientExponent;
+			if (rS.isfield("GradientExponent")) {
+				newDistanceExponent = std::make_shared<extras::Array<double>>(len, 1);
+				for (size_t n = 0; n < len; ++n) {
+
+					const mxArray* pMa = rS(n, "GradientExponent");
+					cmex::NumericArray<double> Arr(pMa);
+
+					// set
+					(*newGradientExponent)(n, 0) = Arr[0];
+				}
+			}
+			else {
+				newGradientExponent->operator=(default_GradientExponent);
+			}
+
+			// RadiusCutoff
+			std::shared_ptr<extras::ArrayBase<double>> newRadiusCutoff = RadiusCutoff;
+			if (rS.isfield("RadiusCutoff")) {
+				newDistanceExponent = std::make_shared<extras::Array<double>>(len, 1);
+				for (size_t n = 0; n < len; ++n) {
+
+					const mxArray* pMa = rS(n, "RadiusCutoff");
+					cmex::NumericArray<double> Arr(pMa);
+
+					// set
+					(*newRadiusCutoff)(n, 0) = Arr[0];
+				}
+			}
+			else {
+				newRadiusCutoff->operator=(default_RadiusCutoff);
+			}
+
+			// CutoffFactor
+			std::shared_ptr<extras::ArrayBase<double>> newCutoffFactor = CutoffFactor;
+			if (rS.isfield("CutoffFactor")) {
+				newDistanceExponent = std::make_shared<extras::Array<double>>(len, 1);
+				for (size_t n = 0; n < len; ++n) {
+
+					const mxArray* pMa = rS(n, "CutoffFactor");
+					cmex::NumericArray<double> Arr(pMa);
+
+					// set
+					(*newCutoffFactor)(n, 0) = Arr[0];
+				}
+			}
+			else {
+				newCutoffFactor->operator=(default_CutoffFactor);
+			}
+
+
 			/////////////////////////////////////////////////
 			// Made it here without errors, set the values
 			
 			WIND = newWIND;
-			GP = newGP;
+
+			RadiusCutoff = newRadiusCutoff;
+			CutoffFactor = newCutoffFactor;
 			XYc = newXYc;
-			RadiusFilter = newRadiusFilter;
+			DistanceExponent = newDistanceExponent;
+			GradientExponent = newGradientExponent;
+
 			(*this)["roiList"] = mxa;
 		}
 
@@ -212,8 +290,17 @@ namespace extras {namespace ParticleTracking {
 			else if (strcmpi("COMmethod", field.c_str()) == 0) {
 				set_COMmethod(mxa);
 			}
-			else if (strcmpi("DistanceFactor", field.c_str()) == 0) {
-				set_DistanceFactor(mxa);
+			else if (strcmpi("DistanceExponent", field.c_str()) == 0) {
+				set_DistanceExponent(mxa);
+			}
+			else if (strcmpi("GradientExponent", field.c_str()) == 0) {
+				set_GradientExponent(mxa);
+			}
+			else if (strcmpi("RadiusCutoff", field.c_str()) == 0) {
+				set_RadiusCutoff(mxa);
+			}
+			else if (strcmpi("CutoffFactor", field.c_str()) == 0) {
+				set_CutoffFactor(mxa);
 			}
 			else if (strcmpi("LimFrac", field.c_str()) == 0) {
 				set_LimFrac(mxa);
@@ -242,7 +329,10 @@ namespace extras {namespace ParticleTracking {
 			/// Add MAP Defaults
 			extras::cmex::ParameterMxMap::operator[]("xyMethod").takeOwnership(cmex::MxObject("radialcenter"));
 			extras::cmex::ParameterMxMap::operator[]("COMmethod").takeOwnership(cmex::MxObject("gradmag"));
-			extras::cmex::ParameterMxMap::operator[]("DistanceFactor").takeOwnership(mxCreateDoubleScalar(INFINITY));
+			extras::cmex::ParameterMxMap::operator[]("DistanceExponent").takeOwnership(mxCreateDoubleScalar(default_DistanceExponent));
+			extras::cmex::ParameterMxMap::operator[]("GradientExponent").takeOwnership(mxCreateDoubleScalar(default_GradientExponent));
+			extras::cmex::ParameterMxMap::operator[]("RadiusCutoff").takeOwnership(mxCreateDoubleScalar(default_RadiusCutoff));
+			extras::cmex::ParameterMxMap::operator[]("CutoffFactor").takeOwnership(mxCreateDoubleScalar(default_CutoffFactor));
 			extras::cmex::ParameterMxMap::operator[]("LimFrac").takeOwnership(mxCreateDoubleScalar(0.2));
 
 			//Create default, empty struct for roiList
@@ -283,17 +373,10 @@ namespace extras {namespace ParticleTracking {
 		////////////////////////
 		// Special Parameters
 
-		std::shared_ptr<extras::ArrayBase<double>> get_WIND() const { return WIND; }
-		std::shared_ptr<extras::ArrayBase<double>> get_XYc() const { return XYc; }
-		std::shared_ptr<extras::ArrayBase<double>> get_GP() const { return GP; }
-		std::shared_ptr<extras::ArrayBase<double>> get_RadiusFilter() const { return RadiusFilter; }
-
 		const mxArray* get_roiList() const { return (*this)["roiList"]; }
-
-		rcdefs::COM_METHOD get_COMmethod() const { return COMmethod; }
-		double get_DistanceFactor() const {return DistanceFactor;}
-		double get_LimFrac() const { return LimFrac; }
+		double get_LimFrac() const {return LimFrac;}
 		XY_FUNCTION get_xyMethod() const { return xyMethod; }
+
 	};
 
 }}

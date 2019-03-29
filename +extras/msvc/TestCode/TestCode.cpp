@@ -29,12 +29,33 @@ public:
 };
 
 
+
+class C {
+public:
+	double val = 1;
+	C() {
+		std::cout << "construct C, val: " << val << std::endl;
+	}
+};
+
+
+class D:protected C{
+public:
+	D() {
+	std::cout << "construct D" << std::endl;
+	}
+};
+
+void myFunction(const C& c) {
+	std::cout << "myFunction c.val" << c.val<<std::endl;
+}
+
 int main()
 {
 	using namespace std;
 
-	B<int> one;
-	B<double> two;
+	D d;
+	myFunction(d);
 
 
     return 0;
