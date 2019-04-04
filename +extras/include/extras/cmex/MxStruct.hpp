@@ -60,20 +60,6 @@ namespace extras{namespace cmex{
 			delete[] names;
 		}
 
-		/*/! Construct MxStruct of size specified by dims with fields specified by list of strings
-		MxStruct(const std::vector<size_t>& dims, const std::list<std::string>& fieldnames) :MxObject() {
-
-			const char** names = new const char*[fieldnames.size()];
-
-			size_t k = 0;
-			for (auto& nm : fieldnames) {
-				names[k] = nm.c_str();
-				k++;
-			}
-			own(mxCreateStructArray(dims.size(), dims.data(), fieldnames.size(), names));
-			delete[] names;
-		}*/
-
 		//! copy construction
         MxStruct(const MxObject& src): MxObject(src){
             if(!isstruct()){

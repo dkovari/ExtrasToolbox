@@ -512,7 +512,8 @@ namespace extras{ namespace ParticleTracking{
 			double XWy1 = 0;
 			double XWy2 = 0;
 
-			//setup weight factor
+			//////////////////////////////////
+			//Build Matricies for Radial Center least-squares
 			if (this_GradientExponent == 0 && !isfinite(this_RadiusCutoff) && this_DistanceExponent==0) { //no weighting fractor used
 				sw2 = dNx*dNy;
 				sw = dNx*dNy;
@@ -553,7 +554,7 @@ namespace extras{ namespace ParticleTracking{
 							double yk = yi + 0.5; // y coordinate
 							double dy2 = pow(Ycom - yk, 2); //square of y-component of radius
 							double xr = sqrt(RE2 - dy2); //x-component of the radius
-							for (size_t xi = (size_t)(Xcom - xr - 0.5); xi < min(dNy, (size_t)(Xcom + xr - 0.5)); xi++) {
+							for (size_t xi = (size_t)max(0.0,(Xcom - xr - 0.5)); xi < (size_t)min((double)dNx, (Xcom + xr - 0.5)); xi++) {
 								size_t ind = yi + xi * dNy; //index of pixel at coordinate xi,yi
 								double xk = xi + 0.5; //x coordinate
 

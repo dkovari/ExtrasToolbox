@@ -78,6 +78,9 @@
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp">
       <Filter>Includes\extras\cmex</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\PersistentMxMap.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\+Async\+Example\+ParamProcessor\ExampleParamProcessor.cpp">

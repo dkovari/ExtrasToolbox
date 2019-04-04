@@ -19,7 +19,7 @@ protected:
 		
 		size_t k;
 		for (k = 0; k < TaskArgs.size(); k++) {
-			out.setArray(k, TaskArgs.getArray(k));
+			out.setArray(k, TaskArgs.getConstArray(k));
 		}
 		for (const auto& p : *Params) {
 			out.setArray(k, extras::cmex::MxObject(p.first).getmxarray());

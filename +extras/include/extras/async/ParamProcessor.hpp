@@ -83,12 +83,12 @@ namespace extras {namespace async {
 		/////////////////////////////////////////////////
 		// Parameter related
 
-		// returns MxCellArray containing parameters formated as Name-Value Pairs
-		virtual cmex::MxCellArray getParameters() const {
+		// returns MxObject containing parameters formated as a struct
+		virtual cmex::MxObject getParameters() const {
 			if (!_pMap) { //uninitinalized pmap, return empty cell
-				return cmex::MxCellArray();
+				return cmex::MxStruct();
 			}
-			return _pMap->map2cell();
+			return _pMap->map2struct();
 		}
 
 		// add or replace persistent perameters

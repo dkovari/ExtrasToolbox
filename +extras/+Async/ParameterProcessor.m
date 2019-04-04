@@ -1,4 +1,4 @@
-classdef ParameterProcessor < extras.Async.AsyncProcessor
+classdef ParameterProcessor < extras.Async.AsyncProcessor & dynamicprops
 % Base class for all ParameterProcess type AsyncProcessors
 
     %% create
@@ -6,6 +6,9 @@ classdef ParameterProcessor < extras.Async.AsyncProcessor
         function this = ParameterProcessor(MEX_FUNCTION)
             this@extras.Async.AsyncProcessor(MEX_FUNCTION)
             this.Name = 'ParameterProcessor'; %Change Name
+            
+            %% update params
+            this.internal_updateParameters();
         end
     end
     %% persistentArgs methods
@@ -15,21 +18,79 @@ classdef ParameterProcessor < extras.Async.AsyncProcessor
     properties(Access=protected)
         internal_setParameters = false; %lock specifying if using internal call to set.PersistentArgs
     end
+    properties(Access=private)
+        DynamicParameterMap = containers.Map('KeyType','char','ValueType','any');
+    end
+    methods(Access=private)
+        function internal_updateParameters(this)
+            %% Get new value of Persistent args
+            this.internal_setParameters = true;
+            try
+                this.Parameters = this.runMethod('getParameters');
+            catch ME
+                this.internal_setParameters = false;
+                rethrow(ME)
+            end
+            this.internal_setParameters = false;
+            
+            %% Update Dynamic Props
+            if isempty(this.Parameters)
+                prop_names = {};
+            else
+                prop_names = reshape(fieldnames(this.Parameters),1,[]);
+            end
+            
+            
+            %delete dynamic properties not currrent property list
+            bad_props = setdiff(keys(this.DynamicParameterMap),prop_names);
+            for bp = bad_props
+                mp = findprop(this,bp);
+                if ~isempty(mp)
+                    delete(mp)
+                end
+            end
+            remove(this.DynamicParameterMap,bad_props);
+            
+            % add/update properties
+            for prop_name = prop_names
+                prop_name = prop_name{1};
+                mp = findprop(this,prop_name);
+                if isempty(mp) %need to create
+                    mp = this.addprop(prop_name);
+                    mp.SetMethod = @(h,value) setParameters(h,prop_name,value);
+                    mp.SetObservable = true;
+                    mp.AbortSet = true;
+                    this.DynamicParameterMap(prop_name) = mp;
+                end
+                
+                %% update value
+                mp.SetMethod = []; %change to default set because we don't want recursive bug
+                this.(prop_name) = this.Parameters.(prop_name);
+                mp.SetMethod = @(h,value) setParameters(h,prop_name,value);
+            end
+            
+        end
+    end
     methods
-        function set.Parameters(this,ArgCell)
+        function set.Parameters(this,Args)
         % change the persistent args
         % external calls are forwarded to setPersistentArgs() or
         % clearPersistentArgs()
         
             if this.internal_setParameters %setting internally, just change values
-                this.Parameters = ArgCell;
+                this.Parameters = Args;
             else
-                assert(iscell(ArgCell),'PersistentArgs must be set to a cell array');
-                if isempty(ArgCell)
-                    this.clearParameters();
+                if iscell(Args)
+                    if isempty(Args)
+                        this.clearParameters();
+                    else
+                        this.setParameters(Args{:});
+                    end
                 else
-                    this.setParameters(ArgCell{:});
+                    assert(isstruct(Args)&&numel(Args)==1,'PersistentArgs must be set using a struct of size [1,1]');
+                     this.setParameters(Args);
                 end
+                
             end
         end
         
@@ -40,23 +101,17 @@ classdef ParameterProcessor < extras.Async.AsyncProcessor
             this.runMethod('setParameters',varargin{:});
             
             %% Get new value of Persistent args
-            this.internal_setParameters = true;
-            try
-                this.Parameters = this.runMethod('getParameters');
-            catch ME
-                this.internal_setParameters = false;
-                rethrow(ME)
-            end
-            this.internal_setParameters = false;
+            this.internal_updateParameters();
         end
 
         function clearParameters(this)
         % clear persistent arguments
         
+            %% clear
             this.runMethod('clearParameters');
-            this.internal_setParameters = true;
-            this.Parameters = {};
-            this.internal_setParameters = false;
+            
+            %% Get new value of Persistent args
+            this.internal_updateParameters();
         end
     end
 end

@@ -27,7 +27,7 @@ namespace extras {namespace cmex {
 	private:
 		mutable std::mutex _mapMutex;
 		std::unordered_map<std::string, extras::cmex::persistentMxArray> _map;
-		bool _casesensitive = true;
+		bool _casesensitive = false;
 		bool _setfromstruct = true;
 	public:
 
@@ -148,6 +148,25 @@ namespace extras {namespace cmex {
 			return out;
 		}
 
+		//! return parameters as (non-persistent) MxStructArray
+		//! NOTE: This will create copies of the data in the map, hence it can be slow for large arrays
+		//! this method locks the _mapMutex while executing
+		extras::cmex::MxStruct map2struct() const {
+			// get list of fields in the map
+			std::vector<std::string> fields;
+			fields.reserve(_map.size());
+			for (const auto& m : _map) {
+				fields.push_back(m.first);
+			}
+
+			//make output struct
+			extras::cmex::MxStruct out(1, fields);
+			for (const auto& m : _map) {
+				out(0, m.first.c_str()) = m.second.getMxArray();
+			}
+			return out;
+		}
+
 		//! return parameters as mxarraygroup
 		//! NOTE: This will create copies of the data in the map, hence it can be slow for large arrays
 		//! this method locks the _mapMutex while executing
@@ -176,7 +195,7 @@ namespace extras {namespace cmex {
 		virtual extras::cmex::persistentMxArray& operator[](const std::string& field) {
 			//std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
 			if (!_casesensitive) {
-				for (auto m : _map) {
+				for (auto& m : _map) {
 					if (strcmpi(m.first.c_str(), field.c_str())==0) {
 						return m.second;
 					}
@@ -190,7 +209,7 @@ namespace extras {namespace cmex {
 		virtual const extras::cmex::persistentMxArray& operator[](const std::string& field) const {
 			//std::lock_guard<std::mutex> lock(_mapMutex); //lock map, prevent deleting until everyone is done messing with map
 			if (!_casesensitive) {
-				for (auto m : _map) {
+				for (auto& m : _map) {
 					if (strcmpi(m.first.c_str(), field.c_str()) == 0) {
 						return m.second;
 					}
@@ -203,7 +222,7 @@ namespace extras {namespace cmex {
 		//! does not lock interal mutex
 		bool isparameter(const std::string& field) const {
 			if (!_casesensitive) {
-				for (auto m : _map) {
+				for (auto& m : _map) {
 					if (strcmpi(m.first.c_str(), field.c_str()) == 0) {
 						return true;
 					}

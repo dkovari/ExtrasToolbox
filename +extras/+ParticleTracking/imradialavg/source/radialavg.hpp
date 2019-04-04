@@ -61,14 +61,32 @@ namespace extras{namespace ParticleTracking{
 	    size_t nBins = floor((Rmax-Rmin)/BinWidth)+1;
 		results.resize_clear(nBins, 1);
 		Counts.resize_clear(nBins, 1);
+		results.getdata();
 
 
 		if (computeRloc) {
 			RadiusPoints.resize_nocpy(nBins, 1);
-			radialavg(I.getdata(), I.nRows, nCols, results.getdata(), results.numel(), Rmax, Rmin, BinWidth, RadiusPoints.getdata(), Counts.getdata());
+			radialavg(I.getdata(), I.nRows(), I.nCols(), //input image and size
+				x0,y0,
+				results.getdata(), nBins, //output array and number of elements
+				Rmax, //max radius to average over
+				Rmin, // min radius to average over
+				BinWidth,//optinal bin width
+				RadiusPoints.getdata(), //optional output array specifying radii coordinates of bins in imavg. Must be same size as imavg
+				Counts.getdata() //optional output array with counts in each bin. Must be same size as imavg
+			);
+			//radialavg(I.getdata(), I.nRows(), I.nCols(), results.getdata(), results.numel(), Rmax, Rmin, BinWidth, RadiusPoints.getdata(), Counts.getdata());
 		}
 		else {
-			radialavg(I.getdata(), I.nRows, nCols, results.getdata(), results.numel(), Rmax, Rmin, BinWidth, nullptr, Counts.getdata());
+			radialavg(I.getdata(), I.nRows(), I.nCols(), //input image and size
+				x0, y0,
+				results.getdata(), nBins, //output array and number of elements
+				Rmax, //max radius to average over
+				Rmin, // min radius to average over
+				BinWidth,//optinal bin width
+				nullptr, //optional output array specifying radii coordinates of bins in imavg. Must be same size as imavg
+				Counts.getdata() //optional output array with counts in each bin. Must be same size as imavg
+			);
 		}
 
 		return out;

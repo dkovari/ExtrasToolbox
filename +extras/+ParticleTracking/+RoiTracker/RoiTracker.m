@@ -1,4 +1,4 @@
-classdef RoiTracker < extras.Async.ParameterProcessor & dynamicprops 
+classdef RoiTracker < extras.Async.ParameterProcessor 
 % Asynchronous Radialcenter image processor
 
     %% Create
@@ -11,7 +11,6 @@ classdef RoiTracker < extras.Async.ParameterProcessor & dynamicprops
         end
     end
 
-    
     %% IncludeImage
     properties(Dependent)
         IncludeImageInResult (1,1) logical;
@@ -24,4 +23,5 @@ classdef RoiTracker < extras.Async.ParameterProcessor & dynamicprops
             this.runMethod('IncludeImageData',val);
         end
     end
+
 end
