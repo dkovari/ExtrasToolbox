@@ -31,6 +31,9 @@ namespace extras{namespace ParticleTracking{
 		auto& y = out[1];
 		auto& varXY = out[2];
 		auto& RWR_N = out[3];
+        //auto& oXYc = out[4];
+
+        //oXYc.resize(nPart,2);
 
 		// Resize output vars
 		x.resize(nPart, 1);
@@ -45,52 +48,52 @@ namespace extras{namespace ParticleTracking{
     	case mxDOUBLE_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(double*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxSINGLE_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(float*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxINT8_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(int8_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxUINT8_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(uint8_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxINT16_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(int16_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxUINT16_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(uint16_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxINT32_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(int32_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxUINT32_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(uint32_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxINT64_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(int64_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	case mxUINT64_CLASS:
 			radialcenter(x.getdata(), y.getdata(), varXY.getdata(), RWR_N.getdata(),
 				(uint64_t*)mxGetData(pI), mxGetM(pI), mxGetN(pI),
-				params);
+				params);//,oXYc.getdata());
 			break;
     	default:
     		throw(std::runtime_error("radialcenter: Only numeric image types allowed"));
@@ -242,6 +245,10 @@ namespace extras{namespace ParticleTracking{
     		if (nlhs > 3) {
     			plhs[3] = out[3];
     		}
+            /*if(nlhs>4){ //oXYc
+                out[4]+=1; //shift back to 1-indexing
+                plhs[4] = out[4];
+            }*/
     	}
     	catch (std::exception& e) {
     		mexErrMsgTxt(e.what());

@@ -231,8 +231,11 @@ namespace extras{namespace ParticleTracking{
 				I.typed_data<uint64_t>(), I.nRows(), I.nCols(),
 				rc_params);
 			break;
+		default:
+			throw("radialcenter(): Image type not supported.");
 		}
-		
+
+
 		// Return output
 		return out;
 	}

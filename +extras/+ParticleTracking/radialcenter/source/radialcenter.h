@@ -13,6 +13,7 @@ Version of radial center which does not use extras::ArrayBase class
 #include <memory>
 
 #include <extras/assert.hpp>
+#include <extras/string_extras.hpp>
 
 namespace rcdefs {
 	enum COM_METHOD { MEAN_ABS, NORMAL, GRAD_MAG };
@@ -111,6 +112,7 @@ namespace rcdefs {
 
 	//!safely realloc memory
 	//throws bad_alloc if realloc fails
+	// frees p before throwing error
 	inline void* safe_realloc(void* p, size_t sz) {
 		void * p2 = std::realloc(p, sz);
 		if (sz!=0 && p2 == nullptr) {
@@ -179,7 +181,8 @@ namespace extras{ namespace ParticleTracking{
     template <typename M>
     void radialcenter(double* x, double* y, double* varXY, double* RWR_N, //pointers to 4 arrays of appropriate size
         const M* img, size_t nRows, size_t nCols, //image and size (assume column-major indexing)
-        const RadialcenterParameters& params = RadialcenterParameters() //parameters
+        const RadialcenterParameters& params = RadialcenterParameters()//, //parameters
+		//double * oXYc=nullptr
         )
     {
         // Check Input Dimensions and Parameters
@@ -322,7 +325,7 @@ namespace extras{ namespace ParticleTracking{
             //////////////////////////////////
 			//Get Sub window range
 			bool calc_grad = false; //flag saying gradient needs to be calculated
-			
+
 			size_t newIx1, newIx2,newIy1,newIy2;
 			last_WindSz = dNx * dNy;
 			if (n == 0) {
@@ -380,7 +383,7 @@ namespace extras{ namespace ParticleTracking{
 
 					//resize sqWy
 					sqWy = (double*)rcdefs::safe_realloc(sqWy, dNy*dNx * sizeof(double));
-					
+
 					//set lastsz
 					last_WindSz = dNy * dNx;
 				}
@@ -396,10 +399,12 @@ namespace extras{ namespace ParticleTracking{
 			}
 
 			// Determine if we need to calculate COM
-			double Xcom, Ycom;//x any y center relative to windows edge
+			double Xcom=0;
+			double Ycom=0;//x any y center relative to windows edge
 
 			if (this_DistanceExponent == 0 && ((this_RadiusCutoff == 0 || !isfinite(this_RadiusCutoff)) || this_CutoffFactor == 0)) { //dont need COM because we aren't using distance dependence
-
+				Xcom = NAN;
+				Ycom = NAN;
 			}
 			else if( params.nXYc != 0 && isfinite(params.XYc[n+0*params.nXYc]) && isfinite(params.XYc[n+1*params.nXYc])){ //dont need because we were valid told XYc
 				Xcom = params.XYc[n+0*params.nXYc]-Ix1;//params.XYc->getElement(n, 0) - Ix1;
@@ -415,9 +420,9 @@ namespace extras{ namespace ParticleTracking{
 						GradMag = (double*)rcdefs::safe_realloc(GradMag, dNy*dNx * sizeof(double));
                     }
 
-					double grad_acc = 0;
 					Xcom = 0;
 					Ycom = 0;
+					double grad_acc = 0;
 					for (size_t yi = 0; yi<dNy; ++yi) {
 						double yk = yi + 0.5;
 						for (size_t xi = 0; xi<dNx; ++xi) {
@@ -488,6 +493,11 @@ namespace extras{ namespace ParticleTracking{
 				}
 			}
 
+			/*if(oXYc!=nullptr){
+				oXYc[n+0*nPart] = Xcom + Ix1;
+				oXYc[n+1*nPart] = Ycom + Iy1;
+			}*/
+
 			////////////////////////////////
 			// Calculate fit
 
@@ -540,12 +550,12 @@ namespace extras{ namespace ParticleTracking{
 				if (isfinite(this_RadiusCutoff) || this_DistanceExponent != 0) { //has distance dependence
 					if (isfinite(this_RadiusCutoff) ) { //using radius cutoff, only sum over circle
 						for (size_t yi = 0; yi < dNy; ++yi) {
-							double yk = yi + 0.5;
-							double dy2 = pow(Ycom - yk, 2);
-							double xr = sqrt(RE2 - dy2);
+							double yk = yi + 0.5; // y coordinate
+							double dy2 = pow(Ycom - yk, 2); //square of y-component of radius
+							double xr = sqrt(RE2 - dy2); //x-component of the radius
 							for (size_t xi = (size_t)(Xcom - xr - 0.5); xi < min(dNy, (size_t)(Xcom + xr - 0.5)); xi++) {
-								size_t ind = yi + xi * dNy;
-								double xk = xi + 0.5;
+								size_t ind = yi + xi * dNy; //index of pixel at coordinate xi,yi
+								double xk = xi + 0.5; //x coordinate
 
 								double sqw_mag = 1; //sqrt(w)/mag
 								double mag = 1; //|grad(I)|
