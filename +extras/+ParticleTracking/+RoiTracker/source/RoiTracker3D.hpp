@@ -56,6 +56,7 @@ namespace extras {namespace ParticleTracking {
 			if (!outStruct.isfield("X") || !outStruct.isfield("Y")) { //X Y not defined, skip
 				return resultsGroup;
 			}
+			
 			// if no LUT then skip
 			if (!outStruct.isfield("LUT") ) {
 				return resultsGroup;
@@ -70,15 +71,32 @@ namespace extras {namespace ParticleTracking {
 			else {
 				mxI = TaskArgs.getConstArray(0);
 			}
-			
+
+			/////////////////////////////////////////////
 			//loop over roi and calc z if needed
 			for (size_t n = 0; n < outStruct.numel(); n++) {
+				////////////////////////////////////////////////////////
+				// Prepare loop
+
 				double x = outStruct(n, "X");
 				double y = outStruct(n, "Y");
 
 				if ( x==NAN || y==NAN ) { //did't find particle, skip
 					continue;
 				}
+
+				// if LUT is not a struct, or is empty, then skip
+				if (outStruct(n, "LUT").isempty() || !outStruct(n, "LUT").isstruct()) {
+					continue;
+				}
+
+
+				///////////////////////////////////////////////////
+				// Loop over LUT and 
+
+
+
+
 
 				if (!outStruct(n, "LUT").isstruct()) { //LUT not set
 					continue;
