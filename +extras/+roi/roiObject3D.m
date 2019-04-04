@@ -16,7 +16,10 @@ classdef roiObject3D < extras.roi.roiObject
     end
     methods
         function s = toStruct(this)
-            s = struct('Window',{this.Window},'UUID',{this.UUID},'LUT',{this.LUT});
+            s = struct('Window',{this.Window},'UUID',{this.UUID},'LUT',{});
+            for n=1:numel(this)
+                s(n).LUT = this(n).LUT.toStruct();
+            end
         end
         
         function addLUT(this,LUT)
@@ -31,7 +34,7 @@ classdef roiObject3D < extras.roi.roiObject
         function removeLUT(this,LUT)
             [~,lob] = ismember({LUT.UUID},{this.LUT.UUID});
             lob(lob==0) = [];
-            LUT(lob) = [];
+            this.LUT(lob) = [];
         end
     end
 

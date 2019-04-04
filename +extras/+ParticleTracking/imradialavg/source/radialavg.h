@@ -29,7 +29,6 @@ namespace extras {namespace ParticleTracking {
 			Counts = (CountsType*)std::malloc(nAvg * sizeof(CountsType));
 		}
 
-
 		try {
 			//validate bin count
 			size_t nBins = floor((Rmax - Rmin) / BinWidth) + 1;
