@@ -1,27 +1,23 @@
 % Build Radial Center
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
-OUTNAME = 'DiffractionTracker_mex'; %output function name
+OUTNAME = 'RoiTracker_mex'; %output function name
 OUTDIR = THIS_PATH;%fullfile(THIS_PATH,'..'); %output to .../+extras/+ParticleTracking
 
+src = fullfile(THIS_PATH,'source','RoiTracker.cpp'); %SOURCE FILE NAME
 
-%% Compiler options
-if ispc
-compiler_options ='/std:c++17';
-else
-compiler_options ='-std=c++17';
-end
+%% Construct Args
+ArgsStruct = extras.mex_builds.MexArgsStruct_zlib();
 
-%% Setup Source Path
-[pth,~,~] = fileparts(mfilename('fullpath'));
-src = fullfile(pth,'source','DiffractionTracker.cpp'); %SOURCE FILE NAME
-
-%% Setup Include
-INCLUDE = ['-I',extras.IncludePath];
+%% Add particle tracking headers
+ArgsStruct.Include = [ArgsStruct.Include,...
+    {['-I',fullfile(extras.ToolboxPath,'+ParticleTracking')]}];
 
 %% BUILD
-mex('-g','-v',['COMPFLAGS="$COMPFLAGS ' compiler_options '"'],...
-    INCLUDE,...
+[CA,AS] = extras.mex_builds.ArgStruct2Args(ArgsStruct);
+
+mex('-v',CA{:},...
     '-outdir',OUTDIR,...
     '-output',OUTNAME,...
+    AS{:},...
     src);
