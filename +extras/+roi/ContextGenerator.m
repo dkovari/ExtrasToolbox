@@ -21,7 +21,7 @@ classdef ContextGenerator < handle & matlab.mixin.SetGet & matlab.mixin.Heteroge
             %% Validate RoiObject
             if nargin<1
                 delete(this);
-                this = extras.roi.ContextGenerator.empty();
+                %this = extras.roi.ContextGenerator.empty();
                 return;
             end
             if isempty(RoiObject)
@@ -56,7 +56,7 @@ classdef ContextGenerator < handle & matlab.mixin.SetGet & matlab.mixin.Heteroge
     
     %% Public Methods (non-overridable)
     methods (Sealed)
-        function createContextMenu(this,hFig)
+        function out = createContextMenu(this,hFig)
             
             %% remove invalid figure handles
             hFig(~isgraphics(hFig)) = [];
@@ -65,6 +65,7 @@ classdef ContextGenerator < handle & matlab.mixin.SetGet & matlab.mixin.Heteroge
             end
             assert(all(strcmpi('figure',{hFig.Type})),'Specified parent handles must be figures');
             
+            out = gobjects(numel(this),numel(hFig));
             %% Loop over all this and all hFig
             for n=1:numel(this)
                 for m=1:numel(hFig)
@@ -73,8 +74,12 @@ classdef ContextGenerator < handle & matlab.mixin.SetGet & matlab.mixin.Heteroge
                     
                     %% add to list of contextmenus
                     this(n).ContextMenus = [this(n).ContextMenus,cm];
+                    
+                    %% set out
+                    out(n,m) = cm;
                 end
             end
+            
             
             
         end

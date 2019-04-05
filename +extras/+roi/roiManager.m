@@ -14,6 +14,9 @@ classdef roiManager < handle & extras.roi.ObjectManager
     properties (SetAccess=private,SetObservable,AbortSet)
         roiList = extras.roi.roiObject.empty %array of roi
     end
+    events
+        roiListChanged;
+    end
     methods (Access=private)
         function internal_updateROI(this)
             oldList = this.roiList;
@@ -23,8 +26,28 @@ classdef roiManager < handle & extras.roi.ObjectManager
             this.roiList = newList;
             
             %% update selection list
-            [~,ia,~] = intersect(oldList,newList); %overlapping indicies
+            [~,ia,ib] = intersect(oldList,newList); %overlapping indicies
             this.IndexSelected = intersect(ia,this.IndexSelected); %only keep selected that are in the overlapping indicies
+            
+            %% Update ContextGenerators
+            [~,id] = setdiff(oldList,newList);
+            delete(this.ContextGenerators(id)); %delete unused context generators;
+            CG = extras.roi.ContextGenerator.empty;
+            CG(ib) = this.ContextGenerators(ia); %move existing context generators to new locations
+            [~,ic] = setdiff(newList,oldList);
+            CG(ic) = this.createContextGenerators(newList(ic));
+            this.ContextGenerators = CG;
+            
+            %% notify events
+            notify(this,'roiListChanged',...
+                extras.GenericEvent('OldList',oldList,...
+                                    'NewList',newList,...
+                                    'IntersectionInOld',ia,...
+                                    'IntersectionInNew',ib,...
+                                    'RemovedIndexInOld',id,...
+                                    'AddedIndexInNew',ic));
+                                
+            notify(this,'roiValueChanged');
         end
     end
     
@@ -37,6 +60,18 @@ classdef roiManager < handle & extras.roi.ObjectManager
         roiValueChanged;
         StartingROIAdd;
         EndingROIAdd;
+    end
+    
+    properties(SetAccess=protected, SetObservable,AbortSet)
+        ContextGenerators = extras.roi.ContextGenerator.empty;
+    end
+    
+    methods(Static)
+        function cg = createContextGenerators(roiObjs)
+            %redefinable method for creating extras.roi.ContextGenerator
+            %objects from roiObjects
+            cg = extras.roi.ContextGenerator(roiObjs);
+        end
     end
     
     %% Internal properties

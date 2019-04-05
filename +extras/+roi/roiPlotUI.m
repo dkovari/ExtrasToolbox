@@ -17,8 +17,9 @@ classdef roiPlotUI < extras.GraphicsChild
         
         SelectionListener;
         RoiListListener;
+        ContextGeneratorsListener;
         
-        RectList = [];
+        RectList = extras.uirect.empty();
     end
     
     events
@@ -78,6 +79,7 @@ classdef roiPlotUI < extras.GraphicsChild
             this.SelectionListener = addlistener(this.Manager,'IndexSelected','PostSet',@(~,~) this.SelectionUpdate());
             this.RoiListListener = addlistener(this.Manager,'roiList','PostSet',@(~,~) this.UpdateList());
             
+            this.ContextGeneratorsListener = addlistener(this.Manager,'roiListChanged',@(~,evt) this.GenerateContextMenus(evt));
         end
         
         function delete(this)
@@ -86,12 +88,24 @@ classdef roiPlotUI < extras.GraphicsChild
             delete(this.RoiListListener);
             delete(this.SelectionListener);
             
+            delete(this.ContextGeneratorsListener);
+            
             %% delete rects
             this.DeleteRect(this.RectList);
         end
     end
     
     %% Internal Usage
+    methods(Access=protected)
+        function GenerateContextMenus(this,roiChangeEvent)
+            newInd = reshape(roiChangeEvent.AddedIndexInNew,1,[]);
+            
+            for id = newInd
+                this.RectList(id).UIContextMenu = this.Manager.ContextGenerators(id).createContextMenu(ancestor(this.Parent,'figure'));
+            end
+            
+        end
+    end
     methods (Hidden)
         function DeleteRect(this,hRect)
             for n=1:numel(hRect)

@@ -721,7 +721,7 @@ classdef uirect < extras.GraphicsChild
             end
         end
         function set.UIContextMenu(this,val)
-            this.UIContectMenu = val;
+            this.UIContextMenu = val;
             
             this.hRectangle.UIContextMenu = val;
             for n=1:4

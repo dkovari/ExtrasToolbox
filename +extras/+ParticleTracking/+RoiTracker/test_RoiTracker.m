@@ -110,8 +110,13 @@ end
 
 %x =[data.X]
 %y = [data.Y]
-hPlt.XData = [res.X];
-hPlt.YData = [res.Y];
+if isempty(res)
+    hPlt.XData = [];
+    hPlt.YData = [];
+else
+    hPlt.XData = [res.X];
+    hPlt.YData = [res.Y];
+end
 persistent n;
 if isempty(n)
     n=1;
