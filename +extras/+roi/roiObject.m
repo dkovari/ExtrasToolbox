@@ -1,4 +1,4 @@
-classdef roiObject < handle
+classdef roiObject < handle & matlab.mixin.Heterogeneous & matlab.mixin.SetGet
 % roi = ImageTracker.roiObject(Window)
 % 
 % ROI window object, with unique identifier

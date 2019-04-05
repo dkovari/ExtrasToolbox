@@ -1,4 +1,4 @@
-classdef roiObject3D < extras.roi.roiObject
+classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
 % roi = ImageTracker.roiObject3D(Window)
 % 
 % ROI window object, with unique identifier
@@ -11,30 +11,49 @@ classdef roiObject3D < extras.roi.roiObject
 %
 % Window: 1x4 array specifying [x0,y0,w,h] of rectangle
 
-    properties
-        LUT extras.roi.LUTobject %array of LUT structs
+
+    %% create method
+    methods
+        function this = roiObject3D()
+            this@extras.roi.ObjectManager('extras.roi.LUTobject');
+            
+            addlistener(this,'ManagedObjects','PostSet',@(~,~) this.internal_updateLUT());
+        end
     end
+
+    %% Aliased Properties
+    properties (SetAccess=protected,SetObservable,AbortSet)
+        LUT extras.roi.LUTobject = extras.roi.LUTobject.empty() %array of LUT structs
+        DefaultLUT = extras.roi.LUTobject.empty();
+    end
+    methods (Access=private)
+        function internal_updateLUT(this)
+            this.LUT = this.ManagedObjects;
+            
+            if isempty(this.DefaultLUT) || all(this.LUT ~= this.DefaultLUT)
+                this.DefaultLUT = this.LUT(1);
+            end
+        end
+    end
+   
+    
+    %% public
     methods
         function s = toStruct(this)
+            assert(numel(this)==1,'toStruct only works on one roiObject at a time');
             s = struct('Window',{this.Window},'UUID',{this.UUID},'LUT',{});
             for n=1:numel(this)
                 s(n).LUT = this(n).LUT.toStruct();
             end
         end
-        
         function addLUT(this,LUT)
-            [~,lob] = ismember({LUT.UUID},{this.LUT.UUID});
-            for n=1:numel(lob)
-                if(lob(n)~=0)
-                    this.LUT(lob(n))=LUT(n);
-                end
-            end
-            this.LUT = [this.LUT,LUT(lob==0)];
+            addObjects(this,LUT);
         end
         function removeLUT(this,LUT)
-            [~,lob] = ismember({LUT.UUID},{this.LUT.UUID});
-            lob(lob==0) = [];
-            this.LUT(lob) = [];
+            removeObjects(this,LUT);
+        end
+        function clearLUT(this)
+            clearObjects(this);
         end
     end
 

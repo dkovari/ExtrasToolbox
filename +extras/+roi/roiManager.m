@@ -1,15 +1,38 @@
-classdef roiManager < handle
+classdef roiManager < handle & extras.roi.ObjectManager
 % extras.roi.roiManager
 
+    %% constructor
+    methods
+        function this = roiManager()
+            this@extras.roi.ObjectManager('extras.roi.roiObject');
+            
+            addlistener(this,'ManagedObjects','PostSet',@(~,~) this.internal_updateROI());
+        end
+    end
+
+    %% Aliased Properties
+    properties (SetAccess=private,SetObservable,AbortSet)
+        roiList = extras.roi.roiObject.empty %array of roi
+    end
+    methods (Access=private)
+        function internal_updateROI(this)
+            oldList = this.roiList;
+            newList = this.ManagedObjects;
+            
+            %% change roiList
+            this.roiList = newList;
+            
+            %% update selection list
+            [~,ia,~] = intersect(oldList,newList); %overlapping indicies
+            this.IndexSelected = intersect(ia,this.IndexSelected); %only keep selected that are in the overlapping indicies
+        end
+    end
+    
+    %% Other props
     properties (SetObservable=true,AbortSet=true)
-        
         IndexSelected = [];
     end
-    
-    properties (SetAccess=protected,SetObservable=true,AbortSet=true)
-        roiList = extras.roi.roiObject.empty
-    end
-    
+
     events
         roiValueChanged;
         StartingROIAdd;
@@ -18,14 +41,12 @@ classdef roiManager < handle
     
     %% Internal properties
     properties(Access=protected)
-        DeleteListeners;
         PropertyListeners;
     end
     
     %% delete
     methods
         function delete(this)
-            delete(this.DeleteListeners);
             delete(this.PlotUIDeleteListener);
             delete(this.PropertyListeners);
         end
@@ -43,6 +64,7 @@ classdef roiManager < handle
         function AddROI(this,roi)
             notify(this,'StartingROIAdd');
             
+            createdROI = false;
             if ~exist('roi','var')
                 if ~isempty(this.PlotUI)
                     roi = this.PlotUI.DrawROI();
@@ -50,35 +72,38 @@ classdef roiManager < handle
                     warning('No roi was specified and no graphical interface was available for drawing ROIs');
                     roi = this.CreateROI();
                 end
+                createdROI = true;
             end
-            
-            roi(~isvalid(roi)) = [];
-            this.roiList = union(this.roiList,roi);
-            
-            % listeners
-            delete(this.DeleteListeners)
-            this.DeleteListeners = addlistener(this.roiList,'ObjectBeingDestroyed',@(r,~) this.RoiDeleted(r));
-            
-            delete(this.PropertyListeners)
-            this.PropertyListeners = addlistener(this.roiList,'PropertyChanged',@(~,~) notify(this,'roiValueChanged'));
-            
-            notify(this,'EndingROIAdd');
-            notify(this,'roiValueChanged');
+            try
+                roi(~isvalid(roi)) = [];
+
+                %% add
+                this.addObjects(roi);
+
+                %% handle PropertyListeners
+                delete(this.PropertyListeners)
+                this.PropertyListeners = addlistener(this.roiList,'PropertyChanged',@(~,~) notify(this,'roiValueChanged'));
+
+                notify(this,'EndingROIAdd');
+                notify(this,'roiValueChanged');
+            catch ME
+                if createdROI
+                    try
+                        delete(roi);
+                    catch
+                    end
+                end
+                rethrow(ME);
+            end
         end
         function RemoveROI(this,roi)
             roi(~isvalid(roi)) = [];
-            %roi = intersect(roi,this.roiList);
             
             [~,ind] = ismember(roi,this.roiList);
             ind(ind==0) = [];
             
-            %adjust selection list
-            [~,sind] = ismember(ind,this.IndexSelected);
-            sind(sind==0)=[];
-            this.IndexSelected(sind) = [];
-            
             %remove roi from list
-            this.roiList(ind) = [];
+            this.removeObjects(roi);
             
             %% delete the roi
             try
@@ -96,14 +121,15 @@ classdef roiManager < handle
             %clear the list;
             this.IndexSelected = [];
             roi = this.roiList;
-            this.roiList = extras.roi.roiObject.empty;
+            
+            
+            this.clearObjects();
             
             %delete roi
             delete(roi);
             if ~isempty(roi)
                 notify(this,'roiValueChanged');
             end
-                
         end
         
         function SetList(this,roi)
@@ -136,26 +162,6 @@ classdef roiManager < handle
             end
             
             this.PlotUI = [];
-        end
-    end
-    
-    
-    %% Callbacks
-    methods (Hidden)
-        function RoiDeleted(this,roi)
-            [~,ind]=ismember(roi,this.roiList);
-            ind(ind==0) = [];
-            this.roiList(ind) = [];
-            
-            %reset selected index
-            [~,sind] = ismember(ind,this.IndexSelected);
-            sind(sind==0)=[];
-            this.IndexSelected(sind) = [];
-            
-            if ~isempty(ind)
-                %'RoiDelete'
-                notify(this,'roiValueChanged');
-            end
         end
     end
 end
