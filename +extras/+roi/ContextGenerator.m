@@ -69,6 +69,14 @@ classdef ContextGenerator < handle & matlab.mixin.SetGet & matlab.mixin.Heteroge
             %% Loop over all this and all hFig
             for n=1:numel(this)
                 for m=1:numel(hFig)
+                    %% check if we need to create context menu
+                    if ~isempty(this(n).ContextMenus)
+                        fd = find(this(n).ContextMenus.Parent==hFig);
+                        if ~isempty(fd) % already created
+                            out(n,m) = fd(1);
+                            continue;
+                        end
+                    end
                     %% Create context menu
                     cm = this(n).internal_createContextMenu(hFig);
                     
@@ -112,6 +120,8 @@ classdef ContextGenerator < handle & matlab.mixin.SetGet & matlab.mixin.Heteroge
             cm = uicontextmenu(hFig);
             addlistener(cm,'ObjectBeingDestroyed',@(h,~) this.clearInvalidContextMenus(h));
 
+            % Title
+            uimenu(cm,'Text',sprintf('UUID: %s',this.RoiObject.UUID),'Enable','off');
             % delete menu
             uimenu(cm,'Text','Delete ROI',...
                 'Separator','on',...

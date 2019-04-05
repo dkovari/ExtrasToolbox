@@ -17,6 +17,8 @@ classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
        SelectionListener;
        RoiListListener;
        ROIChangeListener;
+       
+       DefaultContextMenu
     end
     
     methods
@@ -108,6 +110,16 @@ classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
                 'ColumnMinWidth',[25,40,40,40,40],...
                 'ColumnPreferredWidth',[25,60,60,60,60],...
                 'ColumnFormat',{'integer','numeric','numeric','numeric','numeric'});
+            
+            %% Create Default Context Menu
+            this.DefaultContextMenu =uicontextmenu(ancestor(this.Parent,'figure'));
+            
+            uimenu(this.DefaultContextMenu,...
+                'Text','Delete Selected',...
+                'ForegroundColor','r',...
+                'MenuSelectedFcn',@(~,~) this.DeleteTrack());
+            
+            
                 
            %% Update Listeners
             this.SelectionListener = addlistener(this.Manager,'IndexSelected','PostSet',@(~,~) this.UpdateSelected());
@@ -119,7 +131,6 @@ classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             this.UpdateList();
            
         end
-        
         
         function delete(this)
             %% Delete Listeners
@@ -178,6 +189,17 @@ classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
         end
         function UpdateSelected(this)
             this.jTab_roiList.SelectedRows = this.Manager.IndexSelected;
+            
+            %% Set Context menu
+            
+            if isempty(this.Manager.IndexSelected) %no context menu
+                this.jTab_roiList.UIContextMenu = gobjects(0);
+            elseif numel(this.Manager.IndexSelected)==1 %context menu for selected roi
+                this.jTab_roiList.UIContextMenu = this.Manager.ContextGenerators(this.Manager.IndexSelected).createContextMenu(ancestor(this.Parent,'figure'));
+            else %multiple, use default
+                this.jTab_roiList.UIContextMenu = this.DefaultContextMenu;
+            end
+                
         end
     end
     
