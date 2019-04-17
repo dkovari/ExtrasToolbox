@@ -49,8 +49,11 @@ classdef MercuryHub < extras.hardware.SerialDevice
     
     %% Internal Properties
 	properties (SetAccess=protected)
-        DeviceMap = containers.Map.empty;
+        DeviceMap = containers.Map.empty; %maps boardID to MercuryDevice object
         BoardList = []; %list of detected boad IDs
+    end
+    properties(Access=private)
+        DeviceDeleteListeners = event.listener.empty;
     end
     properties (Access=protected)
         ReferenceCount = 0; %number of device objects connected to this hub
@@ -68,6 +71,9 @@ classdef MercuryHub < extras.hardware.SerialDevice
             this.Terminator = {3,'CR'};
             %this.BytesAvailableFcn = @(~,~) this.ProcessSerialBuffer;
             
+            %% Devicename
+            this.DeviceName = 'MercuryHub';
+            
             %% Setup device map
             this.DeviceMap = containers.Map('KeyType','uint32','ValueType','any');
             
@@ -76,6 +82,135 @@ classdef MercuryHub < extras.hardware.SerialDevice
         end
     end
     
+    %% device map related
+    methods 
+        function Device = addDevice(this,BoardID,varargin)
+            % Add/Create Device and associate with BoardID for hub
+            % Syntax:
+            %   NewDev = hub.addDevice(BoardID): create device on specified
+            %                                    board
+            %   Dev = hub.addDevice(BoardID,Dev): assign dev to BoardID
+            %
+            %   NewDev = hub.addDevice(BoardID,args): create dev by
+            %   forwarding arguments to MercuryDevice constructor
+            
+            persistent call_guard;
+            if isempty(call_guard)
+                call_guard = false;
+            end
+            
+            if call_guard
+                Device = [];
+               % 'call_guard'
+                return
+            end
+            
+            BoardID = uint32(BoardID);
+            %% check that key does not exist
+            if this.DeviceMap.isKey(BoardID) && isvalid(this.DeviceMap(BoardID))
+                error('Cannot add Device with BoardID: %d, a device is already associated with that board',BoardID);
+            end
+            
+            %% NewDev = hub.addDevice(BoardID)
+            if nargin<3
+                call_guard = true;
+               % 'create dev, no arg'
+                Device = extras.hardware.PI.MercuryDevice(this,BoardID);
+                this.DeviceMap(BoardID) = Device;
+                call_guard = false;
+            end
+            
+            %% Dev = hub.addDevice(BoardID,Dev)
+            if nargin==3 && isa(varargin{1},'extras.hardware.PI.MercuryDevice')
+                %'add dev'
+                Device = varargin{1};
+                assert(isvalid(Device),'Cannot add invalid (deleted) MercuryDevice to device list');
+                this.DeviceMap(BoardID) = Device;
+                Device.setBoardID(BoardID);
+            end
+            
+            %% NewDev = hub.addDevice(BoardID,args)
+            if nargin>=3 && ~isa(varargin{1},'extras.hardware.PI.MercuryDevice')
+                %'create dev, args'
+                call_guard = true;
+                Device = extras.hardware.PI.MercuryDevice(this,BoardID,varargin{:});
+                this.DeviceMap(BoardID) = Device;
+                call_guard = false;
+            end
+            
+            %% Add delete listener
+            this.DeviceDeleteListeners = [this.DeviceDeleteListeners,addlistener(Device,'ObjectBeingDestroyed',@(~,~) this.handle_DeviceDestroy(BoardID,Device))];
+            
+            %% warn if board does not exist
+            if ~ismember(BoardID,this.BoardList)
+                warning('Board: %d is not listed in the BoardList for MercuryHub connected to %s',BoardID,this.Port);
+            end
+        end
+        function dev = removeDevice(this,DeviceHandle_or_BoardID)
+            % remove MercuryDevice from BoardList, but does not delete the
+            % device. Returns the devce that was removed
+            %   dev = hub.removeDevice(BoardID): remove specified boardID
+            %   dev = hub.removeDevice(MercuryDeviceHandle): remove
+            %   specifed object be handle
+            
+            if ~isvalid(this)
+                return;
+            end
+            if numel(this)<1
+                return;
+            end
+            
+            dev = extras.hardware.PI.MercuryDevice.empty();
+            
+            for n=1:numel(DeviceHandle_or_BoardID)
+                %% dev = hub.removeDevice(MercuryDeviceHandle): remove
+                if isa(DeviceHandle_or_BoardID(n),'extras.hardware.PI.MercuryDevice')
+                    devs = this.DeviceMap.values;
+                    ind = [];
+                    for m=1:numel(devs)
+                        if devs{m} == DeviceHandle_or_BoardID(n)
+                            ind=m;
+                            break;
+                        end
+                    end
+                    
+                    if isempty(ind)
+                        continue;
+                    end
+                    
+                    BID = this.DeviceMap.keys{ind};
+                    
+                else %% dev = hub.removeDevice(BoardID): remove specified boardID
+                    BID = uint32(DeviceHandle_or_BoardID(n));
+                    if ~this.DeviceMap.isKey(BID)
+                        continue;
+                    end
+                end
+                
+                %% remove
+                dev(n) = this.DeviceMap(BID);
+                this.handle_DeviceDestroy(BID,dev(n));
+            end
+        end
+    end
+    
+    methods(Access=private)
+        function handle_DeviceDestroy(this,BoardID,Dev)
+            remove(this.DeviceMap,BoardID);
+            
+            for n=1:numel(this.DeviceDeleteListeners)
+                if isvalid(this.DeviceDeleteListeners(n))
+                    for m=1:numel(this.DeviceDeleteListeners(n).Source)
+                        if this.DeviceDeleteListeners(n).Source{m}==Dev
+                            delete(this.DeviceDeleteListeners(n))
+                            break;
+                        end
+                    end
+                end
+            end
+            this.DeviceDeleteListeners(~isvalid(this.DeviceDeleteListeners)) = [];
+        end
+    end
     %% delete
     methods
         function delete(this)
@@ -92,6 +227,11 @@ classdef MercuryHub < extras.hardware.SerialDevice
     
     %% Public findHub method
     methods (Static)
+        function Hub = create()
+            %construct MercuryHub Object
+            Hub = extras.hardware.PI.MercuryHub();
+            Hub.ReferenceCount  = Hub.ReferenceCount+1;
+        end
         function Hub = findHub(Port,varargin)
         % Find or create a Hub with associated port
             if nargin < 1
@@ -171,16 +311,40 @@ classdef MercuryHub < extras.hardware.SerialDevice
         function validateConnection(this) %called after serial device connects, throw error if connection failed
             %this.scom.BytesAvailableFcn = '';
             this.BoardList = [];
-            %% Scan for connected boards
+            
+            %% messages
             fprintf('Scanning for Mercury Controllers on %s\n',this.Port);
+            hWB = waitbar(0,'Scanning for Mercury Controllers: 0/15','WindowStyle','modal');
+            
+            %% clear buffer
+            serialbreak(this.scom);
+            %fgetl(this.scom);
+            
+            %% Scan for connected boards
+            
             for b = 0:15
                 str=[1,dec2hex(b),'xx,TB'];
                 fprintf(this.scom,str);
                 t1=tic;
                 while this.scom.BytesAvailable<=0
+                    %% cancel
+                    if ~isvalid(hWB)
+                        this.connected = false;
+                        fprintf('Closing %s\n',this.Port);
+                        fclose(this.scom);
+                        error('Canceled search for Mercury Hub by user');
+                    end
+                    %% timeout
                     if toc(t1)>this.ResponseTimeout
                         break;
                     end
+                end
+                %% check if user canceled
+                if ~isvalid(hWB)
+                    this.connected = false;
+                    fprintf('Closing %s\n',this.Port);
+                    fclose(this.scom);
+                    error('Canceled search for Mercury Hub by user');
                 end
                 if this.scom.BytesAvailable>0
                     resp = fgetl(this.scom);
@@ -210,6 +374,16 @@ classdef MercuryHub < extras.hardware.SerialDevice
                 else
                     fprintf('\tDid not find board: %d\n',b);
                 end
+                
+                %% update waitbar
+                try
+                    waitbar((b+1)/16,hWB,sprintf('Scanning for Mercury Controllers: %d/%d',b+1,15));
+                catch
+                end
+            end
+            try
+                delete(hWB)
+            catch
             end
             
             if isempty(this.BoardList)
@@ -311,7 +485,7 @@ classdef MercuryHub < extras.hardware.SerialDevice
                             end
                             dev.updateAcceleration(VAL);
                         case 'M' %macro
-                        case 'P' %position
+                        case 'P' %position     
                             VAL = sscanf(respc{n},'P:%d',1);
                             if numel(VAL)~=1
                                 warning('Error interpreting Tell Position: %s',resp{n});

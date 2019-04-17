@@ -1,4 +1,4 @@
-classdef ComSelectorUI < extras.GraphicsChild & extras.uixDerivative
+classdef ComSelectorUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox
 %% UI for managing the com port for extras.hardware.SerialDevice objects
 %
 % extras.hardware.ComSelectorUI(...)
@@ -38,24 +38,23 @@ classdef ComSelectorUI < extras.GraphicsChild & extras.uixDerivative
         %   obj = ComSelectorUI(serialdevice,'Parent',parent)
         %   obj =ComSelectorUI('SerialDevice',serialdevice,'Parent',parent)
         
-            %initiate graphics parent related variables
-            this@extras.GraphicsChild(@() figure('menubar','none'));
-            %look for parent specified in arguments
-            other_args = this.CheckParentInput(varargin{:});
+            
             
             %% Look for serialdevice
-            if numel(other_args)<1
+            if numel(varargin)<1
                 error('serialdevice not specified');
             end
             
             found_serialdevice = false;
-            if isa(other_args{1},'extras.hardware.SerialDevice')
-                this.serialdevice = other_args{1};
-                other_args(1)=[];
+            %no parent, sd as first arg
+            if isa(varargin{1},'extras.hardware.SerialDevice')
+                serialdevice = varargin{1};
+                varargin(1)=[];
                 found_serialdevice = true;
             end
             
-            if numel(other_args)>1
+            %name,value pair
+            if numel(varargin)>1
                 ind = find(strcmpi('SerialDevice',varargin));
                 if found_serialdevice && numel(ind)>0
                     error('First argument was a serial device and ''SerialDevice'' name-value pair was also specified');
@@ -66,16 +65,33 @@ classdef ComSelectorUI < extras.GraphicsChild & extras.uixDerivative
                 end
 
                 if numel(ind)==1
-                    this.serialdevice = other_args{ind+1};
+                    serialdevice = varargin{ind+1};
                     found_serialdevice = true;
-                    other_args(ind:ind+1) = [];
+                    varargin(ind:ind+1) = [];
                 end
             end
             
+            %second arg, assume first arg is parent
+            if numel(varargin)>1
+                if isa(varargin{2},'extras.hardware.SerialDevice')
+                    serialdevice = varargin{2};
+                    varargin(2)=[];
+                    found_serialdevice = true;
+                end
+            end
+            
+            %didn't find
             if ~found_serialdevice
                 error('serial device was not specified in the arguments');
             end
             
+            %% initiate graphics parent related variables
+            this@extras.GraphicsChild(@() figure('menubar','none','Name',[serialdevice.DeviceName,' COM Selector'],'NumberTitle','off'));
+            %look for parent specified in arguments
+            varargin = this.CheckParentInput(varargin{:});
+            
+            %% Set Serial Device
+            this.serialdevice = serialdevice;
             %% Create GUI Elements
             this.OuterContainer = uix.VBox('Parent',this.Parent);
             
@@ -103,6 +119,13 @@ classdef ComSelectorUI < extras.GraphicsChild & extras.uixDerivative
                 'Callback',@(~,~) this.ToggleConnect());
             
             hb.Widths = [70,-1,110];
+            
+            %change figure size if created parent
+            if this.CreatedParent
+                this.Parent.Units = 'pixels';
+                this.Parent.Position(4) = 45;
+                this.Parent.Position(3) = 400;
+            end
             
             %% Listeners
             %for serial device delete

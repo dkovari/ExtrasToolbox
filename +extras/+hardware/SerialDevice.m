@@ -1,4 +1,4 @@
-classdef SerialDevice < matlab.mixin.SetGet
+classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
 %% simple class for managing a single serial device
 % extend this class to add functionality
 
@@ -54,6 +54,8 @@ classdef SerialDevice < matlab.mixin.SetGet
             
             this.connected = false;
             
+            this.DeviceName = 'SerialDevice';
+            
             %% Look for port in input arguments
             if nargin<1
                 return;
@@ -108,16 +110,16 @@ classdef SerialDevice < matlab.mixin.SetGet
     %% Overload f___() functions
     methods (Hidden) %Hidden because we don't want to advertise they are here
         function varargout = fgetl(this,varargin)
-            [varargout{:}] = fgetl(this.scom,varargin{:});
+            [varargout{1:nargout}] = fgetl(this.scom,varargin{:});
         end
         function varargout = fgets(this,varargin)
-            [varargout{:}] = fgets(this.scom,varargin{:});
+            [varargout{1:nargout}] = fgets(this.scom,varargin{:});
         end
         function varargout = fread(this,varargin)
-            [varargout{:}] = fread(this.scom,varargin{:});
+            [varargout{1:nargout}] = fread(this.scom,varargin{:});
         end
         function varargout = fscanf(this,varargin)
-            [varargout{:}] = fscanf(this.scom,varargin{:});
+            [varargout{1:nargout}] = fscanf(this.scom,varargin{:});
         end
         function fwrite(this,varargin)
             fwrite(this.scom,varargin{:});
@@ -150,6 +152,7 @@ classdef SerialDevice < matlab.mixin.SetGet
             end
             
             %create serial port object
+            delete(this.scom);
             this.scom = serial(PORT,...
                 'Baudrate',this.BaudRate,...
                 'DataBits',this.DataBits,...
@@ -189,11 +192,14 @@ classdef SerialDevice < matlab.mixin.SetGet
             try
                 this.validateConnection();
             catch ME
-                disp(ME.getReport());
                 this.connected = false;
+                try
+                    fclose(this.scom);
+                catch
+                end
                 %status = -1;
                 disp('validation function threw an error');
-                return;
+                rethrow(ME);
             end
             
             %% statue good
@@ -201,11 +207,13 @@ classdef SerialDevice < matlab.mixin.SetGet
         end
         
         function DisconnectCOM(this)
-            if this.connected
+            try
                 fclose(this.scom);
+                delete(this.scom);
                 this.scom = [];
-                this.connected = false;
+            catch
             end
+            this.connected = false;
         end
     end
     

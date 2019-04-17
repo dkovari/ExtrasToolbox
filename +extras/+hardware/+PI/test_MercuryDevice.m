@@ -8,10 +8,15 @@ DEV_TYPE = 'M-126.PD2';
 %% Create Device
 try
     delete(MD)
+    delete(MHUB);
 catch
 end
 
-MD = extras.hardware.PI.MercuryDevice(COM_PORT,BOARD_ID,DEV_TYPE);
-hub = MD.Hub;
+MHUB = extras.hardware.PI.MercuryHub.create();
+COMSEL = extras.hardware.ComSelectorUI(MHUB);
+
+
+
+MD = extras.hardware.PI.MercuryDevice(MHUB,BOARD_ID,DEV_TYPE);
 SL = extras.hardware.TargetValueDeviceUI(MD);
 del_list = addlistener(SL,'ObjectBeingDestroyed',@(~,~) delete(MD));

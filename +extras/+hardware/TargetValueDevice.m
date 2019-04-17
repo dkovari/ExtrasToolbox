@@ -1,4 +1,4 @@
-classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous
+classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & extras.widgets.mixin.HasDeviceName
 % Generic Class for devices which have a "Taret" set point & actual "Value"
 %
     
@@ -18,7 +18,6 @@ classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous
         Units = '';
         Limits = [-Inf,Inf];
         ValueSize = [1,1];
-        DeviceName='Device';
         ValueLabels = '';
     end
     

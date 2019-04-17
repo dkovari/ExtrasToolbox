@@ -16,7 +16,7 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
     %% Mercury Device Communication
     properties (SetAccess=protected)
         BoardID %ID of the controller, set be dip switches
-        Hub %MATLAB Serial Hub object
+        Hub = extras.hardware.PI.MercuryHub.empty %MATLAB Serial Hub object
     end
     properties (Access=protected)
         HubConnectedListener
@@ -133,14 +133,7 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             this.HubDeleteListener = addlistener(this.Hub,'ObjectBeingDestroyed',@(~,~) delete(this));
             
             %% add self to Hub list of devices
-            if isKey(this.Hub.DeviceMap,this.BoardID)
-                error('Board: %d is already associated with the MercuryHub connected to %s',this.BoardID,this.Hub.Port);
-            end
-            
-            if ~ismember(this.BoardID,this.Hub.BoardList)
-                warning('Board: % is not listed in the BoardList for MercuryHub connected to %s',this.BoardID,this.Hub.Port);
-            end
-            this.Hub.DeviceMap(this.BoardID) = this;
+            this.Hub.addDevice(BoardID,this);
             
             %% Setup timer for checking position
             delete(this.ValueTimer);
@@ -148,6 +141,7 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             this.ValueTimer = timer('ObjectVisibility','off',...
                  'BusyMode','drop',...
                  'ExecutionMode','fixedRate',...
+                 'Name','MercuryDeviceValueTimer',...
                  'Period',this.ValueTimerPeriod,...
                  'TimerFcn',@(~,~) this.ValueTimerCallback);
              
@@ -168,16 +162,17 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             if exist('AxisType','var')
                 this.AxisType = AxisType;
             end
-            
-            
             this.DeviceName = sprintf('MercuryMotor: %d',this.BoardID);
             
             %% Set other parameters
             set(this,varargin{:});
             
             %% Turn Motor and break on by default
-            this.MotorOn = true;
-            this.BrakeOn = false;
+            try
+                this.MotorOn = true;
+                this.BrakeOn = false;
+            catch
+            end
         end
         
         function delete(this)
@@ -191,8 +186,15 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             delete(this.HubDeleteListener);
             
             %% delete self from list of devices
-            this.Hub.DeviceMap.remove(this.BoardID);
+            this.Hub.removeDevice(this);
             this.Hub.DecrementReferenceCount; %decrease Hub refererence count. If RefCount<1 hub will delete itself
+        end
+    end
+    
+    %%
+    methods (Access={?extras.hardware.PI.MercuryHub})
+        function setBoardID(this,val)
+            this.BoardID = val;
         end
     end
     
@@ -204,12 +206,21 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
         	this.Internal_setAcceleration = false;
         end
         function updatePosition(this,val)
+            %'uP'
+            %MS = double(this.MotorScale)
+            %TP_VAL = double(val)/double(this.MotorScale)
+            
             this.Value = val/this.MotorScale;
+            
+            %VV = this.Value
             this.LastPositionReadTime = now;
         end
         function updateTarget(this,val)
+            
             this.Internal_setTarget = true;
+
             this.Target = val/this.MotorScale;
+            
             this.Internal_setTarget = false;
         end
         function updateProgrammedVelocity(this,val)
@@ -265,7 +276,6 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
                 warning('Hub is not connected. Cannot read Position');
                 return;
             end
-            
             this.Hub.sendCommand(this.BoardID,'TP,TS'); %tell position, tell status
             
         end
@@ -288,14 +298,36 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             end
         end
         function ConnectChanged(this)
+            %'connect changed'
             if ~this.Hub.connected
                 stop(this.ValueTimer);
+                this.Value = NaN;
+                this.Internal_setTarget = true;
+                this.Target = NaN;
+                this.Internal_setTarget = false;
             else
-                if ~strcmpi(this.ValueTimer.Running,'on')
-                    this.Hub.sendCommand(this.BoardID,'TS,TP'); %tell status
-                    this.Hub.sendCommand(this.BoardID,'TT,TL,TY');
+               % 'connected'
+                this.Hub.sendCommand(this.BoardID,'TS,TP'); %tell status
+                this.Hub.sendCommand(this.BoardID,'TT,TL,TY');
+                try
+                   % 'start timer'
                     start(this.ValueTimer);
+                catch ME
+                    disp(ME.getReport);
                 end
+                %'here'
+                this.StopMotor();
+                this.readPosition();
+                this.Hub.sendCommand(this.BoardID,'TT');
+                this.Hub.sendCommand(this.BoardID,'TL');
+                this.Hub.sendCommand(this.BoardID,'TY');
+                %% Turn Motor and break on by default
+                try
+                    this.MotorOn = true;
+                    this.BrakeOn = false;
+                catch
+                end
+               % 'done'
             end
         end
     end
@@ -407,6 +439,8 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
                 this.Hub.sendCommand(this.BoardID,'FE1');
                 pause(1);
                 this.Hub.sendCommand(this.BoardID,'FE0');
+                pause(1);
+                this.Hub.sendCommand(this.BoardID,'FE1');
                 pause(1);
             end
             if isempty(hProg)||~isgraphics(hProg)

@@ -114,11 +114,17 @@ classdef TargetValueDeviceUI < extras.GraphicsChild & extras.uixDerivative
             this.OuterGrid = uix.Grid('Parent',this.OuterScrollPanel);
             
             %% Create GUI elements
+            try
             this.NumValuesChanged();
+            catch
+            end
             
             
             %% addapt size
+            try
             this.SizeChangedCallback();
+            catch
+            end
             
             %% SizeChange Listener
             this.SizeChangeListener = addlistener(this.OuterScrollPanel,'SizeChanged',@(~,~) this.SizeChangedCallback);
@@ -263,12 +269,14 @@ classdef TargetValueDeviceUI < extras.GraphicsChild & extras.uixDerivative
         end
         
         function UpdateValues(this)
+           % 'TVDUI_UV'
             for n=1:numel(this.UIcontrols)
                 this.UIcontrols(n).Value = this.Device.Value(n);
             end
         end
         
         function UpdateTarget(this)
+           % 'TVDUI_UT'
             for n=1:numel(this.UIcontrols)
                 this.UIcontrols(n).Target = this.Device.Target(n);
             end
