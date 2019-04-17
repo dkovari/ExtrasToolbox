@@ -36,6 +36,13 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
     %% Device Properties
     properties (SetObservable=true,AbortSet=true,SetAccess=protected)
         OnTarget = true;
+        PositionLimitExceeded = false;
+        ExcessivePossitionError = false;
+        IndexPulseRevieved = false;
+        CommandError = false;
+        Busy = false;
+        BreakpointReached = false;
+        MotorLoopOff = false;
     end
     properties (SetObservable=true,AbortSet = true)
         AxisType
@@ -216,13 +223,19 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
             
             %% 1F LM629 Status
             %Bit 0 
+                this.Busy = logical(bitget(hex2dec(status{1}),1)); %
             %Bit 1
+                this.CommandError = logical(bitget(hex2dec(status{1}),2)); %
             %Bit 2: Trajectory Complete
                 this.OnTarget = logical(bitget(hex2dec(status{1}),3)); %appears to be OnTarget signal
             %Bit 3: Index Pulse recieved   
+                this.IndexPulseRevieved = logical(bitget(hex2dec(status{1}),4)); %
             %Bit 4
+            	this.PositionLimitExceeded = logical(bitget(hex2dec(status{1}),5)); %
             %Bit 5
+                this.ExcessivePossitionError = logical(bitget(hex2dec(status{1}),6)); %
             %Bit 6
+                this.BreakpointReached = logical(bitget(hex2dec(status{1}),7)); %
             %Bit 7 Motor OFF
                 this.Internal_MotorOn = true;
                 this.MotorOn = ~logical(bitget(hex2dec(status{1}),8));
@@ -391,9 +404,9 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
                 this.BrakeOn = false;
                 hProg = warndlg(sprintf('Referencing %s in progress',this.DeviceName),sprintf('Referencing %s',this.DeviceName),'non-modal');
                 stop(this.ValueTimer);
-                this.Hub.sendCommand(this.BoardID,'FE2');
+                this.Hub.sendCommand(this.BoardID,'FE1');
                 pause(1);
-                this.Hub.sendCommand(this.BoardID,'FE3');
+                this.Hub.sendCommand(this.BoardID,'FE0');
                 pause(1);
             end
             if isempty(hProg)||~isgraphics(hProg)

@@ -1,7 +1,7 @@
 % Script for testing PI Mercury Motor Devices
 
 %% Port Settings
-COM_PORT = 'COM3';
+COM_PORT = 'COM7';
 BOARD_ID = 0;
 DEV_TYPE = 'M-126.PD2';
 
