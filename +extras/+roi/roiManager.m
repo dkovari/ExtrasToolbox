@@ -1,5 +1,11 @@
 classdef roiManager < handle & extras.roi.ObjectManager
 % extras.roi.roiManager
+% Manages list of roi objects
+% Also manages list of Context Generators associated with each roiObject
+% Context Generators are constructed using the createContextGenerators()
+% factory method
+% If you want to customize the context generators then redefine
+% createContextGenerators()
 
     %% constructor
     methods

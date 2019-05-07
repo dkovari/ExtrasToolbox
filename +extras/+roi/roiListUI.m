@@ -1,6 +1,5 @@
 classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extras.RequireGuiLayoutToolbox
-    
-    %UI menu for editing ROI List
+%UI menu for editing ROI List
     
     properties(SetAccess=protected)
         Manager;

@@ -30,14 +30,16 @@ classdef ContextGenerator < handle & matlab.mixin.SetGet & matlab.mixin.Heteroge
                 return;
             end
             assert(isvalid(RoiObject)&&isa(RoiObject,'extras.roi.roiObject'),'RoiObject must be valid extras.roi.roiObject');
-            
+                
             %% handle array
             sz = num2cell(size(RoiObject));
-            this(sz{:}) = this;
-            for n=1:numel(RoiObject)
-                this(n).RoiObject = RoiObject(n);
+
+            for n=numel(RoiObject):-1:1
+                this(n).RoiObject = RoiObject;
                 this(n).RoiObjectDeleteListener = addlistener(RoiObject(n),'ObjectBeingDestroyed',@(~,~) delete(this(n)));
             end
+            reshape(this,sz{:});
+
         end
         
         function delete(this)
