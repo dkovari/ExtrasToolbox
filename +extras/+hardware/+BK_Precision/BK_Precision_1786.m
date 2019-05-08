@@ -1,5 +1,7 @@
 classdef BK_Precision_1786 < matlab.mixin.SetGet & extras.hardware.SerialDevice & extras.hardware.TargetValueDevice
-    
+%Class for interfacing with BK Precision Powersupply
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
     
     properties(Access=private)
         ResponseTimeout = 0.5; %response timeout in seconds

@@ -1,5 +1,7 @@
 classdef TurnControlUI < extras.GraphicsChild & extras.uixDerivative
 % User interface for controlling a TurnController object
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
 
     properties(SetAccess=protected)
         TurnController

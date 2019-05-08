@@ -5,6 +5,8 @@ classdef roiPlotUI < extras.GraphicsChild
 % hobj = extras.roi.roiPlotUI(AxesParent,RoiManager)
 % hobj = extras.roi.roiPlotUI(__,'Parent',AxesParent)
 % hobj = extras.roi.roiPlotUI(... 'RoiManager',RoiManager)
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
     %% Set Protected
     properties (SetAccess=protected)

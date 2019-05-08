@@ -29,5 +29,6 @@
 %	lastNewtonStep: value of the last multiplier used in Gauss-newton loop (low value indicates algorithm was not stepping very far)
 %	lastR2: last value of the average residual
 %	final_dR2frac: final value of the change in residual between succesive steps
-
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 % THIS IS A STUB TO A MEX FILE

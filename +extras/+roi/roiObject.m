@@ -10,6 +10,9 @@ classdef roiObject < handle & matlab.mixin.Heterogeneous & matlab.mixin.SetGet
 %   number of rows corresponds to the number of roi objects created
 %
 % Window: 1x4 array specifying [x0,y0,w,h] of rectangle
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
+
     properties (SetAccess=immutable)
         UUID
     end

@@ -4,6 +4,8 @@ classdef TurnMonitor < matlab.mixin.SetGet
 %
 % This class watches the magnet output and determines the number of
 % rotations applied to a sample.
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
 
     properties (Access=protected)
         Controller

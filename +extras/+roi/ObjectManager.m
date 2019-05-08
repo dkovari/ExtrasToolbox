@@ -1,7 +1,10 @@
 classdef (Abstract) ObjectManager < handle
-    % extras.roi.ObjectManager: Abstract class for creating a managed list
-    % of objects of a certain type
-    
+% extras.roi.ObjectManager: Abstract class for creating a managed list
+% of objects of a certain type
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
+
+
     properties(SetAccess=private,Hidden)
         ObjectClassName %char array specifying valid class name
     end

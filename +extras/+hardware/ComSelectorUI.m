@@ -9,7 +9,8 @@ classdef ComSelectorUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox
 %   obj = ComSelectorUI(serialdevice,'Parent',parent)
 %   obj =ComSelectorUI('SerialDevice',serialdevice,'Parent',parent)
 %==========================================================================
-
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
     
     properties (SetAccess=protected)
         serialdevice

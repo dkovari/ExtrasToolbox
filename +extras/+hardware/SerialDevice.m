@@ -1,6 +1,8 @@
 classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
 %% simple class for managing a single serial device
 % extend this class to add functionality
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
 
     %% Properties
     properties (SetAccess=protected)

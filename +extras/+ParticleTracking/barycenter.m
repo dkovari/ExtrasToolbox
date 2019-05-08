@@ -12,5 +12,7 @@
 % Outputs:
 % [X,Y] coordinates for each window
 % if something went wrong returns NaN
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
 % This is a stub for a mex file

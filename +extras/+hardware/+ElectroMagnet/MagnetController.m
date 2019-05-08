@@ -2,7 +2,9 @@ classdef MagnetController < extras.GraphicsChild & extras.uixDerivative
 % UI for controllng the 4-pole electro magnet
 % This class adds an extra controll layer on top of the VNH_Controller
 % hardware interface 
-    
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
+
     properties (SetAccess=protected)
         Controller
         ControlUI

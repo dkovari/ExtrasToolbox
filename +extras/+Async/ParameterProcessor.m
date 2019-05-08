@@ -1,5 +1,7 @@
 classdef ParameterProcessor < extras.Async.AsyncProcessor & dynamicprops
 % Base class for all ParameterProcess type AsyncProcessors
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
     %% create
     methods

@@ -6,6 +6,8 @@ classdef roiManager < handle & extras.roi.ObjectManager
 % factory method
 % If you want to customize the context generators then redefine
 % createContextGenerators()
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
     %% constructor
     methods

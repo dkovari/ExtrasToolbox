@@ -1,4 +1,9 @@
 classdef roiManager3D < extras.roi.roiManager
+% Extension of roiManager to work with roiObject3D and create proper
+% context menu
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
+    
     %% Internal Use - overloadable createROI static function
     methods (Static)
         function roi = CreateROI(varargin) %alias function for creating roi objects. NOTE: created rois are not added to the managed list

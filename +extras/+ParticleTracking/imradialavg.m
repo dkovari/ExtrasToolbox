@@ -15,6 +15,8 @@
 %   Avg: radial averages
 %   BinLocations: locations of the radial bins (e.g. 0,1,...,Rmax)
 %   BinCounts: number of pixels accumulated into each bin
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
 %THIS IS A STUB FOR A MEX FILE
 % RUN: imradialavg\build_imradialavg.m to compile function

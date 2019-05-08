@@ -1,6 +1,8 @@
 classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extras.RequireGuiLayoutToolbox
 %UI menu for editing ROI List
-    
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
+
     properties(SetAccess=protected)
         Manager;
     end

@@ -1,4 +1,6 @@
 % Script for testing PI Mercury Motor Devices
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
 
 %% Port Settings
 COM_PORT = 'COM7';

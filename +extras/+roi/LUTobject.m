@@ -1,5 +1,8 @@
 classdef LUTobject < handle
-% class for managing a spline look-up-table    
+% class for managing a spline look-up-table
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
+
     properties (AbortSet,SetObservable,SetAccess=protected)
         UUID %unique identifier indicating the particle being tracked
         pp %spline of defining lut

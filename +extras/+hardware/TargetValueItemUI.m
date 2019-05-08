@@ -1,6 +1,7 @@
 classdef TargetValueItemUI < extras.GraphicsChild & extras.uixDerivative
 % Helper class for building TargetValueDevice UI elements
-    
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.       
     properties (AbortSet=true)
         Value;
         UIeditCallback;

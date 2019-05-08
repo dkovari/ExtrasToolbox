@@ -3,6 +3,8 @@ classdef TurnController < matlab.mixin.SetGet
 % electromagnet
 %
 % Used with MagnetController
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
 
     properties(SetAccess=protected)
         MagnetController

@@ -1,5 +1,7 @@
 classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extras.RequireGuiLayoutToolbox
 % Generate ui for managing LUT used by roiObject3D
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
     %% 
     properties (Access=protected)

@@ -10,6 +10,8 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
 %   number of rows corresponds to the number of roi objects created
 %
 % Window: 1x4 array specifying [x0,y0,w,h] of rectangle
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
     %% create method
     methods

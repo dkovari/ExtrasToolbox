@@ -3,7 +3,9 @@ classdef TargetValueDeviceUI < extras.GraphicsChild & extras.uixDerivative
 % Target values can be manipulated with auto-generated sliders and edit
 % boxes.
 % Actual "Values" can be viewed in generated edits
-    
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
+
     %% Internal Set
     properties (SetAccess=protected)
         Device;

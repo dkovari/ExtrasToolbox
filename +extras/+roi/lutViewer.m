@@ -1,6 +1,7 @@
 classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & extras.widgets.mixin.ObjectDependentLifetime
-    % UI viewer for displaying spline LUT data
-    
+% UI viewer for displaying spline LUT data
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
     
     %%
     properties (Access=private)

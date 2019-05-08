@@ -38,7 +38,8 @@ classdef MercuryHub < extras.hardware.SerialDevice
 % > DecrementReferenceCount(hubObj)
 % This decrements the hub's internal reference counter.
 % When the counter hits zero, the hub will be deleted.
-
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
     %% Static Property
     properties (Constant)
         HubList = extras.hardware.PI.HubList;
