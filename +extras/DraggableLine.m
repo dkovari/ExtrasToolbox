@@ -1,12 +1,18 @@
 classdef DraggableLine < extras.GraphicsChild
-    
+% Create a user draggable line
+% Limits can be placed on the line position so that it can only be dragged
+% along certain dimensions
     
     properties (SetObservable=true,AbortSet=true)
-        X = [NaN,NaN]
-        Y = [NaN,NaN]
-        UIeditCallback
+        X = [NaN,NaN] %X coordinates, If nan, then use axis limits
+        Y = [NaN,NaN] %Y coordinated, if nan use axis limits
         
-        Color
+        DragLimitX (2,1) double = [-Inf,Inf]; %limits for dragging along x direction
+        DragLimitY (2,1) double = [-Inf,Inf]; %limits for dragging along y direction
+        
+        UIeditCallback %user defined callback fired after line is dragged by user
+        
+        Color 
         LineStyle
         LineWidth
         Marker
@@ -19,6 +25,12 @@ classdef DraggableLine < extras.GraphicsChild
         DragEnabled = true; %t/f if line is movable
     end
     methods
+        function set.DragLimitX(this,val)
+            this.DragLimitX = sort(val);
+        end
+        function set.DragLimitY(this,val)
+            this.DragLimitY = sort(val);
+        end
         function set.X(this,val)
             assert(numel(val)==2,'X must have two elements');
             this.X = val;
@@ -123,6 +135,14 @@ classdef DraggableLine < extras.GraphicsChild
         % DraggableLine(X,Y)
         % DraggableLine(hAx,__)
         % DraggableLine(__,'Parent',hAx)
+        %
+        % Specify X=[NaN,NaN] to create a horizontal line which spans the
+        % axes
+        %
+        % or Y=[NaN,NaN to create a vertical line which spans the axes
+        % 
+        % By setting one of the Dimensions to [NaN,NaN] the line acts like
+        % a slide and can only be dragged in the non-NaN direction
             
             %% Setup Parent
             %initiate graphics parent related variables
@@ -252,12 +272,12 @@ classdef DraggableLine < extras.GraphicsChild
             dPt = pt-this.ClickPoint;
             switch(this.DragAxis)
                 case 'X'
-                    this.X = this.X_orig + dPt(1,1);
+                    this.X = max(this.DragLimitX(1),min(this.DragLimitX(2),this.X_orig + dPt(1,1)));
                 case 'Y'
-                    this.Y = this.Y_orig + dPt(1,2);
+                    this.Y = max(this.DragLimitY(1),min(this.DragLimitY(2),this.Y_orig + dPt(1,2)));
                 case 'Parallel'
-                    this.X = this.X_orig + dPt(1,1);
-                    this.Y = this.Y_orig + dPt(1,2);
+                    this.X = max(this.DragLimitX(1),min(this.DragLimitX(2),this.X_orig + dPt(1,1)));
+                    this.Y = max(this.DragLimitY(1),min(this.DragLimitY(2),this.Y_orig + dPt(1,2)));
             end
             %this.UpdateLine();
         end

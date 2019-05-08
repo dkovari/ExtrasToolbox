@@ -72,8 +72,8 @@ classdef roiManager < handle & extras.roi.ObjectManager
         ContextGenerators = extras.roi.ContextGenerator.empty;
     end
     
-    methods(Static)
-        function cg = createContextGenerators(roiObjs)
+    methods
+        function cg = createContextGenerators(this,roiObjs)
             %redefinable method for creating extras.roi.ContextGenerator
             %objects from roiObjects
             cg = extras.roi.ContextGenerator(roiObjs);

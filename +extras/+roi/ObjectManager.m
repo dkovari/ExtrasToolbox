@@ -8,7 +8,7 @@ classdef (Abstract) ObjectManager < handle
     methods (Access=protected)
         function changeObjectClassName(this,NEW_CLASS_NAME)
             %method for changing the type of objects stored
-            assert(ischar(CLASS_NAME),'CLASS_NAME must be char array specifying valid class name');
+            assert(ischar(NEW_CLASS_NAME),'CLASS_NAME must be char array specifying valid class name');
             
             if ~isempty(this.ManagedObjects) && ~isa(this.ManagedObjects(1),NEW_CLASS_NAME)
                 error('Cannot change object type from %s to %s; there are currently %d objects stored in the managed list',this.ObjectClassName,NEW_CLASS_NAME,numel(this.ManagedObjects));

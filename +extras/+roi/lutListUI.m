@@ -74,13 +74,12 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             end
             
             found_roi = false;
-            if numel(varargin)==1
-                assert(isa(varargin{1},'extras.roi.roiObject3D'),'roiObject not specified');
+            if ~isempty(varargin) && isa(varargin{1},'extras.roi.roiObject3D')
                 
                 RoiObject = varargin{1};
                 varargin(1) = [];
                 found_roi = true;
-            elseif isgraphics(varargin{1}) && isa(varargin{2},extras.roi.roiObject3D)
+            elseif isgraphics(varargin{1}) && isa(varargin{2},'extras.roi.roiObject3D')
                 RoiObject = varargin{2};
                 varargin(2) = [];
                 found_roi = true;
@@ -209,6 +208,22 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
                 'ColumnPreferredWidth',[25,80,25,60,60],...
                 'ColumnFormat',{'integer','char','numeric','numeric','numeric'});
             
+            % Context menu
+            cm = uicontextmenu(this.ParentFigure);
+            
+            uimenu(cm,...
+                'Text','Delete Selected LUT',...
+                'ForegroundColor','r',...
+                'MenuSelectedFcn',@(~,~) this.DeleteLUT());
+            
+            uimenu(cm,...
+                'Separator','on',...
+                'Text','Display Selected LUT',...
+                'MenuSelectedFcn',@(~,~) this.DisplayLUT());
+            
+            this.jTab_lutList.UIContextMenu = cm;
+            
+            
             %% Update Listeners
             this.LUTListListener = addlistener(this.RoiObject,'LUT','PostSet',@(~,~) this.UpdateList());
             this.LUTChangeListener = addlistener(this.RoiObject,'LUTChanged',@(~,~) this.UpdateList());
@@ -233,10 +248,19 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             this.jTab_lutList.Data = this.lut2cell();
         end
         
+        function DisplayLUT(this)
+        end
+        
         function AddLUT(this)
+            %GUI tool for adding LUT based on ROIs listed with an
+            %RoiManager
+            
+            if isempty(this.RoiManager) || ~isvalid(this.RoiManager)
+                error('Cannot call AddLUT() because there is valid RoiManager associated with the lutListUI');
+            end
             
             dat = cell(numel(this.RoiManager.roiList),2);
-            for n=1:numel(dat)
+            for n=1:numel(this.RoiManager.roiList)
                 dat{n,1} = n;
                 dat{n,2} = this.RoiManager.roiList.UUID;
             end
@@ -252,12 +276,22 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
                 return;
             end
             
-            this.RoiObject.addLUT(this.RoiManager.roiList(out));
+            %check if user selected roi which are already associated with
+            %LUT
+            if any(ismember({this.RoiManager.roiList(out).UUID},{this.RoiObject.LUT.UUID}))
+                resp = questdlg(sprintf('One the selected ROIs are already associated with an LUT.\nDo you want to create an additional LUT?'),'Duplicate LUT','Yes','Cancel','Yes');
+                if ~strcmpi(resp,'Yes')
+                    return;
+                end
+            end
             
-            
+            this.RoiObject.addLUT(extras.roi.LUTobject(this.RoiManager.roiList(out))); %create LUT object referenced to selected roi
+
         end
         
         function DeleteLUT(this)
+            % UI tool to delete selected roi
+            
             sel_ind = this.jTab_lutList.SelectedRows;
             
             if isempty(sel_ind)

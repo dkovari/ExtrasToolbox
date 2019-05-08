@@ -14,11 +14,11 @@ classdef roiManager3D < extras.roi.roiManager
     end
     
     %context generator customization
-    methods(Static)
-        function cg = createContextGenerators(roiObjs)
+    methods
+        function cg = createContextGenerators(this,roiObjs)
             %redefinable method for creating extras.roi.ContextGenerator
             %objects from roiObjects
-            cg = extras.roi.ContextGenerator(roiObjs);
+            cg = extras.roi.ContextGenerator3D(roiObjs,this);
         end
     end
 end

@@ -1,9 +1,15 @@
 classdef ContextGenerator3D < extras.roi.ContextGenerator
     
+    %% 
+    properties(Access=private)
+        RoiManager
+    end
+    
     %% ctor
     methods
-        function this = ContextGenerator3D(RoiObject)
+        function this = ContextGenerator3D(RoiObject,RoiManager)
             this@extras.roi.ContextGenerator(RoiObject);
+            this.RoiManager = RoiManager;
             
             if isempty(RoiObject)
                 delete(this);
@@ -27,8 +33,15 @@ classdef ContextGenerator3D < extras.roi.ContextGenerator
             %% Create menu listing LUTs
             lut_m = uimenu(cm,'Text','Show LUT List',...
                 'Separator','on',...
-                'MenuSelectedFcn',@(~,~) this.showLUTList(this.RoiObject));
+                'MenuSelectedFcn',@(~,~) this.showLUTList());
             
+        end
+    end
+    
+    %% Callbacks
+    methods(Access=private)
+        function showLUTList(this)
+            extras.roi.lutListUI(this.RoiObject,this.RoiManager);
         end
     end
 end

@@ -57,7 +57,6 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
         LutPropListeners = event.listener.empty();
         LutDestroyListeners = event.listener.empty();
     end
-   
     
     %% public
     methods
@@ -69,7 +68,7 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
             end
         end
         function addLUT(this,LUT)
-            newobj=addObjects(this,LUT);
+            newobj=addObjects(this,LUT)
             this.LutPropListeners = [this.LutPropListeners, addlistener(newobj,'PropertyChanged',@(h,e) notify(this,'LUTChanged',extras.GenericEvent('LUT',h)))]; %create listener which forwards changes made to LUTs in the lut list
             this.LutDestroyListeners = [this.LutDestroyListeners,addlistener(newobj,'ObjectBeingDestroyed',@(h,e) notify(this,'LUTChanged',extras.GenericEvent('LUT',h)))];
         end
