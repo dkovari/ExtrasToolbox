@@ -6,6 +6,9 @@ classdef LUTobject < handle
         dpp %first derivative of spline
         rr %radial coordinates of each spline in pp
         zlim %z limits of the splines
+        Z_Units = 'µm';
+        R_Units = 'px';
+        
     end
     properties(AbortSet,SetObservable)
         MinR %minimum Radius of the particle pattern

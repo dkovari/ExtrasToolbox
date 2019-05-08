@@ -144,17 +144,21 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
             extras.expandAxes(this.hAx_R_Profile);
+            ylabel(this.hAx_R_Profile,'Intensity [A.U.]');
             
             this.hAx_Spline = axes('Parent',flex,...
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
             extras.expandAxes(this.hAx_Spline);
+            ylabel(this.hAx_Spline,['Z Position [',this.LUT.Z_Units,']']);
+            xlabel(this.hAx_Spline,['R Position [',this.LUT.R_Units,']']);
             
             uix.Empty( 'Parent', flex );
             this.hAx_Z_Profile = axes('Parent',flex,...
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
             extras.expandAxes(this.hAx_Z_Profile);
+            xlabel(this.hAx_Z_Profile,'Intensity [A.U.]');
 
             set(flex,'Widths',[-3,-1],'Heights',[-1,-4]);
 
@@ -175,6 +179,9 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             this.LUT_MinR_Listener = addlistener(this.LUT,'MinR','PostSet',@(~,~) this.MinMaxRChanged);
             this.LUT_MaxR_Listener = addlistener(this.LUT,'MaxR','PostSet',@(~,~) this.MinMaxRChanged);
             this.LUT_pp_Listener = addlistener(this.LUT,'pp','PostSet',@(~,~) this.ppChanged);
+            
+            %% force redraw
+            this.ppChanged();
         end
     end
     
@@ -229,6 +236,9 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             zz = linspace(this.LUT.zlim(1),this.LUT.zlim(2),500);
             vals = ppval(this.LUT.pp,zz)';
             this.hImg_Spline.CData = vals;
+            
+            this.hImg_Spline.YData = this.LUT.zlim;
+            this.hLn_R_Profile.DragLimitY = this.LUT.zlim;
             
             this.MinMaxRChanged();
 

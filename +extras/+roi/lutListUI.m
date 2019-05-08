@@ -249,6 +249,13 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
         end
         
         function DisplayLUT(this)
+            sel_ind = this.jTab_lutList.SelectedRows;
+            
+            if isempty(sel_ind)
+                return;
+            end
+            LUT = this.RoiObject.LUT(sel_ind);
+            extras.roi.lutViewer(LUT);
         end
         
         function AddLUT(this)
