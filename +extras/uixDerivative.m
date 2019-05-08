@@ -3,6 +3,8 @@ classdef (HandleCompatible) uixDerivative
 % installed.
 % Classes which use the uix toolbox sould derive from this class
 % See: https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
 
     methods
         function this = uixDerivative()

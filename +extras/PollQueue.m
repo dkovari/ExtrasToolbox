@@ -15,6 +15,8 @@ classdef PollQueue < extras.Queue
 %
 % Info about the queue:
 %   Length(): Length of the queue
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
 
     properties(SetAccess=protected)
         Data;

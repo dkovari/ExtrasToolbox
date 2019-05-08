@@ -9,8 +9,8 @@ classdef LUTobject < handle
         dpp %first derivative of spline
         rr %radial coordinates of each spline in pp
         zlim %z limits of the splines
-        Z_Units = 'µm';
-        R_Units = 'px';
+        Z_Units = 'µm'; %char array specifying units of the z-dimension
+        R_Units = 'px'; %char array specifying units of the r-dimension
         
     end
     properties(AbortSet,SetObservable)
@@ -32,11 +32,11 @@ classdef LUTobject < handle
     end
     
     properties(SetAccess=protected,AbortSet,SetObservable)
-        IsCalibrated = false;
+        IsCalibrated = false; %flag indicating if LUT is calibrated (has valid spline table)
     end
     
     events
-        PropertyChanged
+        PropertyChanged %event indicating one of the properties has changed
     end
     
     %% ctor

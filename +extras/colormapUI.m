@@ -1,6 +1,8 @@
 classdef colormapUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & extras.RequireWidgetsToolbox
 % GUI for interactively building a colormap
-    
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
+
     %% Graphics Containers
     properties (Access=protected)
         OuterHBox;

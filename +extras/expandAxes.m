@@ -5,6 +5,8 @@ function expandAxes(hax,axis_opts)
 % axis_opts: (optional) char array specifying extra axis option to apply
 %   e.g. axis_opts = 'image' to force square pixel scale format
 % you can specify multiple axis options by passing a cellstr array
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
 if nargin<1
     hax = gca;

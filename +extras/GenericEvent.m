@@ -1,6 +1,7 @@
 classdef GenericEvent < event.EventData & dynamicprops
-    % Event Class for handeling arbirary event data
-    
+% Event Class for handeling arbirary event data
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
     %% create
     methods
         function this = GenericEvent(varargin)

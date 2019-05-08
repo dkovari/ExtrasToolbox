@@ -1,6 +1,8 @@
 classdef uiray < extras.GraphicsChild
 %% UIRAY - A draggable ray, fixed at a given origin
-    
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
+
     properties (SetAccess=private)
         ArrowLine;
         RayLine;

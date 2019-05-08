@@ -1,5 +1,8 @@
 classdef uirect < extras.GraphicsChild
-    
+% create draggable rectangles on an axes
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
+
     properties(SetAccess=protected)
         
         hRectangle = []; %rectangle handle

@@ -32,6 +32,8 @@ classdef GraphicsChild < matlab.mixin.SetGet
 %       args = obj.CheckParentInput(...,'Parent',parent);
 %
 %   CheckParentInput can only be called once
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.   
 
     properties
         Parent; %handle to the parent graphical container (e.g. figure, axes, panel, etc.)

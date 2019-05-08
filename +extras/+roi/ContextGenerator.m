@@ -73,16 +73,17 @@ classdef ContextGenerator < handle & matlab.mixin.SetGet & matlab.mixin.Heteroge
                 for m=1:numel(hFig)
                     %% check if we need to create context menu
                     if ~isempty(this(n).ContextMenus)
-                        fd = find(this(n).ContextMenus.Parent==hFig);
-                        if ~isempty(fd) % already created
-                            out(n,m) = fd(1);
+                        pars = [this(n).ContextMenus.Parent]; %get a list of all context menu parents
+                        fd = find(hFig(m)==pars);
+                        if ~isempty(fd) % already created for that figure, return the context menu for hFig(m)
+                            out(n,m) = this(n).ContextMenus(fd(1));
                             continue;
                         end
                     end
                     %% Create context menu
-                    cm = this(n).internal_createContextMenu(hFig);
+                    cm = this(n).internal_createContextMenu(hFig(m));
                     
-                    %% add to list of contextmenus
+                    %% add new cm for hFig(m) to list of contextmenus
                     this(n).ContextMenus = [this(n).ContextMenus,cm];
                     
                     %% set out
