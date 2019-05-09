@@ -1,5 +1,9 @@
-% Build Radial Center
+% Build RoiTracker3D
 
+%% Build RoiTracker First
+extras.ParticleTracking.build_RoiTracker;
+
+%% Setup File
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
 OUTNAME = 'RoiTracker3D_mex'; %output function name
 OUTDIR = THIS_PATH;%fullfile(THIS_PATH,'..'); %output to .../+extras/+ParticleTracking

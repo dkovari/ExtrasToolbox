@@ -56,6 +56,9 @@ namespace extras {namespace ParticleTracking {
 			if (!outStruct.isfield("X") || !outStruct.isfield("Y")) { //X Y not defined, skip
 				return resultsGroup;
 			}
+
+			
+
 			
 			// if no LUT then skip
 			if (!outStruct.isfield("LUT") ) {
@@ -78,7 +81,17 @@ namespace extras {namespace ParticleTracking {
 				////////////////////////////////////////////////////////
 				// Prepare loop
 
+				//tmp throw error with X
+				//std::string Xtype = mxGetClassName(outStruct(n, "X"));
+				
 				double x = outStruct(n, "X");
+				/*try {
+					x = outStruct(n, "X");
+				}
+				catch (...) {
+					throw(extras::stacktrace_error(std::to_string(n)+": "+Xtype));
+				}*/
+				
 				double y = outStruct(n, "Y");
 
 				if ( x==NAN || y==NAN ) { //did't find particle, skip

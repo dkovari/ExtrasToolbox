@@ -11,11 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\RoiParameterMap.hpp" />
-    <ClInclude Include="..\source\RoiTracker.hpp" />
+    <ClInclude Include="..\..\source\RoiParameterMap.hpp" />
+    <ClInclude Include="..\..\source\RoiTracker.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\RoiTracker.cpp" />
+    <ClCompile Include="..\..\source\RoiTracker.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{d070ddfc-0db4-4305-83a1-658751db4465}</ProjectGuid>
@@ -44,26 +44,29 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\msvc\ExtrasToolbox_PropertySheet.props" />
+    <Import Project="..\..\..\..\msvc\ExtrasToolbox_PropertySheet.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\msvc\ExtrasToolbox_PropertySheet.props" />
+    <Import Project="..\..\..\..\msvc\ExtrasToolbox_PropertySheet.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>$(ProjectDir)..\..\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(SolutionDir)..\+ParticleTracking;$(IncludePath)</IncludePath>
     <TargetName>RoiTracker_mex</TargetName>
+    <IntDir>$(ProjectDir)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>$(ProjectDir)..\..\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(SolutionDir)..\+ParticleTracking;$(IncludePath)</IncludePath>
     <TargetName>RoiTracker_mex</TargetName>
+    <IntDir>$(ProjectDir)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

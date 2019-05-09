@@ -37,12 +37,8 @@ imagesc(ProfileData)
 
 
 %% Create Processor
-
-'press a key to create roitracker3D'
-pause
 rcp = extras.ParticleTracking.RoiTracker.RoiTracker3D();
-'press a key to continue'
-pause
+
 
 %% Generate Test Image
 
@@ -156,11 +152,10 @@ end
 end
 
 function roiChanged(hRM,hdt,I)
-roiList = toStruct(hRM.roiList)
-'roiList'
-pause
-'before setParameters'
+roiList = toStruct(hRM.roiList);
+
 hdt.setParameters('roiList',roiList);
+
 'before push image'
 pause
 hdt.pushTask(I);

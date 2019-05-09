@@ -271,10 +271,18 @@ namespace extras{namespace cmex{
 		// Type Conversions
 
 		operator double() const {
-			if (!_parent.isnumeric() || !_parent.isscalar()) {
-				throw(extras::stacktrace_error("FieldWrapper::double(): cannot cast non-numeric or non-scalar to double"));
+
+			mxArray* pA = mxGetFieldByNumber(_parent.getmxarray(), index, field_number);
+
+
+			if (!mxIsNumeric(pA) || !mxIsScalar(pA)) {
+				throw(extras::stacktrace_error(
+					std::string("FieldWrapper::double(): cannot cast non-numeric or non-scalar to double.\nType: ")
+					+mxGetClassName(pA)
+					+std::string(" numel:")
+					+std::to_string(mxGetNumberOfElements(pA))));
 			}
-			return mxGetScalar(_parent.getmxarray());
+			return mxGetScalar(pA);
 		}
 
 		operator std::string() const {

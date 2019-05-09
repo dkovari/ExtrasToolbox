@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\RoiParameterMap.hpp">
+    <ClInclude Include="..\..\source\RoiParameterMap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\RoiTracker.hpp">
+    <ClInclude Include="..\..\source\RoiTracker.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\RoiTracker.cpp">
+    <ClCompile Include="..\..\source\RoiTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
