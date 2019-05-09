@@ -70,14 +70,14 @@ namespace extras{namespace cmex{
 		//! move construction
 		MxStruct(MxObject&& src): MxObject(std::move(src)){
             if(!isstruct()){
-                throw(std::runtime_error("MxStruct(MxObject&& src): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct(MxObject&& src): src is not a struct."));
             }
         }
 
         //! copy assignment
         MxStruct& operator=(const MxObject& src){
             if(!src.isstruct()){
-                throw(std::runtime_error("MxStruct::operator=(const MxObject& src): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct::operator=(const MxObject& src): src is not a struct."));
             }
 			copyFrom(src);
             return *this;
@@ -86,7 +86,7 @@ namespace extras{namespace cmex{
         //! move assignment
         MxStruct& operator=(MxObject && src){
             if(!src.isstruct()){
-                throw(std::runtime_error("MxStruct::operator=(MxObject && src): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct::operator=(MxObject && src): src is not a struct."));
             }
 			moveFrom(src);
             return *this;
@@ -99,13 +99,13 @@ namespace extras{namespace cmex{
         {
             //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
             if(!mxIsStruct(mxptr)){
-                throw(std::runtime_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
             }
         }
         MxStruct& operator=(mxArray* mxptr){
 			//mexPrintf("MxObject& operator=(mx*):%d from: %d\n", this, mxptr);
             if(!mxIsStruct(mxptr)){
-                throw(std::runtime_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
             }
             MxObject::operator=(mxptr);
             return *this;
@@ -114,13 +114,13 @@ namespace extras{namespace cmex{
             MxObject(mxptr,isPersistent)
         {
             if(!mxIsStruct(mxptr)){
-                throw(std::runtime_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
             }
         }
         MxStruct& operator=(const mxArray* mxptr){
 			//mexPrintf("MxObject& operator=(const mx*):%d from: %d\n", this, mxptr);
             if(!mxIsStruct(mxptr)){
-                throw(std::runtime_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
             }
             MxObject::operator=(mxptr);
             return *this;
@@ -143,7 +143,7 @@ namespace extras{namespace cmex{
         //! const access to field
         const mxArray* operator()(size_t idx, const char* fieldname) const{
             if(idx>=numel()){
-                throw(std::runtime_error("MxStruct::operator() index exceeds struct array dimension"));
+                throw(extras::stacktrace_error("MxStruct::operator() index exceeds struct array dimension"));
             }
             return mxGetField(getmxarray(),idx,fieldname);
         }
@@ -190,14 +190,14 @@ namespace extras{namespace cmex{
 			if (field_number<0) { //need to create field
 
 				if (_parent.isConst()) {
-					throw(std::runtime_error("FieldWrapper: Cannot add field to const mxArray*"));
+					throw(extras::stacktrace_error("FieldWrapper: Cannot add field to const mxArray*"));
 				}
 
 				field_number = mxAddField(_parent.getmxarray(), fieldname);
 			}
 
 			if (field_number<0) {
-				throw(std::runtime_error(std::string("FieldWrapper(): Could not create fieldname:") + std::string(fieldname)));
+				throw(extras::stacktrace_error(std::string("FieldWrapper(): Could not create fieldname:") + std::string(fieldname)));
 			}
 		}
 
@@ -216,7 +216,7 @@ namespace extras{namespace cmex{
 		//! NOTE: src will be managed by the struct after this, so don't try to delete or rely on src after calling internalSet()
 		void internalSet(mxArray* src) {
 			if (_parent.isConst()) {
-				throw(std::runtime_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
+				throw(extras::stacktrace_error("FieldWrapper: Cannot use operator= for FieldWrapper created from const mxArray*"));
 			}
 			mxDestroyArray(mxGetFieldByNumber(_parent.getmxarray(), index, field_number));
 			mxSetFieldByNumber(_parent.getmxarray(), index, field_number, src);
@@ -272,7 +272,7 @@ namespace extras{namespace cmex{
 
 		operator double() const {
 			if (!_parent.isnumeric() || !_parent.isscalar()) {
-				throw("FieldWrapper::double(): cannot cast non-numeric or non-scalar to double");
+				throw(extras::stacktrace_error("FieldWrapper::double(): cannot cast non-numeric or non-scalar to double"));
 			}
 			return mxGetScalar(_parent.getmxarray());
 		}
@@ -316,7 +316,7 @@ namespace extras{namespace cmex{
 	//! if the parent MxStruct is changed by a different thread, the field wrapper will probably be corrupted
 	FieldWrapper MxStruct::operator()(size_t idx, const char* fieldname) {
 		if (idx >= numel()) {
-			throw(std::runtime_error("MxStruct::operator() index exceeds struct array dimension"));
+			throw(extras::stacktrace_error("MxStruct::operator() index exceeds struct array dimension"));
 		}
 		return FieldWrapper(*this, idx, fieldname);
 	}

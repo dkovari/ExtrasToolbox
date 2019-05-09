@@ -25,7 +25,7 @@ namespace extras{namespace async{
 		typedef typename std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<PersistentArgType>> TaskPairType;
 		typedef typename std::shared_ptr<PersistentArgType> PersistentArg_Ptr;
 	private:
-		cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) { throw(std::runtime_error("in ProcTask(mxAG)..shouldn't be here")); return cmex::mxArrayGroup(); } ///< don't use ProcessTask(mxArrayGroup&)
+		cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) { throw(extras::stacktrace_error("in ProcTask(mxAG)..shouldn't be here")); return cmex::mxArrayGroup(); } ///< don't use ProcessTask(mxArrayGroup&)
     protected:
         std::list<TaskPairType> TaskList; // Hides TaskList inherited from AsyncProcessor
 

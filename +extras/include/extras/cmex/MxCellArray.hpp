@@ -63,7 +63,7 @@ namespace extras{namespace cmex{
 		//! create cell array by copying src MxObject
         MxCellArray(const MxObject& src){
             if(!src.iscell()){
-                throw(std::runtime_error("MxCellArray(const MxObject& src): src is not a cell."));
+                throw(extras::stacktrace_error("MxCellArray(const MxObject& src): src is not a cell."));
             }
             copyFrom(src);
         }
@@ -71,7 +71,7 @@ namespace extras{namespace cmex{
 		//! move constructor
         MxCellArray(MxObject&& src){
             if(!src.iscell()){
-                throw(std::runtime_error("MxCellArray(MxObject&& src): src is not a cell."));
+                throw(extras::stacktrace_error("MxCellArray(MxObject&& src): src is not a cell."));
             }
             moveFrom(src);
         }
@@ -84,7 +84,7 @@ namespace extras{namespace cmex{
         //! copy assignment
         MxCellArray& operator=(const MxObject& src){
             if(!src.iscell()){
-                throw(std::runtime_error("MxCellArray::operator=(const MxObject& src): src is not a cell."));
+                throw(extras::stacktrace_error("MxCellArray::operator=(const MxObject& src): src is not a cell."));
             }
 			copyFrom(src);
             return *this;
@@ -93,7 +93,7 @@ namespace extras{namespace cmex{
         //! move assignment
         MxCellArray& operator=(MxObject && src){
             if(!src.iscell()){
-                throw(std::runtime_error("MxCellArray::operator=(MxObject && src): src is not a cell."));
+                throw(extras::stacktrace_error("MxCellArray::operator=(MxObject && src): src is not a cell."));
             }
 			moveFrom(src);
             return *this;
@@ -106,7 +106,7 @@ namespace extras{namespace cmex{
         {
             //mexPrintf("mxObject(mx*):%d fromL %d\n",this,mxptr);
             if(!mxIsCell(mxptr)){
-                throw(std::runtime_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a cell."));
+                throw(extras::stacktrace_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a cell."));
             }
         }
 
@@ -114,7 +114,7 @@ namespace extras{namespace cmex{
         MxCellArray& operator=(mxArray* mxptr){
 			//mexPrintf("MxObject& operator=(mx*):%d from: %d\n", this, mxptr);
             if(!mxIsCell(mxptr)){
-                throw(std::runtime_error("MxCellArray(mxArray* mxptr,bool isPersistent=false): src is not a cell."));
+                throw(extras::stacktrace_error("MxCellArray(mxArray* mxptr,bool isPersistent=false): src is not a cell."));
             }
             MxObject::operator=(mxptr);
             return *this;
@@ -126,7 +126,7 @@ namespace extras{namespace cmex{
             MxObject(mxptr,isPersistent)
         {
             if(!mxIsCell(mxptr)){
-                throw(std::runtime_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
             }
         }
 
@@ -134,7 +134,7 @@ namespace extras{namespace cmex{
         MxCellArray& operator=(const mxArray* mxptr){
 			//mexPrintf("MxObject& operator=(const mx*):%d from: %d\n", this, mxptr);
             if(!mxIsCell(mxptr)){
-                throw(std::runtime_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
+                throw(extras::stacktrace_error("MxStruct(mxArray* mxptr,bool isPersistent=false): src is not a struct."));
             }
             MxObject::operator=(mxptr);
             return *this;
@@ -152,7 +152,7 @@ namespace extras{namespace cmex{
         //! const access to field
         const mxArray* operator()(size_t idx) const{
             if(idx>=numel()){
-                throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
+                throw(extras::stacktrace_error("MxCellArray::operator() index exceeds struct array dimension"));
             }
             return mxGetCell(getmxarray(),idx);
         }
@@ -179,7 +179,7 @@ namespace extras{namespace cmex{
 		//! NOTE: src will be managed by the cell array after this, so don't try to delete or rely on src after calling internalSet()
 		void internalSet(mxArray* src) {
 			if (_parent.isConst()) {
-				throw(std::runtime_error("CellWrapper: Cannot use operator= for MxCellArray created from const mxArray*"));
+				throw(extras::stacktrace_error("CellWrapper: Cannot use operator= for MxCellArray created from const mxArray*"));
 			}
 			mxDestroyArray(mxGetCell(_parent.getmxarray(), index));
 			mxSetCell(_parent.getmxarray(), index, src);
@@ -234,7 +234,7 @@ namespace extras{namespace cmex{
 
 		operator double() const {
 			if (!_parent.isnumeric() || !_parent.isscalar()) {
-				throw("CellWrapper::double(): cannot non-numeric or non-scalar to double");
+				throw(extras::stacktrace_error("CellWrapper::double(): cannot cast non-numeric or non-scalar to double"));
 			}
 			return mxGetScalar(_parent.getmxarray());
 		}
@@ -274,7 +274,7 @@ namespace extras{namespace cmex{
 	//! non-const access to field
 	CellWrapper MxCellArray::operator()(size_t idx) {
 		if (idx >=numel()) {
-			throw(std::runtime_error("MxCellArray::operator() index exceeds struct array dimension"));
+			throw(extras::stacktrace_error("MxCellArray::operator() index exceeds struct array dimension"));
 		}
 		return CellWrapper(*this, idx);
 	}

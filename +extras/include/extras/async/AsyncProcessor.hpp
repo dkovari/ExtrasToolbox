@@ -207,7 +207,7 @@ namespace extras{namespace async{
 
         virtual cmex::mxArrayGroup popResult(){
             if(ResultsList.size()<1){
-                throw(std::runtime_error("No results in the ResultsList, cannot popResult()"));
+                throw(extras::stacktrace_error("No results in the ResultsList, cannot popResult()"));
             }
 
             //pop results

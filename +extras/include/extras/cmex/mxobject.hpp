@@ -39,7 +39,7 @@ namespace extras {namespace cmex {
 		//internal use, reshape real numeric or char array
 		template<bool copy_data> void reshape_real_char(const std::vector<size_t>& dims) {
 			if (_setFromConst) { //cannot reshape const
-				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+				throw(extras::stacktrace_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -57,10 +57,10 @@ namespace extras {namespace cmex {
 
 			//validate mxarray type
 			if (!(isnumeric() || ischar())) {
-				throw("MxObject::reshape_real_char(): mxptr is not real numeric or char");
+				throw(extras::stacktrace_error("MxObject::reshape_real_char(): mxptr is not real numeric or char"));
 			}
 			if (iscomplex()) {
-				throw("MxObject::reshape_real_char(): mxptr is not real numeric or char");
+				throw(extras::stacktrace_error("MxObject::reshape_real_char(): mxptr is not real numeric or char"));
 			}
 
 			size_t oldNumel = numel();
@@ -101,7 +101,7 @@ namespace extras {namespace cmex {
 		//internal use, reshape real numeric or char array
 		template<bool copy_data> void reshape_imag(const std::vector<size_t>& dims) {
 			if (_setFromConst) { //cannot reshape const
-				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+				throw(extras::stacktrace_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -119,7 +119,7 @@ namespace extras {namespace cmex {
 
 			//validate mxarray type
 			if (!iscomplex()) {
-				throw("MxObject::reshape_imag(): mxptr is not complex");
+				throw(extras::stacktrace_error("MxObject::reshape_imag(): mxptr is not complex"));
 			}
 
 			size_t oldNumel = numel();
@@ -180,7 +180,7 @@ namespace extras {namespace cmex {
 		//internal use, reshape cell
 		template<bool copy_data> void reshape_cell(const std::vector<size_t>& dims) {
 			if (_setFromConst) { //cannot reshape const
-				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+				throw(extras::stacktrace_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
 			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
@@ -198,7 +198,7 @@ namespace extras {namespace cmex {
 
 			//validate
 			if (!iscell()) {
-				throw("MxObject::reshape_cell(): mxptr is not cell.");
+				throw(extras::stacktrace_error("MxObject::reshape_cell(): mxptr is not cell."));
 			}
 
 			size_t oldNumel = numel();
@@ -251,7 +251,7 @@ namespace extras {namespace cmex {
 			}
 
 			if (!isstruct()) {
-				throw("MxObject::reshape_struct(): mxptr is not struct");
+				throw(extras::stacktrace_error("MxObject::reshape_struct(): mxptr is not struct"));
 			}
 
 			size_t oldNumel = numel();
@@ -674,7 +674,7 @@ namespace extras {namespace cmex {
 		size_t sub2ind(const std::vector<size_t>& subs) const {
 			size_t idx = mxCalcSingleSubscript(_mxptr, subs.size(), subs.data());
 			if (idx >= numel()) {
-				throw(std::runtime_error("MxObjecy::sub2ind() subscript exceeds array dimension"));
+				throw(extras::stacktrace_error("MxObjecy::sub2ind() subscript exceeds array dimension"));
 			}
 			return idx;
 		}
@@ -701,7 +701,7 @@ namespace extras {namespace cmex {
 		//! and the original pointer will be released/destroyed
 		void reshape(const std::vector<size_t>& dims) {
 			if (_setFromConst) { //cannot reshape const
-				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+				throw(extras::stacktrace_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
 			// nullptr -> return numeric real double
@@ -743,7 +743,7 @@ namespace extras {namespace cmex {
 				reshape_struct<true>(dims);
 				break;
 			default:
-				throw(std::runtime_error("reshape not implemented for class"));
+				throw(extras::stacktrace_error("reshape not implemented for class"));
 			}
 
 		}
@@ -757,7 +757,7 @@ namespace extras {namespace cmex {
 		//! numeric array will contain zeros, cell and struct arrays will be have empty elements
 		void reshape_nocopy(const std::vector<size_t>& dims) {
 			if (_setFromConst) { //cannot reshape const
-				throw(std::runtime_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
+				throw(extras::stacktrace_error("MxObject::reshape(): Cannot reshape MxObject linked to const mxArray*"));
 			}
 
 			// nullptr -> return numeric real double
@@ -799,7 +799,7 @@ namespace extras {namespace cmex {
 				reshape_struct<false>(dims);
 				break;
 			default:
-				throw(std::runtime_error("reshape not implemented for class"));
+				throw(extras::stacktrace_error("reshape not implemented for class"));
 			}
 		}
 
@@ -815,22 +815,22 @@ namespace extras {namespace cmex {
 		virtual MxObject& concatenate(const MxObject& end_obj, size_t dim) {
 
 			if (isConst()) { //this array is const, throw error
-				throw("MxObject::concantenate(): cannot cat object is const");
+				throw(extras::stacktrace_error("MxObject::concantenate(): cannot cat object is const"));
 			}
 
 			if (mxGetClassID(end_obj) != mxGetClassID(_mxptr)) {
-				throw(std::runtime_error(
+				throw(extras::stacktrace_error(
 					std::string("Cannot concatenate ") + std::string(mxGetClassName(_mxptr))
 					+ std::string("with ") + std::string(mxGetClassName(end_obj))));
 			}
 			if (iscomplex() != end_obj.iscomplex()) {
-				throw("concatenate(): either both arrays must be real or both must be complex");
+				throw(extras::stacktrace_error("concatenate(): either both arrays must be real or both must be complex"));
 			}
 
 			//////////////////
 			// Struct NOT IMPLEMENTED ----> REMOVE WHEN FIXED
 			if (mxIsStruct(_mxptr)) {
-				throw("MxObject::concatenate(): concatenate with struct not implemented yet.");
+				throw(extras::stacktrace_error("MxObject::concatenate(): concatenate with struct not implemented yet."));
 			}
 
 			mxArray* end_ptr = (mxArray*)end_obj.getmxarray(); //mxArray* for end_obj
@@ -848,6 +848,7 @@ namespace extras {namespace cmex {
 			size_t thisSz_len = thisSz.size();
 			size_t thatSz_len = thatSz.size();
 
+			std::max(0, 1);
 			size_t maxDimLen = std::max(std::max(thisSz.size(), thatSz.size()),dim+1);
 
 			// Loop over array dimensions and determine if sizes are compatible
@@ -869,7 +870,7 @@ namespace extras {namespace cmex {
 				}
 
 				if (thisSz[j] != thatSz[j]) {
-					throw(std::runtime_error("incompatible sizes for concatenate"));
+					throw(extras::stacktrace_error("incompatible sizes for concatenate"));
 				}
 			}
 
@@ -904,9 +905,9 @@ namespace extras {namespace cmex {
 				newPtr = mxCreateCellArray(newSz.size(), newSz.data());
 				break;
 			case mxSTRUCT_CLASS:
-				throw("concentate not implemented for struct");
+				throw(extras::stacktrace_error("concentate not implemented for struct"));
 			default:
-				throw(std::runtime_error(std::string("concatenate not implemented for ")+std::string(mxGetClassName(_mxptr))));
+				throw(extras::stacktrace_error(std::string("concatenate not implemented for ")+std::string(mxGetClassName(_mxptr))));
 			}
 
 			//////////////////

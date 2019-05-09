@@ -45,7 +45,7 @@ namespace extras{namespace ParticleTracking{
     		return radialavg<double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>, double, extras::cmex::NumericArray<double>>
     			(extras::cmex::NumericArray<uint64_t>(mxI), x, y, Rmax, Rmin, BinWidth, computeRloc);
     	default:
-    		throw(std::runtime_error("radialavg: Only numeric image types allowed"));
+    		throw(extras::stacktrace_error("radialavg: Only numeric image types allowed"));
     	}
     }
 

@@ -124,12 +124,12 @@ namespace extras { namespace mxfile {
 		if (FP.read(&tmp, 1) < 1) {
 			if (FP.eof()) {
 				if (calledRecursively) {
-					throw("readNext(): at EOF and called recursively");
+					throw(extras::stacktrace_error("readNext(): at EOF and called recursively"));
 				}
 				return (mxArray*)nullptr;//return empty array;
 			}
 			else {
-				throw(FP.error_msg());
+				throw(extras::stacktrace_error(FP.error_msg()));
 			}
 		}
 		thisClassID = (mxClassID)tmp;
@@ -138,10 +138,10 @@ namespace extras { namespace mxfile {
 		size_t ndim;
 		if (FP.read(&ndim, sizeof(size_t)) < sizeof(size_t)) {
 			if (FP.eof()) {
-				throw("reached end of file while reading ndim");
+				throw(extras::stacktrace_error("reached end of file while reading ndim"));
 			}
 			else {
-				throw(FP.error_msg());
+				throw(extras::stacktrace_error(FP.error_msg()));
 			}
 		}
 
@@ -149,10 +149,10 @@ namespace extras { namespace mxfile {
 		std::vector<size_t> dims(ndim);
 		if (FP.read(dims.data(), sizeof(size_t)*ndim) < sizeof(size_t)*ndim) {
 			if (FP.eof()) {
-				throw("reached end of file while reading dims");
+				throw(extras::stacktrace_error("reached end of file while reading dims"));
 			}
 			else {
-				throw(FP.error_msg());
+				throw(extras::stacktrace_error(FP.error_msg()));
 			}
 		}
 
@@ -172,10 +172,10 @@ namespace extras { namespace mxfile {
 				size_t nfields;
 				if (FP.read(&nfields, sizeof(size_t)) < sizeof(size_t)) {
 					if (FP.eof()) {
-						throw("reached end of file while reading nfields");
+						throw(extras::stacktrace_error("reached end of file while reading nfields"));
 					}
 					else {
-						throw(FP.error_msg());
+						throw(extras::stacktrace_error(FP.error_msg()));
 					}
 				}
 
@@ -185,20 +185,20 @@ namespace extras { namespace mxfile {
 					size_t len; //length of fieldname including null terminator
 					if (FP.read(&len, sizeof(size_t)) < sizeof(size_t)) {
 						if (FP.eof()) {
-							throw("reached end of file while reading length of fieldname");
+							throw(extras::stacktrace_error("reached end of file while reading length of fieldname"));
 						}
 						else {
-							throw(FP.error_msg());
+							throw(extras::stacktrace_error(FP.error_msg()));
 						}
 					}
 
 					fieldnames[f].resize(len); //read fieldname, including null terminator
 					if (FP.read(fieldnames[f].data(), len) < len) {
 						if (FP.eof()) {
-							throw("reached end of file while reading lfieldname");
+							throw(extras::stacktrace_error("reached end of file while reading lfieldname"));
 						}
 						else {
-							throw(FP.error_msg());
+							throw(extras::stacktrace_error(FP.error_msg()));
 						}
 					}
 					fnames[f] = fieldnames[f].data(); //set pointer array
@@ -221,10 +221,10 @@ namespace extras { namespace mxfile {
 				uint8_t isComplex;
 				if (FP.read(&isComplex, 1) < 1) {
 					if (FP.eof()) {
-						throw("reached end of file while reading isComplex");
+						throw(extras::stacktrace_error("reached end of file while reading isComplex"));
 					}
 					else {
-						throw(FP.error_msg());
+						throw(extras::stacktrace_error(FP.error_msg()));
 					}
 				}
 
@@ -232,10 +232,10 @@ namespace extras { namespace mxfile {
 				uint8_t interFlag;
 				if (FP.read(&interFlag, 1) < 1) {
 					if (FP.eof()) {
-						throw("reached end of file while reading interFlag");
+						throw(extras::stacktrace_error("reached end of file while reading interFlag"));
 					}
 					else {
-						throw(FP.error_msg());
+						throw(extras::stacktrace_error(FP.error_msg()));
 					}
 				}
 
@@ -244,10 +244,10 @@ namespace extras { namespace mxfile {
 					size_t elsz = out.elementBytes();
 					if (FP.read(mxGetData(out.getmxarray()), elsz*out.numel()) < elsz*out.numel()) {
 						if (FP.eof()) {
-							throw("reached end of file while reading char data");
+							throw(extras::stacktrace_error("reached end of file while reading char data"));
 						}
 						else {
-							throw(FP.error_msg());
+							throw(extras::stacktrace_error(FP.error_msg()));
 						}
 					}
 				}
@@ -256,10 +256,10 @@ namespace extras { namespace mxfile {
 					size_t elsz = out.elementBytes();
 					if (FP.read(mxGetData(out.getmxarray()), elsz*out.numel()) < elsz*out.numel()) {
 						if (FP.eof()) {
-							throw("reached end of file while reading real numeric data");
+							throw(extras::stacktrace_error("reached end of file while reading real numeric data"));
 						}
 						else {
-							throw(FP.error_msg());
+							throw(extras::stacktrace_error(FP.error_msg()));
 						}
 					}
 				}
@@ -271,11 +271,11 @@ namespace extras { namespace mxfile {
 						if (FP.read(data, numel*elsz_real * 2) < numel*elsz_real * 2) {
 							if (FP.eof()) {
 								mxFree(data); //cleanup out memory mess
-								throw("reached end of file while reading interleaved complex numeric data");
+								throw(extras::stacktrace_error("reached end of file while reading interleaved complex numeric data"));
 							}
 							else {
 								mxFree(data); //cleanup out memory mess
-								throw(FP.error_msg());
+								throw(extras::stacktrace_error(FP.error_msg()));
 							}
 						}
 						// create array and set data
@@ -305,24 +305,24 @@ namespace extras { namespace mxfile {
 							if (FP.eof()) {
 								mxFree(realData); //cleanup out memory mess
 								mxFree(imagData); //cleanup out memory mess
-								throw("reached end of file while reading non-interleaved real data for complex numeric");
+								throw(extras::stacktrace_error("reached end of file while reading non-interleaved real data for complex numeric"));
 							}
 							else {
 								mxFree(realData); //cleanup out memory mess
 								mxFree(imagData); //cleanup out memory mess
-								throw(FP.error_msg());
+								throw(extras::stacktrace_error(FP.error_msg()));
 							}
 						}
 						if (FP.read(imagData, numel*elsz_real) < numel*elsz_real) { //read imag
 							if (FP.eof()) {
 								mxFree(realData); //cleanup out memory mess
 								mxFree(imagData); //cleanup out memory mess
-								throw("reached end of file while reading non-interleaved imag data for complex numeric");
+								throw(extras::stacktrace_error("reached end of file while reading non-interleaved imag data for complex numeric"));
 							}
 							else {
 								mxFree(realData); //cleanup out memory mess
 								mxFree(imagData); //cleanup out memory mess
-								throw(FP.error_msg());
+								throw(extras::stacktrace_error(FP.error_msg()));
 							}
 						}
 
@@ -406,11 +406,11 @@ namespace extras { namespace mxfile {
 			//determine size of file
 			FILE* fp = fopen(fpth.c_str(), "rb");
 			if (fp == nullptr) {
-				throw(std::runtime_error(std::string("MxFileReader::openFile(): returned null, file:'") + std::string(fpth) + std::string("' could not be opened.")));
+				throw(extras::stacktrace_error(std::string("MxFileReader::openFile(): returned null, file:'") + std::string(fpth) + std::string("' could not be opened.")));
 			}
 			if (fseek(fp, 0, SEEK_END) != 0) {
 				fclose(fp);
-				throw(std::runtime_error(std::string("MxFileReader::openFile(): file:'") + std::string(fpth) + std::string("' Could not determine file size.")));
+				throw(extras::stacktrace_error(std::string("MxFileReader::openFile(): file:'") + std::string(fpth) + std::string("' Could not determine file size.")));
 			}
 			_compressedSize = ftell(fp);
 			fclose(fp); //close
@@ -418,7 +418,7 @@ namespace extras { namespace mxfile {
 
 			gzFile gzf = gzopen(fpth.c_str(), "rb");
 			if (gzf == NULL) {
-				throw(std::runtime_error(std::string("MxFileReader::openFile(): returned null, file:'") + std::string(fpth) + std::string("' could not be opened.")));
+				throw(extras::stacktrace_error(std::string("MxFileReader::openFile(): returned null, file:'") + std::string(fpth) + std::string("' could not be opened.")));
 			}
 			std::lock_guard<std::mutex> lock(_RPmutex);
 			_ReadPointer = GZFILE_ReadPointer(gzf);
@@ -429,7 +429,7 @@ namespace extras { namespace mxfile {
 		//!open file for writing (using MATLAB args)
 		void openFile(size_t nrhs, const mxArray** prhs) {
 			if (nrhs < 1) {
-				throw("MxFileReader::openWriter() expected one argument");
+				throw(extras::stacktrace_error("MxFileReader::openWriter() expected one argument"));
 			}
 			openFile(extras::cmex::getstring(prhs[0]));
 		}
@@ -437,10 +437,10 @@ namespace extras { namespace mxfile {
 		//! attempt to read next array from file
 		extras::cmex::MxObject readNextArray() {
 			if (!isFileOpen()) {
-				throw(std::runtime_error(std::string("MxFileReader::readNextArray() file:'") + _filepath + std::string("' is not open.")));
+				throw(extras::stacktrace_error(std::string("MxFileReader::readNextArray() file:'") + _filepath + std::string("' is not open.")));
 			}
 			if (isEOF()) {
-				throw(std::runtime_error(std::string("MxFileReader::readNextArray() File:'") + _filepath + std::string("'. Reached End of File.")));
+				throw(extras::stacktrace_error(std::string("MxFileReader::readNextArray() File:'") + _filepath + std::string("'. Reached End of File.")));
 			}
 			cmex::MxObject out = readNext(_ReadPointer);
 			_currentCompressedPosition = _ReadPointer.getOffset();
@@ -450,7 +450,7 @@ namespace extras { namespace mxfile {
 		//! get compressed size of file
 		size_t getCompressedSize() const {
 			if (!isFileOpen()) {
-				throw(std::runtime_error(std::string("MxFileReader::readNextArray() file:'") + _filepath + std::string("' is not open.")));
+				throw(extras::stacktrace_error(std::string("MxFileReader::readNextArray() file:'") + _filepath + std::string("' is not open.")));
 			}
 			return _compressedSize;
 		}
@@ -458,7 +458,7 @@ namespace extras { namespace mxfile {
 		//! get current (compressed) position in file
 		size_t getPositionInFile() const {
 			if (!isFileOpen()) {
-				throw(std::runtime_error(std::string("MxFileReader::readNextArray() file:'") + _filepath + std::string("' is not open.")));
+				throw(extras::stacktrace_error(std::string("MxFileReader::readNextArray() file:'") + _filepath + std::string("' is not open.")));
 			}
 			return _currentCompressedPosition;
 		}
@@ -501,7 +501,7 @@ namespace extras { namespace mxfile {
 					plhs[0] = mxCreateCellMatrix(0, 0);
 					return;
 				}
-				throw(std::runtime_error(std::string("MxFileReader::readNextArray() File:'") + ParentType::getObjectPtr(nrhs, prhs)->filepath() + std::string("'. Recieved Nullptr and not at EOF.")));
+				throw(extras::stacktrace_error(std::string("MxFileReader::readNextArray() File:'") + ParentType::getObjectPtr(nrhs, prhs)->filepath() + std::string("'. Recieved Nullptr and not at EOF.")));
 			}
 			plhs[0] = out;
 		}
@@ -576,7 +576,7 @@ namespace extras { namespace mxfile {
 							ProcessRunning = false;
 							return;
 						}
-						throw("LoadDataLoop(): Recieved MxObject with _mxptr==nullptr and not at EOF");
+						throw(extras::stacktrace_error("LoadDataLoop(): Recieved MxObject with _mxptr==nullptr and not at EOF"));
 					}
 #ifdef _DEBUG
 					_ResPtrs.push_back(res.getmxarray());
@@ -621,7 +621,7 @@ namespace extras { namespace mxfile {
 		virtual void StartProcessor() {
 			StopProcessor();
 			if (!_Reader.isFileOpen()) {
-				throw("File is not open, cannot StartProcessor()");
+				throw(extras::stacktrace_error("File is not open, cannot StartProcessor()"));
 			}
 			ErrorFlag = false;
 			ProcessRunning = true;
@@ -855,7 +855,7 @@ namespace extras { namespace mxfile {
 		}
 		void openFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			if (nrhs < 2) {
-				throw("AsyncMxFileReaderInterface::openFile() required 2 inputs");
+				throw(extras::stacktrace_error("AsyncMxFileReaderInterface::openFile() required 2 inputs"));
 			}
 			ParentType::getObjectPtr(nrhs, prhs)->openFile(extras::cmex::getstring(prhs[1]));
 		}

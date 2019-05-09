@@ -149,7 +149,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\extras\StackTraceGenerator.hpp" />
     <ClInclude Include="..\..\include\extras\stacktrace_error.hpp" />
     <ClInclude Include="..\..\include\StackWalker\StackWalker.h" />
     <ClInclude Include="stdafx.h" />

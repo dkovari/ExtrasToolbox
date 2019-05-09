@@ -83,7 +83,7 @@ namespace extras{namespace SessionManager{
         void delete_object(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[])
         {
             if (nrhs < 1) {
-                throw(std::runtime_error("requires intptr argument specifying object to destruct"));
+                throw(extras::stacktrace_error("requires intptr argument specifying object to destruct"));
             }
             ObjManager.destroy(prhs[0]);
         }
@@ -112,7 +112,7 @@ namespace extras{namespace SessionManager{
         /// Returns a shared pointer to the object instance
         std::shared_ptr<ObjType> getObjectPtr(int nrhs, const mxArray *prhs[]){
             if (nrhs < 1) {
-                throw(std::runtime_error("requires intptr argument specifying object to destruct"));
+                throw(extras::stacktrace_error("requires intptr argument specifying object to destruct"));
             }
             return ObjManager.get(prhs[0]);
         }
@@ -177,7 +177,7 @@ namespace extras{namespace SessionManager{
                     (search->second)(nlhs,plhs,nrhs-1,&(prhs[1])); //execute command
                 }
                 else {
-                    throw(std::runtime_error(
+                    throw(extras::stacktrace_error(
                         std::string("'")+funcName+std::string("' method not found.")
                     ));
                 }

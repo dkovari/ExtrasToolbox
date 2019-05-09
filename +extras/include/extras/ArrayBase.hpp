@@ -3,6 +3,7 @@ ArrayBase.hpp - Generic Interface Class for storing data arrays
 */
 #pragma once
 
+#include <extras/stacktrace_error.hpp>
 #include<vector>
 #include <stdexcept>
 
@@ -81,7 +82,7 @@ namespace extras {
 		valueType _ValueType = valueType::vt_undefined;
 		void changeValueType(valueType vt) {
 			if (vt == vt_undefined) {
-				throw("Cannot construct DynamicTypeArrayBase with valueType:vt_undefined");
+				throw(extras::stacktrace_error("Cannot construct DynamicTypeArrayBase with valueType:vt_undefined"));
 			}
 			_ValueType = vt;
 		}
@@ -90,7 +91,7 @@ namespace extras {
 		void changeValueType(mxClassID ct) {
 			valueType vt = mxClassID2valueType(ct);
 			if (vt == vt_undefined) {
-				throw("Cannot construct DynamicTypeArrayBase with valueType:vt_undefined");
+				throw(extras::stacktrace_error("Cannot construct DynamicTypeArrayBase with valueType:vt_undefined"));
 			}
 			_ValueType = vt;
 		}
@@ -103,7 +104,7 @@ namespace extras {
 		virtual ~DynamicTypeArrayBase() {};
 		DynamicTypeArrayBase(valueType vt) : _ValueType(vt) {
 			if (_ValueType == vt_undefined) {
-				throw("Cannot construct DynamicTypeArrayBase with valueType:vt_undefined");
+				throw(extras::stacktrace_error("Cannot construct DynamicTypeArrayBase with valueType:vt_undefined"));
 			}
 		}
 
@@ -125,7 +126,7 @@ namespace extras {
 		template <typename T>
 		const T* typed_data() const {
 			if (type2valueType<T>() != _ValueType) {
-				throw("DynamicTypeArrayBase::getTypedData(): Template type does not match internal ValueType");
+				throw(extras::stacktrace_error("DynamicTypeArrayBase::getTypedData(): Template type does not match internal ValueType"));
 			}
 			return (const T*)untyped_data();
 		}
@@ -136,7 +137,7 @@ namespace extras {
 		template <typename T>
 		T* typed_data() {
 			if (type2valueType<T>() != _ValueType) {
-				throw("DynamicTypeArrayBase::getTypedData(): Template type does not match internal ValueType");
+				throw(extras::stacktrace_error("DynamicTypeArrayBase::getTypedData(): Template type does not match internal ValueType"));
 			}
 			return (T*)untyped_data();
 		}

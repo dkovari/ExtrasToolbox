@@ -242,7 +242,7 @@ namespace extras {namespace mxfile {
 	GZFILE_WritePointer gzOpenWriter(const char* filepath) {
 		gzFile fp = gzopen(filepath, "wb");
 		if (fp == NULL) {
-			throw(std::runtime_error(std::string("gzOpenWriter(): returned null, file:'") + std::string(filepath) + std::string("' could not be opened.")));
+			throw(extras::stacktrace_error(std::string("gzOpenWriter(): returned null, file:'") + std::string(filepath) + std::string("' could not be opened.")));
 		}
 		return GZFILE_WritePointer(fp);
 	}
@@ -322,7 +322,7 @@ namespace extras {namespace mxfile {
 		//! automatically add ".mxf.gz" file extension if not included
 		virtual void openFile(size_t nrhs, const mxArray** prhs) {
 			if (nrhs < 1) {
-				throw("MxFileWriter::openWriter() expected one argument");
+				throw(extras::stacktrace_error("MxFileWriter::openWriter() expected one argument"));
 			}
 			openFile(extras::cmex::getstring(prhs[0]));
 		}
@@ -335,7 +335,7 @@ namespace extras {namespace mxfile {
 		//! write the matlab arrays to the file
 		virtual void writeArrays(size_t nrhs, const mxArray** prhs) {
 			if (!isFileOpen()) {
-				throw(std::runtime_error(std::string("MxFileWriter::writeArrays() file:'") + _filepath + std::string("' is not open.")));
+				throw(extras::stacktrace_error(std::string("MxFileWriter::writeArrays() file:'") + _filepath + std::string("' is not open.")));
 			}
 			std::lock_guard<std::mutex> lock(_WPmutex);
 			writeList(Serialize(nrhs, prhs), _WritePointer);
@@ -383,7 +383,7 @@ namespace extras {namespace mxfile {
 		//! redefine StartProcessor to check if file is open
 		virtual void StartProcessor() {
 			if (!isFileOpen()) {
-				throw(std::runtime_error(std::string("AsyncMxFileWriter::StartProcessor() file:'") + _filepath + std::string("' is not open. Cannot start processor.")));
+				throw(extras::stacktrace_error(std::string("AsyncMxFileWriter::StartProcessor() file:'") + _filepath + std::string("' is not open. Cannot start processor.")));
 			}
 			extras::async::AsyncProcessor::StartProcessor();
 		}
@@ -435,7 +435,7 @@ namespace extras {namespace mxfile {
 	protected:
 		void openFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			if (nrhs < 2) {
-				throw("AsyncMxFileWriterInterface::openFile() two arguments required");
+				throw(extras::stacktrace_error("AsyncMxFileWriterInterface::openFile() two arguments required"));
 			}
 			ParentType::getObjectPtr(nrhs, prhs)->openFile(extras::cmex::getstring(prhs[1]));
 		}

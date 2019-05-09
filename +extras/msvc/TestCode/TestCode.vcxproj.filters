@@ -33,14 +33,11 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\extras\StackTraceGenerator.hpp">
-      <Filter>Include\extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\stacktrace_error.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\StackWalker\StackWalker.h">
       <Filter>Include\StackWalker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\stacktrace_error.hpp">
+      <Filter>Include\extras</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

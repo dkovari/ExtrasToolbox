@@ -7,12 +7,16 @@ All rights reserved.
 #include <cstddef>
 #include  <cstring>
 
+
 #include <mex.h>
 #include <vector>
 #include <string>
 #include <stdexcept>
 
 #include "type2ClassID.hpp"
+
+#define NOMINMAX
+#include <extras/stacktrace_error.hpp>
 
 namespace extras{ namespace cmex{
 
@@ -33,7 +37,7 @@ namespace extras{ namespace cmex{
 	//! number of elements in an mxArray*
 	size_t numel(const mxArray* mxptr){
 		if (mxptr == nullptr) {
-			throw(std::runtime_error("numel mxArray* == nullptr, cannot get numel."));
+			throw(extras::stacktrace_error("numel mxArray* == nullptr, cannot get numel."));
 		}
         return mxGetNumberOfElements(mxptr);
     }
@@ -41,7 +45,7 @@ namespace extras{ namespace cmex{
 	//! convert mxArray* with ClassID=mxCHAR_CLASS to a std::string
     std::string getstring(const mxArray* mxptr){
 		if (!mxIsChar(mxptr)) {
-			throw(std::runtime_error("extras::cmex::getstring(): cannot return string from mxArray that is not mxCHAR type."));
+			throw(extras::stacktrace_error("extras::cmex::getstring(): cannot return string from mxArray that is not mxCHAR type."));
 		}
 		char* ca = mxArrayToString(mxptr);
         std::string out(ca);
@@ -104,7 +108,7 @@ namespace extras{ namespace cmex{
   				valueCopy(dst, (uint64_t*)src, numel);
   				break;
   			default:
-  				throw(std::runtime_error("cannot perform valueCopy From on non-numeric mxArray"));
+  				throw(extras::stacktrace_error("cannot perform valueCopy From on non-numeric mxArray"));
   			}
   		}
   	}
@@ -143,7 +147,7 @@ namespace extras{ namespace cmex{
 		case mxSTRUCT_CLASS:
 		case mxVOID_CLASS:
 		case mxFUNCTION_CLASS:
-			throw(std::runtime_error("isequal(): invalid mxClassID, arrays must be char, numeric, or logical"));
+			throw(extras::stacktrace_error("isequal(): invalid mxClassID, arrays must be char, numeric, or logical"));
 			break;
 		default:
             break;

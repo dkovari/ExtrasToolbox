@@ -136,7 +136,7 @@ size_t elementBytes(mxClassID cid, bool isComplex) {
 		return sizeof(void*);
 #endif
 	default:
-		throw(std::runtime_error(std::string("elementByte(): not implemented for mxClassID=") + std::string(classname(cid))));
+		throw(extras::stacktrace_error(std::string("elementByte(): not implemented for mxClassID=") + std::string(classname(cid))));
 	}
 }
 

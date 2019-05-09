@@ -418,10 +418,10 @@ namespace extras {namespace cmex {
 		//! if array was originally set from const mxArray* then it will be duplicated
 		virtual T& operator[](size_t index) {
 			if (getmxarray() == nullptr) {
-				throw(std::runtime_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
+				throw(extras::stacktrace_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
 			}
 			if (index > numel()) {
-				throw(std::runtime_error("NumericArray::operator[](): index>numel()"));
+				throw(extras::stacktrace_error("NumericArray::operator[](): index>numel()"));
 			}
 
 			T* dat = getdata();
@@ -431,10 +431,10 @@ namespace extras {namespace cmex {
 		//! get n-th element
 		virtual const T& operator[](size_t index) const {
 			if (getmxarray() == nullptr) {
-				throw(std::runtime_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
+				throw(extras::stacktrace_error("NumericArray::operator[](): MxObject is uninitialized (mxptr==nullptr)"));
 			}
 			if (index > numel()) {
-				throw(std::runtime_error("NumericArray::operator[](): index>numel()"));
+				throw(extras::stacktrace_error("NumericArray::operator[](): index>numel()"));
 			}
 			const T* dat = getdata();
 			return dat[index];
@@ -627,7 +627,7 @@ namespace extras {namespace cmex {
 		template <typename M>
 		NumericArray& concatenate(const ArrayBase<M>& b, size_t dim) {
 			if (iscomplex()) { //error on complex data ---------> change in the future
-				throw("NumericArray::concatenate(): cat for complex data not implemented.");
+				throw(extras::stacktrace_error("NumericArray::concatenate(): cat for complex data not implemented."));
 			}
 			if (isConst()) { //self-manage the data
 				selfManage();
@@ -661,7 +661,7 @@ namespace extras {namespace cmex {
 				}
 
 				if (thisSz[j] != thatSz[j]) {
-					throw(std::runtime_error("incompatible sizes for concatenate"));
+					throw(extras::stacktrace_error("incompatible sizes for concatenate"));
 				}
 			}
 

@@ -160,7 +160,7 @@ namespace extras{
 					continue;
 				}
 				if (n >= _dim.size()) {
-					throw("Array::sub2ind(): subs longer than array dim and sub[n]!=0");
+					throw(extras::stacktrace_error("Array::sub2ind(): subs longer than array dim and sub[n]!=0"));
 				}
 				idx += _dimOffset[n] * subs[n];
 			}
@@ -171,14 +171,14 @@ namespace extras{
 		virtual T& operator[](size_t index) {
 			using namespace std;
 			if(index>=_numel){
-				throw(runtime_error(string("Array::operator[")+to_string(index)+string("] index exceeds numel=")+to_string(_numel)));
+				throw(extras::stacktrace_error(string("Array::operator[")+to_string(index)+string("] index exceeds numel=")+to_string(_numel)));
 			}
 			return _data[index];
 		} ///< set n-th element
     	virtual const T& operator[](size_t index) const {
 			using namespace std;
 			if(index>=_numel){
-				throw(runtime_error(string("Array::operator[")+to_string(index)+string("] index exceeds numel=")+to_string(_numel)));
+				throw(extras::stacktrace_error(string("Array::operator[")+to_string(index)+string("] index exceeds numel=")+to_string(_numel)));
 			}
 			return _data[index];
 		} ///< get n-th element

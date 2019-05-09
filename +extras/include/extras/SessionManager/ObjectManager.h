@@ -28,11 +28,11 @@ namespace extras{namespace SessionManager{
 
 		static intptr_t getIntPointer(const mxArray* pointer) {
 			if (mxIsEmpty(pointer))
-				throw(std::runtime_error("ObjectManager:invalidType -> Id is empty."));
+				throw(extras::stacktrace_error("ObjectManager:invalidType -> Id is empty."));
 			if (sizeof(intptr_t) == 8 && !mxIsInt64(pointer) && !mxIsUint64(pointer))
-				throw(std::runtime_error("ObjectManager:invalidType -> Invalid ID type, pointer ID must be INT64 or UINT64."));
+				throw(extras::stacktrace_error("ObjectManager:invalidType -> Invalid ID type, pointer ID must be INT64 or UINT64."));
 			if (sizeof(intptr_t) == 4 && !mxIsInt32(pointer) && !mxIsUint32(pointer))
-				throw(std::runtime_error("ObjectManager:invalidType -> Invalid ID type, pointer ID must be INT32 or UINT32."));
+				throw(extras::stacktrace_error("ObjectManager:invalidType -> Invalid ID type, pointer ID must be INT32 or UINT32."));
 			return *reinterpret_cast<intptr_t*>(mxGetData(pointer));
 		}
 
@@ -115,7 +115,7 @@ namespace extras{namespace SessionManager{
 				return search->second;
 			}
 			else {
-				throw(std::runtime_error(
+				throw(extras::stacktrace_error(
 					std::string("ObjectManager::get(")+
 					std::to_string(id)+
 					std::string(") -> Object not found")));
