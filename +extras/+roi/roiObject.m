@@ -17,7 +17,7 @@ classdef roiObject < handle & matlab.mixin.Heterogeneous & matlab.mixin.SetGet
         UUID
     end
     properties (SetObservable=true,AbortSet=true)
-        Window; %[x,y,w,h]
+        Window = NaN(1,4); %[x,y,w,h]
     end
     
     events

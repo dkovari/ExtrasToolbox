@@ -109,7 +109,7 @@ classdef LUTobject < handle
     %%
     methods
         function s = toStruct(this)
-            s = struct('UUID',{this.UUID},'pp',{this.pp},'dpp',{this.dpp},'MinR',{this.MinR},'MaxR',{this.MaxR});
+            s = struct('UUID',{this.UUID},'pp',{this.pp},'dpp',{this.dpp},'MinR',{this.MinR},'MaxR',{this.MaxR},'zlim',{this.zlim},'Z_Units',{this.Z_Units},'rr',{this.rr},'R_Units',{this.R_Units});
         end
         
         function createLUT(this,Z,profiles,r_coords)

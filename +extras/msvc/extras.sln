@@ -37,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsyncMxFileReader", "..\+mx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsyncMxFileWriter", "..\+mxfile\msvc\AsyncMxFileWriter.vcxproj", "{2C8D4DD0-1AC1-4822-A67D-B1540EF74B59}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StackWalker", "..\include\StackWalker\StackWalker.vcxproj", "{9225ED44-E82A-4E08-B7D5-553F3512FE21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -149,6 +151,14 @@ Global
 		{2C8D4DD0-1AC1-4822-A67D-B1540EF74B59}.Release|x64.ActiveCfg = Release|x64
 		{2C8D4DD0-1AC1-4822-A67D-B1540EF74B59}.Release|x64.Build.0 = Release|x64
 		{2C8D4DD0-1AC1-4822-A67D-B1540EF74B59}.Release|x86.ActiveCfg = Release|x64
+		{9225ED44-E82A-4E08-B7D5-553F3512FE21}.Debug|x64.ActiveCfg = Debug|x64
+		{9225ED44-E82A-4E08-B7D5-553F3512FE21}.Debug|x64.Build.0 = Debug|x64
+		{9225ED44-E82A-4E08-B7D5-553F3512FE21}.Debug|x86.ActiveCfg = Debug|Win32
+		{9225ED44-E82A-4E08-B7D5-553F3512FE21}.Debug|x86.Build.0 = Debug|Win32
+		{9225ED44-E82A-4E08-B7D5-553F3512FE21}.Release|x64.ActiveCfg = Release|x64
+		{9225ED44-E82A-4E08-B7D5-553F3512FE21}.Release|x64.Build.0 = Release|x64
+		{9225ED44-E82A-4E08-B7D5-553F3512FE21}.Release|x86.ActiveCfg = Release|Win32
+		{9225ED44-E82A-4E08-B7D5-553F3512FE21}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -272,7 +272,7 @@ namespace extras{namespace cmex{
 
 		operator double() const {
 			if (!_parent.isnumeric() || !_parent.isscalar()) {
-				throw("FieldWrapper::double(): cannot non-numeric or non-scalar to double");
+				throw("FieldWrapper::double(): cannot cast non-numeric or non-scalar to double");
 			}
 			return mxGetScalar(_parent.getmxarray());
 		}

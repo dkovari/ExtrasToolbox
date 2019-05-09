@@ -63,14 +63,14 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
     %% public
     methods
         function s = toStruct(this)
-            assert(numel(this)==1,'toStruct only works on one roiObject at a time');
-            s = struct('Window',{this.Window},'UUID',{this.UUID},'LUT',{});
+            %assert(numel(this)==1,'toStruct only works on one roiObject at a time');
+            s = toStruct@extras.roi.roiObject(this);
             for n=1:numel(this)
                 s(n).LUT = this(n).LUT.toStruct();
             end
         end
         function addLUT(this,LUT)
-            newobj=addObjects(this,LUT)
+            newobj=addObjects(this,LUT);
             this.LutPropListeners = [this.LutPropListeners, addlistener(newobj,'PropertyChanged',@(h,e) notify(this,'LUTChanged',extras.GenericEvent('LUT',h)))]; %create listener which forwards changes made to LUTs in the lut list
             this.LutDestroyListeners = [this.LutDestroyListeners,addlistener(newobj,'ObjectBeingDestroyed',@(h,e) notify(this,'LUTChanged',extras.GenericEvent('LUT',h)))];
         end

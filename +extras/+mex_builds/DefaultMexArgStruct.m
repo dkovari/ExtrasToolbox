@@ -57,6 +57,17 @@ INCLUDE = {['-I',extras.IncludePath]};%
 LIBS = {}; %c and c++ libtiff libraries
 LIB_DIR = {};
 
+%% Add StackWalker Dependencies
+if ispc
+    if ~exist(fullfile(extras.IncludePath,'StackWalker','x64','Release','StackWalker.lib'),'file')
+        %error('StackWalker.lib does not exist. You may need to build it.');
+        build_args.AuxSource = [build_args.AuxSource,fullfile(extras.IncludePath,'StackWalker','StackWalker.cpp')];
+    else
+        LIB_DIR = [LIB_DIR,['-L',fullfile(extras.IncludePath,'StackWalker','x64','Release')]];
+        LIBS = [LIBS,'StackWalker.lib'];
+    end
+end
+
 %% set output struct
 build_args.CompilerOptions = [build_args.CompilerOptions,compiler_options];
 build_args.OptimizationFlags = [build_args.OptimizationFlags,optimization_flags];

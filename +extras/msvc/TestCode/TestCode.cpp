@@ -1,63 +1,28 @@
-// TestCode.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
-#include <iostream>
-#include <tuple>
-#include <map>
-#include <string>
 
+#include <extras/stacktrace_error.hpp>
 
-class A {
-public:
-	static bool sV;
+void Func5() { 
+	throw(extras::stacktrace_error("Func5 throw!!!"));
 
-	A() {
-		std::cout << "sV: " << sV << std::endl;
-		sV = false;
-	}
-};
-bool A::sV = true;
-
-template<typename T>
-class B : public A {
-public:
-	T val = 0;
-	B() {
-		std::cout << "B::Type: " << typeid(val).name() << std::endl;
-	}
-};
-
-
-
-class C {
-public:
-	double val = 1;
-	C() {
-		std::cout << "construct C, val: " << val << std::endl;
-	}
-};
-
-
-class D:protected C{
-public:
-	D() {
-	std::cout << "construct D" << std::endl;
-	}
-};
-
-void myFunction(const C& c) {
-	std::cout << "myFunction c.val" << c.val<<std::endl;
 }
+void Func4() { Func5(); }
+void Func3() { Func4(); }
+void Func2() { Func3(); }
+void Func1() { Func2(); }
 
 int main()
 {
-	using namespace std;
+	try{
+		Func1();
+	}
+	catch (std::exception& e) {
+		//EXCEPTION_POINTERS* pExp = GetExceptionInformation();
 
-	D d;
-	myFunction(d);
+		printf(e.what());
+	}
+	
 
-
-    return 0;
+	system("pause");
+	return 0;
 }
-

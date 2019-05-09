@@ -151,6 +151,12 @@ namespace extras {namespace ParticleTracking {
 			std::shared_ptr<extras::ArrayBase<double>> newWIND = std::make_shared<extras::Array<double>>(len, 4);
 			for (size_t n = 0; n < len; ++n) {
 				const mxArray* pWindow = rS(n, "Window");
+
+				//validate windows
+				if (!mxIsNumeric(pWindow) || mxGetNumberOfElements(pWindow) != 4) {
+					throw(std::runtime_error("Window must be numeric 1x4 array"));
+				}
+
 				cmex::NumericArray<double> Window(pWindow);
 	
 				/* OLD WAY TO SET WIND
@@ -175,6 +181,13 @@ namespace extras {namespace ParticleTracking {
 				for (size_t n = 0; n < len; ++n) {
 
 					const mxArray* pMa = rS(n, "XYc");
+
+					//validate xyc
+					if (!mxIsNumeric(pMa) || mxGetNumberOfElements(pMa) != 2) {
+						throw(std::runtime_error("XYc must be numeric 1x2 array"));
+					}
+
+
 					cmex::NumericArray<double> Arr(pMa);
 
 					// set
@@ -190,6 +203,12 @@ namespace extras {namespace ParticleTracking {
 				for (size_t n = 0; n < len; ++n) {
 
 					const mxArray* pMa = rS(n, "DistanceExponent");
+
+					//validate DistanceExponent
+					if (!mxIsNumeric(pMa) || mxGetNumberOfElements(pMa) != 1) {
+						throw(std::runtime_error("DistanceExponent must be numeric 1x1 array"));
+					}
+
 					cmex::NumericArray<double> Arr(pMa);
 
 					// set
@@ -208,6 +227,12 @@ namespace extras {namespace ParticleTracking {
 				for (size_t n = 0; n < len; ++n) {
 
 					const mxArray* pMa = rS(n, "GradientExponent");
+
+					//validate GradientExponent
+					if (!mxIsNumeric(pMa) || mxGetNumberOfElements(pMa) != 1) {
+						throw(std::runtime_error("GradientExponent must be numeric 1x1 array"));
+					}
+
 					cmex::NumericArray<double> Arr(pMa);
 
 					// set
@@ -225,6 +250,12 @@ namespace extras {namespace ParticleTracking {
 				for (size_t n = 0; n < len; ++n) {
 
 					const mxArray* pMa = rS(n, "RadiusCutoff");
+
+					//validate RadiusCutoff
+					if (!mxIsNumeric(pMa) || mxGetNumberOfElements(pMa) != 1) {
+						throw(std::runtime_error("RadiusCutoff must be numeric 1x1 array"));
+					}
+
 					cmex::NumericArray<double> Arr(pMa);
 
 					// set
@@ -242,6 +273,12 @@ namespace extras {namespace ParticleTracking {
 				for (size_t n = 0; n < len; ++n) {
 
 					const mxArray* pMa = rS(n, "CutoffFactor");
+
+					//validate RadiusCutoff
+					if (!mxIsNumeric(pMa) || mxGetNumberOfElements(pMa) != 1) {
+						throw(std::runtime_error("CutoffFactor must be numeric 1x1 array"));
+					}
+
 					cmex::NumericArray<double> Arr(pMa);
 
 					// set

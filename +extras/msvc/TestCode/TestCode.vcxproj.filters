@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{1cbd1f49-4a7b-44ec-b459-45fd0c8b5fac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\extras">
+      <UniqueIdentifier>{a9b63867-3d21-406e-9e19-92ac62415973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\StackWalker">
+      <UniqueIdentifier>{cc5530ce-75e2-43cf-98bf-973600653fa6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -24,6 +33,15 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\StackTraceGenerator.hpp">
+      <Filter>Include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\stacktrace_error.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\StackWalker\StackWalker.h">
+      <Filter>Include\StackWalker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -31,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="TestCode.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\StackWalker\StackWalker.cpp">
+      <Filter>Include\StackWalker</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
