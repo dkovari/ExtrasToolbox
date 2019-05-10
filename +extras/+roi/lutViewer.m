@@ -226,6 +226,8 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             
             set(this.hLn_Z_Data,'XData',vals,'YData',zz);
             
+            
+            
         end
         
         function ppChanged(this)
@@ -237,9 +239,11 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             zz = linspace(this.LUT.zlim(1),this.LUT.zlim(2),500);
             vals = ppval(this.LUT.pp,zz)';
             this.hImg_Spline.CData = vals;
+            set(this.hAx_Spline,'YLim',this.LUT.zlim);
             
             this.hImg_Spline.YData = this.LUT.zlim;
             this.hLn_R_Profile.DragLimitY = this.LUT.zlim;
+            this.hLn_R_Profile.Y = repmat(max(this.LUT.zlim(1),min(this.LUT.zlim(2),this.hLn_R_Profile.Y(1))),1,2);
             
             this.MinMaxRChanged();
 
@@ -261,6 +265,8 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             RR = this.hLn_Z_Profile.X(1);
             RR = max(LIM(1),min(LIM(2),RR));
             this.hLn_Z_Profile.X = [RR,RR];
+            
+            set(this.hAx_Spline,'XLim',LIM);
             
             this.updateRprofile();
             this.updateZprofile();

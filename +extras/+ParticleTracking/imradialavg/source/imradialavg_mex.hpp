@@ -8,9 +8,29 @@ All rights reserved.
 #include "radialavg.hpp"
 
 namespace extras{namespace ParticleTracking{
-    // template wrapper for radialavg<> so that mxArray is cast to the corresponding NumericArray<> type
+
+    /** template wrapper for radialavg<> so that mxArray is cast to the corresponding NumericArray<> type
+	* returns tuple with
+	* get<0>(out) -> average at each radial bin
+	* get<1>(out) -> radial bin locations (if computeRloc==true)
+	* get<2>(out) -> counts in each radial bin
+	* Inputs:
+	*	double x0, double y0, //location around which radial average is computed (0,0 is top left of image)
+	*	double* imavg, size_t nAvg, //output array and number of elements
+	*	double Rmax, //max radius to average over
+	*	double Rmin, // min radius to average over
+	*	double BinWidth = 1,//optinal bin width
+	*	double * rLoc = nullptr, //optional output array specifying radii coordinates of bins in imavg. Must be same size as imavg
+	*	CountsType * Counts = nullptr //optional output array with counts in each bin. Must be same size as imavg
+	*/
     std::tuple<extras::cmex::NumericArray<double>, extras::cmex::NumericArray<double>, extras::cmex::NumericArray<double>>
-    radialavg(const mxArray* mxI, double x, double y, double Rmax, double Rmin, double BinWidth, bool computeRloc = true)
+    radialavg(const mxArray* mxI, //image
+		double x, double y, //location around which radial average is computed (0,0 is top left of image)
+		double Rmax, //max radius to average over
+		double Rmin, // min radius to average over
+		double BinWidth, //bin width
+		bool computeRloc = true //flag specifying if r locations should be computed and stored in the output
+		)
     {
 
     	switch (mxGetClassID(mxI)) { //handle different image types seperatelys
@@ -49,6 +69,26 @@ namespace extras{namespace ParticleTracking{
     	}
     }
 
+	/** Callable MEX function
+	* [Avg,BinLocations,BinCounts] = imradialavg(I,x0,y0,Rmax,Rmin,BinWidth)
+	* Computer azmuthal average of image around specified location
+	*Inputs:
+	*   I: the image to use (should not be complex, but any other numeric type
+	*       is fine)
+	*   x0,y0: scalar numbers specifying the coordinates
+	*           (NOTE: <1,1> is top left corner of image)
+	*   Rmax(=NaN): scalar specifying maximum radius (NaN indicated image edges
+	*       are the limits)
+	*   Rmin(=0): minimum radius to use
+	*       NOTE: If you specify both Rmax and Rmin you can use the more
+	*       logical ordering: imradialavg(__,Rmin,Rmax);
+	*   BinWidth(=1): width and spacing of the bins
+	*
+	* Outputs:
+	*   Avg: radial averages
+	*   BinLocations: locations of the radial bins (e.g. 0,1,...,Rmax)
+	*   BinCounts: number of pixels accumulated into each bin
+	*/
     void imradialavg_mex(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     {
         if(nrhs<3){

@@ -4,6 +4,7 @@
 %   I: the image to use (should not be complex, but any other numeric type
 %       is fine)
 %   x0,y0: scalar numbers specifying the coordinates
+%           (NOTE: <1,1> is top left corner of image)
 %   Rmax(=NaN): scalar specifying maximum radius (NaN indicated image edges
 %       are the limits)
 %   Rmin(=0): minimum radius to use

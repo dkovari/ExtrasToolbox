@@ -80,78 +80,61 @@ namespace extras {namespace ParticleTracking {
 			for (size_t n = 0; n < outStruct.numel(); n++) {
 				////////////////////////////////////////////////////////
 				// Prepare loop
-
-				//tmp throw error with X
-				//std::string Xtype = mxGetClassName(outStruct(n, "X"));
 				
 				double x = outStruct(n, "X");
-				/*try {
-					x = outStruct(n, "X");
-				}
-				catch (...) {
-					throw(extras::stacktrace_error(std::to_string(n)+": "+Xtype));
-				}*/
-				
 				double y = outStruct(n, "Y");
 
 				if ( x==NAN || y==NAN ) { //did't find particle, skip
 					continue;
 				}
 
-				// if LUT is not a struct, or is empty, then skip
-				if (outStruct(n, "LUT").isempty() || !outStruct(n, "LUT").isstruct()) {
+				// if LUT is empty, then skip
+				if (outStruct(n, "LUT").isempty()) {
 					continue;
 				}
 
-
-				///////////////////////////////////////////////////
-				// Loop over LUT and 
-
-
-
-
-
-				if (!outStruct(n, "LUT").isstruct()) { //LUT not set
-					continue;
+				//make sure LUT is struct
+				if (!outStruct(n, "LUT").isstruct()) {
+					throw(stacktrace_error(std::string("RoiTracker3D::ProcessTask(): ROI n=") + std::to_string(n) + "LUT Field is not a struct."));
 				}
 
+				////////////
+				// Loop over all the LUT and determing the lowest MinR and largest MaxR
 				int maxR = -1;
 				int minR = INT_MAX;
-
-				if (outStruct(n, "LUT").isstruct()) {
-					MxStruct LUT(outStruct(n, "LUT"));
-					if (LUT.isfield("MinR")) {
-						for (size_t k = 0; k < LUT.numel(); k++) {
-							minR = std::min(minR, int(double(LUT(k, "MinR"))));
-						}
+				MxStruct LUT(outStruct(n, "LUT"));
+				if (LUT.isfield("MinR")) {
+					for (size_t k = 0; k < LUT.numel(); k++) {
+						minR = std::min(minR, int(double(LUT(k, "MinR"))));
 					}
-					else {//minR not defined in structs just use 0
-						minR = 0;
-					}
+				}
+				else {//minR not defined in structs just use 0
+					minR = 0;
+				}
 
-					if (LUT.isfield("MaxR")) {
-						for (size_t k = 0; k < LUT.numel(); k++) {
-							double thisMaxR = LUT(k, "MaxR");
-							if (!isfinite(thisMaxR)) {
-								throw(std::runtime_error(std::string("RoiTracker3D::ProcessTracking(): ROI n=") + std::to_string(n) 
-									+ std::string(" LUT[") + std::to_string(k) + std::string("] MaxR is not finite")));
-							}
-							maxR = std::max(maxR, int(double(LUT(k, "MaxR"))));
+				if (LUT.isfield("MaxR")) {
+					for (size_t k = 0; k < LUT.numel(); k++) {
+						double thisMaxR = LUT(k, "MaxR");
+						if (!isfinite(thisMaxR)) {
+							throw(std::runtime_error(std::string("RoiTracker3D::ProcessTracking(): ROI n=") + std::to_string(n)
+								+ std::string(" LUT[") + std::to_string(k) + std::string("] MaxR is not finite")));
 						}
+						maxR = std::max(maxR, int(double(LUT(k, "MaxR"))));
 					}
 				}
 
 				// check minR & maxR are ok
 				if (minR > maxR) {
-					throw(std::runtime_error(std::string("RoiTracker3D::ProcessTask(): ROI n=") + std::to_string(n) + std::string(" minR > maxR")));
+					throw(extras::stacktrace_error(std::string("RoiTracker3D::ProcessTask(): ROI n=") + std::to_string(n) + std::string(" minR > maxR")));
 				}
 
 				//////////////
 				// Computer radial avg
-				auto radavg_result = radialavg(mxI, x, y, maxR, minR, 1,false);
+				auto radavg_result = radialavg(mxI, x-1, y-1, maxR, minR, 1);
 				NumericArray<double>& imravg = std::get<0>(radavg_result);
 
 				outStruct(n, "RadialAverage") = imravg;
+				outStruct(n, "RadialAverage_rloc") = std::get<1>(radavg_result);
 				
 				//////////////////////////
 				// Use splineroot to compute z

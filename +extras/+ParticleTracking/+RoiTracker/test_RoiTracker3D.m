@@ -32,8 +32,7 @@ for n=1:numel(Zdata)
     ProfileData(n,:) = ProfileFn(Zdata(n),Rdata);
 end
 
-imagesc(ProfileData)
-
+%imagesc(ProfileData)
 
 
 %% Create Processor
@@ -84,15 +83,17 @@ RM = extras.roi.roiManager3D;
 RL = extras.roi.roiListUI(RM);
 RP = extras.roi.roiPlotUI(hAx,RM);
 
+% add listener to roi add events
+addlistener(RM,'AddedROI',@(~,evt) createLUT(evt.AddedRoi,ProfileData,Zdata,Rdata));
 
 %% Setup callbacks
 
 
 CBQ = extras.CallbackQueue; %create callback queue to listen to results from processor
 
-afterEach(CBQ,@(d) CB(d,hPlt)) %assign callback to the callback queue
+afterEach(CBQ,@(d) CB(d,hPlt,ProfileFn,Zc)) %assign callback to the callback queue
 
-lst = addlistener(rcp,'ErrorOccured',@(~,err) disp(err)); %add listener for errors
+lst = addlistener(rcp,'ErrorOccured',@(~,err) err.printReport); %add listener for errors
 
 rcp.registerQueue(CBQ); %register the callback queue
 
@@ -111,19 +112,14 @@ addlistener(hFig,'ObjectBeingDestroyed',@(~,~) delete(RM));
 %% Add ROI
 RM.AddROI();
 
-
-%% barycenter
-
-%rcp.setParameters('xyMethod','barycenter')
-
 %% delete fn
 function delete_fn(rcp)
 delete(rcp);
 clear mex;
 end
 
-%% define callback function
-function CB(data,hPlt)
+%% define callback functions
+function CB(data,hPlt,ProfileFn,Zc)
 
 if ~iscell(data)
     res=data;
@@ -131,6 +127,23 @@ else
     res=data{1};
     figure(200);gcf;
     imagesc(data{2});
+end
+
+try
+    Z = res(1).LUT(1).Result(1).Z;
+    rr = res(1).LUT(1).rr;
+    
+    figure(99);
+    cla;
+    plot(res(1).RadialAverage_rloc,res(1).RadialAverage,'*','DisplayName','RadialAvg');
+    hold on;
+    plot(rr,ProfileFn(Z,rr),'--','DisplayName',sprintf('ProfileFn @ z=%g',Z));
+    plot(rr,ppval(res(1).LUT(1).pp,Z)',':','DisplayName',sprintf('Spline @ z=%g',Z));
+    
+    plot(rr,ProfileFn(Zc(1),rr),'--','DisplayName',sprintf('ProfileFn @ Zc_1=%g',Zc(1)));
+    legend show;
+
+catch
 end
 
 %x =[data.X]
@@ -153,11 +166,14 @@ end
 
 function roiChanged(hRM,hdt,I)
 roiList = toStruct(hRM.roiList);
-
 hdt.setParameters('roiList',roiList);
-
-'before push image'
-pause
 hdt.pushTask(I);
+end
 
+function createLUT(NewRoi,ProfileData,Zdata,Rdata)
+for n=1:numel(NewRoi)
+    L = extras.roi.LUTobject();
+    L.createLUT(Zdata,ProfileData,Rdata);
+    NewRoi(n).addLUT(L);
+end
 end

@@ -5,15 +5,33 @@ All rights reserved.
 
 #pragma once
 
+#define NOMINMAX
+//#include <extras/stacktrace_error.hpp>
 #include <cmath>
 #include <algorithm>
 #include <type_traits>
 
 namespace extras {namespace ParticleTracking {
 
+	/** template wrapper for radialavg<> accepting c-style numeric array as image data
+	* returns tuple with
+	* get<0>(out) -> average at each radial bin
+	* get<1>(out) -> radial bin locations (if computeRloc==true)
+	* get<2>(out) -> counts in each radial bin
+	* Inputs:
+	*   const M* img, size_t nRows, size_t nCols, //input image and size
+	*	double x0, double y0, //location around which radial average is computed (0,0 is top left of image)
+	*	double* imavg, size_t nAvg, //output array and number of elements
+	*	double Rmax, //max radius to average over
+	*	double Rmin, // min radius to average over
+	*	double BinWidth = 1,//optinal bin width
+	*	double * rLoc = nullptr, //optional output array specifying radii coordinates of bins in imavg. Must be same size as imavg
+	*	CountsType * Counts = nullptr //optional output array with counts in each bin. Must be same size as imavg
+	*/
 	template<typename M,typename CountsType = size_t>
-	void radialavg(const M* img, size_t nRows, size_t nCols, //input image and size
-		double x0, double y0, //location around which radial average is computed
+	void radialavg(
+		const M* img, size_t nRows, size_t nCols, //input image and size
+		double x0, double y0, //location around which radial average is computed (0,0 is top left of image)
 		double* imavg, size_t nAvg, //output array and number of elements
 		double Rmax, //max radius to average over
 		double Rmin, // min radius to average over
@@ -57,14 +75,13 @@ namespace extras {namespace ParticleTracking {
 				}
 			}
 
-
 			for (size_t xi = std::max(int(0), int(floor(x0 - Rlim))); xi <= min(int(nCols - 1), int(ceil(x0 + Rlim))); ++xi) {
 				if (xi >= (x0 - Rlim) && xi <= (x0 + Rlim)) {
 					double x2 = pow(xi - x0, 2);
 
 					double yedge = sqrt(Rlim2 - x2);
 
-					if (x2 >= Rinner2) { //outer edges of donut
+					if (x2 >= Rinner2) { //left/right outer edges of donut
 						for (size_t yi = max(int(0), int(floor(y0 - yedge)));
 							yi <= min(int(nRows - 1), int(y0 + yedge)); ++yi)
 						{

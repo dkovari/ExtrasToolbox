@@ -72,6 +72,9 @@
     <ClInclude Include="..\..\include\extras\numeric.hpp">
       <Filter>include\extras</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxWrapper.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="testMxObject.cpp">

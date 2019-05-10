@@ -54,7 +54,7 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
     methods %set period
         function set.ErrorCheckTimerPeriod(this,val)
             assert(isscalar(val)&&isnumeric(val)&&val>0,'ErrorCheckTimerPeriod must be numeric scalar with value>0');
-            stop(this.ErrorCheckTimer)
+            stop(this.ErrorCheckTimer);
             this.ErrorCheckTimer.Period = val;
             this.ErrorCheckTimerPeriod = val;
             this.restartErrorCheckTimer();
@@ -93,7 +93,7 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
             errMsg = this.getError();
             if ~isempty(errMsg)
                 this.LastErrorMessage = errMsg;
-                notify(this,'ErrorOccured',extras.Async.AsyncProcessorError(errMsg));
+                notify(this,'ErrorOccured',extras.Async.AsyncProcessorError(errMsg,func2str(this.MEX_function)));
             end
             this.clearError();
         end

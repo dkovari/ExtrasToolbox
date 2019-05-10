@@ -9,13 +9,14 @@ classdef ContextGenerator3D < extras.roi.ContextGenerator
     methods
         function this = ContextGenerator3D(RoiObject,RoiManager)
             this@extras.roi.ContextGenerator(RoiObject);
-            this.RoiManager = RoiManager;
-            
             if isempty(RoiObject)
                 delete(this);
                 this = extras.roi.ContextGenerator3D.empty();
                 return;
             end
+            
+            this.RoiManager = RoiManager;
+            
             assert(isvalid(RoiObject)&&isa(RoiObject,'extras.roi.roiObject3D'),'RoiObject must be valid extras.roi.roiObject3D');
         end
     end

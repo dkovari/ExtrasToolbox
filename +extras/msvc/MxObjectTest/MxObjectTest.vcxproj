@@ -20,6 +20,7 @@
     <ClInclude Include="..\..\include\extras\cmex\MxObject.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp" />
+    <ClInclude Include="..\..\include\extras\cmex\MxWrapper.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />

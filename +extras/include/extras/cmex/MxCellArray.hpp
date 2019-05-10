@@ -6,6 +6,7 @@ All rights reserved.
 #pragma once
 
 #include "mxobject.hpp"
+#include "MxWrapper.hpp"
 #include <vector>
 #include <list>
 
@@ -165,7 +166,7 @@ namespace extras{namespace cmex{
 
 	//! Wrapper around mxArray struct field elements
 	//! provides simple get and set support using operator=
-	class CellWrapper {
+	class CellWrapper: public MxWrapper {
 		friend class MxCellArray;
 	protected:
 		MxCellArray& _parent;
@@ -184,93 +185,26 @@ namespace extras{namespace cmex{
 			mxDestroyArray(mxGetCell(_parent.getmxarray(), index));
 			mxSetCell(_parent.getmxarray(), index, src);
 		}
+
+		virtual mxArray* internalGet() {
+			if (_parent.isConst()) {
+				throw(extras::stacktrace_error("CellWrapper: Cannot return mxArray* for specified field  because parent cell is const."));
+			}
+			return mxGetCell(_parent.getmxarray(), index);
+		}
+		virtual const mxArray* internalGet() const {
+			return mxGetCell(_parent.getmxarray(), index);
+		}
+
 	public:
+		using MxWrapper::operator=; //%pull other assignment operators from MxWrapper
+
 		CellWrapper(const CellWrapper& src) = default;
 		CellWrapper(CellWrapper&& src) = default;
 		CellWrapper& operator=(const CellWrapper& src) = default;
 		CellWrapper& operator=(CellWrapper&& src) = default;
 
-		//! get cell
-		operator const mxArray* () const
-		{
-			return mxGetCell(_parent.getmxarray(), index);
-		}
-
-		//! move mxArray* into cell
-		//! pvalue will be managed by the cell array after operation
-		CellWrapper& operator=(mxArray* pvalue) {
-			internalSet(pvalue);
-			return *this;
-		}
-
-		//! set field from const
-		//! duplicates array
-		CellWrapper& operator=(const mxArray* pvalue) {
-			internalSet(mxDuplicateArray(pvalue));
-			return *this;
-		}
-
-		//! set field equal to string
-		CellWrapper& operator=(const char* str) {
-			internalSet(mxCreateString(str));
-			return *this;
-		}
-
-		//! set field equal to string
-		CellWrapper& operator=(double val) {
-			internalSet(mxCreateDoubleScalar(val));
-			return *this;
-		}
-
-		//! Move from MxObject
-		CellWrapper& operator=(MxObject&& src) {
-			internalSet(src);
-			return *this;
-
-		}
-
-		////////////////////////////
-		// Type Conversions
-
-		operator double() const {
-			mxArray* pA = mxGetCell(_parent.getmxarray(), index);
-			if (!mxIsNumeric(pA) || !mxIsScalar(pA)) {
-				throw(extras::stacktrace_error(
-					std::string("CellWrapper::double(): cannot cast non-numeric or non-scalar to double.\nType: ")
-					+ mxGetClassName(pA)
-					+ std::string(" numel:")
-					+ std::to_string(mxGetNumberOfElements(pA))));
-			}
-			return mxGetScalar(pA);
-		}
-
-		operator std::string() const {
-			return getstring(_parent.getmxarray());
-		}
-
-		bool isempty() const {
-			return _parent.isempty();
-		}
-
-		bool isscalar() const {
-			return _parent.isscalar();
-		}
-
-		bool iscell() const {
-			return _parent.iscell();
-		}
-
-		bool isnumeric() const {
-			return _parent.isnumeric();
-		}
-
-		bool isstruct() const {
-			return _parent.isstruct();
-		}
-
-		bool ischar() const {
-			return _parent.ischar();
-		}
+		
 	};
 
 	////////////////////////////

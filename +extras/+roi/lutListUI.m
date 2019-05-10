@@ -1,4 +1,4 @@
-classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extras.RequireGuiLayoutToolbox
+classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extras.RequireGuiLayoutToolbox & extras.widgets.mixin.ObjectDependentLifetime
 % Generate ui for managing LUT used by roiObject3D
 %% Copyright 2019 Daniel T. Kovari, Emory University
 %   All rights reserved.
@@ -44,7 +44,6 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
     properties(Access=private)
         LUTListListener
         LUTChangeListener
-        RoiObjectDeleteObserver
     end
 
     %% ctor
@@ -100,6 +99,8 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             end
             
             assert(found_roi,'RoiObject was not specified');
+            
+            this@extras.widgets.mixin.ObjectDependentLifetime(RoiObject); %make this object lifetime depend on ROIobject
 
             
             %% Check if we already created a lutListUI for this object
@@ -130,8 +131,6 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             
             %% Set RoiObject
             this.RoiObject = RoiObject;
-            % delete listener
-            this.RoiObjectDeleteObserver = addlistener(this.RoiObject,'ObjectBeingDestroyed',@(~,~) delete(this));
             
             %% Setup Parent, create ui container
             %look for parent specified in arguments
@@ -239,8 +238,6 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
         function delete(this)
             delete(this.LUTListListener)
             delete(this.LUTChangeListener)
-            delete(this.RoiObjectDeleteObserver);
-            
         end
     end
     

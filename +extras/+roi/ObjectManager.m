@@ -4,7 +4,6 @@ classdef (Abstract) ObjectManager < handle
 %% Copyright 2019 Daniel T. Kovari, Emory University
 %   All rights reserved.
 
-
     properties(SetAccess=private,Hidden)
         ObjectClassName %char array specifying valid class name
     end
@@ -30,6 +29,7 @@ classdef (Abstract) ObjectManager < handle
     
     properties (SetAccess=private,SetObservable=true,AbortSet=true,Hidden)
         ManagedObjects; %list of objects
+        DeletableObjects; %list of objects which should be deleted upon destruction
     end
     properties(Access=private)
         ObjectDeleteListeners = event.listener.empty();
@@ -57,6 +57,7 @@ classdef (Abstract) ObjectManager < handle
             for m=1:numel(this)
                 %% delete object listeners
                 try
+                    delete(this(m).DeletableObjects);
                     delete(this(m).ObjectDeleteListeners);
                 catch ME
                     disp(ME.getReport)
@@ -67,14 +68,49 @@ classdef (Abstract) ObjectManager < handle
     
     %% Protected Access add/remove/clear
     methods (Access=protected)
-        function newObjs = addObjects(this,obj)
+        
+        function addToDeleteList(this,obj)
+            obj = unique(obj);
+            for m=1:numel(this)
+                this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
+                this(m).DeletableObjects = union(this(m).DeletableObjects,obj);
+            end
+        end
+        
+        function removeFromDeleteList(this,obj)
+            obj = unique(obj);
+            for m=1:numel(this)
+                this(m).DeletableObjects = setdiff(this(m).DeletableObjects,obj);
+            end
+        end
+        
+        function newObjs = addObjects(this,obj,DeleteObjs)
+            %add Object to management list
+            % optionally specify logical array indicating if objects should
+            % be deleted when the ObjectManager is deleted, or when the
+            % objects are removed.
+            
             obj = reshape(obj,1,[]);
+            if nargin < 3
+                DeleteObjs = false(size(obj));
+            else
+                DeleteObjs = reshape(DeleteObjs,1,[]);
+                DeleteObjs = logical(DeleteObjs);
+                if isscalar(DeleteObjs)
+                    DeleteObjs = repmat(DeleteObjs,size(obj));
+                end
+                assert(all(size(obj) == size(DeleteObjs)),'DeleteObjs must logical and same size as obj');
+            end
+            
+            [obj,ia] = unique(obj);
+            DeleteObjs = DeleteObjs(ia);
+            
             %% validate object types
             for m = 1:numel(this)
                 for n=1:numel(obj)
                     if ~isa(obj(n),this(m).ObjectClassName)
                         error('cannot add %s to ObjectManager with ObjectClassName: %s',class(obj(n)),this(m).ObjectClassName);
-                    end
+                    end    
                 end
             end
             
@@ -82,11 +118,15 @@ classdef (Abstract) ObjectManager < handle
             obj = unique(obj);
             newObjs = obj;
             for m=1:numel(this)
-                newObjs = setdiff(obj,this(m).ManagedObjects);
+                [newObjs,ia] = setdiff(obj,this(m).ManagedObjects);
+                newDeleteObjs = DeleteObjs(ia);
                 for n=1:numel(newObjs)
                     if isa(newObjs(n),'handle') %object is handle type, add listener for delete
                         lst = addlistener(newObjs(n),'ObjectBeingDestroyed',@(h,~) this(m).Object_Being_Deleted(h));
                         this(m).ObjectDeleteListeners = [this(m).ObjectDeleteListeners,lst];
+                    end
+                    if newDeleteObjs(n)
+                        this(m).DeletableObjects = union(this(m).DeletableObjects,newObjs(n));
                     end
                 end
                 %add to list
@@ -96,9 +136,21 @@ classdef (Abstract) ObjectManager < handle
         end
         
         function removeObjects(this,obj)
+            % Remove the specified objects from the management list
+            % If objects are listed in the DeletableObjects List then they
+            % will be destroyed.
+            
             obj = reshape(obj,1,[]);
+            obj = unique(obj);
             for m=1:numel(this)
                 this(m).ManagedObjects = setdiff(this(m).ManagedObjects,obj);
+                
+                %% delete objects on the delete list
+                this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
+                del_list = intersect(this(m).DeletableObjects,obj);
+                delete(del_list);
+                this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
+                
                 
                 %% delete listeners
                 for n=1:numel(obj)
@@ -116,6 +168,11 @@ classdef (Abstract) ObjectManager < handle
         
         function clearObjects(this)
             for m=1:numel(this)
+                %% delete objects on delete list
+                this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
+                delete(this(m).DeletableObjects);
+                this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
+                
                 this(m).ManagedObjects = eval([CLASS_NAME,'.empty()']);
                 delete(this(m).ObjectDeleteListeners);
                 this(m).ObjectDeleteListeners = event.listener.empty();

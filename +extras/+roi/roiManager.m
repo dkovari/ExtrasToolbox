@@ -65,9 +65,11 @@ classdef roiManager < handle & extras.roi.ObjectManager
     end
 
     events
-        roiValueChanged;
-        StartingROIAdd;
-        EndingROIAdd;
+        roiValueChanged; %event when any changes are made to the managed rois
+        StartingROIAdd; %notification that we have started adding an roi
+        EndingROIAdd; %notification the we are done adding and roi
+        AddedROI; %notification that roi have been added
+        RemovedROI %notification that roi have been removed
     end
     
     properties(SetAccess=protected, SetObservable,AbortSet)
@@ -121,7 +123,7 @@ classdef roiManager < handle & extras.roi.ObjectManager
                 roi(~isvalid(roi)) = [];
 
                 %% add
-                this.addObjects(roi);
+                added_obj = this.addObjects(roi,createdROI);
 
                 %% handle PropertyListeners
                 delete(this.PropertyListeners)
@@ -129,6 +131,11 @@ classdef roiManager < handle & extras.roi.ObjectManager
 
                 notify(this,'EndingROIAdd');
                 notify(this,'roiValueChanged');
+                
+                if ~isempty(added_obj)
+                    notify(this,'AddedROI',extras.GenericEvent('AddedRoi',added_obj));
+                end
+                
             catch ME
                 if createdROI
                     try
@@ -148,14 +155,9 @@ classdef roiManager < handle & extras.roi.ObjectManager
             %remove roi from list
             this.removeObjects(roi);
             
-            %% delete the roi
-            try
-                delete(roi);
-            catch
-            end
-            
             if ~isempty(ind)
                 notify(this,'roiValueChanged');
+                noitfy(this,'RemovedROI');
             end
             
         end

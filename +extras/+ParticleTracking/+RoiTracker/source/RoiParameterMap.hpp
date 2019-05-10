@@ -136,7 +136,7 @@ namespace extras {namespace ParticleTracking {
 				throw("roiList must be a struct");
 			}
 
-			cmex::MxStruct rS(mxa);
+			const cmex::MxStruct rS(mxa);
 
 			if (!rS.isfield("Window")) {
 				throw("roiList must contain 'Window' field");

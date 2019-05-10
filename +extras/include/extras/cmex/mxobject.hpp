@@ -656,7 +656,8 @@ namespace extras {namespace cmex {
 			if (_mxptr == nullptr) {
 				return true;
 			}
-			return numel() == 0;
+			
+			return mxIsEmpty(_mxptr);
 		}
 
 		//! return data type held by mxArray pointer
