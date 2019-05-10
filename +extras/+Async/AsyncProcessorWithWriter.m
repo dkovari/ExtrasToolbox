@@ -60,6 +60,52 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
     methods
         function delete(this)
             
+            %% Check if there are results waiting
+            this.resultsWaitingToBeWritten = this.runMethod('resultsWaitingToBeWritten');
+            this.isResultsFileOpen = this.runMethod('isResultsFileOpen');
+            
+            if this.isResultsFileOpen && this.resultsWaitingToBeWritten
+                addlistener(this,'ResultsWriterErrorOccured',@(~,err) warndlg(err.message,'Error Writing Results'));
+                this.resumeResultsWriter();
+                
+                %% try to write tasks
+                hWB = [];
+                nRem = this.runMethod('resultsWaitingToBeWritten');
+                last_comp = 0;
+                while this.runMethod('resultsWaitingToBeWritten')>0
+
+                    RT = this.runMethod('resultsWaitingToBeWritten');
+                    comp = nRem-RT;
+                    if comp<0 %more tasks were added
+                        comp = last_comp;
+                        nRem = RT;
+                    end
+
+                    if isempty(hWB)
+                        hWB = waitbar(comp/nRem,sprintf('%s: Writing Results (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem),'CreateCancelBtn',@(~,~) this.cancelRemainingTasks());
+                    elseif ishghandle(hWB)
+                        waitbar(comp/nRem,hWB,sprintf('%s: Writing Results (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem));
+                    end
+                    pause(0.5);
+                    
+                    if ~this.isResultsWriterRunning
+                        warning('Results Writer has stopped writing data');
+                        break;
+                    end
+                end
+                try
+                    delete(hWB)
+                catch
+                end
+                
+            elseif this.resultsWaitingToBeWritten && ~this.isResultsFileOpen
+                warndlg('There are results waiting to be written, but the file is not open. They will be discarded.','Results Waiting','modal');
+            end
+            
+            
+            %% cancel remaining write events
+            this.clearUnsavedResults
+
             %% stop and delete timers
             try
             stop(this.ResultsWriterErrorTimer);
@@ -82,9 +128,25 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
         resultsWaitingToBeWritten = 0;
     end
     
+    %% SaveResults
     properties(SetObservable=true,AbortSet=true)
-        SaveResults = false;
+        SaveResults (1,1) logical = false;
     end
+    properties(Access=private)
+        internal_SetSaveResults = false;
+    end
+    methods
+        function set.SaveResults(this,val)
+            if ~this.internal_SetSaveResults
+                this.runMethod('SaveResults',val);
+                this.SaveResults = this.runMethod('SaveResults');
+            else
+                this.SaveResults = val;
+            end
+            
+        end
+    end
+        
     
     %% Error Related Items
     events
@@ -93,9 +155,9 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
     
     properties(Access=private)
         ResultsWriterErrorTimerPeriod = 0.75;
-        ResultsWriterErrorTimer
+        ResultsWriterErrorTimer %timer used to check for error while writing results
         
-        ResultsWriterCheckTimer
+        ResultsWriterCheckTimer %tiemr used to check results writer progress
         ResultsWriterCheckTimerPeriod = 0.75;
     end
     
@@ -139,6 +201,105 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
             %% stop timers
             stop(this.ResultsWriterErrorTimer);
             stop(this.ResultsWriterCheckTimer);
+        end
+        
+        function resumeResultsWriter(this)
+            this.isResultsFileOpen = this.runMethod('isResultsFileOpen');
+            this.resultsWaitingToBeWritten = this.runMethod('resultsWaitingToBeWritten');
+            this.ResultsFilepath = this.runMethod('ResultsFilepath');
+            
+            if ~this.isResultsFileOpen
+                error('Cannot resumeResultsWriter because the file is not open');
+            end
+            
+            this.runMethod('resumeResultsWriter');
+            this.isResultsWriterRunning = this.runMethod('isResultsWriterRunning');
+            
+            %% restart timers if needed
+            this.restartResultsWriterErrorTimer();
+            this.restartResultsWriterCheckTimer();
+        end
+        
+    end
+    
+    
+    %% Callbacks
+    methods(Access=private)
+        
+        function DispatchWriterErrorMessage(this)
+        % internal use - check and dispatch error messages        
+            errMsg = this.runMethod('getResultsWriterError');
+            if ~isempty(errMsg)
+                this.LastErrorMessage = errMsg;
+                notify(this,'ResultsWriterErrorOccured',extras.Async.AsyncProcessorError(errMsg,func2str(this.MEX_function)));
+            end
+            this.clearError();
+        end
+        
+        function ResultsWriterErrorTimerCallback(this)
+            if ~isvalid(this)
+                return;
+            end
+            
+            if this.runMethod('wasResultsWriterErrorThrown')
+                this.DispatchWriterErrorMessage();
+            end
+            
+            this.isResultsWriterRunning = this.runMethod('isResultsWriterRunning');
+            if ~this.isResultsWriterRunning
+                stop(this.ResultsWriterErrorTimer);
+            end
+        end
+        
+        function ResultsWriterCheckTimerCallback(this)
+            if ~isvalid(this)
+                return;
+            end
+            
+            %% check SaveResults
+            this.internal_SetSaveResults = true;
+            this.SaveResults = this.runMethod('SaveResults');
+            this.internal_SetSaveResults = false;
+            
+            %% Check other properties
+            this.isResultsFileOpen = this.runMethod('isResultsFileOpen');
+            this.resultsWaitingToBeWritten = this.runMethod('resultsWaitingToBeWritten');
+            this.isResultsWriterRunning = this.runMethod('isResultsWriterRunning');
+            
+            if ~this.isResultsWriterRunning
+                stop(this.ResultsWriterCheckTimer);
+            end
+        end
+        
+        function restartResultsWriterErrorTimer(this)
+            if ~isvalid(this)
+                return;
+            end
+            
+            try
+                start(this.ResultsWriterErrorTimer);
+            catch
+            end
+        end
+        
+        function restartResultsWriterCheckTimer(this)
+            if ~isvalid(this)
+                return;
+            end
+            
+            this.isResultsFileOpen = this.runMethod('isResultsFileOpen');
+            this.isResultsWriterRunning = this.runMethod('isResultsWriterRunning');
+            this.resultsWaitingToBeWritten = this.runMethod('resultsWaitingToBeWritten');
+            
+            if this.isResultsFileOpen && this.isResultsWriterRunning
+                try
+                    start(this.ResultsWriterCheckTimer);
+                catch
+                end
+            else
+                warning('Cannot start ResultsWriterCheckTimer because File is not open or writing is not enabled');
+            end
+            
         end
     end
 end
