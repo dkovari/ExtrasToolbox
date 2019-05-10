@@ -81,6 +81,9 @@
     <ClInclude Include="..\..\include\extras\traspose.hpp">
       <Filter>Includes\extras</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\AsyncProcessorWithWriter.hpp">
+      <Filter>Includes\extras\async</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\+Async\+Example\ExampleProcessor.cpp">

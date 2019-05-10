@@ -4,7 +4,25 @@ All rights reserved.
 ----------------------------------------------------*/
 #pragma once
 
-#include "AsyncProcessor.hpp"
+/********************************************************************
+COMPRESSION Includes
+=====================================================================
+This header depends on ZLIB for reading and writing files compressed
+with the gz format. Therefore you need to have zlib built/installed
+on your system.
+
+A version of ZLIB is included with the ExtrasToolbox located in
+.../+extras/external_libs/zlib
+Look at that folder for build instructions.
+Alternatively, is you are using a *nix-type system, you might have
+better luck using your package manager to install zlib.
+
+When building, be sure to include the location of zlib.h and to link to the
+compiled zlib-lib files.
+*********************************************/
+#include "AsyncProcessorWithWriter.hpp"
+/********************************************/
+
 #include <unordered_map>
 #include <memory>
 #include <extras/cmex/PersistentMxMap.hpp>
@@ -21,7 +39,7 @@ namespace extras {namespace async {
 		}
 	};
 
-	class ParamProcessor: public AsyncProcessor {
+	class ParamProcessor: public AsyncProcessorWithWriter {
 	private:
 		/////////////////////////////////
 		// HIDDEN INHERITED ITEMS
@@ -43,31 +61,27 @@ namespace extras {namespace async {
 		/// pure virtual method that must be defined for handling tasks
 		virtual cmex::mxArrayGroup ProcessTask(const  cmex::mxArrayGroup& TaskArgs, std::shared_ptr<const extras::cmex::ParameterMxMap> MapPtr) = 0;
 
-		/// core method called by ProcessLoop() to handle tasks.
-		/// this function is responsible for getting the top element from the TaskList and calling ProcessTask
-		/// it should return a bool specifying if there are more tasks to process
-		/// this function is responsible for handling the TaskListMutex lock
-		virtual bool ProcessLoopCore() {
-			std::lock_guard<std::mutex> lock(TaskParamListMutex);
-			if (TaskParamList.size() > 0) {
-				auto& task = TaskParamList.front();
 
-				cmex::mxArrayGroup res = ProcessTask(task.TaskArrayGroup, task.ParameterMapPtr);
+		/**Responsible for getting the top element from the TaskList and calling ProcessTask
+		* MUST return cmex::mxArrayGroup
+		* This function is called by ProecssLoopCore()
+		* Redefined here to accomodate  ProcessTask(const  cmex::mxArrayGroup& TaskArgs, std::shared_ptr<const extras::cmex::ParameterMxMap> MapPtr)
+		* Uses TaskParamListMutex and TaskParamList instead of TaskList
+		*/
+		virtual cmex::mxArrayGroup ProcessNextTask() {
+			cmex::mxArrayGroup out; //init empty array group;
+			std::lock_guard<std::mutex> lock(TaskParamListMutex); //lock the task list. If you are using a different lock mechanism change this
 
-				if (res.size()>0) {
-					std::lock_guard<std::mutex> rlock(ResultsListMutex);
-					ResultsList.push_front(std::move(res));
-				}
+			if (remainingTasks() > 0) {
+				auto& task = TaskParamList.front(); //if you are using a custom TaskList, change this code
+
+				out = ProcessTask(task.TaskArrayGroup, task.ParameterMapPtr); //if processTask is redefined, change this too!
 
 				TaskParamList.pop_front();
 			}
 
-			if (TaskParamList.size() < 1) {
-				return false;
-			}
-			return true;
+			return out;
 		}
-
 
 	public:
 		/////////////////////////////////////
@@ -147,8 +161,8 @@ namespace extras {namespace async {
 
 	// Extend the AsyncInterface
 	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of ParamProcessor*/
-	class ParamProcessorInterface :public AsyncMexInterface<ObjType, ObjManager> {
-		typedef AsyncMexInterface<ObjType, ObjManager> ParentType;
+	class ParamProcessorInterface :public AsyncProcessorWithWriterInterface<ObjType, ObjManager> {
+		typedef AsyncProcessorWithWriterInterface<ObjType, ObjManager> ParentType;
 	protected:
 		void setParameters(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			ParentType::getObjectPtr(nrhs, prhs)->setParameters(nrhs - 1, &(prhs[1]));

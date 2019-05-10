@@ -4,7 +4,25 @@ All rights reserved.
 ----------------------------------------------------*/
 #pragma once
 
-#include "AsyncProcessor.hpp"
+/********************************************************************
+COMPRESSION Includes
+=====================================================================
+This header depends on ZLIB for reading and writing files compressed
+with the gz format. Therefore you need to have zlib built/installed
+on your system.
+
+A version of ZLIB is included with the ExtrasToolbox located in
+.../+extras/external_libs/zlib
+Look at that folder for build instructions.
+Alternatively, is you are using a *nix-type system, you might have
+better luck using your package manager to install zlib.
+
+When building, be sure to include the location of zlib.h and to link to the
+compiled zlib-lib files.
+*********************************************/
+#include "AsyncProcessorWithWriter.hpp"
+/********************************************/
+
 #include <memory>
 #include <utility>
 #include <extras/cmex/MxCellArray.hpp>
@@ -20,7 +38,7 @@ namespace extras{namespace async{
     ///
     /// This class is abstract, you need to implement ProcessTask()
 	template<class PersistentArgType=cmex::mxArrayGroup>
-    class PersistentArgsProcessor: public extras::async::AsyncProcessor{
+    class PersistentArgsProcessor: public extras::async::AsyncProcessorWithWriter {
 	public:
 		typedef typename std::pair<extras::cmex::mxArrayGroup,std::shared_ptr<PersistentArgType>> TaskPairType;
 		typedef typename std::shared_ptr<PersistentArgType> PersistentArg_Ptr;
@@ -34,32 +52,24 @@ namespace extras{namespace async{
         //virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&) = 0; ///< must define ProcessTask for working with pushed task and persistent args
 		virtual cmex::mxArrayGroup ProcessTask(const TaskPairType&) = 0;
 
-		/// core method called by ProcessLoop() to handle tasks.
-		/// this function is responsible for getting the top element from the TaskList and calling ProcessTask
-		/// it should return a bool specifying if there are more tasks to process
-		/// this function is responsible for handling the TaskListMutex lock
-		///
-		/// Redefined here to make sure this version of TaskList is used
-		virtual bool ProcessLoopCore() {
-			std::lock_guard<std::mutex> lock(TaskListMutex);
-			if (TaskList.size() > 0) {
-				auto& taskPair = TaskList.front();
+		/**Responsible for getting the top element from the TaskList and calling ProcessTask
+		* MUST return cmex::mxArrayGroup
+		* This function is called by ProecssLoopCore()
+		*
+		* Redefined here to make sure this version of TaskList is used
+		*/
+		virtual cmex::mxArrayGroup ProcessNextTask() {
+			cmex::mxArrayGroup out; //init empty array group;
+			std::lock_guard<std::mutex> lock(TaskListMutex); //lock the task list. If you are using a different lock mechanism change this
 
-				//DO Task
-				auto res = ProcessTask(taskPair);
-				std::lock_guard<std::mutex> rlock(ResultsListMutex);
+			if (remainingTasks() > 0) {
+				auto& taskPair = TaskList.front(); //if you are using a custom TaskList, change this code
 
-				if (res.size()>0) {
-					ResultsList.push_front(std::move(res));
-				}
+				out = ProcessTask(taskPair);
 
-				TaskList.pop_front();
+				TaskParamList.pop_front();
 			}
-
-			if (TaskList.size() < 1) {
-				return false;
-			}
-			return true;
+			return out;
 		}
 
     public:
@@ -164,8 +174,8 @@ namespace extras{namespace async{
 
 	// Extend the AsyncInterface
 	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager> /*ObjType should be a derivative of PersistentArgsProcessor*/
-	class PersistentArgsProcessorInterface :public AsyncMexInterface<ObjType, ObjManager> {
-		typedef AsyncMexInterface<ObjType, ObjManager> ParentType;
+	class PersistentArgsProcessorInterface :public AsyncProcessorWithWriterInterface<ObjType, ObjManager> {
+		typedef AsyncProcessorWithWriterInterface<ObjType, ObjManager> ParentType;
 	protected:
 		void setPersistentArgs(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			ParentType::getObjectPtr(nrhs, prhs)->setPersistentArgs(nrhs - 1, &(prhs[1]));

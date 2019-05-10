@@ -13,11 +13,15 @@ All rights reserved.
 #include <extras/cmex/mxArrayGroup.hpp>
 #include <extras/SessionManager/mexInterface.hpp>
 
+
+
 namespace extras{namespace async{
 
     //! Abstract class defining an Asynchronous Processor object
     class AsyncProcessor{
     protected:
+
+		
 
 		/////////////////////////////////////////////////////////////
 		// Task Related
@@ -25,38 +29,62 @@ namespace extras{namespace async{
 		std::mutex TaskListMutex;///mutex lock for accessing TaskList
 		std::list<cmex::mxArrayGroup> TaskList; //list of remaining tasks
 
-		///Overloadable virtual method for Processing Tasks in the task list
+		///Overloadable virtual method for Processing Task retrieved from the task list
+		// this function is called by ProcessNextTask()
         virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) = 0;
 
-		//! core method called by ProcessLoop() to handle tasks.
-		//! this function is responsible for getting the top element from the TaskList and calling ProcessTask
-		//! it should return a bool specifying if there are more tasks to process
-		//! this function is responsible for handling the TaskListMutex lock
-		virtual bool ProcessLoopCore() {
-			std::lock_guard<std::mutex> lock(TaskListMutex);
-			if (TaskList.size() > 0) {
-				auto& task = TaskList.front();
+		/**Responsible for getting the top element from the TaskList and calling ProcessTask
+		* MUST return cmex::mxArrayGroup
+		* This function is called by ProecssLoopCore()
+		* if you have redefined ProcessTask() expect different arguments, then you need to also redefine this method
+		*/
+		virtual cmex::mxArrayGroup ProcessNextTask() {
+			cmex::mxArrayGroup out; //init empty array group;
+			std::lock_guard<std::mutex> lock(TaskListMutex); //lock the task list. If you are using a different lock mechanism change this
 
-				//DO Task
-				auto res = ProcessTask(task);
-				std::lock_guard<std::mutex> rlock(ResultsListMutex);
+			if (remainingTasks() > 0) {
+				auto& task = TaskList.front(); //if you are using a custom TaskList, change this code
 
-				if (res.size()>0) {
-					ResultsList.push_front(std::move(res));
-				}
+				out = ProcessTask(task); //if processTask is redefined, change this too!
 
 				TaskList.pop_front();
 			}
 
-			if (TaskList.size() < 1) {
+			return out;
+		}
+
+		/** Core method called by ProcessLoop() to handle tasks.
+		* This function is responsible for calling ProcessNextTask()
+		* it should return a bool specifying if there are more tasks to process
+		* 
+		* Unless you know what you are doing, it is not a good idea to redefine this method (even though it is virtual)
+		*/
+		virtual bool ProcessLoopCore() {
+
+			auto results = ProcessNextTask();
+
+			// store result on results list
+			std::lock_guard<std::mutex> rlock(ResultsListMutex);
+
+			if (results.size()>0) {
+
+				ResultsList.push_front(std::move(results));
+
+			}
+
+			if (remainingTasks() < 1) {
 				return false;
 			}
+
 			return true;
 		}
 
-        //! Method called in processing thread to execute tasks
-		//! Calls ProceesLoopCore() and catches any errors thrown
-		//! You probably don't need to overload this function
+        /** Method called in processing thread to execute tasks
+		* Calls ProceesLoopCore() and catches any errors thrown
+		* You probably don't need to overload this function
+		*
+		* Unless you know what you are doing, it is not a good idea to redefine this method (even though it is virtual)
+		*/
         virtual void ProcessLoop(){
 			using namespace std;
             try
@@ -261,6 +289,9 @@ namespace extras{namespace async{
 			}
 		}
 
+
+		
+
     };
 
     //! Implement mexInterface for AsyncProcessor
@@ -325,6 +356,75 @@ namespace extras{namespace async{
         void clearError(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
             ParentType::getObjectPtr(nrhs,prhs)->clearError();
         }
+
+
+		///////////////////////////////
+		// File Writer
+
+		void openResultsFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			if (nrhs < 2) {
+				throw("AsyncMxFileReaderInterface::openFile() required 2 inputs");
+			}
+			ParentType::getObjectPtr(nrhs, prhs)->openResultsFile(cmex::getstring(prhs[1]));
+		}
+		void isResultsFileOpen(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			bool isopen = ParentType::getObjectPtr(nrhs, prhs)->isResultsFileOpen();
+			plhs[0] = mxCreateLogicalScalar(isopen);
+		}
+		void closeResultsFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->closeResultsFile();
+		}
+		void clearUnsavedResults(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->clearUnsavedResults();
+		}
+		void clearResultsWriterError(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->clearResultsWriterError();
+		}
+		void getResultsWriterError(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			std::exception_ptr err = ParentType::getObjectPtr(nrhs, prhs)->getResultsWriterError();
+
+			if (err == nullptr) { //no errors, return empty
+				plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
+				return;
+			}
+
+			//convert exception ptr to struct
+			try {
+				rethrow_exception(err);
+			}
+			catch (const std::exception& e) {
+				const char* fields[] = { "identifier","message" };
+				mxArray* out = mxCreateStructMatrix(1, 1, 2, fields);
+				mxSetField(out, 0, "identifier", mxCreateString("ProcessingError"));
+				mxSetField(out, 0, "message", mxCreateString(e.what()));
+
+				plhs[0] = out;
+			}
+		}
+		void wasResultsWriterErrorThrown(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->wasResultsWriterErrorThrown());
+		}
+		void isResultsWriterRunning(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->isResultsWriterRunning());
+		}
+		void ResultsFilepath(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			cmex::MxObject fpth = ParentType::getObjectPtr(nrhs, prhs)->ResultsFilepath();
+			plhs[0] = fpth;
+		}
+		void pauseResultsWriter(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->pauseResultsWriter();
+		}
+		void resumeResultsWriter(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->resumeResultsWriter();
+		}
+		void saveResults(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			if (nrhs < 2) {
+				plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->saveResults());
+			}
+			else {
+				ParentType::getObjectPtr(nrhs, prhs)->saveResults(mxGetScalar(prhs[1]));
+			}
+		}
     public:
         AsyncMexInterface(){
             using namespace std::placeholders;
@@ -341,6 +441,22 @@ namespace extras{namespace async{
             ParentType::addFunction("wasErrorThrown",std::bind(&AsyncMexInterface::wasErrorThrown,this,_1,_2,_3,_4));
             ParentType::addFunction("getError",std::bind(&AsyncMexInterface::getError,this,_1,_2,_3,_4));
             ParentType::addFunction("clearError",std::bind(&AsyncMexInterface::clearError,this,_1,_2,_3,_4));
+
+			///////////////////////////////
+			// File Writer
+
+			ParentType::addFunction("openResultsFile", std::bind(&AsyncMexInterface::openResultsFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("isResultsFileOpen", std::bind(&AsyncMexInterface::isResultsFileOpen, this, _1, _2, _3, _4));
+			ParentType::addFunction("closeResultsFile", std::bind(&AsyncMexInterface::closeResultsFile, this, _1, _2, _3, _4));
+			ParentType::addFunction("clearUnsavedResults", std::bind(&AsyncMexInterface::clearUnsavedResults, this, _1, _2, _3, _4));
+			ParentType::addFunction("clearResultsWriterError", std::bind(&AsyncMexInterface::clearResultsWriterError, this, _1, _2, _3, _4));
+			ParentType::addFunction("getResultsWriterError", std::bind(&AsyncMexInterface::getResultsWriterError, this, _1, _2, _3, _4));
+			ParentType::addFunction("wasResultsWriterErrorThrown", std::bind(&AsyncMexInterface::wasResultsWriterErrorThrown, this, _1, _2, _3, _4));
+			ParentType::addFunction("isResultsWriterRunning", std::bind(&AsyncMexInterface::isResultsWriterRunning, this, _1, _2, _3, _4));
+			ParentType::addFunction("ResultsFilepath", std::bind(&AsyncMexInterface::ResultsFilepath, this, _1, _2, _3, _4));
+			ParentType::addFunction("pauseResultsWriter", std::bind(&AsyncMexInterface::pauseResultsWriter, this, _1, _2, _3, _4));
+			ParentType::addFunction("resumeResultsWriter", std::bind(&AsyncMexInterface::resumeResultsWriter, this, _1, _2, _3, _4));
+			ParentType::addFunction("saveResults", std::bind(&AsyncMexInterface::saveResults, this, _1, _2, _3, _4));
         }
     };
 
