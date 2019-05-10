@@ -50,7 +50,7 @@ classdef AsyncMxFileWriter < extras.Async.AsyncProcessor
             % write data to file
             
             if(nargin>1)
-                this.runMethod('writeArrays',varargin{:});
+                this.pushTask(varargin{:});
             end
         end
     end

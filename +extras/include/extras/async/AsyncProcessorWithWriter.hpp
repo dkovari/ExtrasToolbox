@@ -106,6 +106,12 @@ namespace extras {namespace async {
 
 		void saveResults(bool tf) { _SaveResults = tf; }
 		bool saveResults() const { return _SaveResults; }
+
+		/** Number of results that are waiting to be written to the file
+		*/
+		size_t resultsWaitingToBeWritten() const {
+			return _AsyncWriter.remainingTasks();
+		}
 	};
 
 
@@ -182,8 +188,11 @@ namespace extras {namespace async {
 				ParentType::getObjectPtr(nrhs, prhs)->saveResults(mxGetScalar(prhs[1]));
 			}
 		}
+		void resultsWaitingToBeWritten(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			plhs[0] = mxCreateDoubleScalar((double)(ParentType::getObjectPtr(nrhs, prhs)->resultsWaitingToBeWritten()));
+		}
 	public:
-		AsyncMexInterface() {
+		AsyncProcessorWithWriterInterface() {
 			using namespace std::placeholders;
 
 			///////////////////////////////
@@ -201,6 +210,7 @@ namespace extras {namespace async {
 			ParentType::addFunction("pauseResultsWriter", std::bind(&AsyncProcessorWithWriterInterface::pauseResultsWriter, this, _1, _2, _3, _4));
 			ParentType::addFunction("resumeResultsWriter", std::bind(&AsyncProcessorWithWriterInterface::resumeResultsWriter, this, _1, _2, _3, _4));
 			ParentType::addFunction("saveResults", std::bind(&AsyncProcessorWithWriterInterface::saveResults, this, _1, _2, _3, _4));
+			ParentType::addFunction("resultsWaitingToBeWritten", std::bind(&AsyncProcessorWithWriterInterface::resultsWaitingToBeWritten, this, _1, _2, _3, _4));
 		}
 	};
 

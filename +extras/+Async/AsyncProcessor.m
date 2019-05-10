@@ -5,7 +5,8 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
 %   providing the thread processor.
 %   
 %  The associated MEX SessionManager object should be derived from
-%   mex::AsyncProcessor defined in mexAsyncProcessor.h
+%   mex::AsyncProcessor defined in 
+%       ...\include\extras\async\AsyncProcessor.hpp
 %
 %   Communication from MATLAB to the processor object is handed by
 %   background timers.

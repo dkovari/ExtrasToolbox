@@ -288,10 +288,6 @@ namespace extras{namespace async{
 				return nullptr;
 			}
 		}
-
-
-		
-
     };
 
     //! Implement mexInterface for AsyncProcessor
@@ -357,74 +353,6 @@ namespace extras{namespace async{
             ParentType::getObjectPtr(nrhs,prhs)->clearError();
         }
 
-
-		///////////////////////////////
-		// File Writer
-
-		void openResultsFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			if (nrhs < 2) {
-				throw("AsyncMxFileReaderInterface::openFile() required 2 inputs");
-			}
-			ParentType::getObjectPtr(nrhs, prhs)->openResultsFile(cmex::getstring(prhs[1]));
-		}
-		void isResultsFileOpen(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			bool isopen = ParentType::getObjectPtr(nrhs, prhs)->isResultsFileOpen();
-			plhs[0] = mxCreateLogicalScalar(isopen);
-		}
-		void closeResultsFile(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			ParentType::getObjectPtr(nrhs, prhs)->closeResultsFile();
-		}
-		void clearUnsavedResults(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			ParentType::getObjectPtr(nrhs, prhs)->clearUnsavedResults();
-		}
-		void clearResultsWriterError(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			ParentType::getObjectPtr(nrhs, prhs)->clearResultsWriterError();
-		}
-		void getResultsWriterError(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			std::exception_ptr err = ParentType::getObjectPtr(nrhs, prhs)->getResultsWriterError();
-
-			if (err == nullptr) { //no errors, return empty
-				plhs[0] = mxCreateDoubleMatrix(0, 0, mxREAL);
-				return;
-			}
-
-			//convert exception ptr to struct
-			try {
-				rethrow_exception(err);
-			}
-			catch (const std::exception& e) {
-				const char* fields[] = { "identifier","message" };
-				mxArray* out = mxCreateStructMatrix(1, 1, 2, fields);
-				mxSetField(out, 0, "identifier", mxCreateString("ProcessingError"));
-				mxSetField(out, 0, "message", mxCreateString(e.what()));
-
-				plhs[0] = out;
-			}
-		}
-		void wasResultsWriterErrorThrown(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->wasResultsWriterErrorThrown());
-		}
-		void isResultsWriterRunning(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->isResultsWriterRunning());
-		}
-		void ResultsFilepath(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			cmex::MxObject fpth = ParentType::getObjectPtr(nrhs, prhs)->ResultsFilepath();
-			plhs[0] = fpth;
-		}
-		void pauseResultsWriter(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			ParentType::getObjectPtr(nrhs, prhs)->pauseResultsWriter();
-		}
-		void resumeResultsWriter(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			ParentType::getObjectPtr(nrhs, prhs)->resumeResultsWriter();
-		}
-		void saveResults(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
-			if (nrhs < 2) {
-				plhs[0] = mxCreateLogicalScalar(ParentType::getObjectPtr(nrhs, prhs)->saveResults());
-			}
-			else {
-				ParentType::getObjectPtr(nrhs, prhs)->saveResults(mxGetScalar(prhs[1]));
-			}
-		}
     public:
         AsyncMexInterface(){
             using namespace std::placeholders;
@@ -441,23 +369,7 @@ namespace extras{namespace async{
             ParentType::addFunction("wasErrorThrown",std::bind(&AsyncMexInterface::wasErrorThrown,this,_1,_2,_3,_4));
             ParentType::addFunction("getError",std::bind(&AsyncMexInterface::getError,this,_1,_2,_3,_4));
             ParentType::addFunction("clearError",std::bind(&AsyncMexInterface::clearError,this,_1,_2,_3,_4));
-
-			///////////////////////////////
-			// File Writer
-
-			ParentType::addFunction("openResultsFile", std::bind(&AsyncMexInterface::openResultsFile, this, _1, _2, _3, _4));
-			ParentType::addFunction("isResultsFileOpen", std::bind(&AsyncMexInterface::isResultsFileOpen, this, _1, _2, _3, _4));
-			ParentType::addFunction("closeResultsFile", std::bind(&AsyncMexInterface::closeResultsFile, this, _1, _2, _3, _4));
-			ParentType::addFunction("clearUnsavedResults", std::bind(&AsyncMexInterface::clearUnsavedResults, this, _1, _2, _3, _4));
-			ParentType::addFunction("clearResultsWriterError", std::bind(&AsyncMexInterface::clearResultsWriterError, this, _1, _2, _3, _4));
-			ParentType::addFunction("getResultsWriterError", std::bind(&AsyncMexInterface::getResultsWriterError, this, _1, _2, _3, _4));
-			ParentType::addFunction("wasResultsWriterErrorThrown", std::bind(&AsyncMexInterface::wasResultsWriterErrorThrown, this, _1, _2, _3, _4));
-			ParentType::addFunction("isResultsWriterRunning", std::bind(&AsyncMexInterface::isResultsWriterRunning, this, _1, _2, _3, _4));
-			ParentType::addFunction("ResultsFilepath", std::bind(&AsyncMexInterface::ResultsFilepath, this, _1, _2, _3, _4));
-			ParentType::addFunction("pauseResultsWriter", std::bind(&AsyncMexInterface::pauseResultsWriter, this, _1, _2, _3, _4));
-			ParentType::addFunction("resumeResultsWriter", std::bind(&AsyncMexInterface::resumeResultsWriter, this, _1, _2, _3, _4));
-			ParentType::addFunction("saveResults", std::bind(&AsyncMexInterface::saveResults, this, _1, _2, _3, _4));
-        }
+		}
     };
 
 }}
