@@ -127,11 +127,6 @@ namespace extras { namespace ParticleTracking {
 
 	public:
 
-		~RoiTracker() {
-			if (!_AsyncWriter.isFileOpen()) {
-				_AsyncWriter.cancelRemainingTasks();
-			}
-		}
 
 		//! default constructor changes pMap to point to an RoiParameterMap
 		RoiTracker() {

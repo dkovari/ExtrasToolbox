@@ -69,14 +69,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\..\+Async\+Example\+ParamProcessor\</OutDir>
+    <OutDir>$(ExtrasInclude)\..\+Async\+Example\+ParamProcessor\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(IncludePath)</IncludePath>
     <TargetName>ExampleParamProcessorMex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\+Async\+Example\+ParamProcessor\</OutDir>
+    <OutDir>$(ExtrasInclude)\..\+Async\+Example\+ParamProcessor\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(IncludePath)</IncludePath>
     <TargetName>ExampleParamProcessorMex</TargetName>

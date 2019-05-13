@@ -60,19 +60,43 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
     methods
         function delete(this)
             
+            %% prompt to cancel tasks (called here so that user is prompted to let tasks process before being asked if data should be written
+            this.uiPromptToClearTasks(); %super-class method
+            
+            %% prompt to cancel writing
+            this.uiPromptToCancelWriting();
+            
+            %% stop and delete timers
+            try
+            stop(this.ResultsWriterErrorTimer);
+            catch
+            end
+            delete(this.ResultsWriterErrorTimer);
+            try
+            stop(this.ResultsWriterCheckTimer);
+            catch
+            end
+            delete(this.ResultsWriterCheckTimer);
+        end
+    end
+    
+    %% protected methods
+    methods (Access=protected)
+        function uiPromptToCancelWriting(this)
             %% Check if there are results waiting
             this.resultsWaitingToBeWritten = this.runMethod('resultsWaitingToBeWritten');
             this.isResultsFileOpen = this.runMethod('isResultsFileOpen');
             
-            if this.isResultsFileOpen && this.resultsWaitingToBeWritten
+            if this.isResultsFileOpen
                 addlistener(this,'ResultsWriterErrorOccured',@(~,err) warndlg(err.message,'Error Writing Results'));
                 this.resumeResultsWriter();
+                pause(0.75); %wait a little bit to allow any remaining tasks to start processing
                 
                 %% try to write tasks
                 hWB = [];
                 nRem = this.runMethod('resultsWaitingToBeWritten');
                 last_comp = 0;
-                while this.runMethod('resultsWaitingToBeWritten')>0
+                while this.runMethod('resultsWaitingToBeWritten')>0 || this.RemainingTasks>0
 
                     RT = this.runMethod('resultsWaitingToBeWritten');
                     comp = nRem-RT;
@@ -82,7 +106,7 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
                     end
 
                     if isempty(hWB)
-                        hWB = waitbar(comp/nRem,sprintf('%s: Writing Results (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem),'CreateCancelBtn',@(~,~) this.cancelRemainingTasks());
+                        hWB = waitbar(comp/nRem,sprintf('%s: Writing Results (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem),'CreateCancelBtn',@(~,~) this.runMethod('stopWritingAndClearUnsaved'));
                     elseif ishghandle(hWB)
                         waitbar(comp/nRem,hWB,sprintf('%s: Writing Results (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem));
                     end
@@ -98,25 +122,13 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
                 catch
                 end
                 
-            elseif this.resultsWaitingToBeWritten && ~this.isResultsFileOpen
+            elseif this.resultsWaitingToBeWritten
                 warndlg('There are results waiting to be written, but the file is not open. They will be discarded.','Results Waiting','modal');
             end
             
             
             %% cancel remaining write events
-            this.clearUnsavedResults
-
-            %% stop and delete timers
-            try
-            stop(this.ResultsWriterErrorTimer);
-            catch
-            end
-            delete(this.ResultsWriterErrorTimer);
-            try
-            stop(this.ResultsWriterCheckTimer);
-            catch
-            end
-            delete(this.ResultsWriterCheckTimer);
+            this.clearUnsavedResults()
         end
     end
     
@@ -297,7 +309,7 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
                 catch
                 end
             else
-                warning('Cannot start ResultsWriterCheckTimer because File is not open or writing is not enabled');
+                warning('Cannot start ResultsWriterCheckTimer because file is not open or writing is not enabled');
             end
             
         end

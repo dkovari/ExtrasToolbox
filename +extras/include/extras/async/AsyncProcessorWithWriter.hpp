@@ -64,6 +64,14 @@ namespace extras {namespace async {
 			return true;
 		}
 	public:
+
+		~AsyncProcessorWithWriter() {
+			if (!_AsyncWriter.isFileOpen()) {
+				_AsyncWriter.cancelRemainingTasks();
+				_AsyncWriter.closeFile();
+			}
+		}
+
 		///////////////////////////////
 		// File Writer
 
@@ -97,6 +105,11 @@ namespace extras {namespace async {
 
 		bool isResultsWriterRunning() {
 			return _AsyncWriter.running();
+		}
+
+		void stopWritingAndClearUnsaved() {
+			saveResults(false);
+			clearUnsavedResults();
 		}
 
 		std::string ResultsFilepath() const { return _AsyncWriter.filepath(); }
@@ -191,6 +204,9 @@ namespace extras {namespace async {
 		void resultsWaitingToBeWritten(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			plhs[0] = mxCreateDoubleScalar((double)(ParentType::getObjectPtr(nrhs, prhs)->resultsWaitingToBeWritten()));
 		}
+		void stopWritingAndClearUnsaved(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			ParentType::getObjectPtr(nrhs, prhs)->stopWritingAndClearUnsaved();
+		}
 	public:
 		AsyncProcessorWithWriterInterface() {
 			using namespace std::placeholders;
@@ -211,6 +227,7 @@ namespace extras {namespace async {
 			ParentType::addFunction("resumeResultsWriter", std::bind(&AsyncProcessorWithWriterInterface::resumeResultsWriter, this, _1, _2, _3, _4));
 			ParentType::addFunction("saveResults", std::bind(&AsyncProcessorWithWriterInterface::saveResults, this, _1, _2, _3, _4));
 			ParentType::addFunction("resultsWaitingToBeWritten", std::bind(&AsyncProcessorWithWriterInterface::resultsWaitingToBeWritten, this, _1, _2, _3, _4));
+			ParentType::addFunction("stopWritingAndClearUnsaved", std::bind(&AsyncProcessorWithWriterInterface::stopWritingAndClearUnsaved, this, _1, _2, _3, _4));
 		}
 	};
 

@@ -231,7 +231,7 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
         end
     end
 
-    %% Create/Delete
+    %% Create
     methods
         function this = AsyncProcessor(MEX_NAME,varargin)
         % Create AsyncProcessor Object
@@ -266,36 +266,15 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
                                         'ErrorFcn',@(~,err) disp(err),...
                                         'TimerFcn',@(~,~) this.ResultsCheckTimerCallback);
         end
-
+    end
+    
+    %% delete
+    methods
         function delete(this)
             
-            if this.RemainingTasks>0
-            	this.resume(); %restart processor if it was stopped
-            end
+            %% prompt to clear tasks
+            this.uiPromptToClearTasks()
             
-            hWB = [];
-            nRem = this.RemainingTasks;
-            last_comp = 0;
-            while this.RemainingTasks>0
-                
-                RT = this.RemainingTasks;
-                comp = nRem-RT;
-                if comp<0 %more tasks were added
-                    comp = last_comp;
-                    nRem = RT;
-                end
-                
-                if isempty(hWB)
-                    hWB = waitbar(comp/nRem,sprintf('%s: Processing (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem),'CreateCancelBtn',@(~,~) this.cancelRemainingTasks());
-                elseif ishghandle(hWB)
-                    waitbar(comp/nRem,hWB,sprintf('%s: Processing (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem));
-                end
-                pause(0.5);
-            end
-            try
-                delete(hWB)
-            catch
-            end
             
             %% stop and delete timers
             try
@@ -334,6 +313,36 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
         function clearError(this)
         % clear error flag and error struct from buffer
             this.runMethod('clearError');
+        end
+        
+        function uiPromptToClearTasks(this)
+            if this.RemainingTasks>0
+            	this.resume(); %restart processor if it was stopped
+            end
+            
+            hWB = [];
+            nRem = this.RemainingTasks;
+            last_comp = 0;
+            while this.RemainingTasks>0
+                
+                RT = this.RemainingTasks;
+                comp = nRem-RT;
+                if comp<0 %more tasks were added
+                    comp = last_comp;
+                    nRem = RT;
+                end
+                
+                if isempty(hWB)
+                    hWB = waitbar(comp/nRem,sprintf('%s: Processing (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem),'CreateCancelBtn',@(~,~) this.cancelRemainingTasks());
+                elseif ishghandle(hWB)
+                    waitbar(comp/nRem,hWB,sprintf('%s: Processing (%d/%d)\nPress Cancel to skip remaining.',this.Name,comp,nRem));
+                end
+                pause(0.5);
+            end
+            try
+                delete(hWB)
+            catch
+            end
         end
     end
 
