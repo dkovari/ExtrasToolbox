@@ -6,6 +6,8 @@ end
 
 EP3 = extras.Async.Example.ParamProcessor.ExampleParamProcessor; %create processor
 
+EP_UI = extras.Async.AsyncProcessorWithWriterUI(EP3);
+
 CBQ = extras.CallbackQueue; %create callback queue to listen to results from processor
 
 afterEach(CBQ,@CB) %assign callback to the callback queue
@@ -14,10 +16,13 @@ lst = addlistener(EP3,'ErrorOccured',@(~,err) disp(err)); %add listener for erro
 
 EP3.registerQueue(CBQ); %register the callback queue
 
+
+
+
 %% send tasts
 for n=1:3
-%     fprintf('Press a key to send next task\n\n');
-%     pause;
+     fprintf('Press a key to send next task\n\n');
+     pause;
     EP3.pushTask('Task',n,rand(10));
 end
 
@@ -41,7 +46,7 @@ disp('push key to continue');
 pause
 disp('pausing processor and adding tasks before deleting');
 disp('delete should create waitbar');
-EP3.pause();
+%EP3.pause();
 for n=22:35
     
     EP3.pushTask('Task',n,rand(10));

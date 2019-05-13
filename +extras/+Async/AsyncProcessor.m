@@ -1,4 +1,4 @@
-classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.QueueDispatcher
+classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.QueueDispatcher & matlab.mixin.SetGet
 %% extras.SessionManager.AsyncProcessor
 % Interface to Mex-based Asynchronous data processor
 %   This class creates the interface to a MEX SessionManager object

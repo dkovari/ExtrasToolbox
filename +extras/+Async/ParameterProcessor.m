@@ -44,7 +44,7 @@ classdef ParameterProcessor < extras.Async.AsyncProcessorWithWriter & dynamicpro
             
             
             %delete dynamic properties not currrent property list
-            bad_props = setdiff(keys(this.DynamicParameterMap),prop_names);
+            bad_props = setdiff(keys(this.DynamicParameterMap),prop_names)
             for bp = bad_props
                 mp = findprop(this,bp);
                 if ~isempty(mp)

@@ -151,8 +151,8 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
     methods
         function set.SaveResults(this,val)
             if ~this.internal_SetSaveResults
-                this.runMethod('SaveResults',val);
-                this.SaveResults = this.runMethod('SaveResults');
+                this.runMethod('saveResults',val);
+                this.SaveResults = this.runMethod('saveResults');
             else
                 this.SaveResults = val;
             end
@@ -275,7 +275,7 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
             
             %% check SaveResults
             this.internal_SetSaveResults = true;
-            this.SaveResults = this.runMethod('SaveResults');
+            this.SaveResults = this.runMethod('saveResults');
             this.internal_SetSaveResults = false;
             
             %% Check other properties

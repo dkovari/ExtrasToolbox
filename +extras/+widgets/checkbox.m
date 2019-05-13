@@ -1,3 +1,5 @@
+%OBSOLETE!!!!
+
 classdef checkbox < extras.widgets.abstract.CheckboxControl
 % Checkbox control, looks similar to controls included in the widgets
 % toolbox
