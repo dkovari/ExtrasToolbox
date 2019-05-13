@@ -5,13 +5,19 @@ You must define MATLAB_ROOT in your system environmental variables.
 It should point to the install directory of your version of MATLAB.
 For example: 'C:\Program Files\MATLAB\R2018a'
 
+NOTE: The Solution uses a Property Sheet to define some environmental variables. Do not move or delete ExtrasToolbox_PropertySheet.props from this directory.
+
+3) Open the solution. Before you build any of the other projects you should build StackWalker for both Release and Debug configurations (be sure to build for x64 platform).
+
+
+Now you should be ready to build any of the other components. Happy building!
+
+
+
+%%%%%%%%%%%%%%%%%%%5
+OLD (no longer needed)
 2) After installing the downloading and installing the ExtrasToolbox you also need to change the Property Sheet in this directory.
 
 2a) Edit 'ExtrasToolbox_PropertySheet.props' and change line 5 to reflect the path or the include folder inside ExtrasToolbox\+extras.
 For example: 
 	<ExtrasInclude>C:\Users\dkovari\Documents\GitHub\ExtrasToolbox\+extras\include</ExtrasInclude>
-
-3) After making the change to the Property Sheet you can open the solution. Before you build any of the other projects you should build StackWalker for both Release and Debug configurations (be sure to build for x64 platform).
-
-
-Now you should be ready to build any of the other components. Happy building!
