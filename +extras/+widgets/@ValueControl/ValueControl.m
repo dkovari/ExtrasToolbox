@@ -6,7 +6,8 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
         extras.widgets.mixin.HasScalarLimits & ...
         extras.widgets.mixin.HasAllowedValues & ...
         extras.widgets.mixin.HasIncrement & ...
-        extras.widgets.mixin.HasTooltip
+        extras.widgets.mixin.HasTooltip & ...
+        extras.widgets.mixin.AssignNV
 % UI widget for controlling a value
 % Automatically picks best display for numeric and string data
 % implements:
@@ -22,6 +23,7 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
         
         ValueType = 'float'; % type of values to accept possible values 'float' 'integer' 'string' 'boolean'
         RememberValueHistory (1,1) logical = false;
+        RememberAllValues (1,1) logical = true; %if true, history includes values not set by uiedit
         %SliderOrientation = 'horizontal';
     end
     %% get/set
@@ -158,8 +160,12 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
     %% Overridable Callback methods
     methods (Access=protected)
         
-        function str = valueToString(this)
-            str = num2str(this.Value);
+        function str = valueToString(this,str)
+            if nargin<2
+                str = num2str(this.Value);
+            else
+                str = num2str(str);
+            end
         end
         
         function value = valueFromString(this,str)
@@ -280,7 +286,16 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
         end
         
         function onValueChanged(this)
+            if this.RememberValueHistory && this.RememberAllValues
+                try
+                    this.addHistory(this.Value)
+                catch ME
+                    disp(ME.getReport)
+                end
+                this.updateControls();
+            end
             this.updateUIValue();
+            
         end
         
         function onAllowedValuesChanged(this)

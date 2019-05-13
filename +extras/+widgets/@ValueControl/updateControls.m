@@ -118,7 +118,7 @@ switch ControlType
             catch
             end
             this.FieldControl = uiw.widget.EditablePopup('Parent',this.FieldButtonHBox,...
-                'Callback',this.FieldControlCallback());
+                'Callback',@(~,~) this.FieldControlCallback());
             this.addHasEnableObjects(this.FieldControl);
         end
         %% Allowed values

@@ -228,13 +228,47 @@ classdef LabelPanel < handle & ...
     
     %% LabelRelated
     properties  (Access=public, AbortSet, SetObservable)
-        LabelPosition = 'left'; %Label Position, relative to panel
-        LabelOrientation = 'horizontal'; %Label angle orientation
-        LabelVerticalAlignment = 'center'; %Alignment of text
-        LabelHorizontalAlignment = 'leading'; %Alignment of text
+        LabelPosition = 'left'; %Label Position, relative to panel. valid values: {'left','right','top','bottom'}
+        LabelOrientation = 'horizontal'; %Label angle orientation. valid values: {'horizontal','vertical','clockwise','counterclockwise'}
+        LabelVerticalAlignment = 'center'; %Alignment of text. valid values: {'top','center','bottom'}
+        LabelHorizontalAlignment = 'leading'; %Alignment of text. valid values: {'left','center','right','leading','trailing'}
         LabelWidth (1,1) double = -0.5; %Width of label if using left/right position (negative is relative fraction of parent, see uix.HBox)
         LabelHeight (1,1) double = -0.5; %Height of label, if using top/bottom position (negative is relative fraction of parent, see uix.VBox)
     end
+    
+    %% Display Customization
+    methods (Access=protected)
+        
+        function propGroup = getPropertyGroups(this)
+            propGroup = getPropertyGroups@uix.Container(this);
+            
+            %% Grid
+            titleTxt = sprintf(['extras.widgets.LabelPanel Grid Properties:',...
+                            '\n\t------------------------------------------']);
+            thisProps = struct(...
+                'Widths',this.Widths,...
+                'MinimumWidths',this.MinimumWidths,...
+                'Heights',this.Heights,...
+                'MinimumHeights',this.MinimumHeights,...
+                'Spacing',this.Spacing);
+            propGroup = [propGroup,matlab.mixin.util.PropertyGroup(thisProps,titleTxt)];
+            
+            %% Label
+            titleTxt = sprintf(['\n\textras.widgets.LabelPanel Label Properties:',...
+                                '\n\t--------------------------------------------']);
+            thisProps = struct(...
+                'Label',this.Label,...
+                'LabelPosition',this.LabelPosition,...
+                'LabelOrientation',this.LabelOrientation,...
+                'LabelVerticalAlignment',this.LabelVerticalAlignment,...
+                'LabelHorizontalAlignment',this.LabelHorizontalAlignment,...
+                'LabelWidth',this.LabelWidth,...
+                'LabelHeight',this.LabelHeight);
+            propGroup = [propGroup,matlab.mixin.util.PropertyGroup(thisProps,titleTxt)];
+
+        end %function
+      
+    end %Display Customization methods   
     
     %% label related get/set
     methods
@@ -360,7 +394,7 @@ classdef LabelPanel < handle & ...
             % looks for parent as first argument or in 'Name',Value pairs
             args = varargin;
             found_parent = false;
-            if nargin>0 && ~ischar(args{1}) && numel(args{1})==1 && isgraphics(args{1})
+            if ~isempty(args) && ~ischar(args{1}) && numel(args{1})==1 && isgraphics(args{1})
                 this.Parent = args{1};
                 args(1) = [];
                 found_parent = true;
