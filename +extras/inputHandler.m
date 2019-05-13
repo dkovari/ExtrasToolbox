@@ -11,7 +11,9 @@ classdef inputHandler < handle & matlab.mixin.SetGet
 %           with 'XData','YData','Parent', and 'Color' as valid parameters
 %   call:
 %   > iH = extras.inputHandler;
-%   > iH.addOptionalVariable('Parent',gobjects(0),@(x) isgraphics(x),true);
+%   > iH.addOptionalVariable('Parent',gobjects(0),...
+%           @(x) ~isnumeric(x)&&isgraphics(x),true); %ignore graphics
+%                                                   % specified as numerics
 %   > iH.addRequiredVariable('XData',@(x) isnumeric(x),true);
 %   > iH.addRequiredVariable('YData',@(x) isnumeric(x),true);
 %   > iH.addParameter('Color','r',...
@@ -25,6 +27,8 @@ classdef inputHandler < handle & matlab.mixin.SetGet
 %   struct inside inputHandler.Results
 %       Fields of inputHandler.Results correspond with the specified
 %       variable and parameter names
+%% Copyright 2019 Daniel T. Kovari, Emory University
+%   All rights reserved.
 
     properties (Dependent)
         CaseSensitive %T/F specifying in Name,Value parameter search is case sensitive
@@ -114,9 +118,17 @@ classdef inputHandler < handle & matlab.mixin.SetGet
             if ~strcmp(validName,Name)
                 warning('%s is not a valid variable name. Using %s instead',Name,validName);
             end
-            assert(~ismember(validName,{this.variables.Name}),'%s is already specified as a variable name.',validName);
+            
             assert(isa(Validator,'function_handle'),'Validator for %s must be a function handle',validName);
-            this.variables(end+1) = struct('Name',validName,'DefaultValue',[],'Validator',Validator,'Required',true,'IncludeAsParameter',IncludeAsParameter);
+            
+            [lia,lob] = ismember(validName,{this.variables.Name});
+            if lia
+                warning('%s is already specified as a variable name. Replacing.',validName);
+                this.variables(lob) = struct('Name',validName,'DefaultValue',DefaultValue,'Validator',Validator,'Required',false,'IncludeAsParameter',IncludeAsParameter);
+            else
+                %% add to list
+                this.variables(end+1) = struct('Name',validName,'DefaultValue',[],'Validator',Validator,'Required',false,'IncludeAsParameter',IncludeAsParameter);
+            end
         end
         function addOptionalVariable(this,Name,DefaultValue,Validator,IncludeAsParameter)
         % Add Optional Variable to the list of variables to search for
@@ -167,13 +179,30 @@ classdef inputHandler < handle & matlab.mixin.SetGet
             %% validate
             assert(ischar('Name'),'Name must be a char array sepcifying valid variable name');
             validName = matlab.lang.makeValidName(Name);
-            assert(~ismember(validName,{this.variables.Name}),'%s is already specified as a variable name.',validName);
+            
             assert(isa(Validator,'function_handle'),'Validator for %s must be a function handle',validName);
             
-            %% add to list
-            this.variables(end+1) = struct('Name',validName,'DefaultValue',DefaultValue,'Validator',Validator,'Required',false,'IncludeAsParameter',IncludeAsParameter);
+            [lia,lob] = ismember(validName,{this.variables.Name});
+            if lia
+                warning('%s is already specified as a variable name. Replacing.',validName);
+                this.variables(lob) = struct('Name',validName,'DefaultValue',DefaultValue,'Validator',Validator,'Required',false,'IncludeAsParameter',IncludeAsParameter);
+            else
+                %% add to list
+                this.variables(end+1) = struct('Name',validName,'DefaultValue',DefaultValue,'Validator',Validator,'Required',false,'IncludeAsParameter',IncludeAsParameter);
+            end
         end
         function addParameter(this,Name,DefaultValue,Validator)
+        % adds the parameter name of an optional name-value pair argument 
+        % into the input parser scheme. When the inputs to a function do 
+        % not include this optional name-value pair, the input parser 
+        % assigns paramName the value defaultVal.
+        %
+        % Inputs:
+        %   Name: char array specifying Parameter name.
+        %   DefaultValue: Default value to use if variable is not specified
+        %   Validator: function handle (should expect on argument) which
+        %   returns true/false if the variable interpreted as Name is valid
+
             %% Check inputs
             if ~exist('Name','var')
                 error('Name must be specified');
@@ -226,7 +255,7 @@ classdef inputHandler < handle & matlab.mixin.SetGet
                             VarRes.(this.variables(n).Name) = varargin{1};
                             varargin(1)= []; %clear from varargin list
                             ReqNotFound = setdiff(ReqNotFound,this.variables(n).Name);
-                            elseif this.variables(n).IncludeAsParameter %include in parameter search
+                        elseif this.variables(n).IncludeAsParameter %include in parameter search
                             addParameter(this_parser,this.variables(n).Name,this.variables(n).DefaultValue,this.variables(n).Validator);
                             ReqNotFound = setdiff(ReqNotFound,this.variables(n).Name);
                         else %don't add as parameter, throw error because we didn't find a required variable
@@ -237,7 +266,7 @@ classdef inputHandler < handle & matlab.mixin.SetGet
                     error('No input arguments remaining and Required Variable %s has not been found',this.variables(n).Name);
                 end
             end
-            
+            this_parser.Parameters
             %% Use Input Parser to check for remaining arguments
             parse(this_parser,varargin{:});
 
@@ -250,7 +279,6 @@ classdef inputHandler < handle & matlab.mixin.SetGet
             Parse_UsingDefaults = setdiff(Parse_UsingDefaults,RNotFound);
             Parse_Results = rmfield(Parse_Results,RNotFound);
             this.RequiredNotFound = union(ReqNotFound,RNotFound);
-            
             
             %% Set results, etc.
             this.UsingDefaults = union(OptNotFound,Parse_UsingDefaults);

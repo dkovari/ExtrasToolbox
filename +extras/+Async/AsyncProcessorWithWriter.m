@@ -19,7 +19,7 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
 %       events using the method
 %           AsyncProcessorWithWriter.registerQueue(YOUR_QUEUE)
 %       See extras.QueueDispatcher for more details
-%% Copyright 2018 Daniel T. Kovari, Emory University
+%% Copyright 2019 Daniel T. Kovari, Emory University
 %   All rights reserved.  
 
     %% create

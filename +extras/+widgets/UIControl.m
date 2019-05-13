@@ -10,9 +10,9 @@ classdef UIControl < extras.RequireGuiLayoutToolbox &...
     
     %% forwarded properties
     properties (SetObservable, AbortSet)
-        Style = 'pushbutton'
-        Value = 0
-        Max (1,1) double = 1;
+        Style = 'pushbutton'; %valid value: {'pushbutton','togglebutton','checkbox','radiobutton','edit','text','slider','listbox','popupmenu'}
+        Value = 0; %value of the control element
+        Max (1,1) double = 1; 
         Min (1,1) double = 0;
         SliderStep double = [0.01,0.1];
         ListboxTop (1,1) double = 1;
@@ -169,6 +169,9 @@ classdef UIControl < extras.RequireGuiLayoutToolbox &...
     
     methods(Access=private)
         function setparentcallback(this)
+            %called first time parent is set
+            % creates gui elements
+            
             if this.parentFirstSet
                 return;
             end
