@@ -30,6 +30,8 @@ classdef FileSelector < extras.RequireGuiLayoutToolbox &...
     %% delete
     methods
         function delete(this)
+            delete(this.FilepathField);
+            delete(this.SelectionButton);
             delete(this.VBox);
         end
     end
@@ -42,11 +44,13 @@ classdef FileSelector < extras.RequireGuiLayoutToolbox &...
         FileExtension char = ''; %file extension of specified file
         FileDir char = ''; %directory of specified file
         Filter = '*.*'; %File filter options used by uigetfile when user pressed [...] button
-        FilterIndex %index of the selected filter
         SelectionTitle = 'Choose File'; %string displayed at top of uigetfile window
         DefaultFilepath = ''; %default name used by uigetfile
         AutoChangeDefaultName (1,1) logical = true; %T/F specifying if DefaultName should automatical be changed to last selection
         SelectionBehavior = 'putfile'; %'putfile' or 'getfile' indicating if uiputfile or uigetfile are used
+    end
+    properties(SetAccess=protected,SetObservable,AbortSet)
+        FilterIndex %index of the selected filter
     end
     properties(Access=private)
         internal_set_Filepath = false;
@@ -55,6 +59,9 @@ classdef FileSelector < extras.RequireGuiLayoutToolbox &...
         internal_set_FileDir = false;
     end
     methods
+        function set.SelectionBehavior(this,value)
+            this.SelectionBehavior = char(validatestring(value,{'putfile','getfile'}));
+        end
         function set.Filepath(this,value)
             if this.internal_set_Filepath
                 this.Filepath = value;

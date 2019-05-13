@@ -138,6 +138,7 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
         isResultsWriterRunning = false;
         ResultsFilepath = '';
         resultsWaitingToBeWritten = 0;
+        LastResultsWriterErrorMessage
     end
     
     %% SaveResults
@@ -180,11 +181,15 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
             % automatically adds mxf.gz extension if not present
             
             this.runMethod('openResultsFile',fpth);
+            this.LastResultsWriterErrorMessage = [];
             this.isResultsFileOpen = this.runMethod('isResultsFileOpen');
             this.ResultsFilepath = this.runMethod('ResultsFilepath');
             
+            
+            
             this.resultsWaitingToBeWritten = this.runMethod('resultsWaitingToBeWritten');
             this.isResultsWriterRunning = this.runMethod('isResultsWriterRunning');
+            
             
             %% restart timers if needed
             this.restartResultsWriterErrorTimer();
@@ -231,7 +236,7 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
             this.restartResultsWriterErrorTimer();
             this.restartResultsWriterCheckTimer();
         end
-        
+
     end
     
     
@@ -242,10 +247,10 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
         % internal use - check and dispatch error messages        
             errMsg = this.runMethod('getResultsWriterError');
             if ~isempty(errMsg)
-                this.LastErrorMessage = errMsg;
+                this.LastResultsWriterErrorMessage = errMsg;
                 notify(this,'ResultsWriterErrorOccured',extras.Async.AsyncProcessorError(errMsg,func2str(this.MEX_function)));
             end
-            this.clearError();
+            this.runMethod('clearResultsWriterError');
         end
         
         function ResultsWriterErrorTimerCallback(this)
