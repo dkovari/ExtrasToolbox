@@ -463,7 +463,11 @@ namespace extras {namespace cmex {
 			setFromConst(psrc, persist);
 		}
 
-		//! Construct from (non-const) mxArray*
+		/** Construct from (non-const) mxArray*
+		* Creates a link to psrc, but does not take ownership of psrc
+		* YOU ARE RESPONSIBLE FOR MANAGING psrc destruction
+		* IF psrc is deleted before the object you create MxObject will break
+		*/ 
 		MxObject(mxArray* psrc, bool persist = false) {
 			setFrom(psrc, persist);
 		}

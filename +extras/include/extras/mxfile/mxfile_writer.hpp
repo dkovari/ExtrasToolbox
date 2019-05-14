@@ -4,6 +4,8 @@ All rights reserved.
 -----------------------------------------------------------------------*/
 #pragma once
 
+#define NOMINMAX
+#include <algorithm>
 #include <cstddef>
 #include <cstdio>
 #include <mex.h>
@@ -108,6 +110,112 @@ namespace extras {namespace mxfile {
 		return out;
 	}
 
+
+
+	class SimpleWriter {
+	protected:
+		FILE * _fp = nullptr;
+	public:
+		SimpleWriter() : _fp(nullptr) {};
+		SimpleWriter(const char* filepath) : _fp(nullptr) { open(filepath); };
+		~SimpleWriter() {
+			close();
+		}
+		virtual void close() {
+			if (_fp != nullptr) {
+				fclose(_fp);
+				_fp = nullptr;
+			}
+		}
+		virtual void open(const char* filepath) {
+			if (_fp != nullptr) {
+				fclose(_fp);
+				_fp = nullptr;
+			}
+			_fp = fopen(filepath, "wb");
+			if (_fp == NULL) {
+				throw(extras::stacktrace_error(std::string("open(): returned null, file:'") + std::string(filepath) + std::string("' could not be opened.")));
+			}
+		}
+
+		//! write data to file pointer
+		//! Input:
+		//!		data: pointer to data to write
+		//!		nbytes: number of bytes to write
+		//! Return: number of bytes written
+		virtual size_t write(const void* data, size_t nbytes) {
+			fwrite()
+		}
+	};
+
+	class SimpleGzWriter : public SimpleWriter {
+		friend class MxFileWriter;
+	protected:
+		gzFile _fp; //zlib file pointer
+		char* _data_buffer = nullptr;
+		size_t _data_buffer_sz = 16384;//16kB
+		size_t _data_buffer_pos = 0;
+
+	public:
+		SimpleGzWriter() : _fp(nullptr) {};
+		SimpleGzWriter(const char* filepath) : _fp(nullptr) { open(filepath); };
+		~SimpleGzWriter() {
+			if (_data_buffer_pos > 0 && _fp != NULL) {
+				gzwrite(_fp, _data_buffer, _data_buffer_pos);
+			}
+			free(_data_buffer);
+			close();
+		}
+		virtual void close() {
+			if (_fp != nullptr) {
+				gzclose(_fp);
+				_fp = nullptr;
+			}
+		}
+		virtual void open(const char* filepath) {
+			if (_fp != nullptr) {
+				gzclose(_fp);
+				_fp = nullptr;
+			}
+			_fp = gzopen(filepath, "wb");
+			if (_fp == NULL) {
+				throw(extras::stacktrace_error(std::string("gzopen(): returned null, file:'") + std::string(filepath) + std::string("' could not be opened.")));
+			}
+		}
+
+		//! write data to file pointer
+		//! Input:
+		//!		data: pointer to data to write
+		//!		nbytes: number of bytes to write
+		//! Return: number of bytes written
+		virtual size_t write(const void* data, size_t nbytes) {
+
+			if (nbytes >= _data_buffer_sz) { //writing big data, write the rest of the buffer, then write the data
+				if (_data_buffer_pos != 0) {
+					gzwrite(_fp, _data_buffer, _data_buffer_pos);
+					_data_buffer_pos = 0;
+				}
+				return gzwrite(_fp, data, nbytes);
+			}
+			else { //writing small data, use the buffer
+				size_t rem = _data_buffer_sz - _data_buffer_pos;
+
+				size_t ncpy = std::min(rem, nbytes);
+				memcpy(&_data_buffer[_data_buffer_pos], data, ncpy);
+				rem -= ncpy;
+				if (rem == 0) {
+					gzwrite(_fp, _data_buffer, _data_buffer_sz);
+					_data_buffer_pos = 0;
+				}
+				if (nbytes > ncpy) {
+					memcpy(_data_buffer, &((char*)data)[ncpy], nbytes - ncpy);
+					_data_buffer_pos += nbytes - ncpy;
+				}
+
+			}
+	};
+
+
 	/** Helper class for file pointers
 		* Provides a generic way to write to a file pointer
 		* class can be derived and file-pointer and write method
@@ -140,12 +248,27 @@ namespace extras {namespace mxfile {
 	protected:
 		gzFile _fp; //zlib file pointer
 
+
+		char* _data_buffer = nullptr;
+		size_t _data_buffer_sz = 16384;//16kB
+		size_t _data_buffer_pos = 0;
+
 		//! sets _fp to NULL
 		void clearFP() {
 			_fp = NULL;
 		}
 	public:
-		GZFILE_WritePointer(gzFile fp) :FILE_WritePointer(nullptr), _fp(fp) {};
+		GZFILE_WritePointer(gzFile fp) :FILE_WritePointer(nullptr), _fp(fp) {
+			_data_buffer = (char*)malloc(_data_buffer_sz);
+		};
+
+		~GZFILE_WritePointer() {
+			if (_data_buffer_pos > 0 && _fp!=NULL) {
+				gzwrite(_fp, _data_buffer, _data_buffer_pos);
+			}
+			free(_data_buffer);
+		}
+
 
 		//! write data to file pointer
 		//! Input:
@@ -153,7 +276,32 @@ namespace extras {namespace mxfile {
 		//!		nbytes: number of bytes to write
 		//! Return: number of bytes written
 		virtual size_t write(const void* data, size_t nbytes) {
-			return gzwrite(_fp, data, nbytes);
+
+			if (nbytes >= _data_buffer_sz) { //writing big data, write the rest of the buffer, then write the data
+				if (_data_buffer_pos != 0) {
+					gzwrite(_fp, _data_buffer, _data_buffer_pos);
+					_data_buffer_pos = 0;
+				}
+				return gzwrite(_fp, data, nbytes);
+			}
+			else { //writing small data, use the buffer
+				size_t rem = _data_buffer_sz - _data_buffer_pos;
+
+				size_t ncpy = std::min(rem, nbytes);
+				memcpy(&_data_buffer[_data_buffer_pos], data, ncpy);
+				rem -= ncpy;
+				if (rem == 0) {
+					gzwrite(_fp, _data_buffer, _data_buffer_sz);
+					_data_buffer_pos = 0;
+				}
+				if (nbytes > ncpy) {
+					memcpy(_data_buffer, &((char*)data)[ncpy], nbytes - ncpy);
+					_data_buffer_pos += nbytes - ncpy;
+				}
+
+			}
+
+			return nbytes;
 		}
 
 		//! return gzFile hides inherited getFP()
@@ -171,14 +319,12 @@ namespace extras {namespace mxfile {
 
 			size_t bytes_written = 0;
 
-			//write type byte
-			bytes_written += FP.write(&type, 1);
+			//// write header
 
-			//write ndim
-			bytes_written += FP.write(&ndims, sizeof(size_t));
+			bytes_written += FP.write(&type, 1);//write type byte
+			bytes_written += FP.write(&ndims, sizeof(size_t));//write ndim
+			bytes_written += FP.write((void*)mxGetDimensions(thisArray), sizeof(size_t)*ndims);//write dims
 
-			//write dims
-			bytes_written += FP.write((void*)mxGetDimensions(thisArray), sizeof(size_t)*ndims);
 
 			switch (mxGetClassID(thisArray))
 			{

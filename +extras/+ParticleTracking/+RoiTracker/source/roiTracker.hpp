@@ -72,9 +72,25 @@ namespace extras { namespace ParticleTracking {
 				img = TaskArgs.getConstArray(0);
 			}
 
-			MxStruct outStruct(ParamMap->get_roiList()); //create copy of roiList for output;
-			outStruct.managearray(); //make outStruct editable
-			outStruct.makePersistent();//make persistent now so that it doesn't get messed up by the fact that we are running in a thread
+			//Copy Parameter Map into resultStruct
+			MxStruct resultsStruct = ParamMap->map2struct();
+			resultsStruct.makePersistent(); //make resultStruct persistent so that we don't have issued being in a thread
+
+			// if include image, add to struct
+			if (_IncludeImageInResults) {
+
+				if (mxIsStruct(TaskArgs.getConstArray(0))) { //imagedata was already a struct
+					resultsStruct(0, "ImageStruct") = TaskArgs.getConstArray(0);
+				}
+				else { //only image data was passed, construct ImageStruct
+					MxStruct IS(1, { "ImageData" });
+					IS(0, "ImageData") = img;
+					resultsStruct(0, "ImageStruct") = std::move(IS);
+				}
+			}
+
+			
+			MxStruct roiList(resultsStruct(0, "roiList").getmxarray()); //alias to roiList inside resultStruct
 
 			/////////////////////////////
 			// Process Image using appropriate method
@@ -92,16 +108,21 @@ namespace extras { namespace ParticleTracking {
 
 							   //set field values
 				for (size_t n = 0; n < ParamMap->WIND->nRows(); ++n) {
-					outStruct(n, "X") = rcOut[0][n];
-					outStruct(n, "Y") = rcOut[1][n];
+
+					MxStruct CentroidResult(1, { "X","Y","varXY","RWR_N","xyMethod" });
+
+					CentroidResult(0, "X") = rcOut[0][n];
+					CentroidResult(0, "Y") = rcOut[1][n];
 
 					NumericArray<double> vxy(2, 1);
 					vxy(0) = rcOut[2](n, 0);
 					vxy(1) = rcOut[2](n, 1);
-					outStruct(n, "varXY") = vxy;
+					CentroidResult(0, "varXY") = vxy;
 
-					outStruct(n, "RWR_N") = rcOut[3][n];
-					outStruct(n, "xyMethod") = "radialcenter";
+					CentroidResult(0, "RWR_N") = rcOut[3][n];
+					CentroidResult(0, "xyMethod") = "radialcenter";
+
+					roiList(n, "CentroidResult") = CentroidResult.releaseArray();
 				}
 			}
 				break;
@@ -115,11 +136,7 @@ namespace extras { namespace ParticleTracking {
 			// Return result
 
 			mxArrayGroup results(1);
-			results.ownArray(0,outStruct);
-
-			if (_IncludeImageInResults) {
-				results.push_back(TaskArgs.getConstArray(0));
-			}
+			results.ownArray(0, resultsStruct.releaseArray());
 
 			return results;
 

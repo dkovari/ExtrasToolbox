@@ -93,8 +93,13 @@ namespace extras{namespace cmex{
             return *this;
         }
 
-        //! Construct and assign from mxarray
-        //! assume mxArray* is not persistent
+		/** Construct from (non-const) mxArray*
+		* Creates a link to psrc, but does not take ownership of psrc
+		* YOU ARE RESPONSIBLE FOR MANAGING psrc destruction
+		* IF psrc is deleted before the object you create MxObject will break
+		*
+		* Default assumption is that the array is not persistent (but you can specify yourself)
+		*/
         MxStruct(mxArray* mxptr,bool isPersistent=false):
             MxObject(mxptr,isPersistent)
         {

@@ -27,6 +27,15 @@ namespace extras {namespace cmex {
 
 		operator mxArray*() { return internalGet(); }
 
+		//! returns (non-const) mxArray* _mxptr
+		// does not change memory management rules
+		mxArray* getmxarray() { return internalGet(); }
+
+		//! return const mxArray*
+		const mxArray* getConstArray() const {
+			return internalGet();
+		}
+
 		//! move mxArray* into field
 		//! pvalue will be managed by the struct after operation
 		MxWrapper& operator=(mxArray* pvalue) {

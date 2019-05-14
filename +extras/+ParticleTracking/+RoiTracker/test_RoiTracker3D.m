@@ -39,6 +39,9 @@ end
 rcp = extras.ParticleTracking.RoiTracker.RoiTracker3D();
 rcp_UI = extras.Async.AsyncProcessorWriterUI(rcp);
 rcp.openResultsFile('dan_test1.mxf.gz');
+
+rcp.IncludeImageInResult = true;
+
 %rcp.SaveResults = true;
 
 %% Generate Test Image
@@ -132,15 +135,15 @@ else
 end
 
 try
-    Z = res(1).LUT(1).Result(1).Z;
-    rr = res(1).LUT(1).rr;
+    Z = res.roiList(1).LUT(1).DepthResult(1).Z;
+    rr = res.roiList(1).LUT(1).rr;
     
     figure(99);
     cla;
-    plot(res(1).RadialAverage_rloc,res(1).RadialAverage,'*','DisplayName','RadialAvg');
+    plot(res.roiList(1).RadialAverage_rloc,res.roiList(1).RadialAverage,'*','DisplayName','RadialAvg');
     hold on;
     plot(rr,ProfileFn(Z,rr),'--','DisplayName',sprintf('ProfileFn @ z=%g',Z));
-    plot(rr,ppval(res(1).LUT(1).pp,Z)',':','DisplayName',sprintf('Spline @ z=%g',Z));
+    plot(rr,ppval(res.roiList(1).LUT(1).pp,Z)',':','DisplayName',sprintf('Spline @ z=%g',Z));
     
     plot(rr,ProfileFn(Zc(1),rr),'--','DisplayName',sprintf('ProfileFn @ Zc_1=%g',Zc(1)));
     legend show;
@@ -154,8 +157,8 @@ if isempty(res)
     hPlt.XData = [];
     hPlt.YData = [];
 else
-    hPlt.XData = [res.X];
-    hPlt.YData = [res.Y];
+    hPlt.XData = [res.roiList.CentroidResult.X];
+    hPlt.YData = [res.roiList.CentroidResult.Y];
 end
 persistent n;
 if isempty(n)

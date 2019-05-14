@@ -69,17 +69,25 @@ namespace extras {namespace ParticleTracking {
 			if (resultsGroup.size() == 0) { //handle no return values
 				return resultsGroup;
 			}
-			MxStruct outStruct(resultsGroup.getArray(0), true); // roiList struct with xy results
 
-			if (!outStruct.isfield("X") || !outStruct.isfield("Y")) { //X Y not defined, skip
+			MxStruct resultStruct(resultsGroup.getArray(0), true); //create alias to resultsGroup[0]
+
+			if (!resultStruct.isfield("roiList")) { //no roiList, return
 				return resultsGroup;
 			}
 
-			
+			MxStruct roiList(resultStruct(0,"roiList").getmxarray(), true); // alias to "roiList" field in resultStruct (a.k.a. resultsGroup[0])
 
-			
+			if (!roiList.isfield("CentroidResult")) { //centroidresult not defined, skip
+				return resultsGroup;
+			}
+
+			/*if (!roiList.isfield("X") || !roiList.isfield("Y")) { //X Y not defined, skip
+				
+			}*/
+
 			// if no LUT then skip
-			if (!outStruct.isfield("LUT") ) {
+			if (!roiList.isfield("LUT") ) {
 				return resultsGroup;
 			}
 
@@ -95,24 +103,25 @@ namespace extras {namespace ParticleTracking {
 
 			/////////////////////////////////////////////
 			//loop over roi and calc z if needed
-			for (size_t n = 0; n < outStruct.numel(); n++) {
+			for (size_t n = 0; n < roiList.numel(); n++) {
 				////////////////////////////////////////////////////////
 				// Prepare loop
-				
-				double x = outStruct(n, "X");
-				double y = outStruct(n, "Y");
+
+				MxStruct CentroidResult(roiList(n, "CentroidResult").getmxarray()); //alias to CentroidResult in roiList(n)
+				double x = CentroidResult(0, "X");
+				double y = CentroidResult(0, "Y");
 
 				if ( x==NAN || y==NAN ) { //did't find particle, skip
 					continue;
 				}
 
 				// if LUT is empty, then skip
-				if (outStruct(n, "LUT").isempty()) {
+				if (roiList(n, "LUT").isempty()) {
 					continue;
 				}
 
 				//make sure LUT is struct
-				if (!outStruct(n, "LUT").isstruct()) {
+				if (!roiList(n, "LUT").isstruct()) {
 					throw(stacktrace_error(std::string("RoiTracker3D::ProcessTask(): ROI n=") + std::to_string(n) + "LUT Field is not a struct."));
 				}
 
@@ -120,7 +129,7 @@ namespace extras {namespace ParticleTracking {
 				// Loop over all the LUT and determing the lowest MinR and largest MaxR
 				int maxR = -1;
 				int minR = INT_MAX;
-				MxStruct LUT(outStruct(n, "LUT"));
+				MxStruct LUT(roiList(n, "LUT"));
 				if (LUT.isfield("MinR")) {
 					for (size_t k = 0; k < LUT.numel(); k++) {
 						minR = std::min(minR, int(double(LUT(k, "MinR"))));
@@ -151,15 +160,15 @@ namespace extras {namespace ParticleTracking {
 				auto radavg_result = radialavg(mxI, x-1, y-1, maxR, minR, 1);
 				NumericArray<double>& imravg = std::get<0>(radavg_result);
 
-				outStruct(n, "RadialAverage") = imravg;
-				outStruct(n, "RadialAverage_rloc") = std::get<1>(radavg_result);
+				roiList(n, "RadialAverage") = imravg;
+				roiList(n, "RadialAverage_rloc") = std::get<1>(radavg_result);
 				
 				//////////////////////////
 				// Use splineroot to compute z
 				//
 				// Will add "Z" and other fields to LUT 
-				if (outStruct(n, "LUT").isstruct()) {
-					MxStruct LUT(outStruct(n, "LUT"));
+				if (roiList(n, "LUT").isstruct()) {
+					MxStruct LUT(roiList(n, "LUT"));
 
 					// check for pp field
 					if (!LUT.isfield("pp")) {
@@ -200,7 +209,7 @@ namespace extras {namespace ParticleTracking {
 
 						spline dpp;
 						bool free_dpp = false;
-						char * dpp_calc; //array noting which breaks of dpp have been calculated
+						char * dpp_calc = nullptr; //array noting which breaks of dpp have been calculated
 						if (LUT.isfield("dpp")) {
 							if (createspline(&dpp, LUT(k, "dpp"))<0) {
 								throw(std::runtime_error(std::string("ROI:") + std::to_string(n)
@@ -247,7 +256,7 @@ namespace extras {namespace ParticleTracking {
 						lutRes(0, "dR2frac") = dR2frac;
 						lutRes(0, "initR2") = initR2;
 
-						LUT(k, "Result") = lutRes;
+						LUT(k, "DepthResult") = lutRes.releaseArray();
 
 						//cleanup dpp arrays
 						free(dpp_calc);
