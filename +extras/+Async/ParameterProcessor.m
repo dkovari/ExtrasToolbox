@@ -42,20 +42,20 @@ classdef ParameterProcessor < extras.Async.AsyncProcessorWithWriter & dynamicpro
                 prop_names = reshape(fieldnames(this.Parameters),1,[]);
             end
             
-            
             %delete dynamic properties not currrent property list
-            bad_props = setdiff(keys(this.DynamicParameterMap),prop_names)
-            for bp = bad_props
+            bad_props = setdiff(keys(this.DynamicParameterMap),prop_names);
+            for n=1:numel(bad_props)
+                bp = bad_props{n};
                 mp = findprop(this,bp);
                 if ~isempty(mp)
-                    delete(mp)
+                    delete(mp);
                 end
             end
             remove(this.DynamicParameterMap,bad_props);
             
             % add/update properties
-            for prop_name = prop_names
-                prop_name = prop_name{1};
+            for n=1:numel(prop_names)%prop_name = prop_names
+                prop_name = prop_names{n};
                 mp = findprop(this,prop_name);
                 if isempty(mp) %need to create
                     mp = this.addprop(prop_name);
