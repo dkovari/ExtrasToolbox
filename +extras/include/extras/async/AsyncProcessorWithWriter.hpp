@@ -23,12 +23,17 @@ compiled zlib-lib files.
 #include <extras/mxfile/mxfile_writer.hpp>
 /*******************************************/
 
+#include <extras/cmex/MxStruct.hpp>
+
 namespace extras {namespace async {
 
 	class AsyncProcessorWithWriter : public AsyncProcessor {
 	protected:
 		/////////////////////////////
 		// Save Results Related
+
+
+		//std::atomic<size_t> _APWW_pushed = 0;
 
 		std::atomic_bool _SaveResults = false; //flag indicating results should be saved
 		extras::mxfile::AsyncMxFileWriter _AsyncWriter; //instance of file writer
@@ -42,19 +47,23 @@ namespace extras {namespace async {
 		*/
 		virtual bool ProcessLoopCore() {
 
-			auto results = ProcessNextTask();
+			if (remainingTasks() > 0) {
+				auto results = ProcessNextTask();
 
-			// store result on results list
-			std::lock_guard<std::mutex> rlock(ResultsListMutex);
+				// store result on results list
+				std::lock_guard<std::mutex> rlock(ResultsListMutex);
+				
 
-			if (results.size()>0) {
+				if (results.size()>0) {
+					//_APWW_pushed++;
+					if (_SaveResults) { //write data if needed
 
-				if (_SaveResults) { //write data if needed
-					_AsyncWriter.writeArrays(results.size(), results);
+						_AsyncWriter.writeArrays(results.size(), results);
+					}
+
+					ResultsList.push_front(std::move(results));
+
 				}
-
-				ResultsList.push_front(std::move(results));
-
 			}
 
 			if (remainingTasks() < 1) {
@@ -125,6 +134,11 @@ namespace extras {namespace async {
 		size_t resultsWaitingToBeWritten() const {
 			return _AsyncWriter.remainingTasks();
 		}
+
+
+		//size_t get_APWW_pushed() const { return _APWW_pushed; }
+		//size_t get_AMFW_pushed() const { return _AsyncWriter.get_AMFW_pushed(); }
+		//size_t get_AMFW_procced() const { return _AsyncWriter.get_AMFW_procced(); }
 	};
 
 
@@ -207,6 +221,14 @@ namespace extras {namespace async {
 		void stopWritingAndClearUnsaved(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			ParentType::getObjectPtr(nrhs, prhs)->stopWritingAndClearUnsaved();
 		}
+
+		/*void getPushedProcced(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			cmex::MxStruct out(1, { "APWW_pushed","AMFW_pushed","AMFW_procced" });
+			out(0, "APWW_pushed") = (double)ParentType::getObjectPtr(nrhs, prhs)->get_APWW_pushed();
+			out(0, "AMFW_pushed") = (double)ParentType::getObjectPtr(nrhs, prhs)->get_AMFW_pushed();
+			out(0, "AMFW_procced") = (double)ParentType::getObjectPtr(nrhs, prhs)->get_AMFW_procced();
+			plhs[0] = out;
+		}*/
 	public:
 		AsyncProcessorWithWriterInterface() {
 			using namespace std::placeholders;
@@ -228,6 +250,7 @@ namespace extras {namespace async {
 			ParentType::addFunction("saveResults", std::bind(&AsyncProcessorWithWriterInterface::saveResults, this, _1, _2, _3, _4));
 			ParentType::addFunction("resultsWaitingToBeWritten", std::bind(&AsyncProcessorWithWriterInterface::resultsWaitingToBeWritten, this, _1, _2, _3, _4));
 			ParentType::addFunction("stopWritingAndClearUnsaved", std::bind(&AsyncProcessorWithWriterInterface::stopWritingAndClearUnsaved, this, _1, _2, _3, _4));
+			//ParentType::addFunction("getPushedProcced", std::bind(&AsyncProcessorWithWriterInterface::getPushedProcced, this, _1, _2, _3, _4));
 		}
 	};
 

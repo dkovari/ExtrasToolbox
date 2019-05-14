@@ -37,7 +37,9 @@ end
 
 %% Create Processor
 rcp = extras.ParticleTracking.RoiTracker.RoiTracker3D();
-
+rcp_UI = extras.Async.AsyncProcessorWriterUI(rcp);
+rcp.openResultsFile('dan_test1.mxf.gz');
+%rcp.SaveResults = true;
 
 %% Generate Test Image
 

@@ -4,6 +4,7 @@ WIND = rand(1,4);
 %% get pointer
 p = extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('new');
 extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('pause',p);
+extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('saveResults',p,true);
 
 'press a key 1'
 pause
@@ -13,6 +14,8 @@ extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('pushTask',p,I);
 
 'press a key 2'
 pause();
+
+PUSH_PROC = extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('getPushedProcced',p)
 
 
 remTasks = extras.Async.Example.ParamProcessor.ExampleParamProcessorMex('remainingTasks',p)

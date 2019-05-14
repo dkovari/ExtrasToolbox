@@ -1,4 +1,4 @@
-classdef ParameterProcessor < extras.Async.AsyncProcessorWithWriter & dynamicprops
+classdef ParameterProcessor < extras.Async.AsyncProcessorWriter & dynamicprops
 % Base class for all ParameterProcess type AsyncProcessors
 %% Copyright 2019 Daniel T. Kovari, Emory University
 %   All rights reserved.
@@ -6,7 +6,7 @@ classdef ParameterProcessor < extras.Async.AsyncProcessorWithWriter & dynamicpro
     %% create
     methods
         function this = ParameterProcessor(MEX_FUNCTION)
-            this@extras.Async.AsyncProcessorWithWriter(MEX_FUNCTION)
+            this@extras.Async.AsyncProcessorWriter(MEX_FUNCTION)
             this.Name = 'ParameterProcessor'; %Change Name
             
             %% update params

@@ -53,17 +53,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+mxfile\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxPath)external_libs\zlib\include;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_mex</TargetName>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+mxfile\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxPath)external_libs\zlib\include;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_mex</TargetName>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -78,9 +78,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/export:mexFunction %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\external_libs\zlib\lib\Win\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ExtrasToolboxPath)external_libs\zlib\lib\Win\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -99,9 +99,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/export:mexFunction %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\external_libs\zlib\lib\Win\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ExtrasToolboxPath)external_libs\zlib\lib\Win\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

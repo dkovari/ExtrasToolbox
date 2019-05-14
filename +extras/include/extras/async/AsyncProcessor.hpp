@@ -61,15 +61,17 @@ namespace extras{namespace async{
 		*/
 		virtual bool ProcessLoopCore() {
 
-			auto results = ProcessNextTask();
+			if (remainingTasks() > 0) {
+				auto results = ProcessNextTask();
 
-			// store result on results list
-			std::lock_guard<std::mutex> rlock(ResultsListMutex);
+				// store result on results list
+				std::lock_guard<std::mutex> rlock(ResultsListMutex);
 
-			if (results.size()>0) {
+				if (results.size() > 0) {
 
-				ResultsList.push_front(std::move(results));
+					ResultsList.push_front(std::move(results));
 
+				}
 			}
 
 			if (remainingTasks() < 1) {

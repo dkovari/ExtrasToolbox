@@ -1,4 +1,4 @@
-classdef AsyncProcessorWithWriterUI < extras.GraphicsChild & extras.widgets.mixin.ObjectDependentLifetime & extras.RequireGuiLayoutToolbox
+classdef AsyncProcessorWriterUI < extras.GraphicsChild & extras.widgets.mixin.ObjectDependentLifetime & extras.RequireGuiLayoutToolbox
 %% Copyright 2019 Daniel T. Kovari, Emory University
 %   All rights reserved.
 
@@ -27,7 +27,7 @@ classdef AsyncProcessorWithWriterUI < extras.GraphicsChild & extras.widgets.mixi
 
     %% create
     methods
-        function this = AsyncProcessorWithWriterUI(varargin)
+        function this = AsyncProcessorWriterUI(varargin)
         % Inputs:
         %   AsyncProcessorWithWriterUI(AsyncProcessorWithWriter_Object)
         %   AsyncProcessorWithWriterUI(GraphicsParent,__)
@@ -37,7 +37,7 @@ classdef AsyncProcessorWithWriterUI < extras.GraphicsChild & extras.widgets.mixi
             %% check inputs
             iH = extras.inputHandler;
             iH.addOptionalVariable('Parent',gobjects(0),@isgraphics,true);
-            iH.addRequiredVariable('Processor',@(x) isa(x,'extras.Async.AsyncProcessorWithWriter'));
+            iH.addRequiredVariable('Processor',@(x) isa(x,'extras.Async.AsyncProcessorWriter'),true);
             
             iH.parse(varargin{:});
             
@@ -84,7 +84,7 @@ classdef AsyncProcessorWithWriterUI < extras.GraphicsChild & extras.widgets.mixi
                 'Spacing',2,...
                 'LabelHorizontalAlignment','right',...
                 'Value',this.Processor.SaveResults,...
-                'Callback',@(h,~) set(this.Processor,'SaveResults',h.Value));
+                'Callback',@(h,~) set(this.Processor,'SaveResults',~this.Processor.SaveResults));
             
             this.SaveResultsListener = addlistener(this.Processor,'SaveResults','PostSet',@(~,~) extras.inline_try(@() set(this.SaveResultsCheckbox,'Value',this.Processor.SaveResults)));
             
@@ -139,6 +139,8 @@ classdef AsyncProcessorWithWriterUI < extras.GraphicsChild & extras.widgets.mixi
                 'String',num2str(this.Processor.resultsWaitingToBeWritten));
             
             this.resultsWaitingToBeWrittenListener = addlistener(this.Processor,'resultsWaitingToBeWritten','PostSet',@(~,~) extras.inline_try(@() set(this.resultsWaitingToBeWrittenField,'string',num2str(this.Processor.resultsWaitingToBeWritten))));
+            
+            vbox.Heights = repmat(35,size(vbox.Heights));
         end
     end
     

@@ -1,4 +1,4 @@
-classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
+classdef (Abstract) AsyncProcessorWriter < extras.Async.AsyncProcessor
 %% extras.SessionManager.AsyncProcessorWithWriter
 % Interface to Mex-based Asynchronous data processor with integrated File
 % writer
@@ -24,7 +24,7 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
 
     %% create
     methods
-        function this = AsyncProcessorWithWriter(MEX_FUNCTION)
+        function this = AsyncProcessorWriter(MEX_FUNCTION)
             this@extras.Async.AsyncProcessor(MEX_FUNCTION)
             this.Name = 'AsyncProcessorWithWriter'; %Change Name
             
@@ -261,6 +261,8 @@ classdef (Abstract) AsyncProcessorWithWriter < extras.Async.AsyncProcessor
             if this.runMethod('wasResultsWriterErrorThrown')
                 this.DispatchWriterErrorMessage();
             end
+            
+            %PUSH_PROC = this.runMethod('getPushedProcced')
             
             this.isResultsWriterRunning = this.runMethod('isResultsWriterRunning');
             if ~this.isResultsWriterRunning

@@ -71,16 +71,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ExtrasInclude)\..\+Async\+Example\+PersistentProcessor</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+Async\+Example\+PersistentProcessor\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxPath)external_libs\zlib\include;$(IncludePath)</IncludePath>
     <TargetName>ExamplePersistentProcessorMex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ExtrasInclude)\..\+Async\+Example\+PersistentProcessor</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+Async\+Example\+PersistentProcessor\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxPath)external_libs\zlib\include;$(IncludePath)</IncludePath>
     <TargetName>ExamplePersistentProcessorMex</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

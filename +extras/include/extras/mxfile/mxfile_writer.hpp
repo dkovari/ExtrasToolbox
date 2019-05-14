@@ -37,6 +37,8 @@ compiled zlib-lib files.
 #include <zlib.h>
 /********************************************/
 
+///////////////////////////////////////////////
+// MxFileWriter
 namespace extras {namespace mxfile {
 
 	class MxFileWriter; //forward declaration
@@ -95,7 +97,7 @@ namespace extras {namespace mxfile {
 					}
 				}
 			}
-				break;
+									break;
 			default:
 				l.nbytes = sizeof(uint8_t) + sizeof(size_t) + sizeof(uint8_t) + sizeof(uint8_t); //type, ndims, isComplex, isInterleaved,
 				l.nbytes += mxGetNumberOfDimensions(prhs[i]) * sizeof(size_t) + mxGetNumberOfElements(prhs[i]) * mxGetElementSize(prhs[i]) * (1 + mxIsComplex(prhs[i])); //  dims, data
@@ -106,7 +108,6 @@ namespace extras {namespace mxfile {
 		return out;
 	}
 
-
 	/** Helper class for file pointers
 		* Provides a generic way to write to a file pointer
 		* class can be derived and file-pointer and write method
@@ -114,7 +115,7 @@ namespace extras {namespace mxfile {
 	*/
 	class FILE_WritePointer {
 	protected:
-		FILE* _fp = nullptr;
+		FILE * _fp = nullptr;
 	public:
 		FILE_WritePointer(FILE* fp) :_fp(fp) {};
 
@@ -195,7 +196,7 @@ namespace extras {namespace mxfile {
 				//write length of fieldname and fieldnames
 				for (size_t f = 0; f < nfields; ++f) {
 					const char* fieldname = mxGetFieldNameByNumber(thisArray, f);
-					size_t len = strlen(fieldname)+1; // length including null terminator
+					size_t len = strlen(fieldname) + 1; // length including null terminator
 
 					//write length of name
 					bytes_written += FP.write(&len, sizeof(size_t));
@@ -204,7 +205,7 @@ namespace extras {namespace mxfile {
 					bytes_written += FP.write(fieldname, len * sizeof(char));
 				}
 			}
-				break;
+			break;
 			default: //all other types
 			{
 				//write complex
@@ -248,7 +249,7 @@ namespace extras {namespace mxfile {
 	}
 
 	/**
-	 * Class which handles writing MxFile data
+		* Class which handles writing MxFile data
 	*/
 	class MxFileWriter {
 	protected:
@@ -261,7 +262,7 @@ namespace extras {namespace mxfile {
 			//look for ".mxf.gz" at end of file
 			std::string fpth_lower = extras::tolower(fpth);
 			const char* fpth_c = fpth_lower.c_str();
-			const char* p_ext = strstr(fpth_c,".mxf.gz");
+			const char* p_ext = strstr(fpth_c, ".mxf.gz");
 			if (p_ext != nullptr) { //found in fpth, make sure it's at the end
 				size_t loc = p_ext - fpth_c; //location in the string
 				size_t back = fpth.size() - loc; //loc from back
@@ -360,7 +361,7 @@ namespace extras {namespace mxfile {
 		void writeArrays(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			ParentType::getObjectPtr(nrhs, prhs)->writeArrays(nrhs - 1, &prhs[1]);
 		}
-		void isFileOpen(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]){
+		void isFileOpen(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
 			bool isopen = ParentType::getObjectPtr(nrhs, prhs)->isFileOpen();
 			plhs[0] = mxCreateLogicalScalar(isopen);
 		}
@@ -375,11 +376,17 @@ namespace extras {namespace mxfile {
 		}
 	};
 
+}}
 
+///////////////////////////////////////////
+// ASYNC WRITER
+namespace extras {namespace mxfile {
 	///////////////////////////////////////////////
 	// Async Writer
 	class AsyncMxFileWriter : public MxFileWriter, virtual public extras::async::AsyncProcessor {
 	protected:
+		//std::atomic<size_t> _AMFW_pushed = 0;
+		//std::atomic<size_t> _AMFW_procced = 0;
 		//! redefine StartProcessor to check if file is open
 		virtual void StartProcessor() {
 			if (!isFileOpen()) {
@@ -390,13 +397,14 @@ namespace extras {namespace mxfile {
 
 		///Overloadable virtual method for Processing Tasks in the task list
 		virtual cmex::mxArrayGroup ProcessTask(const cmex::mxArrayGroup& args) {
+			//_AMFW_procced++;
 			MxFileWriter::writeArrays(args.size(), args);
 			return cmex::mxArrayGroup(); //return empty results array
 		}
 
 	public:
 		//! destructor
-		virtual ~AsyncMxFileWriter() { 
+		virtual ~AsyncMxFileWriter() {
 			ProcessTasksAndEnd();
 			closeFile();
 		}
@@ -423,9 +431,12 @@ namespace extras {namespace mxfile {
 
 		//! write the matlab arrays to the file
 		virtual void writeArrays(size_t nrhs, const mxArray** prhs) {
+			//_AMFW_pushed++;
 			pushTask(nrhs, prhs);
 		}
 
+		//size_t get_AMFW_pushed() const { return _AMFW_pushed; }
+		//size_t get_AMFW_procced() const { return _AMFW_procced; }
 	};
 
 	//! implement mexInterface for AsyncMxFileWriter
@@ -463,5 +474,4 @@ namespace extras {namespace mxfile {
 			ParentType::addFunction("isFileOpen", std::bind(&AsyncMxFileWriterInterface::isFileOpen, this, _1, _2, _3, _4));
 		}
 	};
-
 }}

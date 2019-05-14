@@ -4,6 +4,7 @@
 Version of radial center which does not use extras::ArrayBase class
 */
 
+#define NOMINMAX //don't use the windows definition of min/max
 #include <math.h>
 #include <cstring>
 #include <cstdint>

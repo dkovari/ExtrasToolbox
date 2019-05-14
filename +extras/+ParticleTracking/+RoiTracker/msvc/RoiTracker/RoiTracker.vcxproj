@@ -48,23 +48,22 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\msvc\ExtrasToolbox_PropertySheet.props" />
     <Import Project="..\..\..\..\msvc\ExtrasToolbox_PropertySheet.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+ParticleTracking\+RoiTracker\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(SolutionDir)..\+ParticleTracking;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxPath)external_libs\zlib\include;$(ExtrasToolboxPath)+ParticleTracking;$(IncludePath)</IncludePath>
     <TargetName>RoiTracker_mex</TargetName>
     <IntDir>$(ProjectDir)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\..\</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+ParticleTracking\+RoiTracker\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(SolutionDir)..\+ParticleTracking;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxPath)external_libs\zlib\include;$(ExtrasToolboxPath)+ParticleTracking;$(IncludePath)</IncludePath>
     <TargetName>RoiTracker_mex</TargetName>
     <IntDir>$(ProjectDir)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -81,7 +80,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/export:mexFunction %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\external_libs\zlib\lib\Win\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ExtrasToolboxPath)\external_libs\zlib\lib\Win\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -103,7 +102,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>zlibstat.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/export:mexFunction %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\external_libs\zlib\lib\Win\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ExtrasToolboxPath)\external_libs\zlib\lib\Win\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

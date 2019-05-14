@@ -61,14 +61,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+ParticleTracking\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(IncludePath)</IncludePath>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+ParticleTracking\</OutDir>
     <TargetExt>.mexw64</TargetExt>
     <IncludePath>$(IncludePath)</IncludePath>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>

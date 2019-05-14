@@ -124,10 +124,10 @@ classdef inputHandler < handle & matlab.mixin.SetGet
             [lia,lob] = ismember(validName,{this.variables.Name});
             if lia
                 warning('%s is already specified as a variable name. Replacing.',validName);
-                this.variables(lob) = struct('Name',validName,'DefaultValue',DefaultValue,'Validator',Validator,'Required',false,'IncludeAsParameter',IncludeAsParameter);
+                this.variables(lob) = struct('Name',validName,'DefaultValue',DefaultValue,'Validator',Validator,'Required',true,'IncludeAsParameter',IncludeAsParameter);
             else
                 %% add to list
-                this.variables(end+1) = struct('Name',validName,'DefaultValue',[],'Validator',Validator,'Required',false,'IncludeAsParameter',IncludeAsParameter);
+                this.variables(end+1) = struct('Name',validName,'DefaultValue',[],'Validator',Validator,'Required',true,'IncludeAsParameter',IncludeAsParameter);
             end
         end
         function addOptionalVariable(this,Name,DefaultValue,Validator,IncludeAsParameter)
@@ -266,7 +266,12 @@ classdef inputHandler < handle & matlab.mixin.SetGet
                     error('No input arguments remaining and Required Variable %s has not been found',this.variables(n).Name);
                 end
             end
-            this_parser.Parameters
+           
+            %% Check if we missed something
+            if ~isempty(varargin) && ~ischar(varargin{1})
+                error('Argument(s) were passed which did not match any of the Optional/Required variables.\nMissing Requirements: %s',ReqNotFound);
+            end
+            
             %% Use Input Parser to check for remaining arguments
             parse(this_parser,varargin{:});
 

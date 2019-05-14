@@ -6,7 +6,11 @@ end
 
 EP3 = extras.Async.Example.ParamProcessor.ExampleParamProcessor; %create processor
 
-EP_UI = extras.Async.AsyncProcessorWithWriterUI(EP3);
+%set file
+EP3.openResultsFile('dan_test1.mxf.gz');
+EP3.SaveResults = true;
+
+EP_UI = extras.Async.AsyncProcessorWriterUI(EP3);
 
 CBQ = extras.CallbackQueue; %create callback queue to listen to results from processor
 

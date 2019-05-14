@@ -1,10 +1,10 @@
-classdef PersistentArgsProcessor < extras.Async.AsyncProcessorWithWriter
+classdef PersistentArgsProcessor < extras.Async.AsyncProcessorWriter
 % Example AsyncProcessor Implementation
 
     %% create
     methods
         function this = PersistentArgsProcessor(MEX_FUNCTION)
-            this@extras.Async.AsyncProcessorWithWriter(MEX_FUNCTION)
+            this@extras.Async.AsyncProcessorWriter(MEX_FUNCTION)
             this.Name = 'PersistentArgsProcessor'; %Change Name
         end
     end

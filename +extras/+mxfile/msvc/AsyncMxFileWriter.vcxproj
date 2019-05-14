@@ -53,17 +53,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+mxfile\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxPath)external_libs\zlib\include;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_mex</TargetName>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+mxfile\</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(SolutionDir)..\external_libs\zlib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxPath)external_libs\zlib\include;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_mex</TargetName>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>

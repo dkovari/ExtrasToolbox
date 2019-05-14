@@ -849,8 +849,7 @@ namespace extras {namespace cmex {
 			size_t thisSz_len = thisSz.size();
 			size_t thatSz_len = thatSz.size();
 
-			std::max(0, 1);
-			size_t maxDimLen = std::max(std::max(thisSz.size(), thatSz.size()),dim+1);
+			size_t maxDimLen = std::max(std::max(thisSz_len, thatSz_len),dim+1);
 
 			// Loop over array dimensions and determine if sizes are compatible
 			thisSz.resize(maxDimLen);
