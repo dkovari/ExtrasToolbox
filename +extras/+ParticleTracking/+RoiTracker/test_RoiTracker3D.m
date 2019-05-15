@@ -134,6 +134,7 @@ else
     imagesc(data{2});
 end
 
+
 try
     Z = res.roiList(1).LUT(1).DepthResult(1).Z;
     rr = res.roiList(1).LUT(1).rr;
@@ -157,8 +158,9 @@ if isempty(res)
     hPlt.XData = [];
     hPlt.YData = [];
 else
-    hPlt.XData = [res.roiList.CentroidResult.X];
-    hPlt.YData = [res.roiList.CentroidResult.Y];
+    cnt = [res.roiList.CentroidResult];
+    hPlt.XData = [cnt.X];
+    hPlt.YData = [cnt.Y];
 end
 persistent n;
 if isempty(n)

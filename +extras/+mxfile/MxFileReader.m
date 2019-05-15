@@ -74,6 +74,32 @@ classdef MxFileReader < extras.SessionManager.Session
                 rethrow(ME);
             end
         end
+        
+        function data = readAll(this)
+            data = {};
+            
+            t1 = tic();
+            hWB = [];
+            while ~this.AtEndOfFile
+                data{end+1} = this.readNextArray();
+                if this.AtEndOfFile
+                    data(end) = [];
+                end
+                if toc(t1)>0.8
+                    if isempty(hWB)
+                        hWB = waitbar(this.LoadProgress,sprintf('Loading Data From: %s', this.Filepath));
+                    else
+                        if ~isvalid(hWB)
+                            warning('Reading %s canceled by user',this.Filepath);
+                            return;
+                        else
+                            waitbar(this.LoadProgress,hWB);
+                        end
+                    end
+                end
+            end
+            delete(hWB);
+        end
     end
 
 end
