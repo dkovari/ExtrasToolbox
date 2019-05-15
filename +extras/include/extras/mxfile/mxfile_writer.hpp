@@ -61,6 +61,15 @@ namespace extras {namespace mxfile {
 		std::list<SerialData> out;
 		for (size_t i = 0; i < nrhs; i++) {
 			SerialData l;
+
+			if (prhs[i] == nullptr) { //passed nullptr, interpret as empty numeric array
+				l.nbytes = sizeof(uint8_t) + sizeof(size_t) + sizeof(uint8_t) + sizeof(uint8_t); //type, ndims, isComplex, isInterleaved,
+				l.nbytes += 0; //mxGetNumberOfDimensions(prhs[i]) * sizeof(size_t) + mxGetNumberOfElements(prhs[i]) * mxGetElementSize(prhs[i]) * (1 + mxIsComplex(prhs[i])); //  dims, data
+				l.data = prhs[i];
+				out.push_back(l);
+				continue;
+			}
+
 			switch (mxGetClassID(prhs[i])) {
 			case mxCELL_CLASS:
 				l.nbytes = sizeof(uint8_t) + sizeof(size_t) + sizeof(size_t) * mxGetNumberOfDimensions(prhs[i]);
@@ -147,20 +156,20 @@ namespace extras {namespace mxfile {
 		friend class MxFileWriter;
 	protected:
 		gzFile _fp=nullptr; //zlib file pointer
-		char* _data_buffer = nullptr;
-		size_t _data_buffer_sz = 16384;//16kB
-		size_t _data_buffer_pos = 0;
+		//char* _data_buffer = nullptr;
+		//size_t _data_buffer_sz = 16384;//16kB
+		//size_t _data_buffer_pos = 0;
 
 	public:
 		SimpleGzWriter() : _fp(nullptr) {
-			_data_buffer = (char*)malloc(_data_buffer_sz);
+			//_data_buffer = (char*)malloc(_data_buffer_sz);
 		};
 
 		//SimpleGzWriter(const char* filepath) : _fp(nullptr) { open(filepath); };
 
 		~SimpleGzWriter() {
 			close();
-			free(_data_buffer);
+			//free(_data_buffer);
 		}
 
 		virtual bool isopen() const {
@@ -184,13 +193,15 @@ namespace extras {namespace mxfile {
 			if (_fp == NULL) {
 				throw(extras::stacktrace_error(std::string("gzopen(): returned null, file:'") + std::string(filepath) + std::string("' could not be opened.")));
 			}
+			gzbuffer(_fp, 16384);
+			gzsetparams(_fp, 9, Z_DEFAULT_STRATEGY);
 		}
 
 		virtual void flush() {
-			if (_data_buffer_pos > 0 && _fp != NULL) {
+			/*if (_data_buffer_pos > 0 && _fp != NULL) {
 				gzwrite(_fp, _data_buffer, _data_buffer_pos);
 				_data_buffer_pos = 0;
-			}
+			}*/
 		}
 
 		//! write data to file pointer
@@ -199,12 +210,10 @@ namespace extras {namespace mxfile {
 		//!		nbytes: number of bytes to write
 		//! Return: number of bytes written
 		virtual size_t write(const void* data, size_t nbytes) {
-
+			return gzwrite(_fp, data, nbytes);
+			/*
 			if (nbytes >= _data_buffer_sz) { //writing big data, write the rest of the buffer, then write the data
-				if (_data_buffer_pos != 0) {
-					gzwrite(_fp, _data_buffer, _data_buffer_pos);
-					_data_buffer_pos = 0;
-				}
+				flush();
 				return gzwrite(_fp, data, nbytes);
 			}
 			else { //writing small data, use the buffer
@@ -223,6 +232,7 @@ namespace extras {namespace mxfile {
 				}
 
 			}
+			*/
 		}
 	};
 
@@ -231,18 +241,28 @@ namespace extras {namespace mxfile {
 	void writeList(const std::list<SerialData>& dataList, SimpleWriter& FP) {
 		for (auto& thisData : dataList) { //loop over all items in the list
 			const mxArray* thisArray = thisData.data;
-			uint8_t type = mxGetClassID(thisArray);
-			size_t ndims = mxGetNumberOfDimensions(thisArray);
+			uint8_t type; //= mxGetClassID(thisArray);
+			size_t ndims; //= mxGetNumberOfDimensions(thisArray);
+			void* dims = nullptr;
 
-			size_t bytes_written = 0;
+			if (thisArray == nullptr) { //passed nullptr, interpret as empty numeric array
+				type = mxDOUBLE_CLASS;
+				ndims = 0;
+			}
+			else {
+				type = mxGetClassID(thisArray);
+				ndims = mxGetNumberOfDimensions(thisArray);
+				dims = (void*)mxGetDimensions(thisArray);
+			}
 
 			//// write header
 
-			bytes_written += FP.write(&type, 1);//write type byte
-			bytes_written += FP.write(&ndims, sizeof(size_t));//write ndim
-			bytes_written += FP.write((void*)mxGetDimensions(thisArray), sizeof(size_t)*ndims);//write dims
+			FP.write(&type, 1);//write type byte
+			FP.write(&ndims, sizeof(size_t));//write ndim
+			FP.write(dims, sizeof(size_t)*ndims);//write dims
 
-			switch (mxGetClassID(thisArray))
+			// Write datatype specific info
+			switch (type)
 			{
 			case mxCELL_CLASS:
 				//nothing else to write
@@ -251,7 +271,7 @@ namespace extras {namespace mxfile {
 			{
 				//write number of field names
 				size_t nfields = mxGetNumberOfFields(thisArray);
-				bytes_written += FP.write(&nfields, sizeof(size_t));
+				FP.write(&nfields, sizeof(size_t));
 
 				////////////
 				// FOR EACH FIELD
@@ -261,44 +281,63 @@ namespace extras {namespace mxfile {
 					size_t len = strlen(fieldname) + 1; // length including null terminator
 
 					//write length of name
-					bytes_written += FP.write(&len, sizeof(size_t));
+					FP.write(&len, sizeof(size_t));
 
 					//write fieldname, including null terminator
-					bytes_written += FP.write(fieldname, len * sizeof(char));
+					FP.write(fieldname, len * sizeof(char));
 				}
 			}
 			break;
 			default: //all other types
 			{
-				//write complex
-				uint8_t isComplex = (uint8_t)mxIsComplex(thisArray);
-				bytes_written += FP.write(&isComplex, sizeof(uint8_t));
+				if (thisArray == nullptr) { //passed nullptr, interpret as empty numeric array
+					//write complex
+					uint8_t isComplex = 0;
+					FP.write(&isComplex, sizeof(uint8_t));
 
-				//write interleaved flag
-				uint8_t interFlag = 0; //default to not interleaved complex data
+					//write interleaved flag
+					uint8_t interFlag = 0; //default to not interleaved complex data
 #if MX_HAS_INTERLEAVED_COMPLEX
-				interFlag = 1;
+					interFlag = 1;
 #endif
-				bytes_written += FP.write(&interFlag, sizeof(uint8_t));
+					FP.write(&interFlag, sizeof(uint8_t));
 
-				//Write data
-				size_t numel = mxGetNumberOfElements(thisArray);
-				size_t elsz = mxGetElementSize(thisArray);
-				if (!isComplex) { //not complex, simple write
-					bytes_written += FP.write(mxGetData(thisArray), numel*elsz);
+					//Write data
+						//nothing to do since there is no data
 				}
-				else { //is complex
+				else
+				{
+					//write complex
+					uint8_t isComplex = (uint8_t)mxIsComplex(thisArray);
+					FP.write(&isComplex, sizeof(uint8_t));
+
+					//write interleaved flag
+					uint8_t interFlag = 0; //default to not interleaved complex data
+#if MX_HAS_INTERLEAVED_COMPLEX
+					interFlag = 1;
+#endif
+					FP.write(&interFlag, sizeof(uint8_t));
+
+					//Write data
+					size_t numel = mxGetNumberOfElements(thisArray);
+					size_t elsz = mxGetElementSize(thisArray);
+					if (!isComplex) { //not complex, simple write
+						FP.write(mxGetData(thisArray), numel*elsz);
+					}
+					else { //is complex
 #if MX_HAS_INTERLEAVED_COMPLEX //interleaved data, size is 2x so regular copy works fine
-					bytes_written += FP.write(mxGetData(thisArray), numel*elsz);
+						FP.write(mxGetData(thisArray), numel*elsz);
 #else //not interleaved, need to write imag data explicitly
-					bytes_written += FP.write(mxGetData(thisArray), numel*elsz);
-					bytes_written += FP.write(mxGetImagData(thisArray), numel*elsz);
+						FP.write(mxGetData(thisArray), numel*elsz);
+						FP.write(mxGetImagData(thisArray), numel*elsz);
 #endif
+					}
 				}
-
 			}
 			}
-			FP.flush();
+			
+			// force file write
+			//FP.flush();
 		}
 	}
 
