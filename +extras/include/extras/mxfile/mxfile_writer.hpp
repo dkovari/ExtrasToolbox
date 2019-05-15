@@ -20,6 +20,8 @@ All rights reserved.
 #include <extras/string_extras.hpp>
 #include <extras/async/AsyncProcessor.hpp>
 
+#include <extras/stacktrace_error.hpp>
+
 /********************************************************************
 COMPRESSION Includes
 =====================================================================
@@ -45,22 +47,11 @@ namespace extras {namespace mxfile {
 
 	class MxFileWriter; //forward declaration
 
-
 	// Data Structure
 	struct SerialData {
 		size_t nbytes; // number of bytes of data to write
 		const mxArray* data;  //the mxArray to be written to disk
 	};
-
-	//Wrapper for fwrite; change as needed later
-	size_t write(const void * data, size_t n_bytes, size_t count, FILE * stream) {
-		return fwrite(data, n_bytes, count, stream);
-	}
-
-	/*/compressed version
-	size_t write(const void * data, size_t n_bytes, size_t count, gzFile stream) {
-		return gzwrite(stream, data, n_bytes * count);
-	}*/
 
 	//! Flattens list of mxArray*s into a serialized list
 	//! Cells and struct are decomposed into a serialized list of numeric/char type arrays
@@ -99,7 +90,7 @@ namespace extras {namespace mxfile {
 					}
 				}
 			}
-									break;
+			break;
 			default:
 				l.nbytes = sizeof(uint8_t) + sizeof(size_t) + sizeof(uint8_t) + sizeof(uint8_t); //type, ndims, isComplex, isInterleaved,
 				l.nbytes += mxGetNumberOfDimensions(prhs[i]) * sizeof(size_t) + mxGetNumberOfElements(prhs[i]) * mxGetElementSize(prhs[i]) * (1 + mxIsComplex(prhs[i])); //  dims, data
@@ -110,14 +101,12 @@ namespace extras {namespace mxfile {
 		return out;
 	}
 
-
-
 	class SimpleWriter {
 	protected:
 		FILE * _fp = nullptr;
 	public:
 		SimpleWriter() : _fp(nullptr) {};
-		SimpleWriter(const char* filepath) : _fp(nullptr) { open(filepath); };
+		//SimpleWriter(const char* filepath) : _fp(nullptr) { open(filepath); };
 		~SimpleWriter() {
 			close();
 		}
@@ -138,40 +127,54 @@ namespace extras {namespace mxfile {
 			}
 		}
 
+		virtual void flush() {};
+
 		//! write data to file pointer
 		//! Input:
 		//!		data: pointer to data to write
 		//!		nbytes: number of bytes to write
 		//! Return: number of bytes written
 		virtual size_t write(const void* data, size_t nbytes) {
-			fwrite()
+			return fwrite(data, nbytes, 1, _fp);
+		}
+
+		virtual bool isopen() const {
+			return _fp == nullptr;
 		}
 	};
 
 	class SimpleGzWriter : public SimpleWriter {
 		friend class MxFileWriter;
 	protected:
-		gzFile _fp; //zlib file pointer
+		gzFile _fp=nullptr; //zlib file pointer
 		char* _data_buffer = nullptr;
 		size_t _data_buffer_sz = 16384;//16kB
 		size_t _data_buffer_pos = 0;
 
 	public:
-		SimpleGzWriter() : _fp(nullptr) {};
-		SimpleGzWriter(const char* filepath) : _fp(nullptr) { open(filepath); };
+		SimpleGzWriter() : _fp(nullptr) {
+			_data_buffer = (char*)malloc(_data_buffer_sz);
+		};
+
+		//SimpleGzWriter(const char* filepath) : _fp(nullptr) { open(filepath); };
+
 		~SimpleGzWriter() {
-			if (_data_buffer_pos > 0 && _fp != NULL) {
-				gzwrite(_fp, _data_buffer, _data_buffer_pos);
-			}
-			free(_data_buffer);
 			close();
+			free(_data_buffer);
 		}
+
+		virtual bool isopen() const {
+			return _fp != nullptr;
+		}
+
 		virtual void close() {
 			if (_fp != nullptr) {
+				flush();
 				gzclose(_fp);
 				_fp = nullptr;
 			}
 		}
+
 		virtual void open(const char* filepath) {
 			if (_fp != nullptr) {
 				gzclose(_fp);
@@ -183,92 +186,12 @@ namespace extras {namespace mxfile {
 			}
 		}
 
-		//! write data to file pointer
-		//! Input:
-		//!		data: pointer to data to write
-		//!		nbytes: number of bytes to write
-		//! Return: number of bytes written
-		virtual size_t write(const void* data, size_t nbytes) {
-
-			if (nbytes >= _data_buffer_sz) { //writing big data, write the rest of the buffer, then write the data
-				if (_data_buffer_pos != 0) {
-					gzwrite(_fp, _data_buffer, _data_buffer_pos);
-					_data_buffer_pos = 0;
-				}
-				return gzwrite(_fp, data, nbytes);
-			}
-			else { //writing small data, use the buffer
-				size_t rem = _data_buffer_sz - _data_buffer_pos;
-
-				size_t ncpy = std::min(rem, nbytes);
-				memcpy(&_data_buffer[_data_buffer_pos], data, ncpy);
-				rem -= ncpy;
-				if (rem == 0) {
-					gzwrite(_fp, _data_buffer, _data_buffer_sz);
-					_data_buffer_pos = 0;
-				}
-				if (nbytes > ncpy) {
-					memcpy(_data_buffer, &((char*)data)[ncpy], nbytes - ncpy);
-					_data_buffer_pos += nbytes - ncpy;
-				}
-
-			}
-	};
-
-
-	/** Helper class for file pointers
-		* Provides a generic way to write to a file pointer
-		* class can be derived and file-pointer and write method
-		* can be redefined
-	*/
-	class FILE_WritePointer {
-	protected:
-		FILE * _fp = nullptr;
-	public:
-		FILE_WritePointer(FILE* fp) :_fp(fp) {};
-
-		//! write data to file pointer
-		//! Input:
-		//!		data: pointer to data to write
-		//!		nbytes: number of bytes to write
-		//! Return: number of bytes written
-		virtual size_t write(const void* data, size_t nbytes) {
-			return std::fwrite(data, 1, nbytes, _fp);
-		}
-
-		//! return FILE*
-		FILE* getFP() const {
-			return _fp;
-		}
-	};
-
-	//! ZLib Wrapper
-	class GZFILE_WritePointer : public FILE_WritePointer {
-		friend class MxFileWriter;
-	protected:
-		gzFile _fp; //zlib file pointer
-
-
-		char* _data_buffer = nullptr;
-		size_t _data_buffer_sz = 16384;//16kB
-		size_t _data_buffer_pos = 0;
-
-		//! sets _fp to NULL
-		void clearFP() {
-			_fp = NULL;
-		}
-	public:
-		GZFILE_WritePointer(gzFile fp) :FILE_WritePointer(nullptr), _fp(fp) {
-			_data_buffer = (char*)malloc(_data_buffer_sz);
-		};
-
-		~GZFILE_WritePointer() {
-			if (_data_buffer_pos > 0 && _fp!=NULL) {
+		virtual void flush() {
+			if (_data_buffer_pos > 0 && _fp != NULL) {
 				gzwrite(_fp, _data_buffer, _data_buffer_pos);
+				_data_buffer_pos = 0;
 			}
-			free(_data_buffer);
 		}
-
 
 		//! write data to file pointer
 		//! Input:
@@ -300,18 +223,12 @@ namespace extras {namespace mxfile {
 				}
 
 			}
-
-			return nbytes;
-		}
-
-		//! return gzFile hides inherited getFP()
-		gzFile getFP() const {
-			return _fp;
 		}
 	};
+
 
 	//! Loop over all arrays in the serialized list and write to FP
-	void writeList(const std::list<SerialData>& dataList, FILE_WritePointer& FP) {
+	void writeList(const std::list<SerialData>& dataList, SimpleWriter& FP) {
 		for (auto& thisData : dataList) { //loop over all items in the list
 			const mxArray* thisArray = thisData.data;
 			uint8_t type = mxGetClassID(thisArray);
@@ -324,7 +241,6 @@ namespace extras {namespace mxfile {
 			bytes_written += FP.write(&type, 1);//write type byte
 			bytes_written += FP.write(&ndims, sizeof(size_t));//write ndim
 			bytes_written += FP.write((void*)mxGetDimensions(thisArray), sizeof(size_t)*ndims);//write dims
-
 
 			switch (mxGetClassID(thisArray))
 			{
@@ -382,16 +298,8 @@ namespace extras {namespace mxfile {
 
 			}
 			}
+			FP.flush();
 		}
-	}
-
-	//! Opens file for writing using zlib's gz functions
-	GZFILE_WritePointer gzOpenWriter(const char* filepath) {
-		gzFile fp = gzopen(filepath, "wb");
-		if (fp == NULL) {
-			throw(extras::stacktrace_error(std::string("gzOpenWriter(): returned null, file:'") + std::string(filepath) + std::string("' could not be opened.")));
-		}
-		return GZFILE_WritePointer(fp);
 	}
 
 	/**
@@ -400,7 +308,7 @@ namespace extras {namespace mxfile {
 	class MxFileWriter {
 	protected:
 		std::mutex _WPmutex; //mutex protecting _WritePointer
-		GZFILE_WritePointer _WritePointer; //pointer class for gzFile, proteced by locks using _WPmutex
+		SimpleGzWriter _WritePointer; //pointer class for gzFile, proteced by locks using _WPmutex
 		std::string _filepath;
 
 		//! automatically add ".mxf.gz" file extension if not included
@@ -434,11 +342,11 @@ namespace extras {namespace mxfile {
 
 		//! return true if file is open
 		bool isFileOpen() const {
-			return _WritePointer.getFP() != NULL;
+			return _WritePointer.isopen();
 		}
 
 		//! default constructor
-		MxFileWriter() : _WritePointer(NULL) {};
+		MxFileWriter() {};
 
 		//! destructor
 		//! close the writePointer
@@ -450,8 +358,7 @@ namespace extras {namespace mxfile {
 		virtual void closeFile() {
 			if (isFileOpen()) {
 				std::lock_guard<std::mutex> lock(_WPmutex);
-				gzclose(_WritePointer.getFP());
-				_WritePointer.clearFP();
+				_WritePointer.close();
 			}
 		}
 
@@ -461,7 +368,7 @@ namespace extras {namespace mxfile {
 			closeFile();
 			std::lock_guard<std::mutex> lock(_WPmutex);
 			auto fp_ext = validateFileExt(fpth);
-			_WritePointer = gzOpenWriter(fp_ext.c_str());
+			_WritePointer.open(fp_ext.c_str());
 			_filepath = fp_ext;
 		}
 
@@ -531,8 +438,7 @@ namespace extras {namespace mxfile {
 	// Async Writer
 	class AsyncMxFileWriter : public MxFileWriter, virtual public extras::async::AsyncProcessor {
 	protected:
-		//std::atomic<size_t> _AMFW_pushed = 0;
-		//std::atomic<size_t> _AMFW_procced = 0;
+
 		//! redefine StartProcessor to check if file is open
 		virtual void StartProcessor() {
 			if (!isFileOpen()) {
