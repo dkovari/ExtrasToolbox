@@ -25,7 +25,7 @@ protected:
 		vA.reserve(sz);
 
 		for (size_t n = 0; n<argPair.first.size(); ++n) {
-			vA.push_back(argPair.first.getArray(n));
+			vA.push_back(argPair.first.getConstArray(n));
 		}
 		for (size_t n = 0; n<argPair.second->size(); ++n) {
 			vA.push_back(argPair.second->getArray(n));

@@ -67,7 +67,7 @@ namespace extras{namespace async{
 
 				out = ProcessTask(taskPair);
 
-				TaskParamList.pop_front();
+				TaskList.pop_front();
 			}
 			return out;
 		}
