@@ -207,6 +207,7 @@ namespace extras{namespace cmex{
 			}
 		}
 
+
 		//! Construct FieldWrapper using field index only
 		FieldWrapper(MxStruct& parent, size_t idx, int fieldnumber) :
 			_parent(parent),
@@ -245,6 +246,10 @@ namespace extras{namespace cmex{
 		FieldWrapper(FieldWrapper&& src) = default;
 		FieldWrapper& operator=(const FieldWrapper& src) = default;
 		FieldWrapper& operator=(FieldWrapper&& src) = default;
+
+		MxStruct& get_parent() { return _parent; }
+		int get_field_number() { return field_number; }
+		size_t get_index() { return index; }
 
 	};
 
