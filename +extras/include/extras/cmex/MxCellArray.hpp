@@ -199,9 +199,9 @@ namespace extras{namespace cmex{
 	public:
 		using MxWrapper::operator=; //%pull other assignment operators from MxWrapper
 
-		CellWrapper(const CellWrapper& src) = default;
+		//CellWrapper(const CellWrapper& src) = default;
 		CellWrapper(CellWrapper&& src) = default;
-		CellWrapper& operator=(const CellWrapper& src) = default;
+		//CellWrapper& operator=(const CellWrapper& src) = default;
 		CellWrapper& operator=(CellWrapper&& src) = default;
 
 		

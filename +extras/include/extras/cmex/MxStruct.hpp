@@ -242,9 +242,9 @@ namespace extras{namespace cmex{
 	public:
 		using MxWrapper::operator=; //%pull other assignment operators from MxWrapper
 
-		FieldWrapper(const FieldWrapper& src) = default;
+		//FieldWrapper(const FieldWrapper& src) = default;
 		FieldWrapper(FieldWrapper&& src) = default;
-		FieldWrapper& operator=(const FieldWrapper& src) = default;
+		//FieldWrapper& operator=(const FieldWrapper& src) = default;
 		FieldWrapper& operator=(FieldWrapper&& src) = default;
 
 		MxStruct& get_parent() { return _parent; }
