@@ -212,8 +212,8 @@ namespace extras {namespace mxfile {
 
 				size_t ncpy = std::min(rem, nbytes);
 				memcpy(&_data_buffer[_data_buffer_pos], data, ncpy);
-				rem -= ncpy;
-				if (rem == 0) {
+				_data_buffer_pos += ncpy;
+				if (_data_buffer_pos == _data_buffer_sz) {
 					gzwrite(_fp, _data_buffer, _data_buffer_sz);
 					_data_buffer_pos = 0;
 				}
