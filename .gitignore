@@ -18,6 +18,8 @@
 *.ipdb
 *.idb
 
+*.tlog
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
