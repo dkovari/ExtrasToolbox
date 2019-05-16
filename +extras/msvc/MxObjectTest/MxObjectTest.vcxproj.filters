@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{748f07e3-bdbb-4360-8c4a-9d530fecab12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\extras">
+      <UniqueIdentifier>{0915d4f7-40d5-4675-8002-fd5912b72f76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\extras\cmex">
+      <UniqueIdentifier>{2e1f1943-bd73-48e7-b932-fd47f0995ab2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\extras\Array.hpp">
+      <Filter>include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\ArrayBase.hpp">
+      <Filter>include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\MatlabTime.hpp">
+      <Filter>include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\string_extras.hpp">
+      <Filter>include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\traspose.hpp">
+      <Filter>include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxObject.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\numeric.hpp">
+      <Filter>include\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxWrapper.hpp">
+      <Filter>include\extras\cmex</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="testMxObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

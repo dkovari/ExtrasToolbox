@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{f0ffba94-0381-4ef6-8b63-cbc98c587b01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\extras">
+      <UniqueIdentifier>{0ac8d609-ec66-475a-afc3-9459350751da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\extras\cmex">
+      <UniqueIdentifier>{314e5064-db70-48d5-a820-eb5ac74dca24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\extras\async">
+      <UniqueIdentifier>{f69665de-d17e-4151-b0e7-b17833ac851f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\extras\SessionManager">
+      <UniqueIdentifier>{5a126b55-8bb0-4446-97d1-966b45c2f08c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\extras\Array.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\ArrayBase.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\string_extras.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp">
+      <Filter>Includes\extras\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
+      <Filter>Includes\extras\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\ParamProcessor.hpp">
+      <Filter>Includes\extras\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp">
+      <Filter>Includes\extras\cmex</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\+Example\+PersistentProcessor\ExamplePersistentProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

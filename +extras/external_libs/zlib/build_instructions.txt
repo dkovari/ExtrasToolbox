@@ -1,0 +1,25 @@
+Zlib is downloaded from https://www.zlib.net/ and built using the standard instructions.
+
+===========================================
+Updating:
+-------------------------------------------
+Currently zlib 1.2.11 is being used.
+If you want to update zlib to a newer version, then you will need to follow the instructions on zlib.net for building.
+
+
+
+===========================================
+Build Instructions for Window:
+-------------------------------------------
+Navigate to:
+	.\src\zlib-1.2.11\contrib\vstudio\vc14\
+Open (using Visual Studio):
+	zlibvc.sln
+
+Change the build target to Release x64
+Build zlibvc project (MUST BE DONE FIRST)
+Build zlibstat project (WILL FAIL IF zlibvc HAS NOT BEEN BUILT YET)
+
+Copy Resulting .lib and .dll files into:
+./lib/Win/x64
+
