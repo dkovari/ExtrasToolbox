@@ -30,6 +30,8 @@ Alternatively (and on Windows) you should be build zlib using the make files inc
 
 See .../+extras/external_libs/zlib/build_instructions.txt for details.
 
+Also see zlib site: https://www.zlib.net/
+
 ## Documentation
 Documentation for the entire toolbox should be found in ExtrasToolbox/docs. However, you can also build the documentation using extras.docgenerator().
 
