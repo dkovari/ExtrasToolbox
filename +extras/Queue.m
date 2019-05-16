@@ -24,12 +24,16 @@ classdef Queue <handle & matlab.mixin.Heterogeneous
       internalSend(obj,data)
     end
     
+    properties(SetObservable,AbortSet)
+        Suspended (1,1) logical = false; %Flag indicating that Queue is suspended and therefore ignoring data
+    end
+    
     methods (Sealed)
         function send(queueArray,data)
         %Send data to the queues
         
             for n=1:numel(queueArray)
-                if isvalid(queueArray(n))
+                if isvalid(queueArray(n)) && ~queueArray(n).Suspended
                     queueArray(n).internalSend(data);
                 end
             end

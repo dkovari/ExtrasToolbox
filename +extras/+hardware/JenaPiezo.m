@@ -1,4 +1,4 @@
-classdef JenaPiezo < extras.hardware.TargetValueDevice & extras.hardware.SerialDevice
+classdef JenaPiezo < extras.hardware.abstract.ObjectiveScanner & extras.hardware.SerialDevice
 %% Class for interactfacing with a JenaSystems Piezo Objective scanner
 % Communication with the device is handeled entirely by MATLAB via the
 % serial port
@@ -223,6 +223,18 @@ classdef JenaPiezo < extras.hardware.TargetValueDevice & extras.hardware.SerialD
         end
     end
     
+    
+    %% Override
+    methods
+        function S = struct(this)
+        %convert public properties inherited from TargetValueDevice Class
+        %into struct and include special feature of JenaPiezo
+            S = struct@extras.hardware.abstract.ObjectiveScanner(this);
+            for n=1:numel(this)
+                S(n).EnableSoftServo = this(n).EnableSoftServo;
+            end
+        end
+    end
     
     
 end

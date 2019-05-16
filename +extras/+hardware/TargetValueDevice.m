@@ -44,5 +44,10 @@ classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & 
             
             this.Limits = val;
         end
+        
+        function S = struct(this)
+        %convert public properties inherited from TargetValueDevice Class into struct
+            S = struct('Value',{this.Value},'Target',{this.Target},'Units',{this.Units},'Limits',{this.Limits},'ValueLabels',{this.ValueLabels});
+        end
     end
 end
