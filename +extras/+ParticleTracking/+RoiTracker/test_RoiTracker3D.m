@@ -154,7 +154,7 @@ end
 
 %x =[data.X]
 %y = [data.Y]
-if isempty(res)
+if isempty(res) || ~isfield(res,'roiList') || ~isfield(res.roiList,'CentroidResult')
     hPlt.XData = [];
     hPlt.YData = [];
 else

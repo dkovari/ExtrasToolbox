@@ -193,7 +193,7 @@ namespace extras {namespace mxfile {
 			if (_fp == NULL) {
 				throw(extras::stacktrace_error(std::string("gzopen(): returned null, file:'") + std::string(filepath) + std::string("' could not be opened.")));
 			}
-			gzbuffer(_fp, 16384);
+			gzbuffer(_fp, 262144);
 			gzsetparams(_fp, 9, Z_DEFAULT_STRATEGY);
 		}
 

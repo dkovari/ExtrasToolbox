@@ -415,11 +415,11 @@ namespace extras { namespace mxfile {
 			_compressedSize = ftell(fp);
 			fclose(fp); //close
 
-
 			gzFile gzf = gzopen(fpth.c_str(), "rb");
 			if (gzf == NULL) {
 				throw(extras::stacktrace_error(std::string("MxFileReader::openFile(): returned null, file:'") + std::string(fpth) + std::string("' could not be opened.")));
 			}
+			gzbuffer(gzf, 262144);
 			std::lock_guard<std::mutex> lock(_RPmutex);
 			_ReadPointer = GZFILE_ReadPointer(gzf);
 			_filepath = fpth;

@@ -247,10 +247,6 @@ namespace extras{namespace cmex{
 		//FieldWrapper& operator=(const FieldWrapper& src) = default;
 		FieldWrapper& operator=(FieldWrapper&& src) = default;
 
-		MxStruct& get_parent() { return _parent; }
-		int get_field_number() { return field_number; }
-		size_t get_index() { return index; }
-
 	};
 
 	////////////////////////
