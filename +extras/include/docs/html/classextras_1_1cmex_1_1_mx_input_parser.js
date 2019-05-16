@@ -12,5 +12,8 @@ var classextras_1_1cmex_1_1_mx_input_parser =
     [ "operator()", "classextras_1_1cmex_1_1_mx_input_parser.html#ab7cb9770414cbf6bddd232742f3dcc89", null ],
     [ "operator()", "classextras_1_1cmex_1_1_mx_input_parser.html#aba96f25672f0baa8d22209568fdd622c", null ],
     [ "Parse", "classextras_1_1cmex_1_1_mx_input_parser.html#a45a21b4b906b686128e098e238d17305", null ],
-    [ "Parameter", "classextras_1_1cmex_1_1_mx_input_parser.html#a2e49c17b54f53b0319e2835a9d03b051", null ]
+    [ "wasFound", "classextras_1_1cmex_1_1_mx_input_parser.html#ad5c233539f0af256fad920a456075ac2", null ],
+    [ "IgnoreUnspecifiedParameters", "classextras_1_1cmex_1_1_mx_input_parser.html#ae8b3e7a2211051d6459c9a5f85fcde7a", null ],
+    [ "Parameter", "classextras_1_1cmex_1_1_mx_input_parser.html#a2e49c17b54f53b0319e2835a9d03b051", null ],
+    [ "ParameterFound", "classextras_1_1cmex_1_1_mx_input_parser.html#a882147ccea636b9658816f14a671e799", null ]
 ];

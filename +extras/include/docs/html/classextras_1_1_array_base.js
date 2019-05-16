@@ -1,15 +1,14 @@
 var classextras_1_1_array_base =
 [
+    [ "ArrayBase", "classextras_1_1_array_base.html#a58aca77f2fd0ab4afb7c11c9856dad65", null ],
     [ "~ArrayBase", "classextras_1_1_array_base.html#a776ce472e2ae4d1e5151e84e745eed9c", null ],
-    [ "dims", "classextras_1_1_array_base.html#a789e6aff4d9d3dbff02cff511e20f072", null ],
+    [ "disp", "classextras_1_1_array_base.html#aebf407471a1ff5c1a512b51ae1e56f29", null ],
     [ "elementsize", "classextras_1_1_array_base.html#ab0b228283d039bba11a6f1e2fbd5e1a4", null ],
     [ "getdata", "classextras_1_1_array_base.html#a2097e520845ecc3b798003101f48f302", null ],
     [ "getdata", "classextras_1_1_array_base.html#a628d39c9cc5a5c9f40788e30e9875992", null ],
-    [ "isempty", "classextras_1_1_array_base.html#ad6643c53f6064c99cdbdf54260cd76f9", null ],
-    [ "nCols", "classextras_1_1_array_base.html#a3993582913c65999f30272746432ce6c", null ],
-    [ "ndims", "classextras_1_1_array_base.html#afbb0de6e44cdd8f16f15a73824fd3f80", null ],
-    [ "nRows", "classextras_1_1_array_base.html#a77ea2da40619fe95765d71718bef0d79", null ],
-    [ "numel", "classextras_1_1_array_base.html#a2bc415eca1ccf7933013d4d0c67a5198", null ],
+    [ "getElement", "classextras_1_1_array_base.html#a58745665686851a7fc6c8882634553d5", null ],
+    [ "getElement", "classextras_1_1_array_base.html#a8b3fc41331d06fc1a3e263b7cd1f60b2", null ],
+    [ "getElement", "classextras_1_1_array_base.html#add1eefbac4b0dde1f2871c9def70bf1f", null ],
     [ "operator()", "classextras_1_1_array_base.html#a649e64d09b8ca1eb912b93185b103b71", null ],
     [ "operator()", "classextras_1_1_array_base.html#ab6656a695e9323dea8d9e010384d29f4", null ],
     [ "operator()", "classextras_1_1_array_base.html#abc41a8e2c65b653ec26af29da5c4eb13", null ],
@@ -20,6 +19,8 @@ var classextras_1_1_array_base =
     [ "operator+=", "classextras_1_1_array_base.html#a2523b732b3b59a860febe4c886e71118", null ],
     [ "operator-=", "classextras_1_1_array_base.html#a1e21c94bfe0f88d68bd4bce4fdaebfe2", null ],
     [ "operator/=", "classextras_1_1_array_base.html#adad1e8b3a6a07947b1d2905fe818742a", null ],
+    [ "operator=", "classextras_1_1_array_base.html#ae90a210faf592884c1d60581493136f7", null ],
+    [ "operator=", "classextras_1_1_array_base.html#a116ae6bb05fcf556e2717c8c378a2276", null ],
     [ "operator[]", "classextras_1_1_array_base.html#a3734bc767519683b8076e0d2b782d09f", null ],
     [ "operator[]", "classextras_1_1_array_base.html#a3fdce67bad7bd1bbcc6830ee9989e3b4", null ],
     [ "resize", "classextras_1_1_array_base.html#a5a279ffa766350e33d92c9979ca9a1fe", null ],
@@ -29,5 +30,6 @@ var classextras_1_1_array_base =
     [ "resize_clear", "classextras_1_1_array_base.html#aa0fcc58b388e731da688ea971652c48c", null ],
     [ "resize_nocpy", "classextras_1_1_array_base.html#a037a845c43f9b6fe7443b97c50229f68", null ],
     [ "resize_nocpy", "classextras_1_1_array_base.html#ad57784744b87925b1d2bc99936ec5ec1", null ],
-    [ "resize_nocpy", "classextras_1_1_array_base.html#a54d6d4a3ef0e14ab3d16556ddee80505", null ]
+    [ "resize_nocpy", "classextras_1_1_array_base.html#a54d6d4a3ef0e14ab3d16556ddee80505", null ],
+    [ "sub2ind", "classextras_1_1_array_base.html#ac410aacab09b2aff9eb0ab94576381ca", null ]
 ];

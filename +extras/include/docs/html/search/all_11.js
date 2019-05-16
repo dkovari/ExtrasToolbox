@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['untyped_5fdata',['untyped_data',['../classextras_1_1_array.html#a75780d44b2cd9839b1b5478a1d03a568',1,'extras::Array::untyped_data() const'],['../classextras_1_1_array.html#af9ada10eeb2fc0783f46dd1b1ba0e4f5',1,'extras::Array::untyped_data()'],['../classextras_1_1_dynamic_type_array_base.html#aa05e51979068b9180188a0e9294f9865',1,'extras::DynamicTypeArrayBase::untyped_data() const =0'],['../classextras_1_1_dynamic_type_array_base.html#a6e6d6df7dc8a5ce717fd9f4b5748241e',1,'extras::DynamicTypeArrayBase::untyped_data()=0'],['../classextras_1_1cmex_1_1_dynamic_type_mx_array.html#a62b0dd84b3a8b31f3d8bc1ea0fa46eae',1,'extras::cmex::DynamicTypeMxArray::untyped_data() const'],['../classextras_1_1cmex_1_1_dynamic_type_mx_array.html#a1ae051f22f69ab99292662e7455080b7',1,'extras::cmex::DynamicTypeMxArray::untyped_data()']]]
+];

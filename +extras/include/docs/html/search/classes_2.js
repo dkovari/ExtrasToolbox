@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['numericarray',['NumericArray',['../classextras_1_1cmex_1_1_numeric_array.html',1,'extras::cmex']]]
+  ['cellwrapper',['CellWrapper',['../classextras_1_1cmex_1_1_cell_wrapper.html',1,'extras::cmex']]]
 ];

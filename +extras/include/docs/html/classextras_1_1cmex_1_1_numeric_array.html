@@ -98,15 +98,24 @@ $(document).ready(function(){initNavTree('classextras_1_1cmex_1_1_numeric_array.
 <p>Typed <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> Wrapper for MxObjects.  
  <a href="classextras_1_1cmex_1_1_numeric_array.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="_numeric_array_8hpp_source.html">NumericArray.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="_numeric_array_01-_01_copy_8hpp_source.html">NumericArray - Copy.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for extras::cmex::NumericArray&lt; T &gt;:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classextras_1_1cmex_1_1_numeric_array.png" usemap="#extras::cmex::NumericArray_3C_20T_20_3E_map" alt=""/>
   <map id="extras::cmex::NumericArray_3C_20T_20_3E_map" name="extras::cmex::NumericArray_3C_20T_20_3E_map">
-<area href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. " alt="extras::cmex::MxObject" shape="rect" coords="0,0,198,24"/>
-<area href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. " alt="extras::ArrayBase&lt; T &gt;" shape="rect" coords="208,0,406,24"/>
+<area href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. " alt="extras::cmex::MxObject" shape="rect" coords="0,56,214,80"/>
+<area href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. " alt="extras::ArrayBase&lt; T &gt;" shape="rect" coords="224,56,438,80"/>
+<area href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html" alt="extras::cmex::DynamicTypeMxArray" shape="rect" coords="560,56,774,80"/>
+<area href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. " alt="extras::ArrayBase&lt; T &gt;" shape="rect" coords="896,56,1110,80"/>
+<area href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. " alt="extras::cmex::MxObject" shape="rect" coords="1120,56,1334,80"/>
+<area href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. " alt="extras::ArrayBase&lt; T &gt;" shape="rect" coords="1344,56,1558,80"/>
+<area href="classextras_1_1_dynamic_type_array_base.html" title="DynamicTypeArrayBase Interface class for array with runtime specified type. " alt="extras::DynamicTypeArrayBase" shape="rect" coords="224,0,438,24"/>
+<area href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. " alt="extras::cmex::MxObject" shape="rect" coords="448,0,662,24"/>
+<area href="classextras_1_1_dynamic_type_array_base.html" title="DynamicTypeArrayBase Interface class for array with runtime specified type. " alt="extras::DynamicTypeArrayBase" shape="rect" coords="672,0,886,24"/>
+<area href="classextras_1_1_dynamic_type_array_base.html" title="DynamicTypeArrayBase Interface class for array with runtime specified type. " alt="extras::DynamicTypeArrayBase" shape="rect" coords="896,0,1110,24"/>
+<area href="classextras_1_1_dynamic_type_array_base.html" title="DynamicTypeArrayBase Interface class for array with runtime specified type. " alt="extras::DynamicTypeArrayBase" shape="rect" coords="1344,0,1558,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -114,11 +123,392 @@ Inheritance diagram for extras::cmex::NumericArray&lt; T &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4d4418241ed9eb7038a92dcef93eb51a"><td class="memItemLeft" align="right" valign="top"><a id="a4d4418241ed9eb7038a92dcef93eb51a"></a>
 virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a4d4418241ed9eb7038a92dcef93eb51a">numel</a> () const</td></tr>
+<tr class="memdesc:a4d4418241ed9eb7038a92dcef93eb51a"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of elements, inhereted from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a4d4418241ed9eb7038a92dcef93eb51a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0aad9eddd4c09435057deb4aed7c4c92"><td class="memItemLeft" align="right" valign="top"><a id="a0aad9eddd4c09435057deb4aed7c4c92"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a0aad9eddd4c09435057deb4aed7c4c92">isempty</a> () const</td></tr>
+<tr class="memdesc:a0aad9eddd4c09435057deb4aed7c4c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">is array empty, inhereted from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a0aad9eddd4c09435057deb4aed7c4c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a503072c462601dccd7d27d527e856762"><td class="memItemLeft" align="right" valign="top"><a id="a503072c462601dccd7d27d527e856762"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a503072c462601dccd7d27d527e856762">ndims</a> () const</td></tr>
+<tr class="memdesc:a503072c462601dccd7d27d527e856762"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of dimensions <br /></td></tr>
+<tr class="separator:a503072c462601dccd7d27d527e856762"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d98c0cc00a495285cced03dd9bee62f"><td class="memItemLeft" align="right" valign="top"><a id="a2d98c0cc00a495285cced03dd9bee62f"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d98c0cc00a495285cced03dd9bee62f">nRows</a> () const</td></tr>
+<tr class="memdesc:a2d98c0cc00a495285cced03dd9bee62f"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of rows <br /></td></tr>
+<tr class="separator:a2d98c0cc00a495285cced03dd9bee62f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed32864800290bf065db3c0e94eb146e"><td class="memItemLeft" align="right" valign="top"><a id="aed32864800290bf065db3c0e94eb146e"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aed32864800290bf065db3c0e94eb146e">nCols</a> () const</td></tr>
+<tr class="memdesc:aed32864800290bf065db3c0e94eb146e"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of columns <br /></td></tr>
+<tr class="separator:aed32864800290bf065db3c0e94eb146e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa49bd04cfe8555b18e7cd02434115abf"><td class="memItemLeft" align="right" valign="top"><a id="aa49bd04cfe8555b18e7cd02434115abf"></a>
+virtual std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aa49bd04cfe8555b18e7cd02434115abf">dims</a> () const</td></tr>
+<tr class="memdesc:aa49bd04cfe8555b18e7cd02434115abf"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns dimensions of the data <br /></td></tr>
+<tr class="separator:aa49bd04cfe8555b18e7cd02434115abf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86d5ef1de7e9cab2011eb9d04aebb893"><td class="memItemLeft" align="right" valign="top"><a id="a86d5ef1de7e9cab2011eb9d04aebb893"></a>
+virtual const T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a86d5ef1de7e9cab2011eb9d04aebb893">getdata</a> () const</td></tr>
+<tr class="memdesc:a86d5ef1de7e9cab2011eb9d04aebb893"><td class="mdescLeft">&#160;</td><td class="mdescRight">get const pointer to raw data array <br /></td></tr>
+<tr class="separator:a86d5ef1de7e9cab2011eb9d04aebb893"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cd1e730db7a27654a3243f7d7acc2aa"><td class="memItemLeft" align="right" valign="top"><a id="a0cd1e730db7a27654a3243f7d7acc2aa"></a>
+virtual T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a0cd1e730db7a27654a3243f7d7acc2aa">getdata</a> ()</td></tr>
+<tr class="memdesc:a0cd1e730db7a27654a3243f7d7acc2aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">get (non-const) pointer to raw data array <br /></td></tr>
+<tr class="separator:a0cd1e730db7a27654a3243f7d7acc2aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60c2d801343a567d7cc9a4d36142a6ca"><td class="memItemLeft" align="right" valign="top"><a id="a60c2d801343a567d7cc9a4d36142a6ca"></a>
+virtual <a class="el" href="structextras_1_1cmex_1_1_numeric_array__element_helper.html">NumericArray_elementHelper</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a60c2d801343a567d7cc9a4d36142a6ca">operator[]</a> (size_t index)</td></tr>
+<tr class="memdesc:a60c2d801343a567d7cc9a4d36142a6ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">set n-th element <br /></td></tr>
+<tr class="separator:a60c2d801343a567d7cc9a4d36142a6ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae15f5d2f88301c595e66d027cf235424"><td class="memItemLeft" align="right" valign="top"><a id="ae15f5d2f88301c595e66d027cf235424"></a>
+virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ae15f5d2f88301c595e66d027cf235424">operator[]</a> (size_t index) const</td></tr>
+<tr class="memdesc:ae15f5d2f88301c595e66d027cf235424"><td class="mdescLeft">&#160;</td><td class="mdescRight">get n-th element <br /></td></tr>
+<tr class="separator:ae15f5d2f88301c595e66d027cf235424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7702779f8b8b49d6b5ac680014cf27c7"><td class="memItemLeft" align="right" valign="top"><a id="a7702779f8b8b49d6b5ac680014cf27c7"></a>
+virtual <a class="el" href="structextras_1_1cmex_1_1_numeric_array__element_helper.html">NumericArray_elementHelper</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a7702779f8b8b49d6b5ac680014cf27c7">operator()</a> (size_t index)</td></tr>
+<tr class="memdesc:a7702779f8b8b49d6b5ac680014cf27c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">set n-th element <br /></td></tr>
+<tr class="separator:a7702779f8b8b49d6b5ac680014cf27c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecd2299e23fce9c53fbafd3d3b4a4cd7"><td class="memItemLeft" align="right" valign="top"><a id="aecd2299e23fce9c53fbafd3d3b4a4cd7"></a>
+virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aecd2299e23fce9c53fbafd3d3b4a4cd7">operator()</a> (size_t index) const</td></tr>
+<tr class="memdesc:aecd2299e23fce9c53fbafd3d3b4a4cd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">get n-th element <br /></td></tr>
+<tr class="separator:aecd2299e23fce9c53fbafd3d3b4a4cd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1f1395550f20c037cab8ea6db4896ad"><td class="memItemLeft" align="right" valign="top"><a id="ab1f1395550f20c037cab8ea6db4896ad"></a>
+virtual <a class="el" href="structextras_1_1cmex_1_1_numeric_array__element_helper.html">NumericArray_elementHelper</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ab1f1395550f20c037cab8ea6db4896ad">operator()</a> (size_t row, size_t col)</td></tr>
+<tr class="memdesc:ab1f1395550f20c037cab8ea6db4896ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">set element [m,n] <br /></td></tr>
+<tr class="separator:ab1f1395550f20c037cab8ea6db4896ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab707e89f5437c55071910802a5a6307"><td class="memItemLeft" align="right" valign="top"><a id="aab707e89f5437c55071910802a5a6307"></a>
+virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aab707e89f5437c55071910802a5a6307">operator()</a> (size_t row, size_t col) const</td></tr>
+<tr class="memdesc:aab707e89f5437c55071910802a5a6307"><td class="mdescLeft">&#160;</td><td class="mdescRight">get element [m,n] <br /></td></tr>
+<tr class="separator:aab707e89f5437c55071910802a5a6307"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac01e3c2e0cca47d4ccfadcd5d152307c"><td class="memItemLeft" align="right" valign="top"><a id="ac01e3c2e0cca47d4ccfadcd5d152307c"></a>
+virtual <a class="el" href="structextras_1_1cmex_1_1_numeric_array__element_helper.html">NumericArray_elementHelper</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ac01e3c2e0cca47d4ccfadcd5d152307c">operator()</a> (const std::vector&lt; size_t &gt; &amp;elementCoord)</td></tr>
+<tr class="memdesc:ac01e3c2e0cca47d4ccfadcd5d152307c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set element at coordinate [x,y,z,...] specified by the vector elementCoord <br /></td></tr>
+<tr class="separator:ac01e3c2e0cca47d4ccfadcd5d152307c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5a98fa77094d09d04c564cdb2df44fa"><td class="memItemLeft" align="right" valign="top"><a id="af5a98fa77094d09d04c564cdb2df44fa"></a>
+virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#af5a98fa77094d09d04c564cdb2df44fa">operator()</a> (const std::vector&lt; size_t &gt; &amp;elementCoord) const</td></tr>
+<tr class="memdesc:af5a98fa77094d09d04c564cdb2df44fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">get element at coordinate [x,y,z,...] specified by the vector elementCoord///&lt; get element at coordinate [x,y,z,...] specified by the vector elementCoord <br /></td></tr>
+<tr class="separator:af5a98fa77094d09d04c564cdb2df44fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae06bf5c559242893c1582b35e3e0d360"><td class="memItemLeft" align="right" valign="top"><a id="ae06bf5c559242893c1582b35e3e0d360"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ae06bf5c559242893c1582b35e3e0d360">resize</a> (size_t num)</td></tr>
+<tr class="memdesc:ae06bf5c559242893c1582b35e3e0d360"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold n elements, keep old data, new data set to zeros <br /></td></tr>
+<tr class="separator:ae06bf5c559242893c1582b35e3e0d360"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaaa254a510d6890740fb0ba53168cba9"><td class="memItemLeft" align="right" valign="top"><a id="aaaa254a510d6890740fb0ba53168cba9"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aaaa254a510d6890740fb0ba53168cba9">resize</a> (size_t <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d98c0cc00a495285cced03dd9bee62f">nRows</a>, size_t <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aed32864800290bf065db3c0e94eb146e">nCols</a>)</td></tr>
+<tr class="memdesc:aaaa254a510d6890740fb0ba53168cba9"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold MxN elements, keep old data, new data set to zeros <br /></td></tr>
+<tr class="separator:aaaa254a510d6890740fb0ba53168cba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc633641342964463ae94113700e3b49"><td class="memItemLeft" align="right" valign="top"><a id="abc633641342964463ae94113700e3b49"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#abc633641342964463ae94113700e3b49">resize</a> (const std::vector&lt; size_t &gt; &amp;dim)</td></tr>
+<tr class="memdesc:abc633641342964463ae94113700e3b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to new size <br /></td></tr>
+<tr class="separator:abc633641342964463ae94113700e3b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9476787ede397c57e33d788f2a1a5c28"><td class="memItemLeft" align="right" valign="top"><a id="a9476787ede397c57e33d788f2a1a5c28"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a9476787ede397c57e33d788f2a1a5c28">resize_nocpy</a> (size_t num)</td></tr>
+<tr class="memdesc:a9476787ede397c57e33d788f2a1a5c28"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold n elements, discard original data <br /></td></tr>
+<tr class="separator:a9476787ede397c57e33d788f2a1a5c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f41dd97b8d47e49f2d11b8c0844af37"><td class="memItemLeft" align="right" valign="top"><a id="a1f41dd97b8d47e49f2d11b8c0844af37"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a1f41dd97b8d47e49f2d11b8c0844af37">resize_nocpy</a> (size_t <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d98c0cc00a495285cced03dd9bee62f">nRows</a>, size_t <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aed32864800290bf065db3c0e94eb146e">nCols</a>)</td></tr>
+<tr class="memdesc:a1f41dd97b8d47e49f2d11b8c0844af37"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold MxN elements, discard original data <br /></td></tr>
+<tr class="separator:a1f41dd97b8d47e49f2d11b8c0844af37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdbd69e95e96bd3daf7f25014b4a6f8c"><td class="memItemLeft" align="right" valign="top"><a id="acdbd69e95e96bd3daf7f25014b4a6f8c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#acdbd69e95e96bd3daf7f25014b4a6f8c">resize_nocpy</a> (const std::vector&lt; size_t &gt; &amp;dim)</td></tr>
+<tr class="memdesc:acdbd69e95e96bd3daf7f25014b4a6f8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to n elements, discard original data <br /></td></tr>
+<tr class="separator:acdbd69e95e96bd3daf7f25014b4a6f8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a348e67ccc0b1109f568fc25c712789cb"><td class="memItemLeft" align="right" valign="top"><a id="a348e67ccc0b1109f568fc25c712789cb"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a348e67ccc0b1109f568fc25c712789cb">resize_clear</a> (size_t rows, size_t cols)</td></tr>
+<tr class="memdesc:a348e67ccc0b1109f568fc25c712789cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold MxN elements, set all elements to zero <br /></td></tr>
+<tr class="separator:a348e67ccc0b1109f568fc25c712789cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ade6df51b013bfc6fff1ddbc83fce94"><td class="memItemLeft" align="right" valign="top"><a id="a7ade6df51b013bfc6fff1ddbc83fce94"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a7ade6df51b013bfc6fff1ddbc83fce94">resize_clear</a> (const std::vector&lt; size_t &gt; &amp;dim)</td></tr>
+<tr class="memdesc:a7ade6df51b013bfc6fff1ddbc83fce94"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to MxNx... elements, set all elements to zero <br /></td></tr>
+<tr class="separator:a7ade6df51b013bfc6fff1ddbc83fce94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7341697a601ab108ac5972fc803603da"><td class="memItemLeft" align="right" valign="top"><a id="a7341697a601ab108ac5972fc803603da"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a7341697a601ab108ac5972fc803603da">~NumericArray</a> ()</td></tr>
+<tr class="memdesc:a7341697a601ab108ac5972fc803603da"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to MxNx... elements, set all elements to zero <br /></td></tr>
+<tr class="separator:a7341697a601ab108ac5972fc803603da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a60301312abe200886904f9b5e19360"><td class="memItemLeft" align="right" valign="top"><a id="a8a60301312abe200886904f9b5e19360"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a8a60301312abe200886904f9b5e19360">NumericArray</a> ()</td></tr>
+<tr class="memdesc:a8a60301312abe200886904f9b5e19360"><td class="mdescLeft">&#160;</td><td class="mdescRight">defaul constructor <br /></td></tr>
+<tr class="separator:a8a60301312abe200886904f9b5e19360"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d485352f71068a855374369b2eacefa"><td class="memItemLeft" align="right" valign="top"><a id="a8d485352f71068a855374369b2eacefa"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>NumericArray</b> (const <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; T &gt; &amp;src)</td></tr>
+<tr class="separator:a8d485352f71068a855374369b2eacefa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2109e1fcb4096f9bb076ff01cb193d6a"><td class="memTemplParams" colspan="2"><a id="a2109e1fcb4096f9bb076ff01cb193d6a"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a2109e1fcb4096f9bb076ff01cb193d6a"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>NumericArray</b> (const <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="separator:a2109e1fcb4096f9bb076ff01cb193d6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27b729eed1ebef91cfe2db238494152a"><td class="memItemLeft" align="right" valign="top"><a id="a27b729eed1ebef91cfe2db238494152a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>NumericArray</b> (<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; T &gt; &amp;&amp;src)</td></tr>
+<tr class="separator:a27b729eed1ebef91cfe2db238494152a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d89896b96efb2de7ce5d0ca8c678545"><td class="memTemplParams" colspan="2"><a id="a0d89896b96efb2de7ce5d0ca8c678545"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a0d89896b96efb2de7ce5d0ca8c678545"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>NumericArray</b> (<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;&amp;src)</td></tr>
+<tr class="separator:a0d89896b96efb2de7ce5d0ca8c678545"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cd4f69f8fd7da06dc11f8f5688ec87d"><td class="memTemplParams" colspan="2"><a id="a1cd4f69f8fd7da06dc11f8f5688ec87d"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a1cd4f69f8fd7da06dc11f8f5688ec87d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a1cd4f69f8fd7da06dc11f8f5688ec87d">operator=</a> (const <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="memdesc:a1cd4f69f8fd7da06dc11f8f5688ec87d"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy assign; <br /></td></tr>
+<tr class="separator:a1cd4f69f8fd7da06dc11f8f5688ec87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1b2e0d893e1a8e5b5eff03b74b89ba1"><td class="memTemplParams" colspan="2"><a id="ac1b2e0d893e1a8e5b5eff03b74b89ba1"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:ac1b2e0d893e1a8e5b5eff03b74b89ba1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ac1b2e0d893e1a8e5b5eff03b74b89ba1">operator=</a> (<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;&amp;src)</td></tr>
+<tr class="memdesc:ac1b2e0d893e1a8e5b5eff03b74b89ba1"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assign <br /></td></tr>
+<tr class="separator:ac1b2e0d893e1a8e5b5eff03b74b89ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d210a9733b39e6c98fc8aee59918672"><td class="memItemLeft" align="right" valign="top"><a id="a6d210a9733b39e6c98fc8aee59918672"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a6d210a9733b39e6c98fc8aee59918672">set</a> (const mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:a6d210a9733b39e6c98fc8aee59918672"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from const mxArray*, with optional ability to set persistent flag <br /></td></tr>
+<tr class="separator:a6d210a9733b39e6c98fc8aee59918672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b76c76d572e8240c8daa08fa148f322"><td class="memItemLeft" align="right" valign="top"><a id="a6b76c76d572e8240c8daa08fa148f322"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a6b76c76d572e8240c8daa08fa148f322">operator=</a> (const mxArray *psrc)</td></tr>
+<tr class="memdesc:a6b76c76d572e8240c8daa08fa148f322"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from const mxArray* <br /></td></tr>
+<tr class="separator:a6b76c76d572e8240c8daa08fa148f322"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfcb4fa65a8293b1466e9a0a8a40ca63"><td class="memItemLeft" align="right" valign="top"><a id="adfcb4fa65a8293b1466e9a0a8a40ca63"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#adfcb4fa65a8293b1466e9a0a8a40ca63">set</a> (mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:adfcb4fa65a8293b1466e9a0a8a40ca63"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray*, with optional ability to set persistent flag <br /></td></tr>
+<tr class="separator:adfcb4fa65a8293b1466e9a0a8a40ca63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0f1c7ef6a53bac78a6e7ac93e82b859"><td class="memItemLeft" align="right" valign="top"><a id="aa0f1c7ef6a53bac78a6e7ac93e82b859"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aa0f1c7ef6a53bac78a6e7ac93e82b859">operator=</a> (mxArray *psrc)</td></tr>
+<tr class="memdesc:aa0f1c7ef6a53bac78a6e7ac93e82b859"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray* <br /></td></tr>
+<tr class="separator:aa0f1c7ef6a53bac78a6e7ac93e82b859"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e0d1ed975a329a91b78caf611da06b5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a8e0d1ed975a329a91b78caf611da06b5">own</a> (mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:a8e0d1ed975a329a91b78caf611da06b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">set non-const mxArray*, giving <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> full ownership.  <a href="#a8e0d1ed975a329a91b78caf611da06b5">More...</a><br /></td></tr>
+<tr class="separator:a8e0d1ed975a329a91b78caf611da06b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af82ac3cf3057926c67fd6b31a903e780"><td class="memItemLeft" align="right" valign="top"><a id="af82ac3cf3057926c67fd6b31a903e780"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#af82ac3cf3057926c67fd6b31a903e780">NumericArray</a> (size_t num)</td></tr>
+<tr class="memdesc:af82ac3cf3057926c67fd6b31a903e780"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct vector of size num <br /></td></tr>
+<tr class="separator:af82ac3cf3057926c67fd6b31a903e780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bb792a0a738751354d0e24152f27adc"><td class="memItemLeft" align="right" valign="top"><a id="a2bb792a0a738751354d0e24152f27adc"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>NumericArray</b> (size_t rows, size_t cols, bool setZeros=false)</td></tr>
+<tr class="separator:a2bb792a0a738751354d0e24152f27adc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21c89604c5dd5e8fb81b85146bb820f3"><td class="memItemLeft" align="right" valign="top"><a id="a21c89604c5dd5e8fb81b85146bb820f3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>NumericArray</b> (const std::vector&lt; size_t &gt; &amp;dim, bool setZeros=false)</td></tr>
+<tr class="separator:a21c89604c5dd5e8fb81b85146bb820f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a996fdee756c35b218f4a57fff351f612"><td class="memItemLeft" align="right" valign="top"><a id="a996fdee756c35b218f4a57fff351f612"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a996fdee756c35b218f4a57fff351f612">NumericArray</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a996fdee756c35b218f4a57fff351f612"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a996fdee756c35b218f4a57fff351f612"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaea0a1db720d0c1bcdbe57a6d19e3f00"><td class="memTemplParams" colspan="2"><a id="aaea0a1db720d0c1bcdbe57a6d19e3f00"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:aaea0a1db720d0c1bcdbe57a6d19e3f00"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aaea0a1db720d0c1bcdbe57a6d19e3f00">NumericArray</a> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="memdesc:aaea0a1db720d0c1bcdbe57a6d19e3f00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from Generic <a class="el" href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. ">ArrayBase</a>. <br /></td></tr>
+<tr class="separator:aaea0a1db720d0c1bcdbe57a6d19e3f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a941d61cd4344c6ff6bb2f8eff874f205"><td class="memTemplParams" colspan="2"><a id="a941d61cd4344c6ff6bb2f8eff874f205"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a941d61cd4344c6ff6bb2f8eff874f205"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a941d61cd4344c6ff6bb2f8eff874f205">operator=</a> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="memdesc:a941d61cd4344c6ff6bb2f8eff874f205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assign from Generic <a class="el" href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. ">ArrayBase</a>;. <br /></td></tr>
+<tr class="separator:a941d61cd4344c6ff6bb2f8eff874f205"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab06ffd59ec355f01a0378b36a0fedb8a"><td class="memItemLeft" align="right" valign="top"><a id="ab06ffd59ec355f01a0378b36a0fedb8a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ab06ffd59ec355f01a0378b36a0fedb8a">NumericArray</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
+<tr class="memdesc:ab06ffd59ec355f01a0378b36a0fedb8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move Construct from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a>. <br /></td></tr>
+<tr class="separator:ab06ffd59ec355f01a0378b36a0fedb8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc6d71417d3b2c04bd202168db15a086"><td class="memItemLeft" align="right" valign="top"><a id="abc6d71417d3b2c04bd202168db15a086"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#abc6d71417d3b2c04bd202168db15a086">disp</a> () const</td></tr>
+<tr class="memdesc:abc6d71417d3b2c04bd202168db15a086"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#abc6d71417d3b2c04bd202168db15a086" title="overload disp() method ">disp()</a> method <br /></td></tr>
+<tr class="separator:abc6d71417d3b2c04bd202168db15a086"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d4418241ed9eb7038a92dcef93eb51a"><td class="memItemLeft" align="right" valign="top"><a id="a4d4418241ed9eb7038a92dcef93eb51a"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a4d4418241ed9eb7038a92dcef93eb51a">numel</a> () const</td></tr>
+<tr class="memdesc:a4d4418241ed9eb7038a92dcef93eb51a"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of elements, inhereted from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a4d4418241ed9eb7038a92dcef93eb51a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0aad9eddd4c09435057deb4aed7c4c92"><td class="memItemLeft" align="right" valign="top"><a id="a0aad9eddd4c09435057deb4aed7c4c92"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a0aad9eddd4c09435057deb4aed7c4c92">isempty</a> () const</td></tr>
+<tr class="memdesc:a0aad9eddd4c09435057deb4aed7c4c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">is array empty, inhereted from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a0aad9eddd4c09435057deb4aed7c4c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a503072c462601dccd7d27d527e856762"><td class="memItemLeft" align="right" valign="top"><a id="a503072c462601dccd7d27d527e856762"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a503072c462601dccd7d27d527e856762">ndims</a> () const</td></tr>
+<tr class="memdesc:a503072c462601dccd7d27d527e856762"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of dimensions <br /></td></tr>
+<tr class="separator:a503072c462601dccd7d27d527e856762"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d98c0cc00a495285cced03dd9bee62f"><td class="memItemLeft" align="right" valign="top"><a id="a2d98c0cc00a495285cced03dd9bee62f"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d98c0cc00a495285cced03dd9bee62f">nRows</a> () const</td></tr>
+<tr class="memdesc:a2d98c0cc00a495285cced03dd9bee62f"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of rows <br /></td></tr>
+<tr class="separator:a2d98c0cc00a495285cced03dd9bee62f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed32864800290bf065db3c0e94eb146e"><td class="memItemLeft" align="right" valign="top"><a id="aed32864800290bf065db3c0e94eb146e"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aed32864800290bf065db3c0e94eb146e">nCols</a> () const</td></tr>
+<tr class="memdesc:aed32864800290bf065db3c0e94eb146e"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of columns <br /></td></tr>
+<tr class="separator:aed32864800290bf065db3c0e94eb146e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa49bd04cfe8555b18e7cd02434115abf"><td class="memItemLeft" align="right" valign="top"><a id="aa49bd04cfe8555b18e7cd02434115abf"></a>
+virtual std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aa49bd04cfe8555b18e7cd02434115abf">dims</a> () const</td></tr>
+<tr class="memdesc:aa49bd04cfe8555b18e7cd02434115abf"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns dimensions of the data <br /></td></tr>
+<tr class="separator:aa49bd04cfe8555b18e7cd02434115abf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09e1e63b0b539439074a39ab50f11fc6"><td class="memItemLeft" align="right" valign="top"><a id="a09e1e63b0b539439074a39ab50f11fc6"></a>
+virtual std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a09e1e63b0b539439074a39ab50f11fc6">size</a> () const</td></tr>
+<tr class="memdesc:a09e1e63b0b539439074a39ab50f11fc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::vector holding dimension of the mxArray object <br /></td></tr>
+<tr class="separator:a09e1e63b0b539439074a39ab50f11fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86d5ef1de7e9cab2011eb9d04aebb893"><td class="memItemLeft" align="right" valign="top"><a id="a86d5ef1de7e9cab2011eb9d04aebb893"></a>
+virtual const T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a86d5ef1de7e9cab2011eb9d04aebb893">getdata</a> () const</td></tr>
+<tr class="memdesc:a86d5ef1de7e9cab2011eb9d04aebb893"><td class="mdescLeft">&#160;</td><td class="mdescRight">get const pointer to raw data array <br /></td></tr>
+<tr class="separator:a86d5ef1de7e9cab2011eb9d04aebb893"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cd1e730db7a27654a3243f7d7acc2aa"><td class="memItemLeft" align="right" valign="top"><a id="a0cd1e730db7a27654a3243f7d7acc2aa"></a>
+virtual T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a0cd1e730db7a27654a3243f7d7acc2aa">getdata</a> ()</td></tr>
+<tr class="memdesc:a0cd1e730db7a27654a3243f7d7acc2aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">get (non-const) pointer to raw data array if array was originally set from const mxArray* then it will be duplicated <br /></td></tr>
+<tr class="separator:a0cd1e730db7a27654a3243f7d7acc2aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a443e268b35fd4d175dcfdb06e5a30944"><td class="memItemLeft" align="right" valign="top"><a id="a443e268b35fd4d175dcfdb06e5a30944"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a443e268b35fd4d175dcfdb06e5a30944">sub2ind</a> (const std::vector&lt; size_t &gt; &amp;subs) const</td></tr>
+<tr class="memdesc:a443e268b35fd4d175dcfdb06e5a30944"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns index corresponding to subscript <br /></td></tr>
+<tr class="separator:a443e268b35fd4d175dcfdb06e5a30944"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ec9ff9c7d7ed6561f3b7aec090ecb46"><td class="memItemLeft" align="right" valign="top"><a id="a3ec9ff9c7d7ed6561f3b7aec090ecb46"></a>
+virtual T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a3ec9ff9c7d7ed6561f3b7aec090ecb46">operator[]</a> (size_t index)</td></tr>
+<tr class="memdesc:a3ec9ff9c7d7ed6561f3b7aec090ecb46"><td class="mdescLeft">&#160;</td><td class="mdescRight">set n-th element if array was originally set from const mxArray* then it will be duplicated <br /></td></tr>
+<tr class="separator:a3ec9ff9c7d7ed6561f3b7aec090ecb46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae15f5d2f88301c595e66d027cf235424"><td class="memItemLeft" align="right" valign="top"><a id="ae15f5d2f88301c595e66d027cf235424"></a>
+virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ae15f5d2f88301c595e66d027cf235424">operator[]</a> (size_t index) const</td></tr>
+<tr class="memdesc:ae15f5d2f88301c595e66d027cf235424"><td class="mdescLeft">&#160;</td><td class="mdescRight">get n-th element <br /></td></tr>
+<tr class="separator:ae15f5d2f88301c595e66d027cf235424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a068b3591e5912cbd1e07d97c1db8ea31"><td class="memItemLeft" align="right" valign="top"><a id="a068b3591e5912cbd1e07d97c1db8ea31"></a>
+virtual T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a068b3591e5912cbd1e07d97c1db8ea31">operator()</a> (size_t index)</td></tr>
+<tr class="memdesc:a068b3591e5912cbd1e07d97c1db8ea31"><td class="mdescLeft">&#160;</td><td class="mdescRight">set n-th element <br /></td></tr>
+<tr class="separator:a068b3591e5912cbd1e07d97c1db8ea31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecd2299e23fce9c53fbafd3d3b4a4cd7"><td class="memItemLeft" align="right" valign="top"><a id="aecd2299e23fce9c53fbafd3d3b4a4cd7"></a>
+virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aecd2299e23fce9c53fbafd3d3b4a4cd7">operator()</a> (size_t index) const</td></tr>
+<tr class="memdesc:aecd2299e23fce9c53fbafd3d3b4a4cd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">get n-th element <br /></td></tr>
+<tr class="separator:aecd2299e23fce9c53fbafd3d3b4a4cd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae79e411e78b44f034360b2aeee83c5a3"><td class="memItemLeft" align="right" valign="top"><a id="ae79e411e78b44f034360b2aeee83c5a3"></a>
+virtual T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ae79e411e78b44f034360b2aeee83c5a3">operator()</a> (size_t row, size_t col)</td></tr>
+<tr class="memdesc:ae79e411e78b44f034360b2aeee83c5a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set element [m,n] <br /></td></tr>
+<tr class="separator:ae79e411e78b44f034360b2aeee83c5a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab707e89f5437c55071910802a5a6307"><td class="memItemLeft" align="right" valign="top"><a id="aab707e89f5437c55071910802a5a6307"></a>
+virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aab707e89f5437c55071910802a5a6307">operator()</a> (size_t row, size_t col) const</td></tr>
+<tr class="memdesc:aab707e89f5437c55071910802a5a6307"><td class="mdescLeft">&#160;</td><td class="mdescRight">get element [m,n] <br /></td></tr>
+<tr class="separator:aab707e89f5437c55071910802a5a6307"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65c89090a52a199e264366cd797b416a"><td class="memItemLeft" align="right" valign="top"><a id="a65c89090a52a199e264366cd797b416a"></a>
+virtual T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a65c89090a52a199e264366cd797b416a">operator()</a> (const std::vector&lt; size_t &gt; &amp;sub)</td></tr>
+<tr class="memdesc:a65c89090a52a199e264366cd797b416a"><td class="mdescLeft">&#160;</td><td class="mdescRight">set element at coordinate [x,y,z,...] specified by the vector elementCoord <br /></td></tr>
+<tr class="separator:a65c89090a52a199e264366cd797b416a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a762806158d767198a5903302f435ce17"><td class="memItemLeft" align="right" valign="top"><a id="a762806158d767198a5903302f435ce17"></a>
+virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a762806158d767198a5903302f435ce17">operator()</a> (const std::vector&lt; size_t &gt; &amp;sub) const</td></tr>
+<tr class="memdesc:a762806158d767198a5903302f435ce17"><td class="mdescLeft">&#160;</td><td class="mdescRight">get element at coordinate [x,y,z,...] specified by the vector elementCoord///&lt; get element at coordinate [x,y,z,...] specified by the vector elementCoord <br /></td></tr>
+<tr class="separator:a762806158d767198a5903302f435ce17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae06bf5c559242893c1582b35e3e0d360"><td class="memItemLeft" align="right" valign="top"><a id="ae06bf5c559242893c1582b35e3e0d360"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ae06bf5c559242893c1582b35e3e0d360">resize</a> (size_t num)</td></tr>
+<tr class="memdesc:ae06bf5c559242893c1582b35e3e0d360"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold n elements, keep old data, new data set to zeros <br /></td></tr>
+<tr class="separator:ae06bf5c559242893c1582b35e3e0d360"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaaa254a510d6890740fb0ba53168cba9"><td class="memItemLeft" align="right" valign="top"><a id="aaaa254a510d6890740fb0ba53168cba9"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aaaa254a510d6890740fb0ba53168cba9">resize</a> (size_t <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d98c0cc00a495285cced03dd9bee62f">nRows</a>, size_t <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aed32864800290bf065db3c0e94eb146e">nCols</a>)</td></tr>
+<tr class="memdesc:aaaa254a510d6890740fb0ba53168cba9"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold MxN elements, keep old data, new data set to zeros <br /></td></tr>
+<tr class="separator:aaaa254a510d6890740fb0ba53168cba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc633641342964463ae94113700e3b49"><td class="memItemLeft" align="right" valign="top"><a id="abc633641342964463ae94113700e3b49"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#abc633641342964463ae94113700e3b49">resize</a> (const std::vector&lt; size_t &gt; &amp;dim)</td></tr>
+<tr class="memdesc:abc633641342964463ae94113700e3b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to new size <br /></td></tr>
+<tr class="separator:abc633641342964463ae94113700e3b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9476787ede397c57e33d788f2a1a5c28"><td class="memItemLeft" align="right" valign="top"><a id="a9476787ede397c57e33d788f2a1a5c28"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a9476787ede397c57e33d788f2a1a5c28">resize_nocpy</a> (size_t num)</td></tr>
+<tr class="memdesc:a9476787ede397c57e33d788f2a1a5c28"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold n elements, discard original data <br /></td></tr>
+<tr class="separator:a9476787ede397c57e33d788f2a1a5c28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f41dd97b8d47e49f2d11b8c0844af37"><td class="memItemLeft" align="right" valign="top"><a id="a1f41dd97b8d47e49f2d11b8c0844af37"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a1f41dd97b8d47e49f2d11b8c0844af37">resize_nocpy</a> (size_t <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d98c0cc00a495285cced03dd9bee62f">nRows</a>, size_t <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aed32864800290bf065db3c0e94eb146e">nCols</a>)</td></tr>
+<tr class="memdesc:a1f41dd97b8d47e49f2d11b8c0844af37"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold MxN elements, discard original data <br /></td></tr>
+<tr class="separator:a1f41dd97b8d47e49f2d11b8c0844af37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdbd69e95e96bd3daf7f25014b4a6f8c"><td class="memItemLeft" align="right" valign="top"><a id="acdbd69e95e96bd3daf7f25014b4a6f8c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#acdbd69e95e96bd3daf7f25014b4a6f8c">resize_nocpy</a> (const std::vector&lt; size_t &gt; &amp;dim)</td></tr>
+<tr class="memdesc:acdbd69e95e96bd3daf7f25014b4a6f8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to n elements, discard original data <br /></td></tr>
+<tr class="separator:acdbd69e95e96bd3daf7f25014b4a6f8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a348e67ccc0b1109f568fc25c712789cb"><td class="memItemLeft" align="right" valign="top"><a id="a348e67ccc0b1109f568fc25c712789cb"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a348e67ccc0b1109f568fc25c712789cb">resize_clear</a> (size_t rows, size_t cols)</td></tr>
+<tr class="memdesc:a348e67ccc0b1109f568fc25c712789cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to hold MxN elements, set all elements to zero <br /></td></tr>
+<tr class="separator:a348e67ccc0b1109f568fc25c712789cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ade6df51b013bfc6fff1ddbc83fce94"><td class="memItemLeft" align="right" valign="top"><a id="a7ade6df51b013bfc6fff1ddbc83fce94"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a7ade6df51b013bfc6fff1ddbc83fce94">resize_clear</a> (const std::vector&lt; size_t &gt; &amp;dim)</td></tr>
+<tr class="memdesc:a7ade6df51b013bfc6fff1ddbc83fce94"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to MxNx... elements, set all elements to zero <br /></td></tr>
+<tr class="separator:a7ade6df51b013bfc6fff1ddbc83fce94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7341697a601ab108ac5972fc803603da"><td class="memItemLeft" align="right" valign="top"><a id="a7341697a601ab108ac5972fc803603da"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a7341697a601ab108ac5972fc803603da">~NumericArray</a> ()</td></tr>
+<tr class="memdesc:a7341697a601ab108ac5972fc803603da"><td class="mdescLeft">&#160;</td><td class="mdescRight">resize to MxNx... elements, set all elements to zero <br /></td></tr>
+<tr class="separator:a7341697a601ab108ac5972fc803603da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a60301312abe200886904f9b5e19360"><td class="memItemLeft" align="right" valign="top"><a id="a8a60301312abe200886904f9b5e19360"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a8a60301312abe200886904f9b5e19360">NumericArray</a> ()</td></tr>
+<tr class="memdesc:a8a60301312abe200886904f9b5e19360"><td class="mdescLeft">&#160;</td><td class="mdescRight">defaul constructor <br /></td></tr>
+<tr class="separator:a8a60301312abe200886904f9b5e19360"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d485352f71068a855374369b2eacefa"><td class="memItemLeft" align="right" valign="top"><a id="a8d485352f71068a855374369b2eacefa"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>NumericArray</b> (const <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; T &gt; &amp;src)</td></tr>
+<tr class="separator:a8d485352f71068a855374369b2eacefa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2109e1fcb4096f9bb076ff01cb193d6a"><td class="memTemplParams" colspan="2"><a id="a2109e1fcb4096f9bb076ff01cb193d6a"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a2109e1fcb4096f9bb076ff01cb193d6a"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>NumericArray</b> (const <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="separator:a2109e1fcb4096f9bb076ff01cb193d6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27b729eed1ebef91cfe2db238494152a"><td class="memItemLeft" align="right" valign="top"><a id="a27b729eed1ebef91cfe2db238494152a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>NumericArray</b> (<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; T &gt; &amp;&amp;src)</td></tr>
+<tr class="separator:a27b729eed1ebef91cfe2db238494152a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d89896b96efb2de7ce5d0ca8c678545"><td class="memTemplParams" colspan="2"><a id="a0d89896b96efb2de7ce5d0ca8c678545"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a0d89896b96efb2de7ce5d0ca8c678545"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>NumericArray</b> (<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;&amp;src)</td></tr>
+<tr class="separator:a0d89896b96efb2de7ce5d0ca8c678545"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cd4f69f8fd7da06dc11f8f5688ec87d"><td class="memTemplParams" colspan="2"><a id="a1cd4f69f8fd7da06dc11f8f5688ec87d"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a1cd4f69f8fd7da06dc11f8f5688ec87d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a1cd4f69f8fd7da06dc11f8f5688ec87d">operator=</a> (const <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="memdesc:a1cd4f69f8fd7da06dc11f8f5688ec87d"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy assign; <br /></td></tr>
+<tr class="separator:a1cd4f69f8fd7da06dc11f8f5688ec87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1b2e0d893e1a8e5b5eff03b74b89ba1"><td class="memTemplParams" colspan="2"><a id="ac1b2e0d893e1a8e5b5eff03b74b89ba1"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:ac1b2e0d893e1a8e5b5eff03b74b89ba1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ac1b2e0d893e1a8e5b5eff03b74b89ba1">operator=</a> (<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;&amp;src)</td></tr>
+<tr class="memdesc:ac1b2e0d893e1a8e5b5eff03b74b89ba1"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assign <br /></td></tr>
+<tr class="separator:ac1b2e0d893e1a8e5b5eff03b74b89ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d210a9733b39e6c98fc8aee59918672"><td class="memItemLeft" align="right" valign="top"><a id="a6d210a9733b39e6c98fc8aee59918672"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a6d210a9733b39e6c98fc8aee59918672">set</a> (const mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:a6d210a9733b39e6c98fc8aee59918672"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from const mxArray*, with optional ability to set persistent flag <br /></td></tr>
+<tr class="separator:a6d210a9733b39e6c98fc8aee59918672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b76c76d572e8240c8daa08fa148f322"><td class="memItemLeft" align="right" valign="top"><a id="a6b76c76d572e8240c8daa08fa148f322"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a6b76c76d572e8240c8daa08fa148f322">operator=</a> (const mxArray *psrc)</td></tr>
+<tr class="memdesc:a6b76c76d572e8240c8daa08fa148f322"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from const mxArray* <br /></td></tr>
+<tr class="separator:a6b76c76d572e8240c8daa08fa148f322"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfcb4fa65a8293b1466e9a0a8a40ca63"><td class="memItemLeft" align="right" valign="top"><a id="adfcb4fa65a8293b1466e9a0a8a40ca63"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#adfcb4fa65a8293b1466e9a0a8a40ca63">set</a> (mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:adfcb4fa65a8293b1466e9a0a8a40ca63"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray*, with optional ability to set persistent flag <br /></td></tr>
+<tr class="separator:adfcb4fa65a8293b1466e9a0a8a40ca63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0f1c7ef6a53bac78a6e7ac93e82b859"><td class="memItemLeft" align="right" valign="top"><a id="aa0f1c7ef6a53bac78a6e7ac93e82b859"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aa0f1c7ef6a53bac78a6e7ac93e82b859">operator=</a> (mxArray *psrc)</td></tr>
+<tr class="memdesc:aa0f1c7ef6a53bac78a6e7ac93e82b859"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray* <br /></td></tr>
+<tr class="separator:aa0f1c7ef6a53bac78a6e7ac93e82b859"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e0d1ed975a329a91b78caf611da06b5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a8e0d1ed975a329a91b78caf611da06b5">own</a> (mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:a8e0d1ed975a329a91b78caf611da06b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">set non-const mxArray*, giving <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> full ownership.  <a href="#a8e0d1ed975a329a91b78caf611da06b5">More...</a><br /></td></tr>
+<tr class="separator:a8e0d1ed975a329a91b78caf611da06b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af82ac3cf3057926c67fd6b31a903e780"><td class="memItemLeft" align="right" valign="top"><a id="af82ac3cf3057926c67fd6b31a903e780"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#af82ac3cf3057926c67fd6b31a903e780">NumericArray</a> (size_t num)</td></tr>
+<tr class="memdesc:af82ac3cf3057926c67fd6b31a903e780"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct vector of size num <br /></td></tr>
+<tr class="separator:af82ac3cf3057926c67fd6b31a903e780"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bb792a0a738751354d0e24152f27adc"><td class="memItemLeft" align="right" valign="top"><a id="a2bb792a0a738751354d0e24152f27adc"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>NumericArray</b> (size_t rows, size_t cols, bool setZeros=false)</td></tr>
+<tr class="separator:a2bb792a0a738751354d0e24152f27adc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21c89604c5dd5e8fb81b85146bb820f3"><td class="memItemLeft" align="right" valign="top"><a id="a21c89604c5dd5e8fb81b85146bb820f3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>NumericArray</b> (const std::vector&lt; size_t &gt; &amp;dim, bool setZeros=false)</td></tr>
+<tr class="separator:a21c89604c5dd5e8fb81b85146bb820f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a996fdee756c35b218f4a57fff351f612"><td class="memItemLeft" align="right" valign="top"><a id="a996fdee756c35b218f4a57fff351f612"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a996fdee756c35b218f4a57fff351f612">NumericArray</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a996fdee756c35b218f4a57fff351f612"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a996fdee756c35b218f4a57fff351f612"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaea0a1db720d0c1bcdbe57a6d19e3f00"><td class="memTemplParams" colspan="2"><a id="aaea0a1db720d0c1bcdbe57a6d19e3f00"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:aaea0a1db720d0c1bcdbe57a6d19e3f00"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aaea0a1db720d0c1bcdbe57a6d19e3f00">NumericArray</a> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="memdesc:aaea0a1db720d0c1bcdbe57a6d19e3f00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from Generic <a class="el" href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. ">ArrayBase</a>. <br /></td></tr>
+<tr class="separator:aaea0a1db720d0c1bcdbe57a6d19e3f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a941d61cd4344c6ff6bb2f8eff874f205"><td class="memTemplParams" colspan="2"><a id="a941d61cd4344c6ff6bb2f8eff874f205"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a941d61cd4344c6ff6bb2f8eff874f205"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a941d61cd4344c6ff6bb2f8eff874f205">operator=</a> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="memdesc:a941d61cd4344c6ff6bb2f8eff874f205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assign from Generic <a class="el" href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. ">ArrayBase</a>;. <br /></td></tr>
+<tr class="separator:a941d61cd4344c6ff6bb2f8eff874f205"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab06ffd59ec355f01a0378b36a0fedb8a"><td class="memItemLeft" align="right" valign="top"><a id="ab06ffd59ec355f01a0378b36a0fedb8a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ab06ffd59ec355f01a0378b36a0fedb8a">NumericArray</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
+<tr class="memdesc:ab06ffd59ec355f01a0378b36a0fedb8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move Construct from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a>. <br /></td></tr>
+<tr class="separator:ab06ffd59ec355f01a0378b36a0fedb8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33347ecb999e9d9e66395a584e56056f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a33347ecb999e9d9e66395a584e56056f">NumericArray</a> (const mxArray *psrc, bool persist=false)</td></tr>
+<tr class="memdesc:a33347ecb999e9d9e66395a584e56056f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from const mxArray* array will be duplicated when (non-const) <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a0cd1e730db7a27654a3243f7d7acc2aa" title="get (non-const) pointer to raw data array ">getdata()</a> or (non-const) operator[] are called.  <a href="#a33347ecb999e9d9e66395a584e56056f">More...</a><br /></td></tr>
+<tr class="separator:a33347ecb999e9d9e66395a584e56056f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae09f8cff6f01eaedb3835e42eabfa348"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ae09f8cff6f01eaedb3835e42eabfa348">NumericArray</a> (mxArray *psrc, bool persist=false)</td></tr>
+<tr class="memdesc:ae09f8cff6f01eaedb3835e42eabfa348"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from (non-const) mxArray* <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> will not take ownership of the array therefore it is your job to delete the array after <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> is done with it.  <a href="#ae09f8cff6f01eaedb3835e42eabfa348">More...</a><br /></td></tr>
+<tr class="separator:ae09f8cff6f01eaedb3835e42eabfa348"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc6d71417d3b2c04bd202168db15a086"><td class="memItemLeft" align="right" valign="top"><a id="abc6d71417d3b2c04bd202168db15a086"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#abc6d71417d3b2c04bd202168db15a086">disp</a> () const</td></tr>
+<tr class="memdesc:abc6d71417d3b2c04bd202168db15a086"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#abc6d71417d3b2c04bd202168db15a086" title="overload disp() method ">disp()</a> method <br /></td></tr>
+<tr class="separator:abc6d71417d3b2c04bd202168db15a086"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28c880f5cea52a4ee157c9a892822946"><td class="memItemLeft" align="right" valign="top"><a id="a28c880f5cea52a4ee157c9a892822946"></a>
+<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a28c880f5cea52a4ee157c9a892822946">concatenate</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;b, size_t dim)</td></tr>
+<tr class="memdesc:a28c880f5cea52a4ee157c9a892822946"><td class="mdescLeft">&#160;</td><td class="mdescRight">concatenate with <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> just inherits default behavior from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a28c880f5cea52a4ee157c9a892822946"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa16e8fdaaf69267ed2ba14190f05f7bd"><td class="memTemplParams" colspan="2"><a id="aa16e8fdaaf69267ed2ba14190f05f7bd"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:aa16e8fdaaf69267ed2ba14190f05f7bd"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#aa16e8fdaaf69267ed2ba14190f05f7bd">concatenate</a> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;b, size_t dim)</td></tr>
+<tr class="memdesc:aa16e8fdaaf69267ed2ba14190f05f7bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenate with generic array. <br /></td></tr>
+<tr class="separator:aa16e8fdaaf69267ed2ba14190f05f7bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d4418241ed9eb7038a92dcef93eb51a"><td class="memItemLeft" align="right" valign="top"><a id="a4d4418241ed9eb7038a92dcef93eb51a"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a4d4418241ed9eb7038a92dcef93eb51a">numel</a> () const</td></tr>
 <tr class="memdesc:a4d4418241ed9eb7038a92dcef93eb51a"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of elements <br /></td></tr>
 <tr class="separator:a4d4418241ed9eb7038a92dcef93eb51a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0aad9eddd4c09435057deb4aed7c4c92"><td class="memItemLeft" align="right" valign="top"><a id="a0aad9eddd4c09435057deb4aed7c4c92"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a0aad9eddd4c09435057deb4aed7c4c92">isempty</a> () const</td></tr>
-<tr class="memdesc:a0aad9eddd4c09435057deb4aed7c4c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">is array empty <br /></td></tr>
+<tr class="memdesc:a0aad9eddd4c09435057deb4aed7c4c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if empty <br /></td></tr>
 <tr class="separator:a0aad9eddd4c09435057deb4aed7c4c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d98c0cc00a495285cced03dd9bee62f"><td class="memItemLeft" align="right" valign="top"><a id="a2d98c0cc00a495285cced03dd9bee62f"></a>
 virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d98c0cc00a495285cced03dd9bee62f">nRows</a> () const</td></tr>
@@ -134,7 +524,7 @@ virtual std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="b
 <tr class="separator:aa49bd04cfe8555b18e7cd02434115abf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a503072c462601dccd7d27d527e856762"><td class="memItemLeft" align="right" valign="top"><a id="a503072c462601dccd7d27d527e856762"></a>
 virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a503072c462601dccd7d27d527e856762">ndims</a> () const</td></tr>
-<tr class="memdesc:a503072c462601dccd7d27d527e856762"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of dimensions <br /></td></tr>
+<tr class="memdesc:a503072c462601dccd7d27d527e856762"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of dims <br /></td></tr>
 <tr class="separator:a503072c462601dccd7d27d527e856762"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86d5ef1de7e9cab2011eb9d04aebb893"><td class="memItemLeft" align="right" valign="top"><a id="a86d5ef1de7e9cab2011eb9d04aebb893"></a>
 virtual const T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a86d5ef1de7e9cab2011eb9d04aebb893">getdata</a> () const</td></tr>
@@ -244,12 +634,155 @@ template&lt;typename M &gt; </td></tr>
 <tr class="memdesc:a70befa1e75da7785ed2ef1c61a4b4edc"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assign from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
 <tr class="separator:a70befa1e75da7785ed2ef1c61a4b4edc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc6d71417d3b2c04bd202168db15a086"><td class="memItemLeft" align="right" valign="top"><a id="abc6d71417d3b2c04bd202168db15a086"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>disp</b> () const</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#abc6d71417d3b2c04bd202168db15a086">disp</a> () const</td></tr>
+<tr class="memdesc:abc6d71417d3b2c04bd202168db15a086"><td class="mdescLeft">&#160;</td><td class="mdescRight">display the matrix <br /></td></tr>
 <tr class="separator:abc6d71417d3b2c04bd202168db15a086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classextras_1_1cmex_1_1_mx_object"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classextras_1_1cmex_1_1_mx_object')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">extras::cmex::MxObject</a></td></tr>
+<tr class="memitem:ac03872da4d0cf0686f96ca2ded7205ca inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="ac03872da4d0cf0686f96ca2ded7205ca"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ac03872da4d0cf0686f96ca2ded7205ca">~MxObject</a> ()</td></tr>
+<tr class="memdesc:ac03872da4d0cf0686f96ca2ded7205ca inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">destroy object <br /></td></tr>
+<tr class="separator:ac03872da4d0cf0686f96ca2ded7205ca inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af45a36206a5b7d256e1178a28918e8f4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="af45a36206a5b7d256e1178a28918e8f4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#af45a36206a5b7d256e1178a28918e8f4">makePersistent</a> ()</td></tr>
-<tr class="memdesc:af45a36206a5b7d256e1178a28918e8f4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">make mxArray persistent so that is survives beyond each call to the initializing mexFunction <br /></td></tr>
+<tr class="memdesc:af45a36206a5b7d256e1178a28918e8f4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">make mxArray persistent so that it survives different calls to a mexFunction if linked mxArray was not managed by <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> or set from const mxarray* then it will be duplicated and the <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> will no longer be "set from const" <br /></td></tr>
+<tr class="separator:af45a36206a5b7d256e1178a28918e8f4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f17de026559973c250f4c6594787c37 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a2f17de026559973c250f4c6594787c37"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a2f17de026559973c250f4c6594787c37">MxObject</a> ()</td></tr>
+<tr class="memdesc:a2f17de026559973c250f4c6594787c37 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defaul Constructor mxArray will be set to nullptr. <br /></td></tr>
+<tr class="separator:a2f17de026559973c250f4c6594787c37 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dccacf611282d5352a2873fb3b52a1a inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a8dccacf611282d5352a2873fb3b52a1a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8dccacf611282d5352a2873fb3b52a1a">MxObject</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a8dccacf611282d5352a2873fb3b52a1a inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct by copy. <br /></td></tr>
+<tr class="separator:a8dccacf611282d5352a2873fb3b52a1a inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3d65bc1fde4554b4aac14a2c0681047 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aa3d65bc1fde4554b4aac14a2c0681047"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa3d65bc1fde4554b4aac14a2c0681047">MxObject</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
+<tr class="memdesc:aa3d65bc1fde4554b4aac14a2c0681047 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct by move. <br /></td></tr>
+<tr class="separator:aa3d65bc1fde4554b4aac14a2c0681047 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26342a7335a3952fe3301af0a38d9f7e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a26342a7335a3952fe3301af0a38d9f7e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a26342a7335a3952fe3301af0a38d9f7e">MxObject</a> (const mxArray *psrc, bool persist=false)</td></tr>
+<tr class="memdesc:a26342a7335a3952fe3301af0a38d9f7e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from const mxArray*. <br /></td></tr>
+<tr class="separator:a26342a7335a3952fe3301af0a38d9f7e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb3044166376ac09e819d58279c20b08 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="acb3044166376ac09e819d58279c20b08"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#acb3044166376ac09e819d58279c20b08">MxObject</a> (mxArray *psrc, bool persist=false)</td></tr>
+<tr class="memdesc:acb3044166376ac09e819d58279c20b08 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from (non-const) mxArray* Creates a link to psrc, but does not take ownership of psrc YOU ARE RESPONSIBLE FOR MANAGING psrc destruction IF psrc is deleted before the object you create <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> will break. <br /></td></tr>
+<tr class="separator:acb3044166376ac09e819d58279c20b08 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0e44e32984f678374a31613e783cf73 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ab0e44e32984f678374a31613e783cf73">operator mxArray *</a> ()</td></tr>
+<tr class="memdesc:ab0e44e32984f678374a31613e783cf73 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return mutable (non-const) mxArray* returned array will not be persistent so it's ok to pass back to MATLAB if object is persistent or setFromConst then a copy of mxArray is returned; otherwise, the linked mxarray is returned and the management flag is changed.  <a href="classextras_1_1cmex_1_1_mx_object.html#ab0e44e32984f678374a31613e783cf73">More...</a><br /></td></tr>
+<tr class="separator:ab0e44e32984f678374a31613e783cf73 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a065e83a01b1b550a91d6c4c7e59992d5 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a065e83a01b1b550a91d6c4c7e59992d5"></a>
+mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a065e83a01b1b550a91d6c4c7e59992d5">releaseArray</a> (bool *wasPersistent=nullptr)</td></tr>
+<tr class="memdesc:a065e83a01b1b550a91d6c4c7e59992d5 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">release array from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a>'s control if was setFromConst, a copy of the data is created You can check if the data is persistent by passing the pointer wasPersistent, which will be set to T/F based on <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616" title="is linked mxarray persistent? ">isPersistent()</a> NOTE: After calling YOU are responsible for deleting the returned mxArray* <br /></td></tr>
+<tr class="separator:a065e83a01b1b550a91d6c4c7e59992d5 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d98a531b621bf03ece5fe4896482adc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a8d98a531b621bf03ece5fe4896482adc"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8d98a531b621bf03ece5fe4896482adc">operator const mxArray *</a> () const</td></tr>
+<tr class="memdesc:a8d98a531b621bf03ece5fe4896482adc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return const mxArray* <br /></td></tr>
+<tr class="separator:a8d98a531b621bf03ece5fe4896482adc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5113e60120b14c69e630317cbeee0e55 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">virtual const mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a5113e60120b14c69e630317cbeee0e55">getmxarray</a> (bool *wasPersistent=nullptr) const</td></tr>
+<tr class="memdesc:a5113e60120b14c69e630317cbeee0e55 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns const mxArray* linked to data optionally specify a bool* in which the state of the persistence will be stored.  <a href="classextras_1_1cmex_1_1_mx_object.html#a5113e60120b14c69e630317cbeee0e55">More...</a><br /></td></tr>
+<tr class="separator:a5113e60120b14c69e630317cbeee0e55 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a686944ad50904e1bdcee4fb47a0b0269 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a686944ad50904e1bdcee4fb47a0b0269"></a>
+mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a686944ad50904e1bdcee4fb47a0b0269">getmxarray</a> ()</td></tr>
+<tr class="memdesc:a686944ad50904e1bdcee4fb47a0b0269 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns (non-const) mxArray* _mxptr, for internal use by derived classes <br /></td></tr>
+<tr class="separator:a686944ad50904e1bdcee4fb47a0b0269 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b4200dd58e0c4b2f5a9a3d322aab616 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a6b4200dd58e0c4b2f5a9a3d322aab616"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a> () const</td></tr>
+<tr class="memdesc:a6b4200dd58e0c4b2f5a9a3d322aab616 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">is linked mxarray persistent? <br /></td></tr>
+<tr class="separator:a6b4200dd58e0c4b2f5a9a3d322aab616 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16087f4a602c820e364d8f77eb0ea219 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a16087f4a602c820e364d8f77eb0ea219"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a16087f4a602c820e364d8f77eb0ea219">isConst</a> () const</td></tr>
+<tr class="memdesc:a16087f4a602c820e364d8f77eb0ea219 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">is linked mxarray const? <br /></td></tr>
+<tr class="separator:a16087f4a602c820e364d8f77eb0ea219 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3616af48be30b3861b5a718f0b44cad3 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a3616af48be30b3861b5a718f0b44cad3"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a3616af48be30b3861b5a718f0b44cad3">isManaged</a> () const</td></tr>
+<tr class="memdesc:a3616af48be30b3861b5a718f0b44cad3 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">is linked mxarray managed by mxobject? <br /></td></tr>
+<tr class="separator:a3616af48be30b3861b5a718f0b44cad3 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a116f8308037a89342175f4dc4459547b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a116f8308037a89342175f4dc4459547b"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a116f8308037a89342175f4dc4459547b">numel</a> () const</td></tr>
+<tr class="memdesc:a116f8308037a89342175f4dc4459547b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of elements <br /></td></tr>
+<tr class="separator:a116f8308037a89342175f4dc4459547b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b">iscomplex</a> () const</td></tr>
+<tr class="memdesc:a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if numeric and complex <br /></td></tr>
+<tr class="separator:a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef5c7f35c629d1b9afd46e4ab4e7a400 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aef5c7f35c629d1b9afd46e4ab4e7a400"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aef5c7f35c629d1b9afd46e4ab4e7a400">isscalar</a> () const</td></tr>
+<tr class="memdesc:aef5c7f35c629d1b9afd46e4ab4e7a400 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">isscalar <br /></td></tr>
+<tr class="separator:aef5c7f35c629d1b9afd46e4ab4e7a400 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89066f62b4ab500be01077bb69e2e7bc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a89066f62b4ab500be01077bb69e2e7bc"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a89066f62b4ab500be01077bb69e2e7bc">isstruct</a> () const</td></tr>
+<tr class="memdesc:a89066f62b4ab500be01077bb69e2e7bc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if mxArray is a struct <br /></td></tr>
+<tr class="separator:a89066f62b4ab500be01077bb69e2e7bc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3773c50b68e43b80f4a1b54496591af inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="ae3773c50b68e43b80f4a1b54496591af"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ae3773c50b68e43b80f4a1b54496591af">isnumeric</a> () const</td></tr>
+<tr class="memdesc:ae3773c50b68e43b80f4a1b54496591af inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if is numeric <br /></td></tr>
+<tr class="separator:ae3773c50b68e43b80f4a1b54496591af inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41847391ca6c459034f59054622a4cdf inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a41847391ca6c459034f59054622a4cdf"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a41847391ca6c459034f59054622a4cdf">iscell</a> () const</td></tr>
+<tr class="memdesc:a41847391ca6c459034f59054622a4cdf inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if linked mxArray* is cell array <br /></td></tr>
+<tr class="separator:a41847391ca6c459034f59054622a4cdf inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa34cae2a57a95631884a9cabf124b2a7 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aa34cae2a57a95631884a9cabf124b2a7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa34cae2a57a95631884a9cabf124b2a7">ischar</a> () const</td></tr>
+<tr class="memdesc:aa34cae2a57a95631884a9cabf124b2a7 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if linked mxArray* is a char array <br /></td></tr>
+<tr class="separator:aa34cae2a57a95631884a9cabf124b2a7 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8a3930bff64da03e9ee4dad48bd56f1 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aa8a3930bff64da03e9ee4dad48bd56f1"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa8a3930bff64da03e9ee4dad48bd56f1">ismatrix</a> () const</td></tr>
+<tr class="memdesc:aa8a3930bff64da03e9ee4dad48bd56f1 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true if ndims &lt; 3 <br /></td></tr>
+<tr class="separator:aa8a3930bff64da03e9ee4dad48bd56f1 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28d31a42f8e1c4a3b0df95b834d8cb2d inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a28d31a42f8e1c4a3b0df95b834d8cb2d"></a>
+mxClassID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a28d31a42f8e1c4a3b0df95b834d8cb2d">mxType</a> () const</td></tr>
+<tr class="memdesc:a28d31a42f8e1c4a3b0df95b834d8cb2d inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return data type held by mxArray pointer <br /></td></tr>
+<tr class="separator:a28d31a42f8e1c4a3b0df95b834d8cb2d inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaa7cd9b12bfa6863fc125194b394aba inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="afaa7cd9b12bfa6863fc125194b394aba"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#afaa7cd9b12bfa6863fc125194b394aba">elementBytes</a> () const</td></tr>
+<tr class="memdesc:afaa7cd9b12bfa6863fc125194b394aba inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of bytes used to represent data element <br /></td></tr>
+<tr class="separator:afaa7cd9b12bfa6863fc125194b394aba inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ab9852e82a9b41dcd2557fe43c92df0 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a0ab9852e82a9b41dcd2557fe43c92df0"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a0ab9852e82a9b41dcd2557fe43c92df0">sub2ind</a> (const std::vector&lt; size_t &gt; &amp;subs) const</td></tr>
+<tr class="memdesc:a0ab9852e82a9b41dcd2557fe43c92df0 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return 1-d index corresponding to subscript <br /></td></tr>
+<tr class="separator:a0ab9852e82a9b41dcd2557fe43c92df0 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07eda98e0eabe5d9d6b9102de091781c inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">virtual std::pair&lt; mxArray *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a07eda98e0eabe5d9d6b9102de091781c">managearray</a> ()</td></tr>
+<tr class="memdesc:a07eda98e0eabe5d9d6b9102de091781c inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take Ownership of array if linked mxArray is not managed, creates a copy and manages the new copy if already managed or mxptr==nullptr then does nothing.  <a href="classextras_1_1cmex_1_1_mx_object.html#a07eda98e0eabe5d9d6b9102de091781c">More...</a><br /></td></tr>
+<tr class="separator:a07eda98e0eabe5d9d6b9102de091781c inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a058284006fc9d42376581dd9fb06a552 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a058284006fc9d42376581dd9fb06a552"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a058284006fc9d42376581dd9fb06a552">reshape</a> (const std::vector&lt; size_t &gt; &amp;dims)</td></tr>
+<tr class="memdesc:a058284006fc9d42376581dd9fb06a552 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reshape using matlab-like syntax Numeric and Char array will reshape the linked mxArray* in place For struct and cell arrays, the data will be copied to a new mxarray* and the original pointer will be released/destroyed. <br /></td></tr>
+<tr class="separator:a058284006fc9d42376581dd9fb06a552 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a436f435f266c30c2c19cadf501035888 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a436f435f266c30c2c19cadf501035888"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a436f435f266c30c2c19cadf501035888">reshape</a> (size_t nRows, size_t nCols)</td></tr>
+<tr class="memdesc:a436f435f266c30c2c19cadf501035888 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize. <br /></td></tr>
+<tr class="separator:a436f435f266c30c2c19cadf501035888 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4caefe4a40bb75dea74ca4d346ace4a6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a4caefe4a40bb75dea74ca4d346ace4a6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a4caefe4a40bb75dea74ca4d346ace4a6">reshape_nocopy</a> (const std::vector&lt; size_t &gt; &amp;dims)</td></tr>
+<tr class="memdesc:a4caefe4a40bb75dea74ca4d346ace4a6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">reshape without copy numeric array will contain zeros, cell and struct arrays will be have empty elements <br /></td></tr>
+<tr class="separator:a4caefe4a40bb75dea74ca4d346ace4a6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7405bad46c3af6494b13560dd0ad211e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a7405bad46c3af6494b13560dd0ad211e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a7405bad46c3af6494b13560dd0ad211e">reshape_nocopy</a> (size_t nRows, size_t nCols)</td></tr>
+<tr class="memdesc:a7405bad46c3af6494b13560dd0ad211e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize. <br /></td></tr>
+<tr class="separator:a7405bad46c3af6494b13560dd0ad211e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bb3de674d102183c9d5a6fd3d317960 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a9bb3de674d102183c9d5a6fd3d317960"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a9bb3de674d102183c9d5a6fd3d317960">MxObject</a> (const std::string &amp;str)</td></tr>
+<tr class="memdesc:a9bb3de674d102183c9d5a6fd3d317960 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from string <br /></td></tr>
+<tr class="separator:a9bb3de674d102183c9d5a6fd3d317960 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd8f8d15c41ee141b5622c4b4c2b3f0b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="abd8f8d15c41ee141b5622c4b4c2b3f0b"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#abd8f8d15c41ee141b5622c4b4c2b3f0b">operator=</a> (const std::string &amp;str)</td></tr>
+<tr class="memdesc:abd8f8d15c41ee141b5622c4b4c2b3f0b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign from string <br /></td></tr>
+<tr class="separator:abd8f8d15c41ee141b5622c4b4c2b3f0b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53c97be6149b5ac000d2d5f5a659c577 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a53c97be6149b5ac000d2d5f5a659c577"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a53c97be6149b5ac000d2d5f5a659c577">MxObject</a> (double val)</td></tr>
+<tr class="memdesc:a53c97be6149b5ac000d2d5f5a659c577 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from double scalar. <br /></td></tr>
+<tr class="separator:a53c97be6149b5ac000d2d5f5a659c577 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae43fb5b0640b3dc2205bd70c080402c9 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="ae43fb5b0640b3dc2205bd70c080402c9"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ae43fb5b0640b3dc2205bd70c080402c9">operator=</a> (double val)</td></tr>
+<tr class="memdesc:ae43fb5b0640b3dc2205bd70c080402c9 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign from double <br /></td></tr>
+<tr class="separator:ae43fb5b0640b3dc2205bd70c080402c9 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf325eac64e60b7a96c3e1699a0f6061 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memTemplParams" colspan="2"><a id="acf325eac64e60b7a96c3e1699a0f6061"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acf325eac64e60b7a96c3e1699a0f6061 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#acf325eac64e60b7a96c3e1699a0f6061">operator=</a> (const std::vector&lt; T &gt; &amp;vals)</td></tr>
+<tr class="memdesc:acf325eac64e60b7a96c3e1699a0f6061 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign from numeric vector <br /></td></tr>
+<tr class="separator:acf325eac64e60b7a96c3e1699a0f6061 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af45a36206a5b7d256e1178a28918e8f4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="af45a36206a5b7d256e1178a28918e8f4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#af45a36206a5b7d256e1178a28918e8f4">makePersistent</a> ()</td></tr>
+<tr class="memdesc:af45a36206a5b7d256e1178a28918e8f4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">make mxArray persistent so that it survives beyond each call to the initializing mexFunction <br /></td></tr>
 <tr class="separator:af45a36206a5b7d256e1178a28918e8f4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b4200dd58e0c4b2f5a9a3d322aab616 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a6b4200dd58e0c4b2f5a9a3d322aab616"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a> () const</td></tr>
@@ -263,49 +796,52 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8dccacf611282d5352a2873fb3b52a1a">MxObject</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
 <tr class="memdesc:a8dccacf611282d5352a2873fb3b52a1a inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor and copy assignment. <br /></td></tr>
 <tr class="separator:a8dccacf611282d5352a2873fb3b52a1a inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a371df887baaeb0d866d20b32a46b0c8c inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a371df887baaeb0d866d20b32a46b0c8c"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
-<tr class="separator:a371df887baaeb0d866d20b32a46b0c8c inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3d65bc1fde4554b4aac14a2c0681047 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aa3d65bc1fde4554b4aac14a2c0681047"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa3d65bc1fde4554b4aac14a2c0681047">MxObject</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
 <tr class="memdesc:aa3d65bc1fde4554b4aac14a2c0681047 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">move constructor and move assignment <br /></td></tr>
 <tr class="separator:aa3d65bc1fde4554b4aac14a2c0681047 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91d7c8d102225bb371bb7cef4ed50c49 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a91d7c8d102225bb371bb7cef4ed50c49"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
-<tr class="separator:a91d7c8d102225bb371bb7cef4ed50c49 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c4189b2714367ad7778fead9632a9ce inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a3c4189b2714367ad7778fead9632a9ce"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a3c4189b2714367ad7778fead9632a9ce">MxObject</a> (mxArray *mxptr)</td></tr>
-<tr class="memdesc:a3c4189b2714367ad7778fead9632a9ce inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct and assign from mxarray. <br /></td></tr>
-<tr class="separator:a3c4189b2714367ad7778fead9632a9ce inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaed25d4176d347ac784533481f48c494 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aaed25d4176d347ac784533481f48c494"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (mxArray *mxptr)</td></tr>
-<tr class="separator:aaed25d4176d347ac784533481f48c494 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ce0d7729dba1e19d743d87ec5687c86 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a8ce0d7729dba1e19d743d87ec5687c86"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MxObject</b> (const mxArray *mxptr)</td></tr>
-<tr class="separator:a8ce0d7729dba1e19d743d87ec5687c86 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf6e4efe8e7e703523717ceaa079e998 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="acf6e4efe8e7e703523717ceaa079e998"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const mxArray *mxptr)</td></tr>
-<tr class="separator:acf6e4efe8e7e703523717ceaa079e998 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeaffb0367cd27522cef4726ef20a975 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aaeaffb0367cd27522cef4726ef20a975"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aaeaffb0367cd27522cef4726ef20a975">MxObject</a> (mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="memdesc:aaeaffb0367cd27522cef4726ef20a975 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from mxarray assume mxArray* is not persistent (unless specified) mxArray will be managed (therefore deleted upon destruction) <br /></td></tr>
+<tr class="separator:aaeaffb0367cd27522cef4726ef20a975 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e8959368dd11b6584cb0570a65cddb6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a8e8959368dd11b6584cb0570a65cddb6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8e8959368dd11b6584cb0570a65cddb6">MxObject</a> (mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>, bool manageArray)</td></tr>
+<tr class="memdesc:a8e8959368dd11b6584cb0570a65cddb6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from mxArray flag specifies if mxptr should be controlled by <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> must specify isPersistent if manageFlag=true (default=false) data will be deleted upon <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> destruction. <br /></td></tr>
+<tr class="separator:a8e8959368dd11b6584cb0570a65cddb6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb4334cd163f7c505fd3ba31d449d15a inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="abb4334cd163f7c505fd3ba31d449d15a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#abb4334cd163f7c505fd3ba31d449d15a">MxObject</a> (const mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="memdesc:abb4334cd163f7c505fd3ba31d449d15a inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from const mxarray assume const mxArray* is not persistent mxArray will not be managed (therefore not deleted) <br /></td></tr>
+<tr class="separator:abb4334cd163f7c505fd3ba31d449d15a inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6292893414d193c451338e3a055c207 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="ae6292893414d193c451338e3a055c207"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ae6292893414d193c451338e3a055c207">linkto</a> (mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="memdesc:ae6292893414d193c451338e3a055c207 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">link to mxarray array will not be managed (hence not delete upon destruction) assume mxArray* is not persistent, unless specified <br /></td></tr>
+<tr class="separator:ae6292893414d193c451338e3a055c207 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac90428f4fbc67d733b57cc758f653ea8 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="ac90428f4fbc67d733b57cc758f653ea8"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ac90428f4fbc67d733b57cc758f653ea8">linkto</a> (const mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="memdesc:ac90428f4fbc67d733b57cc758f653ea8 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">link to const mxarray array will not be managed (hence not delete upon destruction) assume const mxArray* is not persistent, unless specified <br /></td></tr>
+<tr class="separator:ac90428f4fbc67d733b57cc758f653ea8 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97f4cd2580ce9f99034c52c2f55cecf6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a97f4cd2580ce9f99034c52c2f55cecf6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MxObject</b> (const double &amp;in)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a97f4cd2580ce9f99034c52c2f55cecf6">MxObject</a> (const double &amp;in)</td></tr>
+<tr class="memdesc:a97f4cd2580ce9f99034c52c2f55cecf6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">double scalar constructor <br /></td></tr>
 <tr class="separator:a97f4cd2580ce9f99034c52c2f55cecf6 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86101664270bc804d9ca7be1a29eeeb4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a86101664270bc804d9ca7be1a29eeeb4"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const double &amp;in)</td></tr>
-<tr class="separator:a86101664270bc804d9ca7be1a29eeeb4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adffe9b427f0311f03ae08b8ec7c3fc00 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="adffe9b427f0311f03ae08b8ec7c3fc00"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#adffe9b427f0311f03ae08b8ec7c3fc00">operator=</a> (const double &amp;in)</td></tr>
+<tr class="memdesc:adffe9b427f0311f03ae08b8ec7c3fc00 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">set to double scalar <br /></td></tr>
+<tr class="separator:adffe9b427f0311f03ae08b8ec7c3fc00 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15c63601185c05316eab4f3918417420 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a15c63601185c05316eab4f3918417420"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>MxObject</b> (const std::string &amp;in)</td></tr>
 <tr class="separator:a15c63601185c05316eab4f3918417420 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2586c31bb207cd1d67382c0a911f213e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a2586c31bb207cd1d67382c0a911f213e"></a>
 <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const std::string &amp;in)</td></tr>
 <tr class="separator:a2586c31bb207cd1d67382c0a911f213e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af679bd6188875d96744e41118c3c9806 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="af679bd6188875d96744e41118c3c9806"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#af679bd6188875d96744e41118c3c9806">operator mxArray *</a> ()</td></tr>
-<tr class="memdesc:af679bd6188875d96744e41118c3c9806 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign to (cast to) mxArray if array is not persistent change management rule so that data is not deleted on destruction if array is persistent, returns copy of the data that is not persistent (and therefore managed by MATLAB) <br /></td></tr>
-<tr class="separator:af679bd6188875d96744e41118c3c9806 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5993a9503bcc62ee58879f7ab089a50b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a5993a9503bcc62ee58879f7ab089a50b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a5993a9503bcc62ee58879f7ab089a50b">operator const mxArray *</a> () const</td></tr>
-<tr class="memdesc:a5993a9503bcc62ee58879f7ab089a50b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns const mxArray*, memory management is not changed pointer may be invalid when object is deleted <br /></td></tr>
-<tr class="separator:a5993a9503bcc62ee58879f7ab089a50b inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0e44e32984f678374a31613e783cf73 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="ab0e44e32984f678374a31613e783cf73"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ab0e44e32984f678374a31613e783cf73">operator mxArray *</a> ()</td></tr>
+<tr class="memdesc:ab0e44e32984f678374a31613e783cf73 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign to (cast to) mxArray if array is not persistent or set from const change management rule so that data is not deleted on destruction if array is persistent or const, returns copy of the data that is not persistent (and therefore managed by MATLAB) <br /></td></tr>
+<tr class="separator:ab0e44e32984f678374a31613e783cf73 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d98a531b621bf03ece5fe4896482adc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a8d98a531b621bf03ece5fe4896482adc"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8d98a531b621bf03ece5fe4896482adc">operator const mxArray *</a> () const</td></tr>
+<tr class="memdesc:a8d98a531b621bf03ece5fe4896482adc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns const mxArray*, memory management is not changed pointer may be invalid when object is deleted <br /></td></tr>
+<tr class="separator:a8d98a531b621bf03ece5fe4896482adc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2799478cb9c4d4c7cc0fa784c4f2db7d inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a2799478cb9c4d4c7cc0fa784c4f2db7d"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a2799478cb9c4d4c7cc0fa784c4f2db7d">managedata</a> ()</td></tr>
 <tr class="memdesc:a2799478cb9c4d4c7cc0fa784c4f2db7d inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change data ownership. <br /></td></tr>
@@ -314,16 +850,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 mxClassID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a28d31a42f8e1c4a3b0df95b834d8cb2d">mxType</a> () const</td></tr>
 <tr class="memdesc:a28d31a42f8e1c4a3b0df95b834d8cb2d inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return data type held by mxArray pointer <br /></td></tr>
 <tr class="separator:a28d31a42f8e1c4a3b0df95b834d8cb2d inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77af400fa75fecb8a872e1afa22d03b4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">const mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a77af400fa75fecb8a872e1afa22d03b4">getmxarray</a> () const</td></tr>
-<tr class="memdesc:a77af400fa75fecb8a872e1afa22d03b4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mxArray ptr without changing data managment rule if data is locally held, it will be deleted upon construction DO NOT use for setting the return data of a mexFunction.  <a href="classextras_1_1cmex_1_1_mx_object.html#a77af400fa75fecb8a872e1afa22d03b4">More...</a><br /></td></tr>
-<tr class="separator:a77af400fa75fecb8a872e1afa22d03b4 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1900e1ca34551d25bed7e00092927440 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a1900e1ca34551d25bed7e00092927440">releasemxarray</a> (bool *wasManaged=nullptr, bool *wasPersistent=nullptr)</td></tr>
-<tr class="memdesc:a1900e1ca34551d25bed7e00092927440 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mxArray and change data management rule to false after calling, the mxObject will no longer delete the mxArray when it goes out of scope.  <a href="classextras_1_1cmex_1_1_mx_object.html#a1900e1ca34551d25bed7e00092927440">More...</a><br /></td></tr>
-<tr class="separator:a1900e1ca34551d25bed7e00092927440 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d43e52de9ff98b5816018f384a889c2 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a6d43e52de9ff98b5816018f384a889c2"></a>
-virtual std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6d43e52de9ff98b5816018f384a889c2">size</a> () const</td></tr>
-<tr class="memdesc:a6d43e52de9ff98b5816018f384a889c2 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::vector holding dimension of the mxArray object <br /></td></tr>
-<tr class="separator:a6d43e52de9ff98b5816018f384a889c2 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a216172c615256cb6e815040a9c1c79d3 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">virtual const mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a216172c615256cb6e815040a9c1c79d3">getmxarray</a> () const</td></tr>
+<tr class="memdesc:a216172c615256cb6e815040a9c1c79d3 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mxArray ptr without changing data managment rule if data is locally held, it will be deleted upon construction DO NOT use for setting the return data of a mexFunction.  <a href="classextras_1_1cmex_1_1_mx_object.html#a216172c615256cb6e815040a9c1c79d3">More...</a><br /></td></tr>
+<tr class="separator:a216172c615256cb6e815040a9c1c79d3 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9ea0b1e3f62f7a8c9382769a0306fa0 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ac9ea0b1e3f62f7a8c9382769a0306fa0">releasemxarray</a> (bool *wasManaged=nullptr, bool *wasPersistent=nullptr, bool *wasSetFromConst=nullptr)</td></tr>
+<tr class="memdesc:ac9ea0b1e3f62f7a8c9382769a0306fa0 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mxArray and change data management rule to false after calling, the mxObject will no longer delete the mxArray when it goes out of scope.  <a href="classextras_1_1cmex_1_1_mx_object.html#ac9ea0b1e3f62f7a8c9382769a0306fa0">More...</a><br /></td></tr>
+<tr class="separator:ac9ea0b1e3f62f7a8c9382769a0306fa0 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89066f62b4ab500be01077bb69e2e7bc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a89066f62b4ab500be01077bb69e2e7bc"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a89066f62b4ab500be01077bb69e2e7bc">isstruct</a> () const</td></tr>
 <tr class="memdesc:a89066f62b4ab500be01077bb69e2e7bc inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if mxArray is a struct <br /></td></tr>
@@ -338,11 +870,28 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>iscell</b> () const</
 <tr class="memitem:aa34cae2a57a95631884a9cabf124b2a7 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aa34cae2a57a95631884a9cabf124b2a7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>ischar</b> () const</td></tr>
 <tr class="separator:aa34cae2a57a95631884a9cabf124b2a7 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96632074a283aaef8c0d8c337618f29e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a96632074a283aaef8c0d8c337618f29e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a96632074a283aaef8c0d8c337618f29e">reshape</a> (std::vector&lt; size_t &gt; dims)</td></tr>
+<tr class="memdesc:a96632074a283aaef8c0d8c337618f29e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize. <br /></td></tr>
+<tr class="separator:a96632074a283aaef8c0d8c337618f29e inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a436f435f266c30c2c19cadf501035888 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a436f435f266c30c2c19cadf501035888"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a436f435f266c30c2c19cadf501035888">reshape</a> (size_t nRows, size_t nCols)</td></tr>
+<tr class="memdesc:a436f435f266c30c2c19cadf501035888 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize. <br /></td></tr>
+<tr class="separator:a436f435f266c30c2c19cadf501035888 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8a3930bff64da03e9ee4dad48bd56f1 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aa8a3930bff64da03e9ee4dad48bd56f1"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa8a3930bff64da03e9ee4dad48bd56f1">ismatrix</a> () const</td></tr>
 <tr class="memdesc:aa8a3930bff64da03e9ee4dad48bd56f1 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true if ndims &lt; 3 <br /></td></tr>
 <tr class="separator:aa8a3930bff64da03e9ee4dad48bd56f1 inherit pub_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classextras_1_1_array_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classextras_1_1_array_base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classextras_1_1_array_base.html">extras::ArrayBase&lt; T &gt;</a></td></tr>
+<tr class="memitem:a58745665686851a7fc6c8882634553d5 inherit pub_methods_classextras_1_1_array_base"><td class="memItemLeft" align="right" valign="top"><a id="a58745665686851a7fc6c8882634553d5"></a>
+const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getElement</b> (size_t index) const</td></tr>
+<tr class="separator:a58745665686851a7fc6c8882634553d5 inherit pub_methods_classextras_1_1_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b3fc41331d06fc1a3e263b7cd1f60b2 inherit pub_methods_classextras_1_1_array_base"><td class="memItemLeft" align="right" valign="top"><a id="a8b3fc41331d06fc1a3e263b7cd1f60b2"></a>
+const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getElement</b> (size_t row, size_t col) const</td></tr>
+<tr class="separator:a8b3fc41331d06fc1a3e263b7cd1f60b2 inherit pub_methods_classextras_1_1_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add1eefbac4b0dde1f2871c9def70bf1f inherit pub_methods_classextras_1_1_array_base"><td class="memItemLeft" align="right" valign="top"><a id="add1eefbac4b0dde1f2871c9def70bf1f"></a>
+const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getElement</b> (const std::vector&lt; size_t &gt; &amp;subs) const</td></tr>
+<tr class="separator:add1eefbac4b0dde1f2871c9def70bf1f inherit pub_methods_classextras_1_1_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0b228283d039bba11a6f1e2fbd5e1a4 inherit pub_methods_classextras_1_1_array_base"><td class="memItemLeft" align="right" valign="top"><a id="ab0b228283d039bba11a6f1e2fbd5e1a4"></a>
 virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1_array_base.html#ab0b228283d039bba11a6f1e2fbd5e1a4">elementsize</a> () const</td></tr>
 <tr class="memdesc:ab0b228283d039bba11a6f1e2fbd5e1a4 inherit pub_methods_classextras_1_1_array_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">element size in bytes <br /></td></tr>
@@ -359,9 +908,141 @@ virtual <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a> &amp;
 <tr class="memitem:a7871f090293d931d24f921fba32f8c8c inherit pub_methods_classextras_1_1_array_base"><td class="memItemLeft" align="right" valign="top"><a id="a7871f090293d931d24f921fba32f8c8c"></a>
 virtual <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator*=</b> (double val)</td></tr>
 <tr class="separator:a7871f090293d931d24f921fba32f8c8c inherit pub_methods_classextras_1_1_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae90a210faf592884c1d60581493136f7 inherit pub_methods_classextras_1_1_array_base"><td class="memItemLeft" align="right" valign="top"><a id="ae90a210faf592884c1d60581493136f7"></a>
+<a class="el" href="classextras_1_1_array_base.html">ArrayBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (T val)</td></tr>
+<tr class="separator:ae90a210faf592884c1d60581493136f7 inherit pub_methods_classextras_1_1_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a116ae6bb05fcf556e2717c8c378a2276 inherit pub_methods_classextras_1_1_array_base"><td class="memTemplParams" colspan="2"><a id="a116ae6bb05fcf556e2717c8c378a2276"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a116ae6bb05fcf556e2717c8c378a2276 inherit pub_methods_classextras_1_1_array_base"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1_array_base.html">ArrayBase</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator=</b> (const std::vector&lt; M &gt; &amp;val)</td></tr>
+<tr class="separator:a116ae6bb05fcf556e2717c8c378a2276 inherit pub_methods_classextras_1_1_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classextras_1_1_dynamic_type_array_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classextras_1_1_dynamic_type_array_base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classextras_1_1_dynamic_type_array_base.html">extras::DynamicTypeArrayBase</a></td></tr>
+<tr class="memitem:a8765fcacc1d6f5a996f83b267ef1cc0a inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memItemLeft" align="right" valign="top"><a id="a8765fcacc1d6f5a996f83b267ef1cc0a"></a>
+valueType&#160;</td><td class="memItemRight" valign="bottom"><b>getValueType</b> () const</td></tr>
+<tr class="separator:a8765fcacc1d6f5a996f83b267ef1cc0a inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bd1a12aad65a96a087ab4adffbe3dbe inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memItemLeft" align="right" valign="top"><a id="a7bd1a12aad65a96a087ab4adffbe3dbe"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>DynamicTypeArrayBase</b> (valueType vt)</td></tr>
+<tr class="separator:a7bd1a12aad65a96a087ab4adffbe3dbe inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08e8986c42a06d82a92025e6d7c93a70 inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memTemplParams" colspan="2"><a id="a08e8986c42a06d82a92025e6d7c93a70"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a08e8986c42a06d82a92025e6d7c93a70 inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memTemplItemLeft" align="right" valign="top">const T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1_dynamic_type_array_base.html#a08e8986c42a06d82a92025e6d7c93a70">typed_data</a> () const</td></tr>
+<tr class="memdesc:a08e8986c42a06d82a92025e6d7c93a70 inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">get type-cast data returns pointer to data with specified type if template type does not match internal _ValueType an error is thrown <br /></td></tr>
+<tr class="separator:a08e8986c42a06d82a92025e6d7c93a70 inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6518fac43a8ee6cd0ce9c49d8aee65a5 inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memTemplParams" colspan="2"><a id="a6518fac43a8ee6cd0ce9c49d8aee65a5"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a6518fac43a8ee6cd0ce9c49d8aee65a5 inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1_dynamic_type_array_base.html#a6518fac43a8ee6cd0ce9c49d8aee65a5">typed_data</a> ()</td></tr>
+<tr class="memdesc:a6518fac43a8ee6cd0ce9c49d8aee65a5 inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">get type-cast data returns pointer to data with specified type if template type does not match internal _ValueType an error is thrown <br /></td></tr>
+<tr class="separator:a6518fac43a8ee6cd0ce9c49d8aee65a5 inherit pub_methods_classextras_1_1_dynamic_type_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html">extras::cmex::DynamicTypeMxArray</a></td></tr>
+<tr class="memitem:a62b0dd84b3a8b31f3d8bc1ea0fa46eae inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="a62b0dd84b3a8b31f3d8bc1ea0fa46eae"></a>
+const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#a62b0dd84b3a8b31f3d8bc1ea0fa46eae">untyped_data</a> () const</td></tr>
+<tr class="memdesc:a62b0dd84b3a8b31f3d8bc1ea0fa46eae inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">get const pointer to raw data array <br /></td></tr>
+<tr class="separator:a62b0dd84b3a8b31f3d8bc1ea0fa46eae inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ae051f22f69ab99292662e7455080b7 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="a1ae051f22f69ab99292662e7455080b7"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#a1ae051f22f69ab99292662e7455080b7">untyped_data</a> ()</td></tr>
+<tr class="memdesc:a1ae051f22f69ab99292662e7455080b7 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">get (non-const) pointer to raw data array if array was originally set from const mxArray* then it will be duplicated <br /></td></tr>
+<tr class="separator:a1ae051f22f69ab99292662e7455080b7 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bd143b4a1a5266572eb18cf42231a2b inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="a2bd143b4a1a5266572eb18cf42231a2b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#a2bd143b4a1a5266572eb18cf42231a2b">DynamicTypeMxArray</a> ()</td></tr>
+<tr class="memdesc:a2bd143b4a1a5266572eb18cf42231a2b inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">defaul constructor <br /></td></tr>
+<tr class="separator:a2bd143b4a1a5266572eb18cf42231a2b inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee7fe494b4164e3662b4d1e77162c3a2 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="aee7fe494b4164e3662b4d1e77162c3a2"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#aee7fe494b4164e3662b4d1e77162c3a2">DynamicTypeMxArray</a> (size_t num)</td></tr>
+<tr class="memdesc:aee7fe494b4164e3662b4d1e77162c3a2 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct vector of size num <br /></td></tr>
+<tr class="separator:aee7fe494b4164e3662b4d1e77162c3a2 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f4645572bda27187cce0476c8d5d28e inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="a8f4645572bda27187cce0476c8d5d28e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>DynamicTypeMxArray</b> (size_t rows, size_t cols, bool setZeros=false)</td></tr>
+<tr class="separator:a8f4645572bda27187cce0476c8d5d28e inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a894582674f3ebfbcc5555ec6df834b89 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="a894582674f3ebfbcc5555ec6df834b89"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>DynamicTypeMxArray</b> (const std::vector&lt; size_t &gt; &amp;dim, bool setZeros=false)</td></tr>
+<tr class="separator:a894582674f3ebfbcc5555ec6df834b89 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40edac4999fd1e32f50e262d27e32bdc inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="a40edac4999fd1e32f50e262d27e32bdc"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#a40edac4999fd1e32f50e262d27e32bdc">DynamicTypeMxArray</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a40edac4999fd1e32f50e262d27e32bdc inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a40edac4999fd1e32f50e262d27e32bdc inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ea50e47df922c7577c7c232d60930a8 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memTemplParams" colspan="2"><a id="a8ea50e47df922c7577c7c232d60930a8"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a8ea50e47df922c7577c7c232d60930a8 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#a8ea50e47df922c7577c7c232d60930a8">DynamicTypeMxArray</a> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="memdesc:a8ea50e47df922c7577c7c232d60930a8 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from Generic <a class="el" href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. ">ArrayBase</a>. <br /></td></tr>
+<tr class="separator:a8ea50e47df922c7577c7c232d60930a8 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeebc7f4bc4a9a92c705c2cacb8a7b114 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memTemplParams" colspan="2"><a id="aeebc7f4bc4a9a92c705c2cacb8a7b114"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:aeebc7f4bc4a9a92c705c2cacb8a7b114 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html">DynamicTypeMxArray</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#aeebc7f4bc4a9a92c705c2cacb8a7b114">operator=</a> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="memdesc:aeebc7f4bc4a9a92c705c2cacb8a7b114 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assign from Generic <a class="el" href="classextras_1_1_array_base.html" title="ArrayBase Interface Class. ">ArrayBase</a>;. <br /></td></tr>
+<tr class="separator:aeebc7f4bc4a9a92c705c2cacb8a7b114 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb3b5cb26b9e86f86486a8f4b5f9a72c inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="abb3b5cb26b9e86f86486a8f4b5f9a72c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#abb3b5cb26b9e86f86486a8f4b5f9a72c">DynamicTypeMxArray</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
+<tr class="memdesc:abb3b5cb26b9e86f86486a8f4b5f9a72c inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move Construct from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a>. <br /></td></tr>
+<tr class="separator:abb3b5cb26b9e86f86486a8f4b5f9a72c inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc1b2a0309c5372399bbab29c819ff83 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top"><a id="adc1b2a0309c5372399bbab29c819ff83"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#adc1b2a0309c5372399bbab29c819ff83">DynamicTypeMxArray</a> (const mxArray *psrc, bool persist=false)</td></tr>
+<tr class="memdesc:adc1b2a0309c5372399bbab29c819ff83 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from const mxArray* <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> will not take ownership of the array. <br /></td></tr>
+<tr class="separator:adc1b2a0309c5372399bbab29c819ff83 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac05118d04f17f0a71c2ab3182f75e874 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#ac05118d04f17f0a71c2ab3182f75e874">DynamicTypeMxArray</a> (mxArray *psrc, bool persist=false)</td></tr>
+<tr class="memdesc:ac05118d04f17f0a71c2ab3182f75e874 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from (non-const) mxArray* <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> will not take ownership of the array therefore it is your job to delete the array after <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> is done with it.  <a href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#ac05118d04f17f0a71c2ab3182f75e874">More...</a><br /></td></tr>
+<tr class="separator:ac05118d04f17f0a71c2ab3182f75e874 inherit pub_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:adab3f9cadfb8f7747082a2bac5538e4e"><td class="memTemplParams" colspan="2"><a id="adab3f9cadfb8f7747082a2bac5538e4e"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:adab3f9cadfb8f7747082a2bac5538e4e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>copyFrom</b> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="separator:adab3f9cadfb8f7747082a2bac5538e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac33242d2a7496372457b6dddbe674473"><td class="memItemLeft" align="right" valign="top"><a id="ac33242d2a7496372457b6dddbe674473"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>copyFrom</b> (const <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; T &gt; &amp;src)</td></tr>
+<tr class="separator:ac33242d2a7496372457b6dddbe674473"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51eda5f0f2cf34d55ee660df2682598c"><td class="memItemLeft" align="right" valign="top"><a id="a51eda5f0f2cf34d55ee660df2682598c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>moveFrom</b> (<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; T &gt; &amp;src)</td></tr>
+<tr class="separator:a51eda5f0f2cf34d55ee660df2682598c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e0f0984c7784c53079afd13a37553ca"><td class="memTemplParams" colspan="2"><a id="a0e0f0984c7784c53079afd13a37553ca"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a0e0f0984c7784c53079afd13a37553ca"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>copyFrom</b> (const <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="separator:a0e0f0984c7784c53079afd13a37553ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15237288ee81195b52aadf1e9f5b83ea"><td class="memTemplParams" colspan="2"><a id="a15237288ee81195b52aadf1e9f5b83ea"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a15237288ee81195b52aadf1e9f5b83ea"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>moveFrom</b> (<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="separator:a15237288ee81195b52aadf1e9f5b83ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6577d3967fa68822e98a5937c3ed6e9e"><td class="memItemLeft" align="right" valign="top"><a id="a6577d3967fa68822e98a5937c3ed6e9e"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a6577d3967fa68822e98a5937c3ed6e9e">copyFrom</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a6577d3967fa68822e98a5937c3ed6e9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">create deep copy of object <br /></td></tr>
+<tr class="separator:a6577d3967fa68822e98a5937c3ed6e9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae88b37f6e8e2a882dd4f02769b3bc233"><td class="memItemLeft" align="right" valign="top"><a id="ae88b37f6e8e2a882dd4f02769b3bc233"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ae88b37f6e8e2a882dd4f02769b3bc233">moveFrom</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:ae88b37f6e8e2a882dd4f02769b3bc233"><td class="mdescLeft">&#160;</td><td class="mdescRight">move object <br /></td></tr>
+<tr class="separator:ae88b37f6e8e2a882dd4f02769b3bc233"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d92abd1c0c0cd3901450e170dc42ca0"><td class="memItemLeft" align="right" valign="top"><a id="a2d92abd1c0c0cd3901450e170dc42ca0"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d92abd1c0c0cd3901450e170dc42ca0">setFromConst</a> (const mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:a2d92abd1c0c0cd3901450e170dc42ca0"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from const mxArray* <br /></td></tr>
+<tr class="separator:a2d92abd1c0c0cd3901450e170dc42ca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a844fa0d92335cdb0ce1fc989f8b8ece8"><td class="memItemLeft" align="right" valign="top"><a id="a844fa0d92335cdb0ce1fc989f8b8ece8"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a844fa0d92335cdb0ce1fc989f8b8ece8">setFrom</a> (mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:a844fa0d92335cdb0ce1fc989f8b8ece8"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray* <br /></td></tr>
+<tr class="separator:a844fa0d92335cdb0ce1fc989f8b8ece8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94644f4e55852d02d327634635c55ef6"><td class="memItemLeft" align="right" valign="top"><a id="a94644f4e55852d02d327634635c55ef6"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a94644f4e55852d02d327634635c55ef6">setOwn</a> (mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:a94644f4e55852d02d327634635c55ef6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray* <br /></td></tr>
+<tr class="separator:a94644f4e55852d02d327634635c55ef6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adab3f9cadfb8f7747082a2bac5538e4e"><td class="memTemplParams" colspan="2"><a id="adab3f9cadfb8f7747082a2bac5538e4e"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:adab3f9cadfb8f7747082a2bac5538e4e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>copyFrom</b> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="separator:adab3f9cadfb8f7747082a2bac5538e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6577d3967fa68822e98a5937c3ed6e9e"><td class="memItemLeft" align="right" valign="top"><a id="a6577d3967fa68822e98a5937c3ed6e9e"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a6577d3967fa68822e98a5937c3ed6e9e">copyFrom</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a6577d3967fa68822e98a5937c3ed6e9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">create deep copy of object <br /></td></tr>
+<tr class="separator:a6577d3967fa68822e98a5937c3ed6e9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae88b37f6e8e2a882dd4f02769b3bc233"><td class="memItemLeft" align="right" valign="top"><a id="ae88b37f6e8e2a882dd4f02769b3bc233"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#ae88b37f6e8e2a882dd4f02769b3bc233">moveFrom</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:ae88b37f6e8e2a882dd4f02769b3bc233"><td class="mdescLeft">&#160;</td><td class="mdescRight">move object <br /></td></tr>
+<tr class="separator:ae88b37f6e8e2a882dd4f02769b3bc233"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d92abd1c0c0cd3901450e170dc42ca0"><td class="memItemLeft" align="right" valign="top"><a id="a2d92abd1c0c0cd3901450e170dc42ca0"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a2d92abd1c0c0cd3901450e170dc42ca0">setFromConst</a> (const mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:a2d92abd1c0c0cd3901450e170dc42ca0"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from const mxArray* creates a link to the const mxArray* until calling (non-const) <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a60c2d801343a567d7cc9a4d36142a6ca" title="set n-th element ">operator[]()</a> or (non-const) <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a0cd1e730db7a27654a3243f7d7acc2aa" title="get (non-const) pointer to raw data array ">getdata()</a>, at which point the array is duplicated <br /></td></tr>
+<tr class="separator:a2d92abd1c0c0cd3901450e170dc42ca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a844fa0d92335cdb0ce1fc989f8b8ece8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a844fa0d92335cdb0ce1fc989f8b8ece8">setFrom</a> (mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:a844fa0d92335cdb0ce1fc989f8b8ece8"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray* NOTE: after calling psrc will still be valid (i.e.  <a href="#a844fa0d92335cdb0ce1fc989f8b8ece8">More...</a><br /></td></tr>
+<tr class="separator:a844fa0d92335cdb0ce1fc989f8b8ece8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94644f4e55852d02d327634635c55ef6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a94644f4e55852d02d327634635c55ef6">setOwn</a> (mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:a94644f4e55852d02d327634635c55ef6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray* <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> will take ownership of the mxArray* DO NOT DELETE PSRC.  <a href="#a94644f4e55852d02d327634635c55ef6">More...</a><br /></td></tr>
+<tr class="separator:a94644f4e55852d02d327634635c55ef6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adab3f9cadfb8f7747082a2bac5538e4e"><td class="memTemplParams" colspan="2"><a id="adab3f9cadfb8f7747082a2bac5538e4e"></a>
 template&lt;typename M &gt; </td></tr>
 <tr class="memitem:adab3f9cadfb8f7747082a2bac5538e4e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#adab3f9cadfb8f7747082a2bac5538e4e">copyFrom</a> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
@@ -376,38 +1057,327 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:ae88b37f6e8e2a882dd4f02769b3bc233"><td class="mdescLeft">&#160;</td><td class="mdescRight">move from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
 <tr class="separator:ae88b37f6e8e2a882dd4f02769b3bc233"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classextras_1_1cmex_1_1_mx_object"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classextras_1_1cmex_1_1_mx_object')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">extras::cmex::MxObject</a></td></tr>
+<tr class="memitem:ad1bbed78f2376a19c3d3b7796cafd82a inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ad1bbed78f2376a19c3d3b7796cafd82a">deletemxptr_nolock</a> ()</td></tr>
+<tr class="memdesc:ad1bbed78f2376a19c3d3b7796cafd82a inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">delete mxptr if needed if not managed, set from constant, or not set (i.e.  <a href="classextras_1_1cmex_1_1_mx_object.html#ad1bbed78f2376a19c3d3b7796cafd82a">More...</a><br /></td></tr>
+<tr class="separator:ad1bbed78f2376a19c3d3b7796cafd82a inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01fff4086644aad3ee22f2da464bf0bb inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a01fff4086644aad3ee22f2da464bf0bb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a01fff4086644aad3ee22f2da464bf0bb">deletemxptr_withlock</a> ()</td></tr>
+<tr class="memdesc:a01fff4086644aad3ee22f2da464bf0bb inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a mutex lock on _mxptr before calling <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ad1bbed78f2376a19c3d3b7796cafd82a" title="delete mxptr if needed if not managed, set from constant, or not set (i.e. ">deletemxptr_nolock()</a> <br /></td></tr>
+<tr class="separator:a01fff4086644aad3ee22f2da464bf0bb inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b0c544f5cbd9913c474a48cc3e161a1 inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top">std::pair&lt; mxArray *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8b0c544f5cbd9913c474a48cc3e161a1">selfManage</a> ()</td></tr>
+<tr class="memdesc:a8b0c544f5cbd9913c474a48cc3e161a1 inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">if linked mxArray is not managed, creates a copy and manages the new copy if already managed or mxptr==nullptr then does nothing.  <a href="classextras_1_1cmex_1_1_mx_object.html#a8b0c544f5cbd9913c474a48cc3e161a1">More...</a><br /></td></tr>
+<tr class="separator:a8b0c544f5cbd9913c474a48cc3e161a1 inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a537d623e08940d0780d45ac4a8d26acc inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a537d623e08940d0780d45ac4a8d26acc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>deletemxptr</b> ()</td></tr>
 <tr class="separator:a537d623e08940d0780d45ac4a8d26acc inherit pro_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classextras_1_1_dynamic_type_array_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classextras_1_1_dynamic_type_array_base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classextras_1_1_dynamic_type_array_base.html">extras::DynamicTypeArrayBase</a></td></tr>
+<tr class="memitem:a0987240311023b355c3a48a2bef8e1f8 inherit pro_methods_classextras_1_1_dynamic_type_array_base"><td class="memItemLeft" align="right" valign="top"><a id="a0987240311023b355c3a48a2bef8e1f8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>changeValueType</b> (valueType vt)</td></tr>
+<tr class="separator:a0987240311023b355c3a48a2bef8e1f8 inherit pro_methods_classextras_1_1_dynamic_type_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html">extras::cmex::DynamicTypeMxArray</a></td></tr>
+<tr class="memitem:a8f7ff16597e25aa1f62d9b3d88359d01 inherit pro_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memTemplParams" colspan="2"><a id="a8f7ff16597e25aa1f62d9b3d88359d01"></a>
+template&lt;typename M &gt; </td></tr>
+<tr class="memitem:a8f7ff16597e25aa1f62d9b3d88359d01 inherit pro_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>copyFrom</b> (const <a class="el" href="classextras_1_1_array_base.html">ArrayBase</a>&lt; M &gt; &amp;src)</td></tr>
+<tr class="separator:a8f7ff16597e25aa1f62d9b3d88359d01 inherit pro_methods_classextras_1_1cmex_1_1_dynamic_type_mx_array"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_attribs_classextras_1_1cmex_1_1_mx_object"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classextras_1_1cmex_1_1_mx_object')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">extras::cmex::MxObject</a></td></tr>
-<tr class="memitem:a8f418052c2fdb6c6d206bc6f9f981a26 inherit pro_attribs_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a8f418052c2fdb6c6d206bc6f9f981a26"></a>
-mxArray *&#160;</td><td class="memItemRight" valign="bottom"><b>_mxptr</b> = nullptr</td></tr>
-<tr class="separator:a8f418052c2fdb6c6d206bc6f9f981a26 inherit pro_attribs_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab05dacb743c2cd94cd638b03e4056e02 inherit pro_attribs_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="ab05dacb743c2cd94cd638b03e4056e02"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_managemxptr</b> = true</td></tr>
-<tr class="separator:ab05dacb743c2cd94cd638b03e4056e02 inherit pro_attribs_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51ed23d4ff763ca361b849a698a15875 inherit pro_attribs_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a51ed23d4ff763ca361b849a698a15875"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_isPersistent</b> = false</td></tr>
-<tr class="separator:a51ed23d4ff763ca361b849a698a15875 inherit pro_attribs_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classextras_1_1cmex_1_1_mx_object')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">extras::cmex::MxObject</a></td></tr>
+<tr class="memitem:a8c300f107e3576360ca63a9cc856660c inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a8c300f107e3576360ca63a9cc856660c"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> ()</td></tr>
+<tr class="separator:a8c300f107e3576360ca63a9cc856660c inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a506a34694e3c6ce299e9065f5d75023e inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a506a34694e3c6ce299e9065f5d75023e"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="separator:a506a34694e3c6ce299e9065f5d75023e inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa21b52881702e2cccecc890a35173a80 inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="aa21b52881702e2cccecc890a35173a80"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (mxArray *src, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="separator:aa21b52881702e2cccecc890a35173a80 inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5224677d00ff9453c8240bd0a594c288 inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a5224677d00ff9453c8240bd0a594c288"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (const mxArray *src, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="separator:a5224677d00ff9453c8240bd0a594c288 inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51d5e701489472caa7173038b0c1e0ac inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a51d5e701489472caa7173038b0c1e0ac"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (const double &amp;in)</td></tr>
+<tr class="separator:a51d5e701489472caa7173038b0c1e0ac inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74b3113a055e3c1e996779855f2700c3 inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memItemLeft" align="right" valign="top"><a id="a74b3113a055e3c1e996779855f2700c3"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (const std::string &amp;in)</td></tr>
+<tr class="separator:a74b3113a055e3c1e996779855f2700c3 inherit pub_static_methods_classextras_1_1cmex_1_1_mx_object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classextras_1_1_dynamic_type_array_base"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classextras_1_1_dynamic_type_array_base')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classextras_1_1_dynamic_type_array_base.html">extras::DynamicTypeArrayBase</a></td></tr>
+<tr class="memitem:a4fb2de7325d2a66a27847d1ee94c68ac inherit pro_attribs_classextras_1_1_dynamic_type_array_base"><td class="memItemLeft" align="right" valign="top"><a id="a4fb2de7325d2a66a27847d1ee94c68ac"></a>
+valueType&#160;</td><td class="memItemRight" valign="bottom"><b>_ValueType</b> = valueType::vt_undefined</td></tr>
+<tr class="separator:a4fb2de7325d2a66a27847d1ee94c68ac inherit pro_attribs_classextras_1_1_dynamic_type_array_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
 class extras::cmex::NumericArray&lt; T &gt;</h3>
 
 <p>Typed <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> Wrapper for MxObjects. </p>
-<p>Implements the ArrayBase&lt;T&gt; interface NOTE: When creating integer type array be sure to specify the precision e.g NumericArray&lt;int32_t&gt; because the type T=int is unsupported. MATLAB does not have a default integet type therefore it does not make make sense to include it as an option. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<p>Implements the ArrayBase&lt;T&gt; interface NOTE: When creating integer type array be sure to specify the precision e.g NumericArray&lt;int32_t&gt; because the type T=int is unsupported. MATLAB does not have a default integet type therefore it does not make make sense to include it as an option.</p>
+<p>Implements the ArrayBase&lt;T&gt; interface NOTE: When creating integer type array be sure to specify the precision e.g NumericArray&lt;int32_t&gt; because the type T=int is unsupported. MATLAB does not have a default integet type therefore it does not make make sense to include it as an option. NOTE: If the </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a33347ecb999e9d9e66395a584e56056f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33347ecb999e9d9e66395a584e56056f">&#9670;&nbsp;</a></span>NumericArray() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">extras::cmex::NumericArray</a>&lt; T &gt;::<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> </td>
+          <td>(</td>
+          <td class="paramtype">const mxArray *&#160;</td>
+          <td class="paramname"><em>psrc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>persist</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct from const mxArray* array will be duplicated when (non-const) <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a0cd1e730db7a27654a3243f7d7acc2aa" title="get (non-const) pointer to raw data array ">getdata()</a> or (non-const) operator[] are called. </p>
+
+</div>
+</div>
+<a id="ae09f8cff6f01eaedb3835e42eabfa348"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae09f8cff6f01eaedb3835e42eabfa348">&#9670;&nbsp;</a></span>NumericArray() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">extras::cmex::NumericArray</a>&lt; T &gt;::<a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a> </td>
+          <td>(</td>
+          <td class="paramtype">mxArray *&#160;</td>
+          <td class="paramname"><em>psrc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>persist</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct from (non-const) mxArray* <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> will not take ownership of the array therefore it is your job to delete the array after <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> is done with it. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8e0d1ed975a329a91b78caf611da06b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e0d1ed975a329a91b78caf611da06b5">&#9670;&nbsp;</a></span>own() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&amp; <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">extras::cmex::NumericArray</a>&lt; T &gt;::own </td>
+          <td>(</td>
+          <td class="paramtype">mxArray *&#160;</td>
+          <td class="paramname"><em>psrc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isPersist</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set non-const mxArray*, giving <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> full ownership. </p>
+<p>CATION: Do not delete psrc after calling this method! </p>
+
+<p>Reimplemented from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a3d63bded834f8e4a6ab2069c9535949f">extras::cmex::MxObject</a>.</p>
+
+</div>
+</div>
+<a id="a8e0d1ed975a329a91b78caf611da06b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e0d1ed975a329a91b78caf611da06b5">&#9670;&nbsp;</a></span>own() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a>&amp; <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">extras::cmex::NumericArray</a>&lt; T &gt;::own </td>
+          <td>(</td>
+          <td class="paramtype">mxArray *&#160;</td>
+          <td class="paramname"><em>psrc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isPersist</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set non-const mxArray*, giving <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> full ownership. </p>
+<p>CATION: Do not delete psrc after calling this method! </p>
+
+<p>Reimplemented from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a3d63bded834f8e4a6ab2069c9535949f">extras::cmex::MxObject</a>.</p>
+
+</div>
+</div>
+<a id="a844fa0d92335cdb0ce1fc989f8b8ece8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a844fa0d92335cdb0ce1fc989f8b8ece8">&#9670;&nbsp;</a></span>setFrom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">extras::cmex::NumericArray</a>&lt; T &gt;::setFrom </td>
+          <td>(</td>
+          <td class="paramtype">mxArray *&#160;</td>
+          <td class="paramname"><em>psrc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>persist</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set from (non-const) mxArray* NOTE: after calling psrc will still be valid (i.e. </p>
+<p>not managed by the <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a>) so it is your job to delete it. </p>
+
+<p>Reimplemented from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a252db7119bbd292e506bc9fef19fc3c8">extras::cmex::MxObject</a>.</p>
+
+</div>
+</div>
+<a id="a94644f4e55852d02d327634635c55ef6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94644f4e55852d02d327634635c55ef6">&#9670;&nbsp;</a></span>setOwn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">extras::cmex::NumericArray</a>&lt; T &gt;::setOwn </td>
+          <td>(</td>
+          <td class="paramtype">mxArray *&#160;</td>
+          <td class="paramname"><em>psrc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>persist</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set from (non-const) mxArray* <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. ">NumericArray</a> will take ownership of the mxArray* DO NOT DELETE PSRC. </p>
+<p>DO NOT EXPECT PSRC TO BE VALID AFTER CALLING! </p>
+
+<p>Reimplemented from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a56b825af08d57848740d79777aedf676">extras::cmex::MxObject</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>extras/cmex/<a class="el" href="_numeric_array_01-_01_copy_8hpp_source.html">NumericArray - Copy.hpp</a></li>
 <li>extras/cmex/<a class="el" href="_numeric_array_8hpp_source.html">NumericArray.hpp</a></li>
+<li>extras/cmex/<a class="el" href="_numeric_array__orig_8hpp_source.html">NumericArray_orig.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>extras</b></li><li class="navelem"><b>cmex</b></li><li class="navelem"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a></li>
+    <li class="navelem"><a class="el" href="namespaceextras.html">extras</a></li><li class="navelem"><b>cmex</b></li><li class="navelem"><a class="el" href="classextras_1_1cmex_1_1_numeric_array.html">NumericArray</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>

@@ -1,28 +1,19 @@
-% Build Radial Center
-clear mex;
+% Build imradialavg
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
 OUTNAME = 'imradialavg'; %output function name
 OUTDIR = fullfile(THIS_PATH,'..'); %output to .../+extras/+ParticleTracking
 
+src = fullfile(OUTDIR,'imradialavg','source','imradialavg.cpp'); %SOURCE FILE NAME
 
-%% Compiler options
-if ispc
-compiler_options ='/std:c++17';
-else
-compiler_options ='-std=c++17';
-end
-
-%% Setup Source Path
-[pth,~,~] = fileparts(mfilename('fullpath'));
-src = fullfile(pth,'..','imradialavg','source','imradialavg.cpp'); %SOURCE FILE NAME
-
-%% Setup Include
-INCLUDE = ['-I',extras.IncludePath()]; %include .../+extras/include
+%% Construct Args
+ArgsStruct = extras.mex_builds.DefaultMexArgStruct();
 
 %% BUILD
-mex(['COMPFLAGS="$COMPFLAGS ' compiler_options '"'],...
-    INCLUDE,...
+[CA,AS] = extras.mex_builds.ArgStruct2Args(ArgsStruct);
+
+mex('-v',CA{:},...
     '-outdir',OUTDIR,...
     '-output',OUTNAME,...
+    AS{:},...
     src);

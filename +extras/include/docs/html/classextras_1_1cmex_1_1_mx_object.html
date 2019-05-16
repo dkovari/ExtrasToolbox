@@ -88,8 +88,8 @@ $(document).ready(function(){initNavTree('classextras_1_1cmex_1_1_mx_object.html
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classextras_1_1cmex_1_1_mx_object-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">extras::cmex::MxObject Class Reference</div>  </div>
@@ -99,22 +99,203 @@ $(document).ready(function(){initNavTree('classextras_1_1cmex_1_1_mx_object.html
 <p>Object wrapper around mxArray*.  
  <a href="classextras_1_1cmex_1_1_mx_object.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="mxobject_8hpp_source.html">mxobject.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="mxobject__old_8hpp_source.html">mxobject_old.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for extras::cmex::MxObject:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classextras_1_1cmex_1_1_mx_object.png" usemap="#extras::cmex::MxObject_map" alt=""/>
   <map id="extras::cmex::MxObject_map" name="extras::cmex::MxObject_map">
-<area href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. " alt="extras::cmex::NumericArray&lt; T &gt;" shape="rect" coords="0,56,198,80"/>
+<area href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html" alt="extras::cmex::DynamicTypeMxArray" shape="rect" coords="0,56,214,80"/>
+<area href="classextras_1_1cmex_1_1_mx_cell_array.html" title="Extension of MxObject for struct array support fields can be accessed using a simple syntax: StructAr..." alt="extras::cmex::MxCellArray" shape="rect" coords="224,56,438,80"/>
+<area href="classextras_1_1cmex_1_1_mx_struct.html" title="Extension of MxObject for struct array support fields can be accessed using a simple syntax: StructAr..." alt="extras::cmex::MxStruct" shape="rect" coords="448,56,662,80"/>
+<area href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. " alt="extras::cmex::NumericArray&lt; T &gt;" shape="rect" coords="672,56,886,80"/>
+<area href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. " alt="extras::cmex::NumericArray&lt; T &gt;" shape="rect" coords="896,56,1110,80"/>
+<area href="classextras_1_1cmex_1_1_numeric_array.html" title="Typed NumericArray Wrapper for MxObjects. " alt="extras::cmex::NumericArray&lt; T &gt;" shape="rect" coords="0,112,214,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ac03872da4d0cf0686f96ca2ded7205ca"><td class="memItemLeft" align="right" valign="top"><a id="ac03872da4d0cf0686f96ca2ded7205ca"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ac03872da4d0cf0686f96ca2ded7205ca">~MxObject</a> ()</td></tr>
+<tr class="memdesc:ac03872da4d0cf0686f96ca2ded7205ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">destroy object <br /></td></tr>
+<tr class="separator:ac03872da4d0cf0686f96ca2ded7205ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af45a36206a5b7d256e1178a28918e8f4"><td class="memItemLeft" align="right" valign="top"><a id="af45a36206a5b7d256e1178a28918e8f4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#af45a36206a5b7d256e1178a28918e8f4">makePersistent</a> ()</td></tr>
-<tr class="memdesc:af45a36206a5b7d256e1178a28918e8f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">make mxArray persistent so that is survives beyond each call to the initializing mexFunction <br /></td></tr>
+<tr class="memdesc:af45a36206a5b7d256e1178a28918e8f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">make mxArray persistent so that it survives different calls to a mexFunction if linked mxArray was not managed by <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> or set from const mxarray* then it will be duplicated and the <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> will no longer be "set from const" <br /></td></tr>
+<tr class="separator:af45a36206a5b7d256e1178a28918e8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f17de026559973c250f4c6594787c37"><td class="memItemLeft" align="right" valign="top"><a id="a2f17de026559973c250f4c6594787c37"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a2f17de026559973c250f4c6594787c37">MxObject</a> ()</td></tr>
+<tr class="memdesc:a2f17de026559973c250f4c6594787c37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defaul Constructor mxArray will be set to nullptr. <br /></td></tr>
+<tr class="separator:a2f17de026559973c250f4c6594787c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dccacf611282d5352a2873fb3b52a1a"><td class="memItemLeft" align="right" valign="top"><a id="a8dccacf611282d5352a2873fb3b52a1a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8dccacf611282d5352a2873fb3b52a1a">MxObject</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a8dccacf611282d5352a2873fb3b52a1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct by copy. <br /></td></tr>
+<tr class="separator:a8dccacf611282d5352a2873fb3b52a1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3d65bc1fde4554b4aac14a2c0681047"><td class="memItemLeft" align="right" valign="top"><a id="aa3d65bc1fde4554b4aac14a2c0681047"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa3d65bc1fde4554b4aac14a2c0681047">MxObject</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
+<tr class="memdesc:aa3d65bc1fde4554b4aac14a2c0681047"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct by move. <br /></td></tr>
+<tr class="separator:aa3d65bc1fde4554b4aac14a2c0681047"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26342a7335a3952fe3301af0a38d9f7e"><td class="memItemLeft" align="right" valign="top"><a id="a26342a7335a3952fe3301af0a38d9f7e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a26342a7335a3952fe3301af0a38d9f7e">MxObject</a> (const mxArray *psrc, bool persist=false)</td></tr>
+<tr class="memdesc:a26342a7335a3952fe3301af0a38d9f7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from const mxArray*. <br /></td></tr>
+<tr class="separator:a26342a7335a3952fe3301af0a38d9f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb3044166376ac09e819d58279c20b08"><td class="memItemLeft" align="right" valign="top"><a id="acb3044166376ac09e819d58279c20b08"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#acb3044166376ac09e819d58279c20b08">MxObject</a> (mxArray *psrc, bool persist=false)</td></tr>
+<tr class="memdesc:acb3044166376ac09e819d58279c20b08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from (non-const) mxArray* Creates a link to psrc, but does not take ownership of psrc YOU ARE RESPONSIBLE FOR MANAGING psrc destruction IF psrc is deleted before the object you create <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> will break. <br /></td></tr>
+<tr class="separator:acb3044166376ac09e819d58279c20b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a703b2518800109ccfb456c2536b34c22"><td class="memItemLeft" align="right" valign="top"><a id="a703b2518800109ccfb456c2536b34c22"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a703b2518800109ccfb456c2536b34c22">operator=</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a703b2518800109ccfb456c2536b34c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">set by copy <br /></td></tr>
+<tr class="separator:a703b2518800109ccfb456c2536b34c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64b82a31412e2429802a26318e447ff3"><td class="memItemLeft" align="right" valign="top"><a id="a64b82a31412e2429802a26318e447ff3"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a64b82a31412e2429802a26318e447ff3">operator=</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
+<tr class="memdesc:a64b82a31412e2429802a26318e447ff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set by move <br /></td></tr>
+<tr class="separator:a64b82a31412e2429802a26318e447ff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7973f9fe12794e8e216f4804e3347745"><td class="memItemLeft" align="right" valign="top"><a id="a7973f9fe12794e8e216f4804e3347745"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a7973f9fe12794e8e216f4804e3347745">set</a> (const mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:a7973f9fe12794e8e216f4804e3347745"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from const mxArray*, with optional ability to set persistent flag <br /></td></tr>
+<tr class="separator:a7973f9fe12794e8e216f4804e3347745"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66745e36a70392350ede76d2bb5469a2"><td class="memItemLeft" align="right" valign="top"><a id="a66745e36a70392350ede76d2bb5469a2"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a66745e36a70392350ede76d2bb5469a2">set</a> (mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:a66745e36a70392350ede76d2bb5469a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray*, with optional ability to set persistent flag <br /></td></tr>
+<tr class="separator:a66745e36a70392350ede76d2bb5469a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d63bded834f8e4a6ab2069c9535949f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a3d63bded834f8e4a6ab2069c9535949f">own</a> (mxArray *psrc, bool isPersist=false)</td></tr>
+<tr class="memdesc:a3d63bded834f8e4a6ab2069c9535949f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set non-const mxArray*, giving <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> full ownership.  <a href="#a3d63bded834f8e4a6ab2069c9535949f">More...</a><br /></td></tr>
+<tr class="separator:a3d63bded834f8e4a6ab2069c9535949f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0e44e32984f678374a31613e783cf73"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ab0e44e32984f678374a31613e783cf73">operator mxArray *</a> ()</td></tr>
+<tr class="memdesc:ab0e44e32984f678374a31613e783cf73"><td class="mdescLeft">&#160;</td><td class="mdescRight">return mutable (non-const) mxArray* returned array will not be persistent so it's ok to pass back to MATLAB if object is persistent or setFromConst then a copy of mxArray is returned; otherwise, the linked mxarray is returned and the management flag is changed.  <a href="#ab0e44e32984f678374a31613e783cf73">More...</a><br /></td></tr>
+<tr class="separator:ab0e44e32984f678374a31613e783cf73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a065e83a01b1b550a91d6c4c7e59992d5"><td class="memItemLeft" align="right" valign="top"><a id="a065e83a01b1b550a91d6c4c7e59992d5"></a>
+mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a065e83a01b1b550a91d6c4c7e59992d5">releaseArray</a> (bool *wasPersistent=nullptr)</td></tr>
+<tr class="memdesc:a065e83a01b1b550a91d6c4c7e59992d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">release array from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a>'s control if was setFromConst, a copy of the data is created You can check if the data is persistent by passing the pointer wasPersistent, which will be set to T/F based on <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616" title="is linked mxarray persistent? ">isPersistent()</a> NOTE: After calling YOU are responsible for deleting the returned mxArray* <br /></td></tr>
+<tr class="separator:a065e83a01b1b550a91d6c4c7e59992d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d98a531b621bf03ece5fe4896482adc"><td class="memItemLeft" align="right" valign="top"><a id="a8d98a531b621bf03ece5fe4896482adc"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8d98a531b621bf03ece5fe4896482adc">operator const mxArray *</a> () const</td></tr>
+<tr class="memdesc:a8d98a531b621bf03ece5fe4896482adc"><td class="mdescLeft">&#160;</td><td class="mdescRight">return const mxArray* <br /></td></tr>
+<tr class="separator:a8d98a531b621bf03ece5fe4896482adc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5113e60120b14c69e630317cbeee0e55"><td class="memItemLeft" align="right" valign="top">virtual const mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a5113e60120b14c69e630317cbeee0e55">getmxarray</a> (bool *wasPersistent=nullptr) const</td></tr>
+<tr class="memdesc:a5113e60120b14c69e630317cbeee0e55"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns const mxArray* linked to data optionally specify a bool* in which the state of the persistence will be stored.  <a href="#a5113e60120b14c69e630317cbeee0e55">More...</a><br /></td></tr>
+<tr class="separator:a5113e60120b14c69e630317cbeee0e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a686944ad50904e1bdcee4fb47a0b0269"><td class="memItemLeft" align="right" valign="top"><a id="a686944ad50904e1bdcee4fb47a0b0269"></a>
+mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a686944ad50904e1bdcee4fb47a0b0269">getmxarray</a> ()</td></tr>
+<tr class="memdesc:a686944ad50904e1bdcee4fb47a0b0269"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns (non-const) mxArray* _mxptr, for internal use by derived classes <br /></td></tr>
+<tr class="separator:a686944ad50904e1bdcee4fb47a0b0269"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b4200dd58e0c4b2f5a9a3d322aab616"><td class="memItemLeft" align="right" valign="top"><a id="a6b4200dd58e0c4b2f5a9a3d322aab616"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a> () const</td></tr>
+<tr class="memdesc:a6b4200dd58e0c4b2f5a9a3d322aab616"><td class="mdescLeft">&#160;</td><td class="mdescRight">is linked mxarray persistent? <br /></td></tr>
+<tr class="separator:a6b4200dd58e0c4b2f5a9a3d322aab616"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16087f4a602c820e364d8f77eb0ea219"><td class="memItemLeft" align="right" valign="top"><a id="a16087f4a602c820e364d8f77eb0ea219"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a16087f4a602c820e364d8f77eb0ea219">isConst</a> () const</td></tr>
+<tr class="memdesc:a16087f4a602c820e364d8f77eb0ea219"><td class="mdescLeft">&#160;</td><td class="mdescRight">is linked mxarray const? <br /></td></tr>
+<tr class="separator:a16087f4a602c820e364d8f77eb0ea219"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3616af48be30b3861b5a718f0b44cad3"><td class="memItemLeft" align="right" valign="top"><a id="a3616af48be30b3861b5a718f0b44cad3"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a3616af48be30b3861b5a718f0b44cad3">isManaged</a> () const</td></tr>
+<tr class="memdesc:a3616af48be30b3861b5a718f0b44cad3"><td class="mdescLeft">&#160;</td><td class="mdescRight">is linked mxarray managed by mxobject? <br /></td></tr>
+<tr class="separator:a3616af48be30b3861b5a718f0b44cad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d43e52de9ff98b5816018f384a889c2"><td class="memItemLeft" align="right" valign="top"><a id="a6d43e52de9ff98b5816018f384a889c2"></a>
+virtual std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6d43e52de9ff98b5816018f384a889c2">size</a> () const</td></tr>
+<tr class="memdesc:a6d43e52de9ff98b5816018f384a889c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::vector holding dimension of the mxArray object <br /></td></tr>
+<tr class="separator:a6d43e52de9ff98b5816018f384a889c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a116f8308037a89342175f4dc4459547b"><td class="memItemLeft" align="right" valign="top"><a id="a116f8308037a89342175f4dc4459547b"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a116f8308037a89342175f4dc4459547b">numel</a> () const</td></tr>
+<tr class="memdesc:a116f8308037a89342175f4dc4459547b"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of elements <br /></td></tr>
+<tr class="separator:a116f8308037a89342175f4dc4459547b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b"><td class="memItemLeft" align="right" valign="top"><a id="a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b">iscomplex</a> () const</td></tr>
+<tr class="memdesc:a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if numeric and complex <br /></td></tr>
+<tr class="separator:a8b7ffbdc97ecf4ec6b9e59dbd1d43b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef5c7f35c629d1b9afd46e4ab4e7a400"><td class="memItemLeft" align="right" valign="top"><a id="aef5c7f35c629d1b9afd46e4ab4e7a400"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aef5c7f35c629d1b9afd46e4ab4e7a400">isscalar</a> () const</td></tr>
+<tr class="memdesc:aef5c7f35c629d1b9afd46e4ab4e7a400"><td class="mdescLeft">&#160;</td><td class="mdescRight">isscalar <br /></td></tr>
+<tr class="separator:aef5c7f35c629d1b9afd46e4ab4e7a400"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89066f62b4ab500be01077bb69e2e7bc"><td class="memItemLeft" align="right" valign="top"><a id="a89066f62b4ab500be01077bb69e2e7bc"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a89066f62b4ab500be01077bb69e2e7bc">isstruct</a> () const</td></tr>
+<tr class="memdesc:a89066f62b4ab500be01077bb69e2e7bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if mxArray is a struct <br /></td></tr>
+<tr class="separator:a89066f62b4ab500be01077bb69e2e7bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3773c50b68e43b80f4a1b54496591af"><td class="memItemLeft" align="right" valign="top"><a id="ae3773c50b68e43b80f4a1b54496591af"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ae3773c50b68e43b80f4a1b54496591af">isnumeric</a> () const</td></tr>
+<tr class="memdesc:ae3773c50b68e43b80f4a1b54496591af"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if is numeric <br /></td></tr>
+<tr class="separator:ae3773c50b68e43b80f4a1b54496591af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41847391ca6c459034f59054622a4cdf"><td class="memItemLeft" align="right" valign="top"><a id="a41847391ca6c459034f59054622a4cdf"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a41847391ca6c459034f59054622a4cdf">iscell</a> () const</td></tr>
+<tr class="memdesc:a41847391ca6c459034f59054622a4cdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if linked mxArray* is cell array <br /></td></tr>
+<tr class="separator:a41847391ca6c459034f59054622a4cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa34cae2a57a95631884a9cabf124b2a7"><td class="memItemLeft" align="right" valign="top"><a id="aa34cae2a57a95631884a9cabf124b2a7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa34cae2a57a95631884a9cabf124b2a7">ischar</a> () const</td></tr>
+<tr class="memdesc:aa34cae2a57a95631884a9cabf124b2a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if linked mxArray* is a char array <br /></td></tr>
+<tr class="separator:aa34cae2a57a95631884a9cabf124b2a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8a3930bff64da03e9ee4dad48bd56f1"><td class="memItemLeft" align="right" valign="top"><a id="aa8a3930bff64da03e9ee4dad48bd56f1"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa8a3930bff64da03e9ee4dad48bd56f1">ismatrix</a> () const</td></tr>
+<tr class="memdesc:aa8a3930bff64da03e9ee4dad48bd56f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true if ndims &lt; 3 <br /></td></tr>
+<tr class="separator:aa8a3930bff64da03e9ee4dad48bd56f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2b114fbba4fe131986fb73fcd6e1da1"><td class="memItemLeft" align="right" valign="top"><a id="aa2b114fbba4fe131986fb73fcd6e1da1"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa2b114fbba4fe131986fb73fcd6e1da1">ndims</a> () const</td></tr>
+<tr class="memdesc:aa2b114fbba4fe131986fb73fcd6e1da1"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of dims <br /></td></tr>
+<tr class="separator:aa2b114fbba4fe131986fb73fcd6e1da1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3526b237591e7fc80de4717c5b8d723"><td class="memItemLeft" align="right" valign="top"><a id="ae3526b237591e7fc80de4717c5b8d723"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ae3526b237591e7fc80de4717c5b8d723">isempty</a> () const</td></tr>
+<tr class="memdesc:ae3526b237591e7fc80de4717c5b8d723"><td class="mdescLeft">&#160;</td><td class="mdescRight">true if empty <br /></td></tr>
+<tr class="separator:ae3526b237591e7fc80de4717c5b8d723"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28d31a42f8e1c4a3b0df95b834d8cb2d"><td class="memItemLeft" align="right" valign="top"><a id="a28d31a42f8e1c4a3b0df95b834d8cb2d"></a>
+mxClassID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a28d31a42f8e1c4a3b0df95b834d8cb2d">mxType</a> () const</td></tr>
+<tr class="memdesc:a28d31a42f8e1c4a3b0df95b834d8cb2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return data type held by mxArray pointer <br /></td></tr>
+<tr class="separator:a28d31a42f8e1c4a3b0df95b834d8cb2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaa7cd9b12bfa6863fc125194b394aba"><td class="memItemLeft" align="right" valign="top"><a id="afaa7cd9b12bfa6863fc125194b394aba"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#afaa7cd9b12bfa6863fc125194b394aba">elementBytes</a> () const</td></tr>
+<tr class="memdesc:afaa7cd9b12bfa6863fc125194b394aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of bytes used to represent data element <br /></td></tr>
+<tr class="separator:afaa7cd9b12bfa6863fc125194b394aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ab9852e82a9b41dcd2557fe43c92df0"><td class="memItemLeft" align="right" valign="top"><a id="a0ab9852e82a9b41dcd2557fe43c92df0"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a0ab9852e82a9b41dcd2557fe43c92df0">sub2ind</a> (const std::vector&lt; size_t &gt; &amp;subs) const</td></tr>
+<tr class="memdesc:a0ab9852e82a9b41dcd2557fe43c92df0"><td class="mdescLeft">&#160;</td><td class="mdescRight">return 1-d index corresponding to subscript <br /></td></tr>
+<tr class="separator:a0ab9852e82a9b41dcd2557fe43c92df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07eda98e0eabe5d9d6b9102de091781c"><td class="memItemLeft" align="right" valign="top">virtual std::pair&lt; mxArray *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a07eda98e0eabe5d9d6b9102de091781c">managearray</a> ()</td></tr>
+<tr class="memdesc:a07eda98e0eabe5d9d6b9102de091781c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Take Ownership of array if linked mxArray is not managed, creates a copy and manages the new copy if already managed or mxptr==nullptr then does nothing.  <a href="#a07eda98e0eabe5d9d6b9102de091781c">More...</a><br /></td></tr>
+<tr class="separator:a07eda98e0eabe5d9d6b9102de091781c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a058284006fc9d42376581dd9fb06a552"><td class="memItemLeft" align="right" valign="top"><a id="a058284006fc9d42376581dd9fb06a552"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a058284006fc9d42376581dd9fb06a552">reshape</a> (const std::vector&lt; size_t &gt; &amp;dims)</td></tr>
+<tr class="memdesc:a058284006fc9d42376581dd9fb06a552"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reshape using matlab-like syntax Numeric and Char array will reshape the linked mxArray* in place For struct and cell arrays, the data will be copied to a new mxarray* and the original pointer will be released/destroyed. <br /></td></tr>
+<tr class="separator:a058284006fc9d42376581dd9fb06a552"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a436f435f266c30c2c19cadf501035888"><td class="memItemLeft" align="right" valign="top"><a id="a436f435f266c30c2c19cadf501035888"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a436f435f266c30c2c19cadf501035888">reshape</a> (size_t nRows, size_t nCols)</td></tr>
+<tr class="memdesc:a436f435f266c30c2c19cadf501035888"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize. <br /></td></tr>
+<tr class="separator:a436f435f266c30c2c19cadf501035888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4caefe4a40bb75dea74ca4d346ace4a6"><td class="memItemLeft" align="right" valign="top"><a id="a4caefe4a40bb75dea74ca4d346ace4a6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a4caefe4a40bb75dea74ca4d346ace4a6">reshape_nocopy</a> (const std::vector&lt; size_t &gt; &amp;dims)</td></tr>
+<tr class="memdesc:a4caefe4a40bb75dea74ca4d346ace4a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">reshape without copy numeric array will contain zeros, cell and struct arrays will be have empty elements <br /></td></tr>
+<tr class="separator:a4caefe4a40bb75dea74ca4d346ace4a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7405bad46c3af6494b13560dd0ad211e"><td class="memItemLeft" align="right" valign="top"><a id="a7405bad46c3af6494b13560dd0ad211e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a7405bad46c3af6494b13560dd0ad211e">reshape_nocopy</a> (size_t nRows, size_t nCols)</td></tr>
+<tr class="memdesc:a7405bad46c3af6494b13560dd0ad211e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize. <br /></td></tr>
+<tr class="separator:a7405bad46c3af6494b13560dd0ad211e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20d9d8f97bcc8b2643d5549904bc2501"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a20d9d8f97bcc8b2643d5549904bc2501">concatenate</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;end_obj, size_t dim)</td></tr>
+<tr class="memdesc:a20d9d8f97bcc8b2643d5549904bc2501"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenate with matlab-like syntax Input: end_obj: object to place at end dim: dimension along which to concatenate.  <a href="#a20d9d8f97bcc8b2643d5549904bc2501">More...</a><br /></td></tr>
+<tr class="separator:a20d9d8f97bcc8b2643d5549904bc2501"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bb3de674d102183c9d5a6fd3d317960"><td class="memItemLeft" align="right" valign="top"><a id="a9bb3de674d102183c9d5a6fd3d317960"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a9bb3de674d102183c9d5a6fd3d317960">MxObject</a> (const std::string &amp;str)</td></tr>
+<tr class="memdesc:a9bb3de674d102183c9d5a6fd3d317960"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from string <br /></td></tr>
+<tr class="separator:a9bb3de674d102183c9d5a6fd3d317960"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd8f8d15c41ee141b5622c4b4c2b3f0b"><td class="memItemLeft" align="right" valign="top"><a id="abd8f8d15c41ee141b5622c4b4c2b3f0b"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#abd8f8d15c41ee141b5622c4b4c2b3f0b">operator=</a> (const std::string &amp;str)</td></tr>
+<tr class="memdesc:abd8f8d15c41ee141b5622c4b4c2b3f0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign from string <br /></td></tr>
+<tr class="separator:abd8f8d15c41ee141b5622c4b4c2b3f0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53c97be6149b5ac000d2d5f5a659c577"><td class="memItemLeft" align="right" valign="top"><a id="a53c97be6149b5ac000d2d5f5a659c577"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a53c97be6149b5ac000d2d5f5a659c577">MxObject</a> (double val)</td></tr>
+<tr class="memdesc:a53c97be6149b5ac000d2d5f5a659c577"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from double scalar. <br /></td></tr>
+<tr class="separator:a53c97be6149b5ac000d2d5f5a659c577"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae43fb5b0640b3dc2205bd70c080402c9"><td class="memItemLeft" align="right" valign="top"><a id="ae43fb5b0640b3dc2205bd70c080402c9"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ae43fb5b0640b3dc2205bd70c080402c9">operator=</a> (double val)</td></tr>
+<tr class="memdesc:ae43fb5b0640b3dc2205bd70c080402c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign from double <br /></td></tr>
+<tr class="separator:ae43fb5b0640b3dc2205bd70c080402c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf325eac64e60b7a96c3e1699a0f6061"><td class="memTemplParams" colspan="2"><a id="acf325eac64e60b7a96c3e1699a0f6061"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acf325eac64e60b7a96c3e1699a0f6061"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#acf325eac64e60b7a96c3e1699a0f6061">operator=</a> (const std::vector&lt; T &gt; &amp;vals)</td></tr>
+<tr class="memdesc:acf325eac64e60b7a96c3e1699a0f6061"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign from numeric vector <br /></td></tr>
+<tr class="separator:acf325eac64e60b7a96c3e1699a0f6061"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af45a36206a5b7d256e1178a28918e8f4"><td class="memItemLeft" align="right" valign="top"><a id="af45a36206a5b7d256e1178a28918e8f4"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#af45a36206a5b7d256e1178a28918e8f4">makePersistent</a> ()</td></tr>
+<tr class="memdesc:af45a36206a5b7d256e1178a28918e8f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">make mxArray persistent so that it survives beyond each call to the initializing mexFunction <br /></td></tr>
 <tr class="separator:af45a36206a5b7d256e1178a28918e8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b4200dd58e0c4b2f5a9a3d322aab616"><td class="memItemLeft" align="right" valign="top"><a id="a6b4200dd58e0c4b2f5a9a3d322aab616"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a> () const</td></tr>
@@ -128,49 +309,68 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8dccacf611282d5352a2873fb3b52a1a">MxObject</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
 <tr class="memdesc:a8dccacf611282d5352a2873fb3b52a1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor and copy assignment. <br /></td></tr>
 <tr class="separator:a8dccacf611282d5352a2873fb3b52a1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a371df887baaeb0d866d20b32a46b0c8c"><td class="memItemLeft" align="right" valign="top"><a id="a371df887baaeb0d866d20b32a46b0c8c"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
-<tr class="separator:a371df887baaeb0d866d20b32a46b0c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a703b2518800109ccfb456c2536b34c22"><td class="memItemLeft" align="right" valign="top"><a id="a703b2518800109ccfb456c2536b34c22"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a703b2518800109ccfb456c2536b34c22">operator=</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:a703b2518800109ccfb456c2536b34c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy assignment <br /></td></tr>
+<tr class="separator:a703b2518800109ccfb456c2536b34c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3d65bc1fde4554b4aac14a2c0681047"><td class="memItemLeft" align="right" valign="top"><a id="aa3d65bc1fde4554b4aac14a2c0681047"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa3d65bc1fde4554b4aac14a2c0681047">MxObject</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
 <tr class="memdesc:aa3d65bc1fde4554b4aac14a2c0681047"><td class="mdescLeft">&#160;</td><td class="mdescRight">move constructor and move assignment <br /></td></tr>
 <tr class="separator:aa3d65bc1fde4554b4aac14a2c0681047"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91d7c8d102225bb371bb7cef4ed50c49"><td class="memItemLeft" align="right" valign="top"><a id="a91d7c8d102225bb371bb7cef4ed50c49"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
-<tr class="separator:a91d7c8d102225bb371bb7cef4ed50c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c4189b2714367ad7778fead9632a9ce"><td class="memItemLeft" align="right" valign="top"><a id="a3c4189b2714367ad7778fead9632a9ce"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a3c4189b2714367ad7778fead9632a9ce">MxObject</a> (mxArray *mxptr)</td></tr>
-<tr class="memdesc:a3c4189b2714367ad7778fead9632a9ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct and assign from mxarray. <br /></td></tr>
-<tr class="separator:a3c4189b2714367ad7778fead9632a9ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaed25d4176d347ac784533481f48c494"><td class="memItemLeft" align="right" valign="top"><a id="aaed25d4176d347ac784533481f48c494"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (mxArray *mxptr)</td></tr>
-<tr class="separator:aaed25d4176d347ac784533481f48c494"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ce0d7729dba1e19d743d87ec5687c86"><td class="memItemLeft" align="right" valign="top"><a id="a8ce0d7729dba1e19d743d87ec5687c86"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MxObject</b> (const mxArray *mxptr)</td></tr>
-<tr class="separator:a8ce0d7729dba1e19d743d87ec5687c86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf6e4efe8e7e703523717ceaa079e998"><td class="memItemLeft" align="right" valign="top"><a id="acf6e4efe8e7e703523717ceaa079e998"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const mxArray *mxptr)</td></tr>
-<tr class="separator:acf6e4efe8e7e703523717ceaa079e998"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64b82a31412e2429802a26318e447ff3"><td class="memItemLeft" align="right" valign="top"><a id="a64b82a31412e2429802a26318e447ff3"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a64b82a31412e2429802a26318e447ff3">operator=</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&amp;src)</td></tr>
+<tr class="memdesc:a64b82a31412e2429802a26318e447ff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assignment <br /></td></tr>
+<tr class="separator:a64b82a31412e2429802a26318e447ff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeaffb0367cd27522cef4726ef20a975"><td class="memItemLeft" align="right" valign="top"><a id="aaeaffb0367cd27522cef4726ef20a975"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aaeaffb0367cd27522cef4726ef20a975">MxObject</a> (mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="memdesc:aaeaffb0367cd27522cef4726ef20a975"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from mxarray assume mxArray* is not persistent (unless specified) mxArray will be managed (therefore deleted upon destruction) <br /></td></tr>
+<tr class="separator:aaeaffb0367cd27522cef4726ef20a975"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e8959368dd11b6584cb0570a65cddb6"><td class="memItemLeft" align="right" valign="top"><a id="a8e8959368dd11b6584cb0570a65cddb6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8e8959368dd11b6584cb0570a65cddb6">MxObject</a> (mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>, bool manageArray)</td></tr>
+<tr class="memdesc:a8e8959368dd11b6584cb0570a65cddb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from mxArray flag specifies if mxptr should be controlled by <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> must specify isPersistent if manageFlag=true (default=false) data will be deleted upon <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> destruction. <br /></td></tr>
+<tr class="separator:a8e8959368dd11b6584cb0570a65cddb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad38fb9826ec15910def3d4f4e57e1f2f"><td class="memItemLeft" align="right" valign="top"><a id="ad38fb9826ec15910def3d4f4e57e1f2f"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ad38fb9826ec15910def3d4f4e57e1f2f">operator=</a> (mxArray *mxptr)</td></tr>
+<tr class="memdesc:ad38fb9826ec15910def3d4f4e57e1f2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign from mxarray assume mxArray* is not persistent mxArray will be managed (therefore deleted upon destruction) <br /></td></tr>
+<tr class="separator:ad38fb9826ec15910def3d4f4e57e1f2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb4334cd163f7c505fd3ba31d449d15a"><td class="memItemLeft" align="right" valign="top"><a id="abb4334cd163f7c505fd3ba31d449d15a"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#abb4334cd163f7c505fd3ba31d449d15a">MxObject</a> (const mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="memdesc:abb4334cd163f7c505fd3ba31d449d15a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from const mxarray assume const mxArray* is not persistent mxArray will not be managed (therefore not deleted) <br /></td></tr>
+<tr class="separator:abb4334cd163f7c505fd3ba31d449d15a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea8d742a5328220184d856a3eb65b8d8"><td class="memItemLeft" align="right" valign="top"><a id="aea8d742a5328220184d856a3eb65b8d8"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aea8d742a5328220184d856a3eb65b8d8">operator=</a> (const mxArray *mxptr)</td></tr>
+<tr class="memdesc:aea8d742a5328220184d856a3eb65b8d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign from const mxarray assume mxArray* is not persistent mxArray will not be managed (therefore not deleted) <br /></td></tr>
+<tr class="separator:aea8d742a5328220184d856a3eb65b8d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6292893414d193c451338e3a055c207"><td class="memItemLeft" align="right" valign="top"><a id="ae6292893414d193c451338e3a055c207"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ae6292893414d193c451338e3a055c207">linkto</a> (mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="memdesc:ae6292893414d193c451338e3a055c207"><td class="mdescLeft">&#160;</td><td class="mdescRight">link to mxarray array will not be managed (hence not delete upon destruction) assume mxArray* is not persistent, unless specified <br /></td></tr>
+<tr class="separator:ae6292893414d193c451338e3a055c207"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac90428f4fbc67d733b57cc758f653ea8"><td class="memItemLeft" align="right" valign="top"><a id="ac90428f4fbc67d733b57cc758f653ea8"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ac90428f4fbc67d733b57cc758f653ea8">linkto</a> (const mxArray *mxptr, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="memdesc:ac90428f4fbc67d733b57cc758f653ea8"><td class="mdescLeft">&#160;</td><td class="mdescRight">link to const mxarray array will not be managed (hence not delete upon destruction) assume const mxArray* is not persistent, unless specified <br /></td></tr>
+<tr class="separator:ac90428f4fbc67d733b57cc758f653ea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97f4cd2580ce9f99034c52c2f55cecf6"><td class="memItemLeft" align="right" valign="top"><a id="a97f4cd2580ce9f99034c52c2f55cecf6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MxObject</b> (const double &amp;in)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a97f4cd2580ce9f99034c52c2f55cecf6">MxObject</a> (const double &amp;in)</td></tr>
+<tr class="memdesc:a97f4cd2580ce9f99034c52c2f55cecf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">double scalar constructor <br /></td></tr>
 <tr class="separator:a97f4cd2580ce9f99034c52c2f55cecf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86101664270bc804d9ca7be1a29eeeb4"><td class="memItemLeft" align="right" valign="top"><a id="a86101664270bc804d9ca7be1a29eeeb4"></a>
-<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const double &amp;in)</td></tr>
-<tr class="separator:a86101664270bc804d9ca7be1a29eeeb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adffe9b427f0311f03ae08b8ec7c3fc00"><td class="memItemLeft" align="right" valign="top"><a id="adffe9b427f0311f03ae08b8ec7c3fc00"></a>
+virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#adffe9b427f0311f03ae08b8ec7c3fc00">operator=</a> (const double &amp;in)</td></tr>
+<tr class="memdesc:adffe9b427f0311f03ae08b8ec7c3fc00"><td class="mdescLeft">&#160;</td><td class="mdescRight">set to double scalar <br /></td></tr>
+<tr class="separator:adffe9b427f0311f03ae08b8ec7c3fc00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15c63601185c05316eab4f3918417420"><td class="memItemLeft" align="right" valign="top"><a id="a15c63601185c05316eab4f3918417420"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>MxObject</b> (const std::string &amp;in)</td></tr>
 <tr class="separator:a15c63601185c05316eab4f3918417420"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2586c31bb207cd1d67382c0a911f213e"><td class="memItemLeft" align="right" valign="top"><a id="a2586c31bb207cd1d67382c0a911f213e"></a>
 <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const std::string &amp;in)</td></tr>
 <tr class="separator:a2586c31bb207cd1d67382c0a911f213e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af679bd6188875d96744e41118c3c9806"><td class="memItemLeft" align="right" valign="top"><a id="af679bd6188875d96744e41118c3c9806"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#af679bd6188875d96744e41118c3c9806">operator mxArray *</a> ()</td></tr>
-<tr class="memdesc:af679bd6188875d96744e41118c3c9806"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign to (cast to) mxArray if array is not persistent change management rule so that data is not deleted on destruction if array is persistent, returns copy of the data that is not persistent (and therefore managed by MATLAB) <br /></td></tr>
-<tr class="separator:af679bd6188875d96744e41118c3c9806"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5993a9503bcc62ee58879f7ab089a50b"><td class="memItemLeft" align="right" valign="top"><a id="a5993a9503bcc62ee58879f7ab089a50b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a5993a9503bcc62ee58879f7ab089a50b">operator const mxArray *</a> () const</td></tr>
-<tr class="memdesc:a5993a9503bcc62ee58879f7ab089a50b"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns const mxArray*, memory management is not changed pointer may be invalid when object is deleted <br /></td></tr>
-<tr class="separator:a5993a9503bcc62ee58879f7ab089a50b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0e44e32984f678374a31613e783cf73"><td class="memItemLeft" align="right" valign="top"><a id="ab0e44e32984f678374a31613e783cf73"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ab0e44e32984f678374a31613e783cf73">operator mxArray *</a> ()</td></tr>
+<tr class="memdesc:ab0e44e32984f678374a31613e783cf73"><td class="mdescLeft">&#160;</td><td class="mdescRight">assign to (cast to) mxArray if array is not persistent or set from const change management rule so that data is not deleted on destruction if array is persistent or const, returns copy of the data that is not persistent (and therefore managed by MATLAB) <br /></td></tr>
+<tr class="separator:ab0e44e32984f678374a31613e783cf73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d98a531b621bf03ece5fe4896482adc"><td class="memItemLeft" align="right" valign="top"><a id="a8d98a531b621bf03ece5fe4896482adc"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8d98a531b621bf03ece5fe4896482adc">operator const mxArray *</a> () const</td></tr>
+<tr class="memdesc:a8d98a531b621bf03ece5fe4896482adc"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns const mxArray*, memory management is not changed pointer may be invalid when object is deleted <br /></td></tr>
+<tr class="separator:a8d98a531b621bf03ece5fe4896482adc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2799478cb9c4d4c7cc0fa784c4f2db7d"><td class="memItemLeft" align="right" valign="top"><a id="a2799478cb9c4d4c7cc0fa784c4f2db7d"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a2799478cb9c4d4c7cc0fa784c4f2db7d">managedata</a> ()</td></tr>
 <tr class="memdesc:a2799478cb9c4d4c7cc0fa784c4f2db7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change data ownership. <br /></td></tr>
@@ -179,12 +379,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 mxClassID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a28d31a42f8e1c4a3b0df95b834d8cb2d">mxType</a> () const</td></tr>
 <tr class="memdesc:a28d31a42f8e1c4a3b0df95b834d8cb2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return data type held by mxArray pointer <br /></td></tr>
 <tr class="separator:a28d31a42f8e1c4a3b0df95b834d8cb2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77af400fa75fecb8a872e1afa22d03b4"><td class="memItemLeft" align="right" valign="top">const mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a77af400fa75fecb8a872e1afa22d03b4">getmxarray</a> () const</td></tr>
-<tr class="memdesc:a77af400fa75fecb8a872e1afa22d03b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mxArray ptr without changing data managment rule if data is locally held, it will be deleted upon construction DO NOT use for setting the return data of a mexFunction.  <a href="#a77af400fa75fecb8a872e1afa22d03b4">More...</a><br /></td></tr>
-<tr class="separator:a77af400fa75fecb8a872e1afa22d03b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1900e1ca34551d25bed7e00092927440"><td class="memItemLeft" align="right" valign="top">mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a1900e1ca34551d25bed7e00092927440">releasemxarray</a> (bool *wasManaged=nullptr, bool *wasPersistent=nullptr)</td></tr>
-<tr class="memdesc:a1900e1ca34551d25bed7e00092927440"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mxArray and change data management rule to false after calling, the mxObject will no longer delete the mxArray when it goes out of scope.  <a href="#a1900e1ca34551d25bed7e00092927440">More...</a><br /></td></tr>
-<tr class="separator:a1900e1ca34551d25bed7e00092927440"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a216172c615256cb6e815040a9c1c79d3"><td class="memItemLeft" align="right" valign="top">virtual const mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a216172c615256cb6e815040a9c1c79d3">getmxarray</a> () const</td></tr>
+<tr class="memdesc:a216172c615256cb6e815040a9c1c79d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mxArray ptr without changing data managment rule if data is locally held, it will be deleted upon construction DO NOT use for setting the return data of a mexFunction.  <a href="#a216172c615256cb6e815040a9c1c79d3">More...</a><br /></td></tr>
+<tr class="separator:a216172c615256cb6e815040a9c1c79d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9ea0b1e3f62f7a8c9382769a0306fa0"><td class="memItemLeft" align="right" valign="top">mxArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ac9ea0b1e3f62f7a8c9382769a0306fa0">releasemxarray</a> (bool *wasManaged=nullptr, bool *wasPersistent=nullptr, bool *wasSetFromConst=nullptr)</td></tr>
+<tr class="memdesc:ac9ea0b1e3f62f7a8c9382769a0306fa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mxArray and change data management rule to false after calling, the mxObject will no longer delete the mxArray when it goes out of scope.  <a href="#ac9ea0b1e3f62f7a8c9382769a0306fa0">More...</a><br /></td></tr>
+<tr class="separator:ac9ea0b1e3f62f7a8c9382769a0306fa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d43e52de9ff98b5816018f384a889c2"><td class="memItemLeft" align="right" valign="top"><a id="a6d43e52de9ff98b5816018f384a889c2"></a>
 virtual std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6d43e52de9ff98b5816018f384a889c2">size</a> () const</td></tr>
 <tr class="memdesc:a6d43e52de9ff98b5816018f384a889c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::vector holding dimension of the mxArray object <br /></td></tr>
@@ -207,6 +407,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>iscell</b> () const</
 <tr class="memitem:aa34cae2a57a95631884a9cabf124b2a7"><td class="memItemLeft" align="right" valign="top"><a id="aa34cae2a57a95631884a9cabf124b2a7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>ischar</b> () const</td></tr>
 <tr class="separator:aa34cae2a57a95631884a9cabf124b2a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96632074a283aaef8c0d8c337618f29e"><td class="memItemLeft" align="right" valign="top"><a id="a96632074a283aaef8c0d8c337618f29e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a96632074a283aaef8c0d8c337618f29e">reshape</a> (std::vector&lt; size_t &gt; dims)</td></tr>
+<tr class="memdesc:a96632074a283aaef8c0d8c337618f29e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize. <br /></td></tr>
+<tr class="separator:a96632074a283aaef8c0d8c337618f29e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a436f435f266c30c2c19cadf501035888"><td class="memItemLeft" align="right" valign="top"><a id="a436f435f266c30c2c19cadf501035888"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a436f435f266c30c2c19cadf501035888">reshape</a> (size_t nRows, size_t nCols)</td></tr>
+<tr class="memdesc:a436f435f266c30c2c19cadf501035888"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize. <br /></td></tr>
+<tr class="separator:a436f435f266c30c2c19cadf501035888"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8a3930bff64da03e9ee4dad48bd56f1"><td class="memItemLeft" align="right" valign="top"><a id="aa8a3930bff64da03e9ee4dad48bd56f1"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa8a3930bff64da03e9ee4dad48bd56f1">ismatrix</a> () const</td></tr>
 <tr class="memdesc:aa8a3930bff64da03e9ee4dad48bd56f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true if ndims &lt; 3 <br /></td></tr>
@@ -218,35 +426,76 @@ virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>ndims</b> (
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>isempty</b> () const</td></tr>
 <tr class="separator:ae3526b237591e7fc80de4717c5b8d723"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a8c300f107e3576360ca63a9cc856660c"><td class="memItemLeft" align="right" valign="top"><a id="a8c300f107e3576360ca63a9cc856660c"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> ()</td></tr>
+<tr class="separator:a8c300f107e3576360ca63a9cc856660c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a506a34694e3c6ce299e9065f5d75023e"><td class="memItemLeft" align="right" valign="top"><a id="a506a34694e3c6ce299e9065f5d75023e"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="separator:a506a34694e3c6ce299e9065f5d75023e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa21b52881702e2cccecc890a35173a80"><td class="memItemLeft" align="right" valign="top"><a id="aa21b52881702e2cccecc890a35173a80"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (mxArray *src, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="separator:aa21b52881702e2cccecc890a35173a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5224677d00ff9453c8240bd0a594c288"><td class="memItemLeft" align="right" valign="top"><a id="a5224677d00ff9453c8240bd0a594c288"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (const mxArray *src, bool <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a6b4200dd58e0c4b2f5a9a3d322aab616">isPersistent</a>=false)</td></tr>
+<tr class="separator:a5224677d00ff9453c8240bd0a594c288"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51d5e701489472caa7173038b0c1e0ac"><td class="memItemLeft" align="right" valign="top"><a id="a51d5e701489472caa7173038b0c1e0ac"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (const double &amp;in)</td></tr>
+<tr class="separator:a51d5e701489472caa7173038b0c1e0ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74b3113a055e3c1e996779855f2700c3"><td class="memItemLeft" align="right" valign="top"><a id="a74b3113a055e3c1e996779855f2700c3"></a>
+static <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&#160;</td><td class="memItemRight" valign="bottom"><b>createPersistent</b> (const std::string &amp;in)</td></tr>
+<tr class="separator:a74b3113a055e3c1e996779855f2700c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:ad1bbed78f2376a19c3d3b7796cafd82a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ad1bbed78f2376a19c3d3b7796cafd82a">deletemxptr_nolock</a> ()</td></tr>
+<tr class="memdesc:ad1bbed78f2376a19c3d3b7796cafd82a"><td class="mdescLeft">&#160;</td><td class="mdescRight">delete mxptr if needed if not managed, set from constant, or not set (i.e.  <a href="#ad1bbed78f2376a19c3d3b7796cafd82a">More...</a><br /></td></tr>
+<tr class="separator:ad1bbed78f2376a19c3d3b7796cafd82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01fff4086644aad3ee22f2da464bf0bb"><td class="memItemLeft" align="right" valign="top"><a id="a01fff4086644aad3ee22f2da464bf0bb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a01fff4086644aad3ee22f2da464bf0bb">deletemxptr_withlock</a> ()</td></tr>
+<tr class="memdesc:a01fff4086644aad3ee22f2da464bf0bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates a mutex lock on _mxptr before calling <a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ad1bbed78f2376a19c3d3b7796cafd82a" title="delete mxptr if needed if not managed, set from constant, or not set (i.e. ">deletemxptr_nolock()</a> <br /></td></tr>
+<tr class="separator:a01fff4086644aad3ee22f2da464bf0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac13e398bf056a828fcccbb63a739209c"><td class="memItemLeft" align="right" valign="top"><a id="ac13e398bf056a828fcccbb63a739209c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ac13e398bf056a828fcccbb63a739209c">copyFrom</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:ac13e398bf056a828fcccbb63a739209c"><td class="mdescLeft">&#160;</td><td class="mdescRight">create deep copy of object <br /></td></tr>
+<tr class="separator:ac13e398bf056a828fcccbb63a739209c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4747397d61c4da189940d896a9ce368"><td class="memItemLeft" align="right" valign="top"><a id="aa4747397d61c4da189940d896a9ce368"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa4747397d61c4da189940d896a9ce368">moveFrom</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:aa4747397d61c4da189940d896a9ce368"><td class="mdescLeft">&#160;</td><td class="mdescRight">move object <br /></td></tr>
+<tr class="separator:aa4747397d61c4da189940d896a9ce368"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab47fa11406026b294a145ae57a6b7fe8"><td class="memItemLeft" align="right" valign="top"><a id="ab47fa11406026b294a145ae57a6b7fe8"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ab47fa11406026b294a145ae57a6b7fe8">setFromConst</a> (const mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:ab47fa11406026b294a145ae57a6b7fe8"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from const mxArray* creates a const link to psrc <br /></td></tr>
+<tr class="separator:ab47fa11406026b294a145ae57a6b7fe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a252db7119bbd292e506bc9fef19fc3c8"><td class="memItemLeft" align="right" valign="top"><a id="a252db7119bbd292e506bc9fef19fc3c8"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a252db7119bbd292e506bc9fef19fc3c8">setFrom</a> (mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:a252db7119bbd292e506bc9fef19fc3c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">set from (non-const) mxArray* Creates a link to psrc, but does not delete it YOU ARE RESPONSIBLE FOR MANAGING THE LIFE OF psrc <br /></td></tr>
+<tr class="separator:a252db7119bbd292e506bc9fef19fc3c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56b825af08d57848740d79777aedf676"><td class="memItemLeft" align="right" valign="top"><a id="a56b825af08d57848740d79777aedf676"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a56b825af08d57848740d79777aedf676">setOwn</a> (mxArray *psrc, bool persist)</td></tr>
+<tr class="memdesc:a56b825af08d57848740d79777aedf676"><td class="mdescLeft">&#160;</td><td class="mdescRight">set with full ownership <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> will automatically call mxDestroyArray(psrc) when it is destructed DO NOT DELETE psrc or expect it to be valid after passing to <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> <br /></td></tr>
+<tr class="separator:a56b825af08d57848740d79777aedf676"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b0c544f5cbd9913c474a48cc3e161a1"><td class="memItemLeft" align="right" valign="top">std::pair&lt; mxArray *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#a8b0c544f5cbd9913c474a48cc3e161a1">selfManage</a> ()</td></tr>
+<tr class="memdesc:a8b0c544f5cbd9913c474a48cc3e161a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">if linked mxArray is not managed, creates a copy and manages the new copy if already managed or mxptr==nullptr then does nothing.  <a href="#a8b0c544f5cbd9913c474a48cc3e161a1">More...</a><br /></td></tr>
+<tr class="separator:a8b0c544f5cbd9913c474a48cc3e161a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a537d623e08940d0780d45ac4a8d26acc"><td class="memItemLeft" align="right" valign="top"><a id="a537d623e08940d0780d45ac4a8d26acc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>deletemxptr</b> ()</td></tr>
 <tr class="separator:a537d623e08940d0780d45ac4a8d26acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac13e398bf056a828fcccbb63a739209c"><td class="memItemLeft" align="right" valign="top"><a id="ac13e398bf056a828fcccbb63a739209c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>copyFrom</b> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#ac13e398bf056a828fcccbb63a739209c">copyFrom</a> (const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:ac13e398bf056a828fcccbb63a739209c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy data from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a>. <br /></td></tr>
 <tr class="separator:ac13e398bf056a828fcccbb63a739209c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4747397d61c4da189940d896a9ce368"><td class="memItemLeft" align="right" valign="top"><a id="aa4747397d61c4da189940d896a9ce368"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>moveFrom</b> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html#aa4747397d61c4da189940d896a9ce368">moveFrom</a> (<a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;src)</td></tr>
+<tr class="memdesc:aa4747397d61c4da189940d896a9ce368"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move data from <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> resulting object will have _mxptr=nullptr;. <br /></td></tr>
 <tr class="separator:aa4747397d61c4da189940d896a9ce368"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:a8f418052c2fdb6c6d206bc6f9f981a26"><td class="memItemLeft" align="right" valign="top"><a id="a8f418052c2fdb6c6d206bc6f9f981a26"></a>
-mxArray *&#160;</td><td class="memItemRight" valign="bottom"><b>_mxptr</b> = nullptr</td></tr>
-<tr class="separator:a8f418052c2fdb6c6d206bc6f9f981a26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab05dacb743c2cd94cd638b03e4056e02"><td class="memItemLeft" align="right" valign="top"><a id="ab05dacb743c2cd94cd638b03e4056e02"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_managemxptr</b> = true</td></tr>
-<tr class="separator:ab05dacb743c2cd94cd638b03e4056e02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51ed23d4ff763ca361b849a698a15875"><td class="memItemLeft" align="right" valign="top"><a id="a51ed23d4ff763ca361b849a698a15875"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_isPersistent</b> = false</td></tr>
-<tr class="separator:a51ed23d4ff763ca361b849a698a15875"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Object wrapper around mxArray*. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a77af400fa75fecb8a872e1afa22d03b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77af400fa75fecb8a872e1afa22d03b4">&#9670;&nbsp;</a></span>getmxarray()</h2>
+<a id="a20d9d8f97bcc8b2643d5549904bc2501"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20d9d8f97bcc8b2643d5549904bc2501">&#9670;&nbsp;</a></span>concatenate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -255,7 +504,82 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>_isPersistent</b> = f
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const mxArray* extras::cmex::MxObject::getmxarray </td>
+          <td class="memname">virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&amp; extras::cmex::MxObject::concatenate </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a> &amp;&#160;</td>
+          <td class="paramname"><em>end_obj</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>dim</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Concatenate with matlab-like syntax Input: end_obj: object to place at end dim: dimension along which to concatenate. </p>
+<p>NOTE: all other dims will point to first element</p>
+<p>COPY Numerics</p>
+<p>copy cell array</p>
+<p>NOTE: all other dims will point to first element</p>
+<p>COPY Numerics</p>
+<p>copy cell array</p>
+<p>move results from newptr to _mxptr </p>
+
+<p>Reimplemented in <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a28c880f5cea52a4ee157c9a892822946">extras::cmex::NumericArray&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ad1bbed78f2376a19c3d3b7796cafd82a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1bbed78f2376a19c3d3b7796cafd82a">&#9670;&nbsp;</a></span>deletemxptr_nolock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void extras::cmex::MxObject::deletemxptr_nolock </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>delete mxptr if needed if not managed, set from constant, or not set (i.e. </p>
+<p>nullptr) memory is not freed upon return: _mxptr == nullptr _mxptr == false _mxptr == false </p>
+
+</div>
+</div>
+<a id="a216172c615256cb6e815040a9c1c79d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a216172c615256cb6e815040a9c1c79d3">&#9670;&nbsp;</a></span>getmxarray() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const mxArray* extras::cmex::MxObject::getmxarray </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -263,7 +587,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>_isPersistent</b> = f
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -273,8 +597,134 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>_isPersistent</b> = f
 
 </div>
 </div>
-<a id="a1900e1ca34551d25bed7e00092927440"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1900e1ca34551d25bed7e00092927440">&#9670;&nbsp;</a></span>releasemxarray()</h2>
+<a id="a5113e60120b14c69e630317cbeee0e55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5113e60120b14c69e630317cbeee0e55">&#9670;&nbsp;</a></span>getmxarray() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const mxArray* extras::cmex::MxObject::getmxarray </td>
+          <td>(</td>
+          <td class="paramtype">bool *&#160;</td>
+          <td class="paramname"><em>wasPersistent</em> = <code>nullptr</code></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns const mxArray* linked to data optionally specify a bool* in which the state of the persistence will be stored. </p>
+
+</div>
+</div>
+<a id="a07eda98e0eabe5d9d6b9102de091781c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07eda98e0eabe5d9d6b9102de091781c">&#9670;&nbsp;</a></span>managearray()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::pair&lt;mxArray*, bool&gt; extras::cmex::MxObject::managearray </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Take Ownership of array if linked mxArray is not managed, creates a copy and manages the new copy if already managed or mxptr==nullptr then does nothing. </p>
+<p>If the array was not managed, and a copy is created, the the previously linked array is returned in a pair, along with a bool specifying if it was set from const.</p>
+<p>Return: out.first -&gt; mxArray* out.second -&gt; bool specifying if out.first shoud be considered "const mxArray*" </p>
+
+</div>
+</div>
+<a id="ab0e44e32984f678374a31613e783cf73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0e44e32984f678374a31613e783cf73">&#9670;&nbsp;</a></span>operator mxArray *()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual extras::cmex::MxObject::operator mxArray * </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>return mutable (non-const) mxArray* returned array will not be persistent so it's ok to pass back to MATLAB if object is persistent or setFromConst then a copy of mxArray is returned; otherwise, the linked mxarray is returned and the management flag is changed. </p>
+<p>CAUTION: Once you call this function it is your responsibility to manage the memory pointed by the resulting mxArray. Therefore, if you do not pass it back to MATLAB you MUST call mxDeleteArray(...) on the array. </p>
+
+</div>
+</div>
+<a id="a3d63bded834f8e4a6ab2069c9535949f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d63bded834f8e4a6ab2069c9535949f">&#9670;&nbsp;</a></span>own()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a>&amp; extras::cmex::MxObject::own </td>
+          <td>(</td>
+          <td class="paramtype">mxArray *&#160;</td>
+          <td class="paramname"><em>psrc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isPersist</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set non-const mxArray*, giving <a class="el" href="classextras_1_1cmex_1_1_mx_object.html" title="Object wrapper around mxArray*. ">MxObject</a> full ownership. </p>
+<p>CATION: Do not delete psrc after calling this method! </p>
+
+<p>Reimplemented in <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a8e0d1ed975a329a91b78caf611da06b5">extras::cmex::NumericArray&lt; T &gt;</a>, <a class="el" href="classextras_1_1cmex_1_1_numeric_array.html#a8e0d1ed975a329a91b78caf611da06b5">extras::cmex::NumericArray&lt; T &gt;</a>, and <a class="el" href="classextras_1_1cmex_1_1_dynamic_type_mx_array.html#a78d446204ed9d32609f1711ec271c49f">extras::cmex::DynamicTypeMxArray</a>.</p>
+
+</div>
+</div>
+<a id="ac9ea0b1e3f62f7a8c9382769a0306fa0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9ea0b1e3f62f7a8c9382769a0306fa0">&#9670;&nbsp;</a></span>releasemxarray()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -292,7 +742,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>_isPersistent</b> = f
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool *&#160;</td>
-          <td class="paramname"><em>wasPersistent</em> = <code>nullptr</code>&#160;</td>
+          <td class="paramname"><em>wasPersistent</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool *&#160;</td>
+          <td class="paramname"><em>wasSetFromConst</em> = <code>nullptr</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -312,15 +768,45 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>_isPersistent</b> = f
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a id="a8b0c544f5cbd9913c474a48cc3e161a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b0c544f5cbd9913c474a48cc3e161a1">&#9670;&nbsp;</a></span>selfManage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt;mxArray*,bool&gt; extras::cmex::MxObject::selfManage </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>if linked mxArray is not managed, creates a copy and manages the new copy if already managed or mxptr==nullptr then does nothing. </p>
+<p>If the array was not managed, and a copy is created, the the previously linked array is returned in a pair, along with a bool specifying if it was set from const.</p>
+<p>Return: out.first -&gt; mxArray* out.second -&gt; bool specifying if out.first shoud be considered "const mxArray*" </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>extras/cmex/<a class="el" href="mxobject_8hpp_source.html">mxobject.hpp</a></li>
+<li>extras/cmex/<a class="el" href="mxobject__old_8hpp_source.html">mxobject_old.hpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>extras</b></li><li class="navelem"><b>cmex</b></li><li class="navelem"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a></li>
+    <li class="navelem"><a class="el" href="namespaceextras.html">extras</a></li><li class="navelem"><b>cmex</b></li><li class="navelem"><a class="el" href="classextras_1_1cmex_1_1_mx_object.html">MxObject</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>

@@ -24,14 +24,22 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "extras", "index.html", [
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ]
+      ] ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ],
-        [ "Variables", "functions_vars.html", null ]
+        [ "All", "functions.html", "functions_dup" ],
+        [ "Functions", "functions_func.html", "functions_func" ],
+        [ "Variables", "functions_vars.html", null ],
+        [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -42,7 +50,11 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html"
+".html",
+"classextras_1_1async_1_1_async_processor.html#a77e7d6c2b2002e403f38e1006f791e91",
+"classextras_1_1cmex_1_1_mx_object.html#aa34cae2a57a95631884a9cabf124b2a7",
+"classextras_1_1cmex_1_1_parameter_mx_map.html#a964874de73d3718ae5fdecc1022fbb24",
+"functions_func_l.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

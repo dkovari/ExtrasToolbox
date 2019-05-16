@@ -1,4 +1,4 @@
-% Build Radial Center
+% Build RoiTracker
 
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));
 OUTNAME = 'RoiTracker_mex'; %output function name
