@@ -6,15 +6,15 @@ classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & 
     properties (Abstract=true,SetAccess=protected,SetObservable=true,AbortSet=true)
         Value;
     end
+    properties (Abstract=true,SetObservable=true) %allow setting TargetValue to same TargetValue, that way wr message gets sent again
+        Target;
+    end
     
     properties (SetAccess=protected,SetObservable=true,AbortSet=true)
         UpdatedAfterTargetChange;
     end
     
-    properties (Abstract=true,SetObservable=true) %allow setting TargetValue to same TargetValue, that way wr message gets sent again
-        Target;
-    end
-    
+
     properties (SetAccess=protected, SetObservable=true, AbortSet = true)
         Units = '';
         Limits = [-Inf,Inf];

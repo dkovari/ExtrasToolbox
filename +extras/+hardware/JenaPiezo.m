@@ -11,7 +11,6 @@ classdef JenaPiezo < extras.hardware.abstract.ObjectiveScanner & extras.hardware
     end
     properties (SetAccess=protected,SetObservable=true,AbortSet=true)
         Value = NaN
-        UpdatedAfterTargetChange = false;
     end
     
     %%
@@ -38,6 +37,8 @@ classdef JenaPiezo < extras.hardware.abstract.ObjectiveScanner & extras.hardware
             
             %default serialdevice construction (do not connect yet)
             this@extras.hardware.SerialDevice();
+            
+            this.UpdatedAfterTargetChange = false;
             
             this.Port = Port;
             %% Device Info
