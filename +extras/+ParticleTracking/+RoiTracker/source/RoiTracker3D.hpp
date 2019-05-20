@@ -20,7 +20,7 @@ better luck using your package manager to install zlib.
 When building, be sure to include the location of zlib.h and to link to the
 compiled zlib-lib files.
 *********************************************/
-#include "RoiTracker.hpp"
+#include "roiTracker.hpp"
 /********************************************/
 
 #include <splineroot/source/splineroot_mex.hpp>
@@ -83,7 +83,7 @@ namespace extras {namespace ParticleTracking {
 			}
 
 			/*if (!roiList.isfield("X") || !roiList.isfield("Y")) { //X Y not defined, skip
-				
+
 			}*/
 
 			// if no LUT then skip
@@ -129,7 +129,7 @@ namespace extras {namespace ParticleTracking {
 				// Loop over all the LUT and determing the lowest MinR and largest MaxR
 				int maxR = -1;
 				int minR = INT_MAX;
-				MxStruct LUT(roiList(n, "LUT"));
+				MxStruct LUT(roiList(n, "LUT").getmxarray());
 				if (LUT.isfield("MinR")) {
 					for (size_t k = 0; k < LUT.numel(); k++) {
 						minR = std::min(minR, int(double(LUT(k, "MinR"))));
@@ -162,13 +162,13 @@ namespace extras {namespace ParticleTracking {
 
 				roiList(n, "RadialAverage") = imravg;
 				roiList(n, "RadialAverage_rloc") = std::get<1>(radavg_result);
-				
+
 				//////////////////////////
 				// Use splineroot to compute z
 				//
-				// Will add "Z" and other fields to LUT 
+				// Will add "Z" and other fields to LUT
 				if (roiList(n, "LUT").isstruct()) {
-					MxStruct LUT(roiList(n, "LUT"));
+					MxStruct LUT(roiList(n,"LUT").getmxarray());
 
 					// check for pp field
 					if (!LUT.isfield("pp")) {

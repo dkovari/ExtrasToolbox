@@ -35,13 +35,13 @@ namespace extras {namespace async {
 
 		//std::atomic<size_t> _APWW_pushed = 0;
 
-		std::atomic_bool _SaveResults = false; //flag indicating results should be saved
+		std::atomic_bool _SaveResults;// = false; //flag indicating results should be saved
 		extras::mxfile::AsyncMxFileWriter _AsyncWriter; //instance of file writer
 
 		/** Core method called by ProcessLoop() to handle tasks.
 		* This function is responsible for calling ProcessNextTask()
 		* it should return a bool specifying if there are more tasks to process
-		* 
+		*
 		* Unless you know what you are doing, it is not a good idea to redefine this method (even though it is virtual)
 		* The method has been redefined here to include the ability to write the results to a file
 		*/
@@ -52,7 +52,7 @@ namespace extras {namespace async {
 
 				// store result on results list
 				std::lock_guard<std::mutex> rlock(ResultsListMutex);
-				
+
 
 				if (results.size()>0) {
 					//_APWW_pushed++;
@@ -79,6 +79,10 @@ namespace extras {namespace async {
 				_AsyncWriter.cancelRemainingTasks();
 				_AsyncWriter.closeFile();
 			}
+		}
+
+		AsyncProcessorWithWriter(){
+			_SaveResults = false;
 		}
 
 		///////////////////////////////
