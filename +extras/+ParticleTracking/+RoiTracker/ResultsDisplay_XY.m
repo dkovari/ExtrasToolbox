@@ -7,6 +7,16 @@ classdef ResultsDisplay_XY < handle & extras.GraphicsChild & extras.widgets.mixi
         Tracker; %handle to tracker object
     end
     
+    %% internal
+    properties(Access=private)
+        DataPlot;
+        CallbackQueue
+    end
+    
+    %% 
+    properties(SetObservable,AbortSet)
+        MinimumUpdatePeriod = 0.5;
+    end
     %% Create
     methods
         function this = ResultsDisplay_XY(Parent,Tracker)
@@ -25,7 +35,60 @@ classdef ResultsDisplay_XY < handle & extras.GraphicsChild & extras.widgets.mixi
             
             %% set internal props
             this.Tracker = Tracker;
+            
+            %% create scatter plot
+            this.DataPlot = line('XData',NaN,...
+                'YData',NaN,...
+                'Parent',this.Parent,...
+                'LineStyle','none',...
+                'Marker','+',...
+                'Color','r',...
+                'MarkerSize',14);
+            
+            %% associate callback queue
+            this.CallbackQueue = extras.CallbackQueue(); %make queue
+            afterEach(this.CallbackQueue,@(data) this.updatePlot(data)); %set callback for queue
+            this.Tracker.registerQueue(this.CallbackQueue); %associate queue with tracker results
+            
         end
     end
+    
+    %% delete
+    methods
+        function delete(this)
+            delete(this.CallbackQueue)
+            delete(this.DataPlot);
+        end
+    end
+    
+    %% Update Callback
+    methods(Access=private)
+        function updatePlot(this,data)
+            if(~isvalid(this))
+                return;
+            end
+            
+            persistent lastTic;
+            firstTic = false;
+            if isempty(lastTic)
+                lastTic = tic;
+                firstTic = true;
+            end
+            if firstTic || toc(lastTic)>this.MinimumUpdatePeriod
+                if ~iscell(data)
+                    res=data;
+                else
+                    res=data{1};
+                end
 
+                if isempty(res) || ~isfield(res,'roiList') || ~isfield(res.roiList,'CentroidResult')
+                    set(this.DataPlot,'XData',[],'YData',[]);
+                else
+                    cnt = [res.roiList.CentroidResult];
+                    set(this.DataPlot,'XData',[cnt.X],'YData',[cnt.Y]);
+                end
+            end
+            
+        end
+    end
 end
