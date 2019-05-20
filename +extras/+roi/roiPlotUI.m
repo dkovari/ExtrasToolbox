@@ -46,7 +46,6 @@ classdef roiPlotUI < extras.GraphicsChild
             
             iH.parse(varargin{:});
             
-            
             %% Setup Parent Axes
             
             % initiate graphics parent related variables
