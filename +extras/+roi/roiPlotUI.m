@@ -53,7 +53,7 @@ classdef roiPlotUI < extras.GraphicsChild
             this@extras.GraphicsChild('axes');
             %look for parent specified in arguments
             if ~isempty(iH.Results.Parent)
-                this.CheckParentInput(iH.Results.Parent)
+                this.CheckParentInput(iH.Results.Parent);
             else
                 this.CheckParentInput();
             end

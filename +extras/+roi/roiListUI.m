@@ -28,9 +28,15 @@ classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
         % roiListUI(roiManager)
         % roiListUI(Parent,__)
         % roiListUI(__,'Parent',Parent)
+        
+            %% Parse Inputs
+            iH = extras.inputHandler;
+            iH.addOptionalVariable('Parent',[],@(x) isgraphics(x)&&strcmpi(x.Type,'axes'),true);
+            iH.addRequiredVariable('RoiManager',@(RM) isa(RM,'extras.roi.roiManager'),true);
+            
+            iH.parse(varargin{:});
             
             %% Setup Parent
-            
             %initiate graphics parent related variables
             this@extras.GraphicsChild(@() ...
                 figure(...
@@ -41,34 +47,14 @@ classdef roiListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
                     'HandleVisibility','Callback')...
                 );
             %look for parent specified in arguments
-            varargin = this.CheckParentInput(varargin{:});
-            
-            %% Get Manager
-            if isempty(varargin)
-                error('ROI Manager was not specified');
-            end
-            found_manager = false;
-            if isa(varargin{1},'extras.roi.roiManager')
-                found_manager = true;
-                this.Manager = varargin{1};
-                varargin(1) = [];
+            if ~isempty(iH.Results.Parent)
+                this.CheckParentInput(iH.Results.Parent);
+            else
+                this.CheckParentInput();
             end
             
-            if numel(varargin)>1
-                ind = find(strcmpi('Manager',varargin));
-                if numel(ind) > 1
-                    error('Manager specified more than one time');
-                end
-                if found_manager && ~isempty(ind)
-                    error('Manager specified more than one time');
-                end
-                
-                this.Manager = varargin{ind+1};
-                varargin(ind:ind+1) = [];
-                found_manager = true;
-            end
-            
-            assert(found_manager,'ROI Manager was not specified');
+            %% Set manager
+            this.Manager = iH.Results.RoiManager;
             this.ManagerDeleteObserver = addlistener(this.Manager,'ObjectBeingDestroyed',@(~,~) delete(this));
 
             %% Build GUI
