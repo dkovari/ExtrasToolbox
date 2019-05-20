@@ -16,7 +16,7 @@ addOptional(p,'graphicsobj',[],@(x) isscalar(x)&&ishghandle(x));
 addParameter(p,'FigureHandle',[],@(x) isscalar(x)&&isgraphics(x,'figure'));
 addParameter(p,'ImageHandle',[],@(x) isscalar(x)&&isgraphics(x,'image'));
 
-parse(p);
+parse(p,varargin{:});
 
 %% look for inputs
 hImg = [];

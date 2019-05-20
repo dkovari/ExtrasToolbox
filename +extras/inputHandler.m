@@ -37,6 +37,7 @@ classdef inputHandler < handle & matlab.mixin.SetGet
         Parameters %list of all parameter names
         VariableNames %list of all variables and parameters
     end
+    %set/get methods
     methods
         function set.CaseSensitive(this,val)
             this.in_parser.CaseSensitive = val;
@@ -74,9 +75,17 @@ classdef inputHandler < handle & matlab.mixin.SetGet
     
     properties (Access=private)
         variables = struct('Name',{},'DefaultValue',{},'Validator',{},'Required',{},'IncludeAsParameter',{}); %struct listing required and optional variables
-        in_parser = inputParser(); %inputParser used for handling parameters
+        in_parser %inputParser used for handling parameters
     end
     
+    %% create
+    methods
+        function this = inputHandler()
+            this.in_parser = inputParser();
+        end
+    end
+    
+    %% public methods
     methods
         function addRequiredVariable(this,Name,Validator,IncludeAsParameter)
         % Add Required Variable to the list of variables to search for
@@ -269,6 +278,7 @@ classdef inputHandler < handle & matlab.mixin.SetGet
            
             %% Check if we missed something
             if ~isempty(varargin) && ~ischar(varargin{1})
+                class(varargin{1})
                 error('Argument(s) were passed which did not match any of the Optional/Required variables.\nMissing Requirements: %s',ReqNotFound);
             end
             
