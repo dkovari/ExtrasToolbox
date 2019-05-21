@@ -3,7 +3,7 @@ classdef HasValue < handle
     % onValueChange property
     
     properties(SetObservable=true,AbortSet=true)
-        Value
+        Value %Value (could be numerical, string, etc) of the object
     end
     %% Get/set
     methods

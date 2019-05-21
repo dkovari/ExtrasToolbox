@@ -2,14 +2,14 @@ classdef HasValueLimits < extras.widgets.mixin.HasUnconstrainedValue
 % Class for adding limits to a HasValue-class
 
     properties (SetObservable=true,AbortSet=true)
-        Min = [];
-        Max = [];
-        EnforceLimits (1,1) logical = true;
+        Min = []; %min allowed value
+        Max = []; %max allowed value
+        EnforceLimits (1,1) logical = true; %logical indicating if limits should be enforced
     end
     
     properties(Dependent)
-        hasMin;
-        hasMax;
+        hasMin; %logical indicating if Min has been set
+        hasMax; %logical indicating if Max has been set
     end
     
     %% get/set

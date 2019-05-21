@@ -2,7 +2,7 @@ classdef (Abstract) HasLabel < handle & extras.widgets.mixin.AssignNV
     % Helper class for graphical objects which have a label
     
     properties(SetObservable=true,AbortSet=true)
-        Label
+        Label %char array or string specifying label text
     end
     
     properties(Access=protected)

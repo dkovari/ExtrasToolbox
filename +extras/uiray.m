@@ -1,4 +1,4 @@
-classdef uiray < extras.GraphicsChild
+classdef uiray < extras.GraphicsChild & matlab.mixin.SetGet
 %% UIRAY - A draggable ray, fixed at a given origin
 %% Copyright 2019 Daniel T. Kovari, Emory University
 %   All rights reserved.   
