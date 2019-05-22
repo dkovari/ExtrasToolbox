@@ -19,6 +19,9 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
             this@extras.roi.ObjectManager('extras.roi.LUTobject');
             
             addlistener(this,'ManagedObjects','PostSet',@(~,~) this.internal_updateLUT());
+            
+            %% By Default add LUT for self
+            %this.addLUT(extras.roi.LUTobject(this));
         end
     end
     
