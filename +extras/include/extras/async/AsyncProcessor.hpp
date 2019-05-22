@@ -217,15 +217,18 @@ namespace extras{namespace async{
 		}
 
         virtual void cancelRemainingTasks(){
+#ifdef _DEBUG
 			mexPrintf("Trying to cancel tasks...\n");
 			mexEvalString("pause(0.2)");
+#endif
             StopProcessor();
 
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
             TaskList.clear();
-
+#ifdef _DEBUG
             mexPrintf("\t\t Remaining tasks cleared.\n");
             mexEvalString("pause(0.2)");
+#endif
         }
 
         virtual size_t remainingTasks() const {return TaskList.size();}
