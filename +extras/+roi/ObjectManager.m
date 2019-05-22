@@ -146,11 +146,12 @@ classdef (Abstract) ObjectManager < handle
                 this(m).ManagedObjects = setdiff(this(m).ManagedObjects,obj);
                 
                 %% delete objects on the delete list
-                this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
-                del_list = intersect(this(m).DeletableObjects,obj);
-                delete(del_list);
-                this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
-                
+                if ~isempty(this(m).DeletableObjects)
+                    this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
+                    del_list = intersect(this(m).DeletableObjects,obj);
+                    delete(del_list);
+                    this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
+                end
                 
                 %% delete listeners
                 for n=1:numel(obj)

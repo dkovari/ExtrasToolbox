@@ -273,6 +273,8 @@ classdef inputHandler < handle & matlab.mixin.SetGet
                     end 
                 elseif this.variables(n).Required
                     error('No input arguments remaining and Required Variable %s has not been found',this.variables(n).Name);
+                else %varargin is empty but this variable was optional, add to results and using defaults 
+                    VarRes.(this.variables(n).Name) = this.variables(n).DefaultValue;
                 end
             end
            
