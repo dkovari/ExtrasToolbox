@@ -63,6 +63,8 @@ end
 %ShowSlider
 
 %% Create/setup main control
+
+%CT = ControlType
 switch ControlType
     case 'edit'
         %% create/init control
@@ -81,6 +83,9 @@ switch ControlType
         set(this.FieldControl,...
             'Style','edit',...
             'String',this.valueToString);
+        
+        %'here'
+        %valstr = this.valueToString
         this.FieldControlStyle = 'edit';      
     case 'popupmenu'
         %% create/init control

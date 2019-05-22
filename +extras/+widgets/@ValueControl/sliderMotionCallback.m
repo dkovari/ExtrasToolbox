@@ -7,7 +7,14 @@ if ~isvalid(this.Slider)
     return;
 end
 
-[value,idx] = this.closestAllowedValue(this.Slider.PendingValue);
+
+if this.hasAllowed
+
+    [value,idx] = this.closestAllowedValue(this.Slider.PendingValue);
+    
+else
+    value = this.Slider.PendingValue;
+end
 
 %% update field control
 %'edit' 'popupmenu' 'popedit' 'checkbox'
@@ -15,8 +22,10 @@ switch this.FieldControlStyle
     case 'edit'
         this.FieldControl.String = num2str(value);
     case 'popupmenu'
-        %% value index
-        this.FieldControl.Value = idx;
+        if this.hasAllowed
+            %% value index
+            this.FieldControl.Value = idx;
+        end
         
     case 'popedit'
         this.FieldControl.Value = num2str(value);
