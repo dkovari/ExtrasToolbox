@@ -26,6 +26,9 @@ compiled zlib-lib files.
 #include <splineroot/source/splineroot_mex.hpp>
 #include <imradialavg/source/imradialavg_mex.hpp>
 
+//#include <regex>
+//#include <tinyexpr/tinyexpr.h> //used for expression evaluating in processing loop
+
 namespace extras {namespace ParticleTracking {
 
 	/** RoiTracker for 3D Tracking using splineroot LUT search
@@ -125,30 +128,44 @@ namespace extras {namespace ParticleTracking {
 					throw(stacktrace_error(std::string("RoiTracker3D::ProcessTask(): ROI n=") + std::to_string(n) + "LUT Field is not a struct."));
 				}
 
+				MxStruct LUT_list(roiList(n, "LUT").getmxarray()); //Struct List of LUT
+
+				if (!LUT_list.isfield("IsCalibrated")) {
+					throw(extras::stacktrace_error(std::string("RoiTracker3D::ProcessTracking(): ROI n=") + std::to_string(n)
+						+ "\nLUT Does not Contain IsCalibrated Field"
+					));
+				}
+
 				////////////
 				// Loop over all the LUT and determing the lowest MinR and largest MaxR
 				int maxR = -1;
 				int minR = INT_MAX;
-				MxStruct LUT(roiList(n, "LUT").getmxarray());
-				if (LUT.isfield("MinR")) {
-					for (size_t k = 0; k < LUT.numel(); k++) {
-						minR = std::min(minR, int(double(LUT(k, "MinR"))));
+				bool none_calibrated = true;
+				for (size_t k = 0; k < LUT_list.numel(); k++) { //loop over LUT
+					if ((bool)LUT_list(k, "IsCalibrated")) {
+						none_calibrated = false;
+						minR = std::min(minR, int(double(LUT_list(k, "MinR"))));
+						maxR = std::max(maxR, int(double(LUT_list(k, "MaxR"))));
 					}
-				}
-				else {//minR not defined in structs just use 0
-					minR = 0;
 				}
 
-				if (LUT.isfield("MaxR")) {
-					for (size_t k = 0; k < LUT.numel(); k++) {
-						double thisMaxR = LUT(k, "MaxR");
-						if (!isfinite(thisMaxR)) {
-							throw(std::runtime_error(std::string("RoiTracker3D::ProcessTracking(): ROI n=") + std::to_string(n)
-								+ std::string(" LUT[") + std::to_string(k) + std::string("] MaxR is not finite")));
-						}
-						maxR = std::max(maxR, int(double(LUT(k, "MaxR"))));
-					}
+				if (none_calibrated) { //none of the lut are calibrated, continue to next roi
+					continue;
 				}
+
+				/*if (!isfinite(minR)) {
+					throw(extras::stacktrace_error(std::string("RoiTracker3D::ProcessTracking(): ROI n=") + std::to_string(n)
+						+ std::string("\minR is not finite\n")
+						+ std::string("minR: ") + std::to_string(minR)
+					));
+				}
+
+				if (!isfinite(maxR)) {
+					throw(extras::stacktrace_error(std::string("RoiTracker3D::ProcessTracking(): ROI n=") + std::to_string(n)
+						+ std::string("\maxR is not finite\n")
+						+ std::string("maxR: ") + std::to_string(maxR)
+					));
+				}*/
 
 				// check minR & maxR are ok
 				if (minR > maxR) {
@@ -163,108 +180,152 @@ namespace extras {namespace ParticleTracking {
 				roiList(n, "RadialAverage") = imravg;
 				roiList(n, "RadialAverage_rloc") = std::get<1>(radavg_result);
 
-				//////////////////////////
+				////////////////////////////////////////////////////////////////////////////
 				// Use splineroot to compute z
 				//
 				// Will add "Z" and other fields to LUT
-				if (roiList(n, "LUT").isstruct()) {
-					MxStruct LUT(roiList(n,"LUT").getmxarray());
 
-					// check for pp field
-					if (!LUT.isfield("pp")) {
-						throw("RoiTracker3D::ProcessTask(): LUT struct does not contain 'pp' field");
+				/////////////
+				// Validate Fields & Parameters
+				// check for pp field
+				if (!LUT_list.isfield("pp")) {
+					throw("RoiTracker3D::ProcessTask(): LUT struct does not contain 'pp' field");
+				}
+
+				//Default slineroot parameters
+				double TOL = 0.001;
+				if (Params->isparameter("splineroot_TOL")) {
+					TOL = mxGetScalar(Params->operator[]("splineroot_TOL"));
+				}
+				double minStep = 20 * DBL_EPSILON;
+				if (Params->isparameter("splineroot_minStep")) {
+					minStep = mxGetScalar(Params->operator[]("splineroot_minStep"));
+				}
+				size_t maxItr = 10000;
+				if (Params->isparameter("splineroot_maxItr")) {
+					maxItr = mxGetScalar(Params->operator[]("splineroot_maxItr"));
+				}
+				double minR2frac = 0;// 0.00001;
+				if (Params->isparameter("splineroot_minR2frac")) {
+					minR2frac = mxGetScalar(Params->operator[]("splineroot_minR2frac"));
+				}
+				double MaxR2 = INFINITY;
+				if (Params->isparameter("splineroot_MaxR2")) {
+					minR2frac = mxGetScalar(Params->operator[]("splineroot_MaxR2"));
+				}
+
+				/////////////
+				// Loop over LUT and compute
+				for (size_t k = 0; k < LUT_list.numel(); k++) {
+					if (!(bool)LUT_list(k, "IsCalibrated")) { //lut not calibrated, continue
+						continue;
+					}
+					spline pp;
+					if (createspline(&pp, LUT_list(k, "pp"))<0) {
+						throw(extras::stacktrace_error(std::string("ROI:") + std::to_string(n)
+							+ std::string(" LUT:") + std::to_string(k)
+							+ std::string("\npp not a valid spline")));
 					}
 
-					//Default slineroot parameters
-					double TOL = 0.001;
-					if (Params->isparameter("splineroot_TOL")) {
-						TOL = mxGetScalar(Params->operator[]("splineroot_TOL"));
+					spline dpp;
+					bool free_dpp = false;
+					char * dpp_calc = nullptr; //array noting which breaks of dpp have been calculated
+					if (LUT_list.isfield("dpp")) {
+						if (createspline(&dpp, LUT_list(k, "dpp"))<0) {
+							throw(extras::stacktrace_error(std::string("ROI:") + std::to_string(n)
+								+ std::string(" LUT:") + std::to_string(k)
+								+ std::string("dpp not a valid spline")));
+						}
+						//set calc flag for all dpp coefs
+						dpp_calc = (char*)malloc((dpp.nBreaks - 1) * sizeof(char));
+						memset(dpp_calc, 1, dpp.nBreaks - 1);
 					}
-					double minStep = 20 * DBL_EPSILON;
-					if (Params->isparameter("splineroot_minStep")) {
-						minStep = mxGetScalar(Params->operator[]("splineroot_minStep"));
+					else { //no dpp, need to create one
+						dpp.dim = pp.dim;
+						dpp.order = pp.order - 1;
+						dpp.nBreaks = pp.nBreaks;
+						dpp.breaks = pp.breaks;
+						dpp.stride = (dpp.nBreaks - 1)*dpp.dim;
+						dpp.coefs = (double*)malloc(dpp.stride*dpp.order * sizeof(double));
+						free_dpp = true;
+
+						//set calc flag for all dpp coefs to false
+						dpp_calc = (char*)calloc((dpp.nBreaks - 1), sizeof(char));
 					}
-					size_t maxItr = 10000;
-					if (Params->isparameter("splineroot_maxItr")) {
-						maxItr = mxGetScalar(Params->operator[]("splineroot_maxItr"));
+
+					/// Output variables
+					double Z;
+					double varZ;
+					size_t nItr;
+					double s;
+					double R2;
+					double dR2frac;
+					double initR2;
+
+					//////////
+					// Normalize and find root
+					if (LUT_list.isfield("NormalizeProfileData") && (bool)LUT_list(k, "NormalizeProfileData")) { //need to normalize
+
+						size_t start_index = (double)LUT_list(k, "MinR") - minR; //starting index in imravg
+						size_t dat_len = (double)LUT_list(k, "MaxR") - (double)LUT_list(k, "MinR") + 1;
+
+						size_t norm_start = (double)LUT_list(k, "NormalizeProfileStartIndex") + start_index - 1;
+						size_t norm_end = (double)LUT_list(k, "NormalizeProfileEndIndex") + start_index - 1;
+
+
+						// compute avg over range
+						double avg = 0;
+						for (size_t jj = norm_start; jj <= norm_end; jj++) {
+							avg += imravg.getdata()[jj];
+						}
+						avg /= (norm_end - norm_start + 1);
+						std::vector<double> imr(dat_len);
+						for (size_t jj = 0; jj < dat_len; jj++) {
+							imr[jj] = imravg.getdata()[start_index + jj] / avg;
+						}
+
+						Z = splineroot(imr.data(),
+							pp, dpp, dpp_calc,
+							&varZ, pow(TOL, 2),
+							maxItr, minStep, minR2frac, MaxR2,
+							&nItr, &s, &R2, &dR2frac, &initR2);
+
 					}
-					double minR2frac = 0;// 0.00001;
-					if (Params->isparameter("splineroot_minR2frac")) {
-						minR2frac = mxGetScalar(Params->operator[]("splineroot_minR2frac"));
+					else { //nothing needed, just process
+						size_t start_index = (double)LUT_list(k, "MinR") - minR; //starting index in imravg
+						const double* imr = &(imravg.getdata()[start_index]); //pointer to start of imravg data
+
+						Z = splineroot(imr,
+							pp, dpp, dpp_calc,
+							&varZ, pow(TOL, 2),
+							maxItr, minStep, minR2frac, MaxR2,
+							&nItr, &s, &R2, &dR2frac, &initR2);
+
 					}
-					double MaxR2 = INFINITY;
-					if (Params->isparameter("splineroot_MaxR2")) {
-						minR2frac = mxGetScalar(Params->operator[]("splineroot_MaxR2"));
-					}
+
+
 
 					/////////////
-					// Loop over LUT and compute
-					for (size_t k = 0; k < LUT.numel(); k++) {
-						spline pp;
-						if (createspline(&pp, LUT(k,"pp"))<0) {
-							throw(std::runtime_error(std::string("ROI:") + std::to_string(n)
-								+ std::string(" LUT:") + std::to_string(k)
-								+ std::string("pp not a valid spline")));
-						}
+					//set output fields
+					MxStruct lutRes(1, { "Z","varZ","nItr","s","R2","dR2frac","initR2" });
 
-						spline dpp;
-						bool free_dpp = false;
-						char * dpp_calc = nullptr; //array noting which breaks of dpp have been calculated
-						if (LUT.isfield("dpp")) {
-							if (createspline(&dpp, LUT(k, "dpp"))<0) {
-								throw(std::runtime_error(std::string("ROI:") + std::to_string(n)
-									+ std::string(" LUT:") + std::to_string(k)
-									+ std::string("dpp not a valid spline")));
-							}
-							//set calc flag for all dpp coefs
-							dpp_calc = (char*)malloc((dpp.nBreaks - 1) * sizeof(char));
-							memset(dpp_calc, 1, dpp.nBreaks - 1);
-						}
-						else { //no dpp, need to create one
-							dpp.dim = pp.dim;
-							dpp.order = pp.order - 1;
-							dpp.nBreaks = pp.nBreaks;
-							dpp.breaks = pp.breaks;
-							dpp.stride = (dpp.nBreaks - 1)*dpp.dim;
-							dpp.coefs = (double*)malloc(dpp.stride*dpp.order * sizeof(double));
-							free_dpp = true;
+					lutRes(0, "Z") = Z;
+					lutRes(0, "varZ") = varZ;
+					lutRes(0, "nItr") = nItr;
+					lutRes(0, "s") = s;
+					lutRes(0, "R2") = R2;
+					lutRes(0, "dR2frac") = dR2frac;
+					lutRes(0, "initR2") = initR2;
 
-							//set calc flag for all dpp coefs to false
-							dpp_calc = (char*)calloc((dpp.nBreaks - 1), sizeof(char));
-						}
+					LUT_list(k, "DepthResult") = lutRes.releaseArray();
 
-						/// Output variables
-						double Z;
-						double varZ;
-						size_t nItr;
-						double s;
-						double R2;
-						double dR2frac;
-						double initR2;
-
-						Z = splineroot(imravg.getdata(), pp, dpp, dpp_calc, &varZ, pow(TOL, 2), maxItr, minStep, minR2frac, MaxR2, &nItr, &s, &R2, &dR2frac, &initR2);
-
-						/////////////
-						//set output fields
-						MxStruct lutRes(1, { "Z","varZ","nItr","s","R2","dR2frac","initR2" });
-
-						lutRes(0, "Z") = Z;
-						lutRes(0, "varZ") = varZ;
-						lutRes(0, "nItr") = nItr;
-						lutRes(0, "s") = s;
-						lutRes(0, "R2") = R2;
-						lutRes(0, "dR2frac") = dR2frac;
-						lutRes(0, "initR2") = initR2;
-
-						LUT(k, "DepthResult") = lutRes.releaseArray();
-
-						//cleanup dpp arrays
-						free(dpp_calc);
-						if (free_dpp) {
-							free(dpp.coefs);
-						}
+					//cleanup dpp arrays
+					free(dpp_calc);
+					if (free_dpp) {
+						free(dpp.coefs);
 					}
 				}
+	
 			}
 
 			/////////////////

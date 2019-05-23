@@ -1,6 +1,14 @@
 classdef HasScalarLimits < extras.widgets.mixin.HasValueLimits
     %has scalar value, with scalar value limits
     
+    properties(Dependent)
+        Limits %alias to [Min,Max]
+    end
+    methods
+        function l = get.Limits(this)
+            l = [this.Min,this.Max];
+        end
+    end
     properties(Access=private)
         HasScalarLimits_IsConstructed = false;
     end

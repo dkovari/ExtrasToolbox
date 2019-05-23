@@ -19,6 +19,4 @@ classdef (Abstract) ObjectiveScanner < extras.hardware.TargetValueDevice
     events
         PropertiesChanged %forwards notification about property changes
     end
-    
-
 end

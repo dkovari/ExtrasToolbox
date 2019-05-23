@@ -76,7 +76,7 @@ namespace extras {namespace cmex {
 
 			if (!mxIsNumeric(pA) || !mxIsScalar(pA)) {
 				throw(extras::stacktrace_error(
-					std::string("FieldWrapper::double(): cannot cast non-numeric or non-scalar to double.\nType: ")
+					std::string("MxWrapper::double(): cannot cast non-numeric or non-scalar to double.\nType: ")
 					+ mxGetClassName(pA)
 					+ std::string(" numel:")
 					+ std::to_string(mxGetNumberOfElements(pA))));
@@ -85,6 +85,27 @@ namespace extras {namespace cmex {
 		}
 		operator std::string() const {
 			return getstring(internalGet());
+		}
+
+		/** Cast to bool
+		*/
+		operator bool() const {
+			const mxArray* pA = internalGet();
+			if (!mxIsScalar(pA)) {
+				throw(extras::stacktrace_error(
+					std::string("MxWrapper::bool(): cannot cast non-scalar to bool.\nType: ")
+					+ mxGetClassName(pA)
+					+ std::string(" numel:")
+					+ std::to_string(mxGetNumberOfElements(pA))));
+			}
+			if (!mxIsNumeric(pA) && !mxIsLogical(pA)) {
+				throw(extras::stacktrace_error(
+					std::string("MxWrapper::bool(): cannot cast non-numeric or non-logical to bool.\nType: ")
+					+ mxGetClassName(pA)
+					+ std::string(" numel:")
+					+ std::to_string(mxGetNumberOfElements(pA))));
+			}
+			return (bool)mxGetScalar(pA);
 		}
 
 		////////////////////

@@ -2,7 +2,9 @@ classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & 
 % Generic Class for devices which have a "Target" set point & actual "Value"
 %
 %% Copyright 2019 Daniel T. Kovari, Emory University
-%   All rights reserved.     
+%   All rights reserved.
+
+    %% Abstract Properties
     properties (Abstract=true,SetAccess=protected,SetObservable=true,AbortSet=true)
         Value;
     end
@@ -10,18 +12,16 @@ classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & 
         Target;
     end
     
+    %% Non-Abstract Props
     properties (SetAccess=protected,SetObservable=true,AbortSet=true)
         UpdatedAfterTargetChange;
     end
-    
-
     properties (SetAccess=protected, SetObservable=true, AbortSet = true)
         Units = '';
         Limits = [-Inf,Inf];
         ValueSize = [1,1];
         ValueLabels = '';
     end
-    
     methods
         function set.Limits(this,val)
             
@@ -44,7 +44,24 @@ classdef TargetValueDevice < matlab.mixin.SetGet & matlab.mixin.Heterogeneous & 
             
             this.Limits = val;
         end
-        
+    end
+    
+    %% UI Factory, optionally overloadable
+    methods
+        function GUI_Obj = createUI(this,varargin)
+        % Factory method which creates UI for controlling device
+        % Syntax:
+        %   this: calling class
+        %   varargin: optionally forward arguments to UI constructor
+        %
+        % Unless you overload this method, it will return a
+        % extras.hardware.TargetValueDeviceUI object.
+            GUI_Obj = extras.hardware.TargetValueDeviceUI(varargin{:},'Device',this);
+        end
+    end
+    
+    %% MISC Public Methods
+    methods
         function S = struct(this)
         %convert public properties inherited from TargetValueDevice Class into struct
             S = struct('Value',{this.Value},'Target',{this.Target},'Units',{this.Units},'Limits',{this.Limits},'ValueLabels',{this.ValueLabels});
