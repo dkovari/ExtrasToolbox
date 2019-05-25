@@ -16,6 +16,7 @@ All rights reserved.
 #include <extras/cmex/NumericArray.hpp>
 #include <radialcenter/source/radialcenter.hpp>
 #include <barycenter/source/barycenter_mex.hpp>
+#include <extras/MatlabTime.hpp>
 
 
 
@@ -63,18 +64,24 @@ namespace extras { namespace ParticleTracking {
 
 			// Get Image
 			const mxArray* img = nullptr;
-			const mxArray* time = nullptr;
+			double time = NAN;
 			if (mxIsStruct(TaskArgs.getConstArray(0))) {
 				img = mxGetField(TaskArgs.getConstArray(0), 0, "ImageData");
-				time = mxGetField(TaskArgs.getConstArray(0), 0, "Time");
+				time = mxGetScalar(mxGetField(TaskArgs.getConstArray(0), 0, "Time"));
 			}
 			else {
 				img = TaskArgs.getConstArray(0);
+				time = extras::matlab_now();
 			}
+
+
 
 			//Copy Parameter Map into resultStruct
 			MxStruct resultsStruct = ParamMap->map2struct();
 			resultsStruct.makePersistent(); //make resultStruct persistent so that we don't have issued being in a thread
+
+			// add timestamp
+			resultsStruct(0, "Time") = time;
 
 			// if include image, add to struct
 			if (_IncludeImageInResults) {
