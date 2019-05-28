@@ -7,6 +7,7 @@ classdef LUTobject < handle
 
     %% Properties
     properties (AbortSet,SetObservable,SetAccess=protected)
+        ParentROI = extras.roi.roiObject3D.empty(); %(optional) ROI which contains this LUT
         UUID %unique identifier indicating the particle being tracked
         pp %spline of defining lut
         dpp %first derivative of spline
@@ -82,59 +83,69 @@ classdef LUTobject < handle
         %   LUTobject(): create LUT object with none of the fields set
         %   LUTobject(roiObject): create LUT with UUID equal to the UUID
         %                         for the roiObject(s)
-        %   LUTobject(__,'UUID',uuid,'MinR',mnr,'MaxR',mxr,...)           
-
-            %% setup UUID MaxR and MinR 
-            if nargin>0
-                p = inputParser;
-                addParameter(p,'MinR',[]);
-                addParameter(p,'MaxR',[]);
-                need_uuid = true;
-                if isa(varargin{1},'extras.roi.roiObject3D') %use specfied roiObjects for uuid
-                    UUID = {varargin{1}.UUID};
-                    varargin(1) = [];
-                    need_uuid=false;
+        %   LUTobject(__,'UUID',uuid,'MinR',mnr,'MaxR',mxr,...)
+        
+        
+            %% Handle Inputs
+            if nargin<1 %no inputs, create un-initialized LUT
+                return
+            end
+                
+            iH = extras.inputHandler;
+            iH.addOptionalVariable('SourceROI',extras.roi.roiObject3D.empty(),@(x) isa(x,'extras.roi.roiObject3D'),false);
+            iH.addParameter('UUID','',@(x) ischar(x)||iscellstr(x));
+            iH.addParameter('MinR',NaN,@(x) isnumeric(x));
+            iH.addParameter('MaxR',NaN,@(x) isnumeric(x));
+            iH.addParameter('ParentROI',extras.roi.roiObject3D.empty(),@(x) isa(x,'extras.roi.roiObject3D'));
+            
+            iH.parse(varargin{:});
+            
+            %% set UUID
+            if ~isempty(iH.Results.SourceROI)
+                numCreate = numel(iH.Results.SourceROI);
+                for n=numCreate:-1:1
+                    this(n).UUID = iH.Results.SourceROI(n).UUID;
+                end                
+            else
+                if iscell(iH.Results.UUID)
+                    numCreate = numel(iH.Results.UUID);
+                    for n=numCreate:-1:1
+                        this(n).UUID = iH.Results.UUID{n};
+                    end
                 else
-                    addParameter(p,'UUID',{});
+                    numCreate = 1;
+                    this.UUID = iH.Results.UUID;
                 end
-                
-                parse(p,varargin{:});
-                
-                if need_uuid
-                    UUID = p.Results.UUID;
+            end
+            
+            %% min/max r
+            for n=numCreate:-1:1
+                if isscalar(iH.Results.MinR)
+                    this(n).MinR = iH.Results.MinR;
+                else
+                    assert(numCreate==numel(iH.Results.MinR),'numel(MinR) must match number of UUID or RoiObjects specified');
+                    this(n).MinR = iH.Results.MinR(n);
                 end
-                
-                assert(~isempty(UUID),'Must specify roiObjects or UUID');
-                
-                MinR = p.Results.MinR;
-                
-                if isempty(MinR)
-                    MinR = NaN;
+            end
+            
+            for n=numCreate:-1:1
+                if isscalar(iH.Results.MaxR)
+                    this(n).MaxR = iH.Results.MaxR;
+                else
+                    assert(numCreate==numel(iH.Results.MaxR),'numel(MaxR) must match number of UUID or RoiObjects specified');
+                    this(n).MaxR = iH.Results.MaxR(n);
                 end
-                
-                MaxR = p.Results.MaxR;
-                if isempty(MaxR)
-                    MaxR = NaN;
+            end
+           
+            
+            %% ParentROI
+            for n=numCreate:-1:1
+                if numel(iH.Results.ParentROI)<=1
+                    this(n).ParentROI = iH.Results.ParentROI;
+                else
+                    assert(numCreate==numel(iH.Results.ParentROI),'numel(ParentROI) must match number of UUID or source RoiObjects specified');
+                    this(n).ParentROI = iH.Results.ParentROI(n);
                 end
-                
-                assert(numel(MinR)==numel(UUID)||numel(MinR)==1);
-                assert(numel(MaxR)==numel(UUID)||numel(MaxR)==1);
-                
-                if numel(MinR) == 1
-                    MinR = repmat(MinR,size(UUID));
-                end 
-                
-                if numel(MaxR) == 1
-                    MaxR = repmat(MaxR,size(UUID));
-                end
-                
-                % set the parameters
-                for n=numel(UUID):-1:1
-                    this(n).UUID = UUID{n};
-                    this(n).MinR = MinR(n);
-                    this(n).MaxR = MaxR(n);
-                end
-
             end
             
             %% setup listeners
@@ -144,6 +155,26 @@ classdef LUTobject < handle
             %addlistener(this,'MinR','PostSet',@(~,~) notify(this,'PropertyChanged'));
             %addlistener(this,'MaxR','PostSet',@(~,~) notify(this,'PropertyChanged'));
             
+        end
+    end
+    
+    %% Set ParentROI
+    methods (Access={?extras.roi.LUTobject, ?extras.roi.roiObject3D})
+        function setParentROI(this,roi)
+            %setParentROI onlt accessible by roiObject3D
+            assert(numel(roi)<=1||numel(roi)==numel(this),'Number of ROI must match numel(this)');
+            assert(isa(roi,'extras.roi.roiObject3D'),'roi must be roiObject3D');
+            for n = 1:numel(this)
+                if ~isempty(this(n).ParentROI
+                    warning('ParentROI is already set, will not change parent');
+                    continue;
+                end
+                if numel(roi)<=1
+                    this(n).ParentROI = roi;
+                else
+                    this(n).ParentROI = roi(n);
+                end
+            end
         end
     end
     
@@ -166,6 +197,14 @@ classdef LUTobject < handle
                 'NormalizeProfileData',{this.NormalizeProfileData},...
                 'NormalizeProfileStartIndex',{this.NormalizeProfileStartIndex},...
                 'NormalizeProfileEndIndex',{this.NormalizeProfileEndIndex});
+            
+            for n=1:numel(this)
+                if ~isempty(this(n).ParentROI)
+                    s(n).ParentROI = struct('UUID',this(n).ParentROI.UUID);
+                else
+                     s(n).ParentROI = struct('UUID',{});
+                end
+            end
         end
         
         function createLUT(this,Z,profiles,r_coords)

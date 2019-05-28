@@ -242,7 +242,7 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
     end
     
     %% internal helper methods
-    methods(Access=private)
+    methods(Access=protected)
         function UpdateList(this)
             this.jTab_lutList.Data = this.lut2cell();
         end

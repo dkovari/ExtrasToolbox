@@ -22,51 +22,32 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
         LUT_MinR_Listener
         LUT_MaxR_Listener
         LUT_pp_Listener
-        hAx_R_Profile
-        hAx_Spline
-        hAx_Z_Profile
+    end
+    %% axes
+    properties(Access=protected)
+        hAx_R_Profile % axes with intensity vs radial position
+        hAx_Spline %axes with image of spline LUT
+        hAx_Z_Profile %axes with intensity vs z position
     end
     
     %% constructor
     methods
         function this = lutViewer(varargin)
+            %Syntax:
+            %   lutViewer(LUT)
+            %   lutViewer(parent,LUT)
+            %   lutViewer('Parent',par,'LUT',lut);
             
-            %% Parse Inputs
-            found_parent = false;
-            found_lut = false;
-            Parent = gobjects(0);
-                LUT = extras.roi.LUTobject.empty();
-            if nargin>0
-                if isgraphics(varargin{1})
-                    found_parent = true;
-                    Parent = varargin{1};
-                    varargin(1) = [];
-                end
-                if isa(varargin{1},'extras.roi.LUTobject')
-                    found_lut = true;
-                    LUT = varargin{1};
-                    varargin(1) = [];
-                end
-            end
-                
+            %% handle inputs
+            iH = extras.inputHandler();
+            iH.addOptionalVariable('Parent',[],@(x) isempty(x)||all(isgraphics(x)&isvalid(x)),true);
+            iH.addRequiredVariable('LUT',@(x) all(isa(x,'extras.roi.LUTobject')),true);
             
+            iH.parse(varargin{:});
             
-            p = inputParser;
-            p.addParameter('Parent',gobjects(0),@isgraphics);
-            p.addParameter('LUT',extras.roi.LUTobject.empty(),@(x) isa(x,'extras.roi.LUTobject'));
-            
-            p.parse(varargin{:});
-            
-            if found_parent && ~ismember('Parent',p.UsingDefaults)
-                error('Parent specified twice.')
-            end
-            
-            if found_lut && ~ismember('LUT',p.UsingDefaults)
-                error('LUT specified twice.')
-            end
-            
-            Parent = [Parent,p.Results.Parent];
-            LUT = [LUT,p.Results.LUT];
+            %% input vars
+            Parent = iH.Results.Parent;
+            LUT = iH.Results.LUT;
             
             %% initial setup
             this@extras.widgets.mixin.ObjectDependentLifetime(LUT,'ConstructMultiple');

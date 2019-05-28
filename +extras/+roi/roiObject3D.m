@@ -74,8 +74,20 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
                 s(n).LUT = this(n).LUT.toStruct();
             end
         end
-        function addLUT(this,LUT)
+        function addLUT(this,LUT,varargin)
+        % add LUT object to list
+        % Syntax:
+        %   this.addLUT(): add empty LUT
+        %   this.addLUT(LUT): add LUT object to list
+        
+            
+            if nargin<2||~isa(LUT,'extras.roi.LUTobject')
+                LUT = extras.roi.LUTobject(LUT,varargin{:});
+            end
+            
             newobj=addObjects(this,LUT);
+            setParentROI(LUT,this);
+            
             this.LutPropListeners = [this.LutPropListeners, addlistener(newobj,'PropertyChanged',@(h,e) notify(this,'LUTChanged',extras.GenericEvent('LUT',h)))]; %create listener which forwards changes made to LUTs in the lut list
             this.LutDestroyListeners = [this.LutDestroyListeners,addlistener(newobj,'ObjectBeingDestroyed',@(h,e) notify(this,'LUTChanged',extras.GenericEvent('LUT',h)))];
         end

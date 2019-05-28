@@ -40,7 +40,7 @@ classdef ContextGenerator3D < extras.roi.ContextGenerator
     end
     
     %% Callbacks
-    methods(Access=private)
+    methods(Access=protected)
         function showLUTList(this)
             extras.roi.lutListUI(this.RoiObject,this.RoiManager);
         end

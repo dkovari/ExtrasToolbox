@@ -43,7 +43,7 @@ classdef ResultsDisplay_XY < handle & extras.GraphicsChild & extras.widgets.mixi
             
             %% Parse Inputs
             iH = extras.inputHandler;
-            iH.addOptionalVariable('Parent',[],@(x) isgraphics(x)&&strcmpi(x.Type,'axes') || isa(x,'CameraToolbox.Display'),true);
+            iH.addOptionalVariable('Parent',[],@(x) isgraphics(x)&&strcmpi(x.Type,'axes') || isa(x,'CameraToolbox.Display')||isempty(x),true);
             iH.addRequiredVariable('Tracker',@(x) isa(x,'extras.ParticleTracking.RoiTracker.RoiTracker'),true);
             iH.addParameter('CameraDisplay',CameraToolbox.Display.empty(),@(x) isa(x,'CameraToolbox.Display'));
             
@@ -106,16 +106,21 @@ classdef ResultsDisplay_XY < handle & extras.GraphicsChild & extras.widgets.mixi
     %% Update Callback
     methods(Access=private)
         function updatePlot(this,data)
+            
+            %% check still valid
             if(~isvalid(this))
                 return;
             end
             
+            %% setup tic
             persistent lastTic;
             firstTic = false;
             if isempty(lastTic)
                 lastTic = tic;
                 firstTic = true;
             end
+            
+            %% update plots if enought time elapsed, or using CameraDisplay timestamp
             if firstTic || toc(lastTic)>this.MinimumUpdatePeriod ||~isempty(this.CameraDisplay)
                 
                 if ~iscell(data)
