@@ -133,7 +133,7 @@ classdef DraggableLine < extras.GraphicsChild
         end
     end
     
-    properties (Access=protected)
+    properties (Hidden,SetAccess=protected)
         LineHandle
         DragAxis = 'X'
         

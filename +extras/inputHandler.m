@@ -245,11 +245,16 @@ classdef inputHandler < handle & matlab.mixin.SetGet
             
             %% loop over optional and required variables
             for n=1:numel(this.variables)
+               % 'working on'
+                %var_name = this.variables(n).Name
                 if ~isempty(varargin()) %there are variables to process
                     
                     %% Investigate varargin{1}
                     if ~this.variables(n).Required %optional
                         if this.variables(n).Validator(varargin{1}) %passes validator
+                            %'found optional'
+                            %var_name
+                            
                             VarRes.(this.variables(n).Name) = varargin{1};
                             varargin(1)= []; %clear from varargin list
                             OptNotFound = setdiff(OptNotFound,this.variables(n).Name);
@@ -261,6 +266,9 @@ classdef inputHandler < handle & matlab.mixin.SetGet
                         end
                     else %required
                         if this.variables(n).Validator(varargin{1}) %passes validator
+                            %'found req'
+                            %var_name
+                            
                             VarRes.(this.variables(n).Name) = varargin{1};
                             varargin(1)= []; %clear from varargin list
                             ReqNotFound = setdiff(ReqNotFound,this.variables(n).Name);
@@ -280,12 +288,19 @@ classdef inputHandler < handle & matlab.mixin.SetGet
            
             %% Check if we missed something
             if ~isempty(varargin) && ~ischar(varargin{1})
-                class(varargin{1})
-                error('Argument(s) were passed which did not match any of the Optional/Required variables.\nMissing Requirements: %s',ReqNotFound);
+                sprintf('Arg1: class=%s\n',class(varargin{1}));
+                disp('Missing Required:');
+                disp(ReqNotFound);
+                disp('Missing Optional:');
+                disp(OptNotFound);
+                error('Argument(s) were passed which did not match any of the Optional/Required variables.');
             end
             
             %% Use Input Parser to check for remaining arguments
             parse(this_parser,varargin{:});
+            
+            % set unmatched
+            this.Unmatched = this_parser.Unmatched;
 
             Parse_Results = this_parser.Results;
             Parse_UsingDefaults = this_parser.UsingDefaults;
@@ -309,9 +324,7 @@ classdef inputHandler < handle & matlab.mixin.SetGet
                 VarRes.(fn{n}) = Parse_Results.(fn{n});
             end
             this.Results = VarRes;
-            
-            this.Unmatched = this.in_parser.Unmatched;
-            
+
             %% Check to see if Required variables have not been found
             if ~isempty(this.RequiredNotFound)
                 error('Did not find required arguments: %s',this.RequiredNotFound);

@@ -157,7 +157,7 @@ classdef roiManager < handle & extras.roi.ObjectManager
             
             if ~isempty(ind)
                 notify(this,'roiValueChanged');
-                noitfy(this,'RemovedROI');
+                notify(this,'RemovedROI');
             end
             
         end

@@ -221,7 +221,6 @@ classdef GraphicsChild < matlab.mixin.SetGet
             this.Parent = parent;
             this.CreatedParent = false;
             
-            
             this.ParentDeleteListener =addlistener(this.Parent,'ObjectBeingDestroyed',@(~,~) delete(this));
             
             %execute ChangeParent function

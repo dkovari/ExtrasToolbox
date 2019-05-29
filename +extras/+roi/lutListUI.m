@@ -1,14 +1,40 @@
-classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extras.RequireGuiLayoutToolbox & extras.widgets.mixin.ObjectDependentLifetime
-% Generate ui for managing LUT used by roiObject3D
+classdef lutListUI < extras.GraphicsChild & ...
+        extras.RequireWidgetsToolbox & ...
+        extras.RequireGuiLayoutToolbox & ...
+        extras.widgets.mixin.ObjectDependentLifetime & ...
+         extras.widgets.mixin.AssignNV
+% Generate UI for managing LUT used by roiObject3D
+%
+% Construction Options:
+%   LutDisplayConstructorFcn = @(lut) ...
+%       You can specify a function to call when generating the display for
+%       an LUT.
+%       The default is
+%               @(luts) extras.roi.lutViewer(luts)
+%       howevever, you may want to use a different display system.
+%
+%       For example, you can use the a RoiTracker Display:
+%       obj.LutDisplayConstructorFcn = @(lut) ...
+%       extras.ParticleTracking.RoiTracker.ResultsDisplay_LUT('LUT',lut,...
+%                                                 'Tracker',YOUR_TRACKER);
+%       
+%       See extras.roi.lutViewer() and extras...ResultsDisplay_LUT() for
+%       more options.
+%
 %% Copyright 2019 Daniel T. Kovari, Emory University
 %   All rights reserved.
 
-    %% 
+    %% LUTDisplayConstructor
+    properties (SetObservable,AbortSet)
+        LutDisplayConstructorFcn (1,1) function_handle = @(luts) extras.roi.lutViewer(luts); %function handle executed when creating LUT display, should expect a single argument holding array of LUT to display
+    end
+    
+    %% RoiObject List
     properties (Access=protected)
         RoiObject = extras.roi.roiObject3D.empty();
     end
     
-    %%
+    %% RoiManager
     properties(SetObservable,AbortSet)
         RoiManager = extras.roi.roiManager.empty();
     end
@@ -59,6 +85,20 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             %   'RoiObject'
             %   'RoiManager'
             
+            %% handle Inputs
+            iH = extras.inputHandler();
+            iH.KeepUnmatched = true;
+            
+            iH.addOptionalVariable('Parent',[],@(x) isempty(x)||numel(x)==1&&isgraphics(x)&&isvalid(x),true);
+            iH.addRequiredVariable('RoiObject',@(x) isa(x,'extras.roi.roiObject3D'),true);
+            iH.addOptionalVariable('RoiManager',extras.roi.roiObject3D.empty(),@(x) isempty(x)||numel(x)==1&&isa(x,'extras.roi.roiManager3D'),true);
+            iH.addParameter('ForceCreation',false,@(x) isscalar(x)&&(islogical(x)||isnumeric(x)));
+                       
+            iH.parse(varargin{:});
+            Parent = iH.Results.Parent;
+            RoiObject = iH.Results.RoiObject;
+            RoiManager = iH.Results.RoiManager;
+            
             %% initiate graphics parent related variables
             this@extras.GraphicsChild(@() ...
                 figure(...
@@ -68,41 +108,10 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
                     'MenuBar','none',...
                     'HandleVisibility','Callback')...
                 );
-            
-            %% look for RoiObject
-            if isempty(varargin)
-                error('roiObject was not specified');
-            end
-            
-            found_roi = false;
-            if ~isempty(varargin) && isa(varargin{1},'extras.roi.roiObject3D')
-                
-                RoiObject = varargin{1};
-                varargin(1) = [];
-                found_roi = true;
-            elseif isgraphics(varargin{1}) && isa(varargin{2},'extras.roi.roiObject3D')
-                RoiObject = varargin{2};
-                varargin(2) = [];
-                found_roi = true;
-            else
-                ind = find(strcmpi('RoiObject',varargin));
-                if numel(ind) > 1
-                    error('RoiObject specified more than one time');
-                end
-                if found_roi && ~isempty(ind)
-                    error('RoiObject specified more than one time');
-                end
-                
-                RoiObject = varargin{ind+1};
-                varargin(ind:ind+1) = [];
-                found_roi = true;
-            end
-            
-            assert(found_roi,'RoiObject was not specified');
-            
+
+            %% setup RoiObject
             this@extras.widgets.mixin.ObjectDependentLifetime(RoiObject); %make this object lifetime depend on ROIobject
 
-            
             %% Check if we already created a lutListUI for this object
             persistent uiList; %listing of all lutListUIs created
             if isempty(uiList)
@@ -112,14 +121,7 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             end
             
             % look for force-creation flag
-            force_creation = false;
-            if ~isempty(varargin)
-                ind = find(strcmpi('ForceCreation',varargin));
-                if ~isempty(ind)
-                    force_creation = true;
-                    varargin(ind) = [];
-                end
-            end
+            force_creation = iH.Results.ForceCreation;
             
             [lia,lob] = ismember(RoiObject,[uiList.RoiObject]);
             
@@ -133,8 +135,11 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             this.RoiObject = RoiObject;
             
             %% Setup Parent, create ui container
-            %look for parent specified in arguments
-            varargin = this.CheckParentInput(varargin{:});
+            if isempty(Parent)
+                this.CheckParentInput();
+            else
+                this.CheckParentInput(Parent);
+            end
             
             % change figure name
             if this.CreatedParent
@@ -142,27 +147,8 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             end
             
             %% Look for optional manager
-            found_roimanager = false;
-            if ~isempty(varargin) && isa(varargin{1},'extras.roi.roiManager')
-                this.RoiManager = varargin{1};
-                varargin(1) = [];
-                found_roimanager = true;
-            end
-            if ~isempty(varargin)
-                ind = find(strcmpi('RoiManager',varargin));
-                if numel(ind) > 1
-                    error('RoiManager specified more than one time');
-                end
-                if found_roimanager && ~isempty(ind)
-                    error('RoiManager specified more than one time');
-                end
+            this.RoiManager = RoiManager;
                 
-                this.RoiManager = varargin{ind+1};
-                varargin(ind:ind+1) = [];
-                found_roimanager = true;
-            end
-                
-            
             %% Create GUI
             %Create Outer panel
             this.OuterPanel = uix.Panel('Parent',this.Parent',...
@@ -224,11 +210,15 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
             
             this.jTab_lutList.UIContextMenu = cm;
             
-            
             %% Update Listeners
             this.LUTListListener = addlistener(this.RoiObject,'LUT','PostSet',@(~,~) this.UpdateList());
             this.LUTChangeListener = addlistener(this.RoiObject,'LUTChanged',@(~,~) this.UpdateList());
             
+            %% Set other options
+
+            other_args = [fieldnames(iH.Unmatched),struct2cell(iH.Unmatched)]';
+            
+            this.setPublicProperties(other_args{:});
         end
         
     end
@@ -254,7 +244,8 @@ classdef lutListUI < extras.GraphicsChild & extras.RequireWidgetsToolbox & extra
                 return;
             end
             LUT = this.RoiObject.LUT(sel_ind);
-            extras.roi.lutViewer(LUT);
+            %extras.roi.lutViewer(LUT);
+            this.LutDisplayConstructorFcn(LUT);
         end
         
         function AddLUT(this)

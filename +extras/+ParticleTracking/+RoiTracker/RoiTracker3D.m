@@ -19,7 +19,7 @@ classdef RoiTracker3D < extras.ParticleTracking.RoiTracker.RoiTracker
 %                                            data points
 %                       .LUT(m).
 %                              ...
-%                              .Result.
+%                              .DepthResult.
 %                                   .Z -> calculated position in lut
 %                                   .varZ -> statistical variance of Z
 %                                   .nItr -> number of iterations

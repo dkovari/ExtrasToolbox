@@ -43,14 +43,16 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
     methods (Access=private)
         function internal_updateLUT(this)
             this.LUT = this.ManagedObjects;
+            %'internal update'
+            %
             
-            if isempty(this.DefaultLUT) || all(this.LUT ~= this.DefaultLUT)
-                if isempty(this.LUT)
-                    this.DefaultLUT = extras.roi.LUTobject.empty();
-                else
-                    this.DefaultLUT = this.LUT(1);
-                end
+            if isempty(this.LUT)
+                this.DefaultLUT = extras.roi.LUTobject.empty();
+            elseif isempty(this.DefaultLUT) || ~ismember(this.DefaultLUT,this.LUT)
+                this.DefaultLUT = this.LUT(1);
             end
+            
+            notify(this,'LUTChanged',extras.GenericEvent('LUT',this.LUT));
         end
     end
     
@@ -72,6 +74,7 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
             s = toStruct@extras.roi.roiObject(this);
             for n=1:numel(this)
                 s(n).LUT = this(n).LUT.toStruct();
+                s(n).DefaultLUT = struct('UUID',{this(n).DefaultLUT.UUID});
             end
         end
         function addLUT(this,LUT,varargin)
@@ -90,6 +93,7 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
             
             this.LutPropListeners = [this.LutPropListeners, addlistener(newobj,'PropertyChanged',@(h,e) notify(this,'LUTChanged',extras.GenericEvent('LUT',h)))]; %create listener which forwards changes made to LUTs in the lut list
             this.LutDestroyListeners = [this.LutDestroyListeners,addlistener(newobj,'ObjectBeingDestroyed',@(h,e) notify(this,'LUTChanged',extras.GenericEvent('LUT',h)))];
+            
         end
         function removeLUT(this,LUT)
             removeObjects(this,LUT);

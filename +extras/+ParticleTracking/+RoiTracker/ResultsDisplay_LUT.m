@@ -15,7 +15,12 @@ classdef ResultsDisplay_LUT <  extras.roi.lutViewer
     
     %% 
     properties(AbortSet,SetObservable)
-        MinimumUpdatePeriod (1,1) double = 0.8;
+        MinimumUpdatePeriod (1,1) double = 0.3;
+    end
+    
+    %% Internal Handler
+    properties(Access=protected)
+        Tracker
     end
     
     %% Create
@@ -35,8 +40,8 @@ classdef ResultsDisplay_LUT <  extras.roi.lutViewer
             
             %% Parse Inputs
             iH = extras.inputHandler();
-            iH.addOptionalVariable('Parent',[],@(x) isgraphics(x)&&isvalid(x)||isempty(x),true);
-            iH.addRequiredVariable('Tracker',@(x) isa(x,'extras.ParticleTracking.RoiTracker.RoiTracker'),true);
+            iH.addOptionalVariable('Parent',[],@(x) isempty(x)||numel(x)==1&&isgraphics(x),true);
+            iH.addRequiredVariable('Tracker',@(x) numel(x)==1&&isa(x,'extras.ParticleTracking.RoiTracker.RoiTracker'),true);
             iH.addRequiredVariable('LUT',@(x) isa(x,'extras.roi.LUTobject'),true);
             
             iH.parse(varargin{:});
@@ -47,43 +52,65 @@ classdef ResultsDisplay_LUT <  extras.roi.lutViewer
             
             %% Setup lutViewer
             this@extras.roi.lutViewer('LUT',LUT,'Parent',Parent);
-            this.linkObjectLifetime(Tracker);
             
-            %% line showing measured radial profile
-            this.hMeas = line('Parent',this.hAx_R_Profile,'XData',NaN,'YData',NaN,'Marker','none','LineStyle',':','LineColor','r','LineWidth',1.5,'DisplayName','Measured Profile');
-            this.hFitErr = patch('Parent',this.hAx_Spline,...
-                'XData',NaN(1,4),...
-                'YData',NaN(1,4),...
-                'EdgeColor','r',...
-                'LineWidth',1,...
-                'LineStyle',':',...
-                'FaceColor','r',...
-                'FaceAlpha',0.5,...
-                'DisplayName','Spline Fit Error',...
-                'PickableParts','none');
-            this.hFit = line('Parent',this.hAx_Spline,...
-                'XData',NaN,'YData',NaN,...
-                'Marker','none',...
-                'LineStyle','-',...
-                'LineColor','r',...
-                'LineWidth',1.5,...
-                'DisplayName','Spline Fit',...
-                'PickableParts','none');
+            %% Setup other props
+            for n=numel(this):-1:1
+                %% Tracker
+                this(n).linkObjectLifetime(Tracker);
+                this(n).Tracker = Tracker;
+                
+                %% line showing measured radial profile
+                this(n).hMeas = line('Parent',this(n).hAx_R_Profile,...
+                    'XData',NaN,'YData',NaN,...
+                    'Marker','none',...
+                    'LineStyle',':',...
+                    'Color','r',...
+                    'LineWidth',1.5,...
+                    'DisplayName','Measured Profile');
+
+                this(n).hFitErr = patch('Parent',this(n).hAx_Spline,...
+                    'XData',NaN(1,4),...
+                    'YData',NaN(1,4),...
+                    'EdgeColor','r',...
+                    'LineWidth',1,...
+                    'LineStyle',':',...
+                    'FaceColor','r',...
+                    'FaceAlpha',0.5,...
+                    'DisplayName','\pm2\sigma_z',...
+                    'PickableParts','none');
+                this(n).hFit = line('Parent',this(n).hAx_Spline,...
+                    'XData',[NaN,NaN],'YData',[NaN,NaN],...
+                    'Marker','none',...
+                    'LineStyle','--',...
+                    'Color','r',...
+                    'LineWidth',1.5,...
+                    'DisplayName','Z_{fit}',...
+                    'PickableParts','none');
+                set(this(n).hFit,'XData',this(n).hAx_Spline.XLim);
+                set(this(n).hFitErr,'XData',[this(n).hAx_Spline.XLim,flip(this(n).hAx_Spline.XLim)]);
+
+                %listener for xlim changes, expands/contracts fit line
+                addlistener(this(n).hAx_Spline,'XLim','PostSet',@(~,~) set(this(n).hFit,'XData',this(n).hAx_Spline.XLim));
+                addlistener(this(n).hAx_Spline,'XLim','PostSet',@(~,~) set(this(n).hFitErr,'XData',[this(n).hAx_Spline.XLim,flip(this(n).hAx_Spline.XLim)]));
+
+                %% Subscribe to tracker results
+                this(n).TrackerResultsQueue = extras.CallbackQueue();
+                this(n).TrackerResultsQueue.afterEach(@(d) this(n).ProcessNewResult(d));
+                this(n).Tracker.registerQueue(this(n).TrackerResultsQueue);
+                
+                %% display draggable lines on top
+                uistack(this(n).hLn_Z_Profile.LineHandle,'top');
+                uistack(this(n).hLn_R_Profile.LineHandle,'top');
+            end
+ 
             
-            %listener for xlim changes, expands/contracts fit line
-            addlistener(this.hAx_Spline,'XLim','PostSet',@(~,~) set(this.hFit,'XData',this.hAx_Spline.XLim));
-            addlistener(this.hAx_Spline,'XLim','PostSet',@(~,~) set(this.hFitErr,'XData',[this.hAx_Spline.XLim,flip(this.hAx_Spline.XLim)]));
-            
-            %% Subscribe to tracker results
-            this.TrackerResultsQueue = extras.CallbackQueue();
-            this.TrackerResultsQueue.afterEach(@(d) this.ProcessNewResult(d));
-            this.Tracker.registerQueue(this.TrackerResultsQueue);
         end
     end
     
     %% callbacks
     methods(Access=private)
         function ProcessNewResult(this,data)
+            
             %% make sure still valid
             if(~isvalid(this))
                 return;
@@ -142,14 +169,20 @@ classdef ResultsDisplay_LUT <  extras.roi.lutViewer
                     'YData',[]);
                     return;
                 end
+                RP = this.LUT.normalizeProfile(res.roiList(roi_ind).RadialAverage,res.roiList(roi_ind).RadialAverage_rloc);
                 set(this.hMeas,'XData',res.roiList(roi_ind).RadialAverage_rloc,...
-                    'YData',res.roiList(roi_ind).RadialAverage);
+                    'YData',RP);
                 
-                %% Update ZFit
-                zz = res.roiList(roi_ind).LUT(lut_ind).Result.Z;
+                %% Update ZFit               
+                if ~isfield(res.roiList(roi_ind).LUT(lut_ind),'DepthResult')
+                    zz = NaN;
+                    sZ = NaN;
+                else
+                    zz = res.roiList(roi_ind).LUT(lut_ind).DepthResult.Z;
+                    sZ = 2*sqrt(res.roiList(roi_ind).LUT(lut_ind).DepthResult.varZ);
+                end
+                
                 set(this.hFit,'YData',[zz,zz]);
-                
-                sZ = sqrt(res.roiList(roi_ind).LUT(lut_ind).Result.varZ);
                 set(this.hFitErr,'YData',...
                     [zz+sZ,zz+sZ,zz-sZ,zz-sZ]);
                 

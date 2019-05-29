@@ -52,7 +52,7 @@ namespace extras {namespace ParticleTracking {
 	 *						.pp
 	 *						.dpp
 	 *						.... % all input fields passed to output
-	 *						.Result.
+	 *						.DepthResult.
 	 *								.Z -> calculated position in lut
 	 *								.varZ -> statistical variance of Z
 	 *								.nItr -> number of iterations
@@ -142,7 +142,7 @@ namespace extras {namespace ParticleTracking {
 				int minR = INT_MAX;
 				bool none_calibrated = true;
 				for (size_t k = 0; k < LUT_list.numel(); k++) { //loop over LUT
-					if ((bool)LUT_list(k, "IsCalibrated")) {
+					if ((double)LUT_list(k, "IsCalibrated")!=0.0) {
 						none_calibrated = false;
 						minR = std::min(minR, int(double(LUT_list(k, "MinR"))));
 						maxR = std::max(maxR, int(double(LUT_list(k, "MaxR"))));
@@ -217,14 +217,15 @@ namespace extras {namespace ParticleTracking {
 				/////////////
 				// Loop over LUT and compute
 				for (size_t k = 0; k < LUT_list.numel(); k++) {
-					if (!(bool)LUT_list(k, "IsCalibrated")) { //lut not calibrated, continue
+					if ((double)LUT_list(k, "IsCalibrated")==0.0) { //lut not calibrated, continue
 						continue;
 					}
 					spline pp;
 					if (createspline(&pp, LUT_list(k, "pp"))<0) {
 						throw(extras::stacktrace_error(std::string("ROI:") + std::to_string(n)
 							+ std::string(" LUT:") + std::to_string(k)
-							+ std::string("\npp not a valid spline")));
+							+ std::string("\npp not a valid spline")
+							+ std::string("\nIsCalibrated(double): ") + std::to_string((double)LUT_list(k, "IsCalibrated")) ));
 					}
 
 					spline dpp;
@@ -234,7 +235,8 @@ namespace extras {namespace ParticleTracking {
 						if (createspline(&dpp, LUT_list(k, "dpp"))<0) {
 							throw(extras::stacktrace_error(std::string("ROI:") + std::to_string(n)
 								+ std::string(" LUT:") + std::to_string(k)
-								+ std::string("dpp not a valid spline")));
+								+ std::string("dpp not a valid spline")
+								+ std::string("\nIsCalibrated(double): ") + std::to_string((double)LUT_list(k, "IsCalibrated"))));
 						}
 						//set calc flag for all dpp coefs
 						dpp_calc = (char*)malloc((dpp.nBreaks - 1) * sizeof(char));
@@ -302,8 +304,6 @@ namespace extras {namespace ParticleTracking {
 							&nItr, &s, &R2, &dR2frac, &initR2);
 
 					}
-
-
 
 					/////////////
 					//set output fields

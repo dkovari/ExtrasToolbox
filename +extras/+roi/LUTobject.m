@@ -165,7 +165,7 @@ classdef LUTobject < handle
             assert(numel(roi)<=1||numel(roi)==numel(this),'Number of ROI must match numel(this)');
             assert(isa(roi,'extras.roi.roiObject3D'),'roi must be roiObject3D');
             for n = 1:numel(this)
-                if ~isempty(this(n).ParentROI
+                if ~isempty(this(n).ParentROI)
                     warning('ParentROI is already set, will not change parent');
                     continue;
                 end
@@ -205,6 +205,17 @@ classdef LUTobject < handle
                      s(n).ParentROI = struct('UUID',{});
                 end
             end
+        end
+        
+        function Ir= normalizeProfile(this,Ir,rloc)
+            %normalize Radial profile data
+            if this.MinR<min(rloc) || this.MaxR>max(rloc)
+                error('rloc dont contain needed profile limits');
+            end
+            i1 = find(this.MinR==rloc,1);
+
+            avg = nanmean(Ir( (this.NormalizeProfileStartIndex+i1-1):(this.NormalizeProfileEndIndex+i1-1) ));
+            Ir = Ir/avg;
         end
         
         function createLUT(this,Z,profiles,r_coords)

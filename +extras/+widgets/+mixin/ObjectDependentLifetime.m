@@ -152,14 +152,14 @@ classdef ObjectDependentLifetime < handle
                             for m=1:numel(this(n).LifetimeLinkedObject) %convert stored to cell
                                 new_obj{m} = this(n).LifetimeLinkedObject(m);
                             end
-                            if iscell(LinkedObject)
+                            if iscell(LinkedObject) %LinKed 
                                 for m=1:numel(LinkedObject)
                                     new_obj{end+1} = LinkedObject{m};
                                     this(n).LinkedObjectDestructionListener(end+1) = addlistener(LinkedObject{m},'ObjectBeingDestroyed',@(~,~) delete(this(n)));
                                 end
-                            else
+                            else %arg is not cell
                                 for m=1:numel(LinkedObject)
-                                    new_obj(end+1) = LinkedObject(m);
+                                    new_obj{end+1} = LinkedObject(m);
                                     this(n).LinkedObjectDestructionListener(end+1) = addlistener(LinkedObject(m),'ObjectBeingDestroyed',@(~,~) delete(this(n)));
                                 end
                             end

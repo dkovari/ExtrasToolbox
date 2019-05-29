@@ -4,12 +4,12 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
 %   All rights reserved.
     
     %%
-    properties (Access=private)
+    properties (Access=protected)
         LUT = extras.roi.LUTobject.empty();
     end
     
     %% Graphics handles
-    properties(Access=private)
+    properties(Hidden,SetAccess=private)
         hImg_Spline %image showing spline data
         hLn_R_Profile %draggable line for R profile
         hLn_Z_Profile %draggable line for z profile
@@ -40,8 +40,9 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             
             %% handle inputs
             iH = extras.inputHandler();
-            iH.addOptionalVariable('Parent',[],@(x) isempty(x)||all(isgraphics(x)&isvalid(x)),true);
-            iH.addRequiredVariable('LUT',@(x) all(isa(x,'extras.roi.LUTobject')),true);
+            iH.addOptionalVariable('Parent',[],@(x) isempty(x)||numel(x)==1&&isgraphics(x),true);
+            iH.addRequiredVariable('LUT',@(x) isa(x,'extras.roi.LUTobject')&&all(isvalid(x)),true);
+            iH.addParameter('ForceConstrucion',false,@(x) isscalar(x));
             
             iH.parse(varargin{:});
             
@@ -83,19 +84,38 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             
             %% Look for Previously constructed views
             persistent prev_construct_views;
-            if isempty(prev_construct_views)
-                prev_construct_views = extras.roi.lutViewer.empty();
+            if isempty(prev_construct_views)||~iscell(prev_construct_views)
+                prev_construct_views = {};%extras.roi.lutViewer.empty();
             end
-            prev_construct_views(~isvalid(prev_construct_views)) = [];
+            % get rid of deleted views
+            for m=1:numel(prev_construct_views)
+                if ~isvalid(prev_construct_views{m})
+                    prev_construct_views{m} = [];
+                end
+            end
             
-            [lia,lob] = ismember(LUT,[prev_construct_views.LUT]);
+            lia = false(size(LUT));
+            lob = zeros(size(LUT));
+            for n=1:numel(LUT)
+                for m=1:numel(prev_construct_views)
+                    if isvalid(prev_construct_views{m}) && LUT(n)==prev_construct_views{m}
+                        lia(n) = true;
+                        lob(n) = m;
+                        break;
+                    end
+                end
+            end
+
             need_construction = ~lia;
             
             % if already constructed, delete and set this(...) to the
             % previously constructed viewer
             delete(this(lia));
-            this(lia) = prev_construct_views(lob(lia));
-
+            for n=1:numel(LUT)
+                if lia(n)
+                    this(n) = prev_construct_views{lob(n)};
+                end
+            end
             
             %% Construct GUI for each viewer
             for n=1:numel(this)
@@ -104,7 +124,6 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
                 end
                 this(n).constructGui();
             end
-            
             
             %% Add newly constructed views to the list
             prev_construct_views = [prev_construct_views,this(need_construction)];
@@ -122,13 +141,15 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             %% Create Subplots
             flex = uix.GridFlex('Parent',this.Parent,'Spacing', 5);
 
-            this.hAx_R_Profile = axes('Parent',flex,...
+            p1 = uix.Panel('Parent',flex); %need extras panel so legend and colorbar don't break things
+            this.hAx_R_Profile = axes('Parent',p1,...
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
             extras.expandAxes(this.hAx_R_Profile);
             ylabel(this.hAx_R_Profile,'Intensity [A.U.]');
             
-            this.hAx_Spline = axes('Parent',flex,...
+            p2 = uix.Panel('Parent',flex);
+            this.hAx_Spline = axes('Parent',p2,...
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
             extras.expandAxes(this.hAx_Spline);
@@ -136,7 +157,8 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             xlabel(this.hAx_Spline,['R Position [',this.LUT.R_Units,']']);
             
             uix.Empty( 'Parent', flex );
-            this.hAx_Z_Profile = axes('Parent',flex,...
+            p3 = uix.Panel('Parent',flex);
+            this.hAx_Z_Profile = axes('Parent',p3,...
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
             extras.expandAxes(this.hAx_Z_Profile);
