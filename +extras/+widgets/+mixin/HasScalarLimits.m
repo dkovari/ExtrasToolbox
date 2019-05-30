@@ -8,6 +8,12 @@ classdef HasScalarLimits < extras.widgets.mixin.HasValueLimits
         function l = get.Limits(this)
             l = [this.Min,this.Max];
         end
+        function set.Limits(this,val)
+            assert(numel(val)==2);
+            val = sort(val);
+            this.Min = val(1);
+            this.Max = val(2);
+        end
     end
     properties(Access=private)
         HasScalarLimits_IsConstructed = false;
