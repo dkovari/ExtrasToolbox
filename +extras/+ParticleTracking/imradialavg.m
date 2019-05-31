@@ -18,5 +18,5 @@
 %   BinCounts: number of pixels accumulated into each bin
 %THIS IS A STUB FOR A MEX FILE
 % RUN: imradialavg\build_imradialavg.m to compile function
-%% Copyright 2019 Daniel T. Kovari, Emory University
+% Copyright 2019 Daniel T. Kovari, Emory University
 %   All rights reserved.

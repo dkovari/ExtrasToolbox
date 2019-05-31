@@ -141,14 +141,14 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             %% Create Subplots
             flex = uix.GridFlex('Parent',this.Parent,'Spacing', 5);
 
-            p1 = uix.Panel('Parent',flex); %need extras panel so legend and colorbar don't break things
+            p1 = uipanel('Parent',flex); %need extras panel so legend and colorbar don't break things
             this.hAx_R_Profile = axes('Parent',p1,...
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
             extras.expandAxes(this.hAx_R_Profile);
             ylabel(this.hAx_R_Profile,'Intensity [A.U.]');
             
-            p2 = uix.Panel('Parent',flex);
+            p2 = uipanel('Parent',flex);
             this.hAx_Spline = axes('Parent',p2,...
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
@@ -157,7 +157,7 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             xlabel(this.hAx_Spline,['R Position [',this.LUT.R_Units,']']);
             
             uix.Empty( 'Parent', flex );
-            p3 = uix.Panel('Parent',flex);
+            p3 = uipanel('Parent',flex);
             this.hAx_Z_Profile = axes('Parent',p3,...
                 'HandleVisibility','Callback',...
                 'NextPlot','add');
@@ -176,8 +176,8 @@ classdef lutViewer < extras.GraphicsChild & extras.RequireGuiLayoutToolbox & ext
             this.hLn_Z_Profile = extras.DraggableLine(this.hAx_Spline,[0,0],[NaN,NaN],'Color',[0.85 0.325 0.098]);
             addlistener(this.hLn_Z_Profile,'X','PostSet',@(~,~) this.updateZprofile());
 
-            this.hLn_R_Data = plot(this.hAx_R_Profile,[NaN,NaN],[NaN,NaN],'-','LineWidth',1,'Color',this.hLn_R_Profile.Color);
-            this.hLn_Z_Data = plot(this.hAx_Z_Profile,[NaN,NaN],[NaN,NaN],'-','LineWidth',1,'Color',this.hLn_Z_Profile.Color);
+            this.hLn_R_Data = plot(this.hAx_R_Profile,[NaN,NaN],[NaN,NaN],'-','LineWidth',1,'Color',this.hLn_R_Profile.Color,'DisplayName','Selected Profile');
+            this.hLn_Z_Data = plot(this.hAx_Z_Profile,[NaN,NaN],[NaN,NaN],'-','LineWidth',1,'Color',this.hLn_Z_Profile.Color,'DisplayName','Selected Profile');
             
             %% listeners for changes to lut
             this.LUT_MinR_Listener = addlistener(this.LUT,'MinR','PostSet',@(~,~) this.MinMaxRChanged);
