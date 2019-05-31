@@ -24,6 +24,7 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
             
             %% By Default add LUT for self
             %this.addLUT(extras.roi.LUTobject(this));
+            %handled in EzTweezy instead
         end
     end
     

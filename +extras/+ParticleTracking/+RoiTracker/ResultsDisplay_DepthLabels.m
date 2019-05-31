@@ -175,28 +175,28 @@ classdef ResultsDisplay_DepthLabels < extras.GraphicsChild & ...
                         %% find reference roi
                         ref_roi = find(strcmp(res.roiList(n).LUT(lut_ind).UUID,{res.roiList.UUID}),1);
                         if isempty(ref_roi)
-                            label.String = '\deltaZ: Ref. Not Found';
+                            label.String = '\DeltaZ: Ref. Not Found';
                             continue;
                         end
                         %% find ref result
                         if ~isfield(res.roiList(ref_roi),'LUT')||isempty(res.roiList(ref_roi).LUT)
-                            label.String = '\deltaZ: Ref. Not Computed';
+                            label.String = '\DeltaZ: Ref. Not Computed';
                             continue;
                         end
                         ref_lut = find(strcmp(res.roiList(ref_roi).UUID,{res.roiList(ref_roi).LUT.UUID}),1);
                         if isempty(ref_lut)
-                            label.String = '\deltaZ: Ref. LUT Missing';
+                            label.String = '\DeltaZ: Ref. LUT Missing';
                             continue;
                         end
                         if ~isfield(res.roiList(ref_roi).LUT(ref_lut),'DepthResult')
-                            label.String = '\deltaZ: Ref. No Result';
+                            label.String = '\DeltaZ: Ref. No Result';
                             continue;
                         end
                         Z_ref = res.roiList(ref_roi).LUT(ref_lut).DepthResult.Z;
                         vZ_ref = res.roiList(ref_roi).LUT(ref_lut).DepthResult.varZ;
                         
                         %% set string
-                        label.String = sprintf('Z_0: %.2g\\pm%.2g\n\\deltaZ: %.2g\\pm%.2g %s',Z_ref,2*sqrt(vZ_ref),Z,2*sqrt(vZ),res.roiList(n).LUT(lut_ind).Z_Units);
+                        label.String = sprintf('\\DeltaZ: %.2g\\pm%.2g %s',Z_ref-Z,2*sqrt(vZ+vZ_ref),res.roiList(n).LUT(lut_ind).Z_Units);
 
                     else %not relative
                         %% set string
