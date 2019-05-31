@@ -32,8 +32,11 @@ if isempty(colornames)
     colornames('forestgreen')=[0,0.5,0];
 end
 
-assert(ischar(str)||iscellstr(str),'str must be char or cellstr');
+assert(ischar(str)||iscellstr(str)||isstring(str),'str must be char or cellstr');
 
+if isstring(str)
+    str = cellstr(str);
+end
 if ischar(str)
     str = {str};
 end
