@@ -188,12 +188,12 @@ classdef lutListUI < extras.GraphicsChild & ...
             this.jTab_lutList = uiw.widget.Table('Parent',sub_right,...
                 'Data',this.lut2cell(),...
                 'SelectionMode','discontiguous',...
-                'ColumnName',{'ROI ID','UUID','Calibrated','MinR','MaxR'},...
-                'ColumnEditable',logical([0,0,0,1,1]),...
+                'ColumnName',{'Default','ROI ID','UUID','Calibrated','MinR','MaxR'},...
+                'ColumnEditable',logical([1,0,0,0,1,1]),...
                 'CellEditCallback',@(h,e) this.UIEditCallback(h,e),...
-                'ColumnMinWidth',[25,60,25,40,40],...
-                'ColumnPreferredWidth',[25,80,25,60,60],...
-                'ColumnFormat',{'integer','char','numeric','numeric','numeric'});
+                'ColumnMinWidth',[25,25,60,25,40,40],...
+                'ColumnPreferredWidth',[25,25,80,25,60,60],...
+                'ColumnFormat',{'logical','integer','char','numeric','numeric','numeric'});
             
             % Context menu
             cm = uicontextmenu(this.ParentFigure);
@@ -305,23 +305,28 @@ classdef lutListUI < extras.GraphicsChild & ...
             for n=1:numel(this.RoiObject.LUT)
                 %c{n,1} = n;
                 % find index in roiList
+                
+                c{n,1} = this.RoiObject.LUT(n) == this.RoiObject.DefaultLUT;
+                
                 ind = find(strcmp(this.RoiObject.LUT(n).UUID,{this.RoiManager.roiList.UUID}),1);
                 if isempty(ind)
-                    c{n,1} = NaN;
+                    c{n,2} = NaN;
                 else
-                    c{n,1} = ind;
+                    c{n,2} = ind;
                 end
                 
-                c{n,2} = this.RoiObject.LUT(n).UUID;
-                c{n,3} = this.RoiObject.LUT(n).IsCalibrated;
-                c{n,4} = this.RoiObject.LUT(n).MinR;
-                c{n,5} = this.RoiObject.LUT(n).MaxR;
+                c{n,3} = this.RoiObject.LUT(n).UUID;
+                c{n,4} = this.RoiObject.LUT(n).IsCalibrated;
+                c{n,5} = this.RoiObject.LUT(n).MinR;
+                c{n,6} = this.RoiObject.LUT(n).MaxR;
             end
         end
         
         function UIEditCallback(this,~,evt)  
             LUT_ind = evt.Indices(1);
             switch(evt.Indices(2))
+                case 1 % Default
+                    this.RoiObject.DefaultLUT = this.RoiObject.LUT(LUT_ind);
                 case 4 % MinR
                     this.RoiObject.LUT(LUT_ind).MinR = this.jTab_lutList.Data{LUT_ind,4};
                 case 5 % MaxR

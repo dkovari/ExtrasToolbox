@@ -34,11 +34,26 @@ classdef roiObject3D < extras.roi.roiObject & extras.roi.ObjectManager
             delete(this.LutDestroyListeners);
         end
     end
+    
+    properties(SetObservable,AbortSet)
+        DefaultLUT = extras.roi.LUTobject.empty();
+    end
+    methods
+        function set.DefaultLUT(this,obj)
+            assert(isa(obj,'extras.roi.LUTobject'));
+            if isempty(this.LUT)
+                this.DefaultLUT = extras.roi.LUTobject.empty();
+            else
+                assert(ismember(obj,this.LUT),'Obj must be added to LUT List before it can be set as default LUT');
+                this.DefaultLUT = obj;
+            end
+            notify(this,'LUTChanged',extras.GenericEvent('DefaultLUT',this.DefaultLUT))
+        end
+    end
 
     %% Aliased Properties
     properties (SetAccess=protected,SetObservable,AbortSet)
         LUT extras.roi.LUTobject = extras.roi.LUTobject.empty() %array of LUT objects
-        DefaultLUT = extras.roi.LUTobject.empty();
     end
     methods (Access=private)
         function internal_updateLUT(this)
