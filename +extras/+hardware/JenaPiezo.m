@@ -46,6 +46,7 @@ classdef JenaPiezo < extras.hardware.abstract.ObjectiveScanner & extras.hardware
             this.Units = 'µm';
             this.Limits = [0,99.99];
             this.ValueSize = [1,1];
+            this.Orientation = 'Negative';
             
             %% Serial Com parameters
             this.BaudRate = 9600;
