@@ -143,16 +143,16 @@ end
 Prefilter = 'none'; %prefilter option (none is best for fluorescene)
 UseRidgeFilter = false; %not implemented yet
 bpass_lnoise = 1; %noise filter size (1 is best)
-bpass_sz = 7; %size of particles in pixels
+bpass_sz = 5; %size of particles in pixels
 pkfnd_sz = NaN; %slightly larger than particle size NaN corresponds to bpass_sz+2
 pkfnd_th = []; %min threshold for finding peaks, value (relative to bpass results), number of percentile ('##%') or # std dev ('##s'), Empty prompts using gui
 
 CentroidMethod = 'cntrd'; %options: cntrd() radialcenter() barycenter() [NOTE: only cntrd implemented]
 CentroidWindowSize = NaN; %NaN->auto determine
 CentroidArgs={}; %optional args for centroid detection method, NOT IMPLEMENTEY
-MaxDisplacement=10; %maximum displacement of particles between frames
+MaxDisplacement=15; %maximum displacement of particles between frames
 ExpandingSearch=true; %true if search window should expand with each successive frame for particles that have dissapeared
-Memory = 3; %number of frames a particle is allowed to go missing for
+Memory = 5; %number of frames a particle is allowed to go missing for
 
 %% Track Particles
 trackResults = extras.matPTV.ptv2D(ImageStack,...
