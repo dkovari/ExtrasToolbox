@@ -191,8 +191,30 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
             end
         end
     end
-    methods (Hidden) %Timer callback
+    
+    methods(Access=protected)
+        function sendResult(this,data)
+            %overloadable function which is called in
+            %ResultsCheckTimerCallback and is responsible for sending data
+            %to the dispatch queue list
+            %
+            % You can modify this method to intercept the data before it is
+            % dispatched to the queue list.
+            %
+            % In most cases the function should end with 
+            % this.send(data)
+            
+            %% YOUR CODE HERE
+            
+            %% send data to queue list
+            this.send(data);
+        end
+    end
+    methods (Access=protected) %Timer callback
         function ResultsCheckTimerCallback(this)
+        % called by results check timer, responsible for checking for
+        % results and dispatching data using this.sendResult()
+            
             if ~isvalid(this) %cancel if object has been deleted
                 return;
             end
@@ -213,9 +235,11 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
                 %each send command could take a while to process since
                 %afterEach is immediately called.
                 if narg==1
-                    this.send(out{1});
+                    %this.send(out{1});
+                    this.sendResult(out{1});
                 else
-                    this.send(out);
+                    this.sendResult(out);
+                    %this.send(out);
                 end
 
                 %only process for Timer Period duration
