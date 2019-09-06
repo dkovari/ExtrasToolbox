@@ -24,6 +24,11 @@ classdef DraggableLine < extras.GraphicsChild
         
         DragEnabled = true; %t/f if line is movable
     end
+    properties (SetAccess=private,SetObservable,AbortSet = true)
+        LineXData = [NaN,NaN]; %actual x coordinates of the line
+        LineYData = [NaN,NaN]; %actual y coordinates of the line
+    end
+    
     methods
         function set.DragLimitX(this,val)
             this.DragLimitX = sort(val);
@@ -239,6 +244,9 @@ classdef DraggableLine < extras.GraphicsChild
             end
             
             set(this.LineHandle,'XData',x,'YData',y);
+            
+            this.LineXData = this.LineHandle.XData;
+            this.LineYData = this.LineHandle.YData;
             
         end
     end
