@@ -160,9 +160,6 @@ classdef inputHandler < handle & matlab.mixin.SetGet
         %   If the optional validator fails, that input  will be checked
         %   against the next variable (optional or required) in the list
         %
-        %   If IncludeAsParameter==false (default) then parse will throw an
-        %   error if a value matching the validator cannot be located.
-        %
         % Input:
         %   Name: char array specifying variable name.
         %         If Name is not a valid MATLAB variable name a new name is
