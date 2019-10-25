@@ -20,9 +20,19 @@ classdef HasScalarLimits < extras.widgets.mixin.HasValueLimits
     end
     methods
         function this = HasScalarLimits()
-            this.Min = -Inf;
-            this.Max = Inf;
-            this.Value = NaN;
+            if ~isempty(this.Min) || ~isscalar(this.Min)
+                this.Min = -Inf;
+            end
+            if ~isempty(this.Max) || ~isscalar(this.Max)
+                this.Max = Inf;
+            end
+            was_value_Set = this.HasValue_ValueHasBeenSet;
+            if isnumeric(this.Value)&&isempty(this.Value)
+                %'in HasScalarLimits set value=NaN'
+                this.Value = NaN;
+            end
+            this.HasValue_ValueHasBeenSet = was_value_Set;
+            
             this.HasScalarLimits_IsConstructed = true;
         end
     end
@@ -31,8 +41,9 @@ classdef HasScalarLimits < extras.widgets.mixin.HasValueLimits
         % override this method do add validation check to set.Value
         % returns the value that will be set to this.Value
             %value = value;
-            if this.HasScalarLimits_IsConstructed
+            if this.HasScalarLimits_IsConstructed && this.EnforceLimits
                 if ischar(value)
+                    %'in hasscalarlimits validateValue->ischar'
                     value = str2num(value);
                 end
                 assert(isscalar(value)&&isnumeric(value),'Value must be numeric scalar');

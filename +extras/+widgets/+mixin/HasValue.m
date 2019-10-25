@@ -5,11 +5,20 @@ classdef HasValue < handle
     properties(SetObservable=true,AbortSet=true)
         Value %Value (could be numerical, string, etc) of the object
     end
+    
+    properties(Access=protected,SetObservable,AbortSet)
+        HasValue_ValueHasBeenSet = false; %flaq used to set if object's value has been initialized at least once
+    end
     %% Get/set
     methods
         function set.Value(this,value)
             %fprintf('set.Value: %g, before set\n',value);
+            %'in set.Value of HasValue'
+            %value
+            %been_set = this.HasValue_ValueHasBeenSet
+            
             this.Value = this.internal_setValue(value);
+            this.HasValue_ValueHasBeenSet = true;
             %fprintf('set.Value: %g, after set\n',this.Value);
             this.onValueChanged();
         end
