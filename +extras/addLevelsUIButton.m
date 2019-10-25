@@ -36,7 +36,7 @@ elseif ~isempty(p.Results.graphicsobj) && strcmp(p.Results.graphicsobj.Type,'ima
     if ~isempty(p.Results.ImageHandle)
         error('image handle specified in first argument and with Name,Value parameters. Only specify image handle once.');
     end
-    hImg = p.Results.graohicsobj;
+    hImg = p.Results.graphicsobj;
     if isempty(p.Results.FigureHandle)
         hFig = ancestor(hImg,'figure');
     else
