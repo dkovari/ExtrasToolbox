@@ -6,11 +6,13 @@ function [out,ind]=pkfnd(im,th,sz,varargin)
 %   im: image to process, particle should be bright spots on dark
 %       background with little noise, e.g. fluorescent images of µ-spheres
 %       Use bpass.m to filter the image and eliminate noise
-
-%   th: the minimum brightness of a pixel that might be local maxima. 
+%
+%   th: (optional, default=mean value) the minimum brightness of a pixel 
+%       that might be local maxima. 
 %       (NOTE: Make it big and the code runs faster
 %       but you might miss some particles.  Make it small and you'll get
 %       everything and it'll be slow.)
+%
 %   sz: (Optional) the target particle size. If two peaks are within sz/2
 %       of each other only the brightest peak is preserved. It also removes
 %       peaks within sz/2 of the boundary.
