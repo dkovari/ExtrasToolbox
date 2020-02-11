@@ -175,7 +175,10 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
             %imagebox = uix.Panel('Parent',this.OuterVBox,'BorderType','none','BorderWidth',0);
             
             %Create image
-            this.ImageAxes = axes('Parent',this.OuterVBox,'NextPlot','replacechildren');
+            % note: we need to wrap axes in a matlab panel so that other
+            % controls don't break
+            pnl = uipanel(this.OuterVBox,'BorderType','none');
+            this.ImageAxes = axes('Parent',pnl,'NextPlot','replacechildren');
             
             this.ParentFigure.CurrentAxes = this.ImageAxes;
             
@@ -213,7 +216,7 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
                     found_data = true;
                 elseif isnumeric(varargin{1}) %numeric array
                     this.StackData = varargin{1};
-                    this.varargin(1) = [];
+                    varargin(1) = [];
                     found_data = true;
                 elseif iscell(varargin{1}) % cell array of images
                     this.StackData = varargin{1};
