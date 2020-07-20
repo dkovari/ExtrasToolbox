@@ -8,6 +8,7 @@ All rights reserved.
 #define NOMINMAX //don't use the windows definition of min/max
 #include <algorithm> //use min/max from std
 
+
 #include <mex.h>
 
 #include "mexextras.hpp"
@@ -1096,6 +1097,138 @@ namespace extras {namespace cmex {
 
 			return *this;
 		}
+
+		/*  BROKEN FIX ONE DAY!
+		//! construct from char16_t string
+		MxObject(const std::u16string& str) {
+
+			//initialize mxArray
+			size_t sz[] = { 1,str.size() };
+			_mxptr = mxCreateCharArray(2, sz);
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+
+			//copy data
+			char16_t* pData = mxGetChars(_mxptr);
+			memcpy((void*)pData, (const void*)str.data(), sizeof(char16_t) * str.size());
+		}
+
+		//! assign from char16_t
+		virtual MxObject& operator=(const std::u16string& str) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+			size_t sz[] = { 1,str.size() };
+			_mxptr = mxCreateCharArray(2, sz);
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+
+			//copy values into char array
+			mxChar* pData = mxGetChars(_mxptr);
+			memcpy((void*)pData, (const void*)str.data(), sizeof(char16_t) * str.size());
+
+			return *this;
+		}
+
+		//! construct from wstring
+		MxObject(const std::wstring& str) {
+			size_t sz[] = { 1,str.size() };
+			_mxptr = mxCreateCharArray(2, sz);
+
+
+
+
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+
+			mxChar* pData = mxGetChars(_mxptr);
+			mexPrintf("pdata before: %s\n", mxGetChars(_mxptr));
+
+
+
+			mexPrintf("Create Mx From wstring\nwstring: %s\n", str.c_str());
+			mexPrintf("hex: ");
+			for (int n = 0; n < 7; n++) {
+				mexPrintf("%02x-%02x ", ((char*)str.data())[2 * n], ((char*)str.data())[2 * n + 1]);
+			}
+			mexPrintf("\n");
+			mexPrintf("char: ");
+			for (int n = 0; n < 7; n++) {
+				mexPrintf("%c-%c ", ((char*)str.data())[2 * n], ((char*)str.data())[2 * n + 1]);
+			}
+			mexPrintf("\n");
+
+			mxArray* testchar = mxCreateString("test123");
+			mexPrintf("testchar: %s\n", mxGetChars(testchar));
+			mexPrintf("hex: ");
+			for (int n = 0; n < 7; n++) {
+				mexPrintf("%02x-%02x ", ((char*)mxGetData(testchar))[2*n], ((char*)mxGetData(testchar))[2 * n+1]);
+			}
+			mexPrintf("\n");
+			mexPrintf("char: ");
+			for (int n = 0; n < 7; n++) {
+				mexPrintf("%c-%c ", ((char*)mxGetData(testchar))[2 * n], ((char*)mxGetData(testchar))[2 * n + 1]);
+			}
+			mexPrintf("\n");
+
+
+
+#ifndef _WIN32
+			//copy values into char array
+			std::string c_16 = std::wstring_convert<std::codecvt_utf16<wchar_t, 0x10ffff>>().to_bytes(str);
+
+			mexPrintf("Create Mx From wstring\nwstring: %s\nc_16:%s\n", str.c_str(), c_16.data());
+
+			mxArray* testchar = mxCreateString("test123");
+			mexPrintf("testchar: %s\n", mxGetChars(testchar));
+
+			mxDestroyArray(testchar);
+
+			
+
+			
+			memcpy((void*)pData, (const void*)c_16.data(), sizeof(char16_t) * str.size());
+			
+
+			
+#else
+			memcpy((void*)pData, (const void*)str.data(), sizeof(char16_t) * str.size());
+#endif
+			mexPrintf("pdata after: %s\n", mxGetChars(_mxptr));
+		}
+
+		//! assign from wstring
+		virtual MxObject& operator=(const std::wstring& str) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+
+			size_t sz[] = { 1,str.size() };
+			_mxptr = mxCreateCharArray(2, sz);
+
+
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
+
+
+			mxChar* pData = mxGetChars(_mxptr);
+
+#ifndef _WIN32
+			//copy values into char array
+			std::string c_16 = std::wstring_convert<std::codecvt_utf16<wchar_t, 0x10ffff,std::little_endian>>().to_bytes(str);
+
+
+
+			memcpy((void*)pData, (const void*)c_16.data(), sizeof(char16_t) * str.size());
+#else
+			memcpy((void*)pData, (const void*)str.data(), sizeof(char16_t) * str.size());
+#endif
+			return *this;
+		}*/
+
+
 
 		//! Construct from double scalar
 		MxObject(double val) {

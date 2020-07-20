@@ -13,8 +13,8 @@ namespace extras {
 	// enumeration of standard numeric value types
 	// if mxClassID is defined then the varous mxXXX_CLASS define are valid candicates for conversion
 	enum valueType {
-		vt_undefined = 0,
-#ifdef mex_typedefs_h //mxClassID defined
+		vt_undefined = (uint8_t)0,
+#if defined(mex_h) || defined(mex_typedefs_h) //mxClassID defined
 		vt_double = mxClassID::mxDOUBLE_CLASS,
 		vt_float = mxClassID::mxSINGLE_CLASS,
 		vt_int8 = mxClassID::mxINT8_CLASS,
@@ -41,7 +41,7 @@ namespace extras {
 #endif //End #ifdef mxClassID
 	};
 
-#ifdef mex_typedefs_h
+#if defined(mex_h) || defined(mex_typedefs_h) //mex_typedefs_h
 	valueType mxClassID2valueType(mxClassID cid) {
 		switch (cid) {
 		case mxDOUBLE_CLASS:
@@ -86,6 +86,11 @@ namespace extras {
 			}
 			_ValueType = vt;
 		}
+#if defined(mex_h) || defined(mex_typedefs_h) //mex_typedefs_h
+		void changeValueType(mxClassID id) {
+			changeValueType((valueType)id);
+		}
+#endif //end_mex_typedefs_h
 
 #ifdef mex_typedefs_h
 		void changeValueType(mxClassID ct) {
