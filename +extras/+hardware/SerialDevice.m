@@ -9,18 +9,100 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
         Port = '';
     end
     
+    %% scom properties
     properties (SetAccess=protected,Hidden=true)
         scom = [];
         
-        BaudRate = 9600;
-        DataBits = 8;
-        StopBits = 1;
-        Parity = 'none';
-        Terminator = 'CR';
+        BaudRate (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 9600;
+        DataBits (1,1) double {mustBeMember(DataBits,[5,6,7,8])}= 8;
+        StopBits (1,1) double {mustBeMember(StopBits,[1,1.5,2])}= 1;
+        Parity (1,:) char {mustBeMember(Parity,{'none','odd','even','mark','space'})} = 'none';
+        Terminator (1,:) char = 'CR';
         
-        BytesAvailableFcnMode = 'terminator';
-        Timeout = 10;
-        ByteOrder = 'littleEndian';
+        BytesAvailableFcnMode (1,:) char {mustBeMember(BytesAvailableFcnMode,{'terminator','byte'})}= 'terminator';
+        BytesAvailableFcnCount (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 48;
+        Timeout (1,1) double {mustBePositive} = 10;
+        ByteOrder (1,:) char {mustBeMember(ByteOrder,{'littleEndian','bigEndian'})} = 'littleEndian';
+        
+        InputBufferSize (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 512;
+        ReadAsyncMode (1,:) char {mustBeMember(ReadAsyncMode,{'continuous','manual'})} = 'continuous';
+        
+        OutputBufferSize (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 512;
+        
+    end
+    methods %set methods for scom properties
+        function set.BaudRate(this,value)
+            if ~isempty(this.scom)
+                this.scom.BaudRate = value;
+            end
+            this.BaudRate = value;
+        end
+        function set.DataBits(this,value)
+            if ~isempty(this.scom)
+                this.scom.DataBits = value;
+            end
+            this.DataBits = value;
+        end
+        function set.StopBits(this,value)
+            if ~isempty(this.scom)
+                this.scom.StopBits = value;
+            end
+            this.StopBits = value;
+        end
+        function set.Parity(this,value)
+            if ~isempty(this.scom)
+                this.scom.Parity = value;
+            end
+            this.Parity = value;
+        end
+        function set.Terminator(this,value)
+            if ~isempty(this.scom)
+                this.scom.Terminator = value;
+            end
+            this.Terminator = value;
+        end
+        function set.BytesAvailableFcnMode(this,value)
+            if ~isempty(this.scom)
+                this.scom.BytesAvailableFcnMode = value;
+            end
+            this.BytesAvailableFcnMode = value;
+        end
+        function set.BytesAvailableFcnCount(this,value)
+            if ~isempty(this.scom)
+                this.scom.BytesAvailableFcnCount = value;
+            end
+            this.BytesAvailableFcnCount = value;
+        end
+        function set.Timeout(this,value)
+            if ~isempty(this.scom)
+                this.scom.Timeout = value;
+            end
+            this.Timeout = value;
+        end
+        function set.ByteOrder(this,value)
+            if ~isempty(this.scom)
+                this.scom.ByteOrder = value;
+            end
+            this.ByteOrder = value;
+        end
+        function set.InputBufferSize(this,value)
+            if ~isempty(this.scom)
+                this.scom.InputBufferSize = value;
+            end
+            this.InputBufferSize = value;
+        end
+        function set.ReadAsyncMode(this,value)
+            if ~isempty(this.scom)
+                this.scom.ReadAsyncMode = value;
+            end
+            this.ReadAsyncMode = value;
+        end
+        function set.OutputBufferSize(this,value)
+            if ~isempty(this.scom)
+                this.scom.OutputBufferSize = value;
+            end
+            this.OutputBufferSize = value;
+        end
     end
     
     properties (Dependent)
@@ -29,7 +111,6 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
     
     properties (Access=protected)
         BytesAvailableFcn;
-        
     end
     
     events
@@ -161,10 +242,13 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
                 'StopBits',this.StopBits,...
                 'Parity',this.Parity,...
                 'Terminator',this.Terminator,...
-                'ReadAsyncMode','continuous',...
                 'BytesAvailableFcnMode',this.BytesAvailableFcnMode,...
+                'BytesAvailableFcnCount',this.BytesAvailableFcnCount,...
                 'Timeout',this.Timeout,...
                 'ByteOrder',this.ByteOrder,...
+                'InputBufferSize',this.InputBufferSize,...
+                'ReadAsyncMode',this.ReadAsyncMode,...
+                'OutputBufferSize',this.OutputBufferSize,...
                 'BytesAvailableFcn',@(so,evt) this.evalSerialCallback(so,evt));
 
             try
@@ -303,6 +387,11 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
     %% overload these functions to change behavior
     methods (Access=protected)
         function validateConnection(this)
+        % Called when ConnectCOM has successfully created com port
+        % connection, but before this.connected is set to true.
+        % overload this function to throw errors if there is a problem with
+        % the serial device (e.g. it doesn't respond to a certain command,
+        % etc.)
             %do nothing
         end
     end
