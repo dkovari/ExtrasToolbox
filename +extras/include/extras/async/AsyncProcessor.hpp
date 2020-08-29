@@ -18,6 +18,7 @@ All rights reserved.
 namespace extras{namespace async{
 
     //! Abstract class defining an Asynchronous Processor object
+    //template< class TaskType = cmex::mxArrayGroup, class ResultsType = cmex::mxArrayGroup>
     class AsyncProcessor{
     protected:
 

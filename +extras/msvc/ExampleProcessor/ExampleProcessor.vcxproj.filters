@@ -84,6 +84,21 @@
     <ClInclude Include="..\..\include\extras\async\AsyncProcessorWithWriter.hpp">
       <Filter>Includes\extras\async</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\assert.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\numeric.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\stacktrace_error.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\StackTraceGenerator.hpp">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\strhash.h">
+      <Filter>Includes\extras</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\+Async\+Example\ExampleProcessor.cpp">

@@ -57,7 +57,6 @@ namespace extras {namespace async {
 				if (results.size()>0) {
 					//_APWW_pushed++;
 					if (_SaveResults) { //write data if needed
-
 						_AsyncWriter.writeArrays(results.size(), results);
 					}
 

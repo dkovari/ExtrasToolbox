@@ -20,7 +20,15 @@ All rights reserved.
 
 namespace extras{namespace SessionManager{
 
-
+	/** ObjectManager Class used for creating and returning a reusable pointer to MATLAB
+	* This is a template class, which expects a template type of Obj. 
+	* The manager creates a shared pointer from a traditional pointer and stores that shared_pointer in 
+	* in map. The 64-git interger key value uniquiely identifying the shared_ptr is then returned to MATLAB/
+	^
+	* ObjectManager is used in conjunction with mexInterface which is responsible for creating the initial object/traditional pointer.
+	* The reason ObjectManager doesn't handle object creation on its own is because we want to preserve the option of 
+	* instantiating different types of object using different construct arguments.
+	*/
 	template <class Obj>
 	class ObjectManager{//: virtual public ObjectManager_Base {
 	protected:

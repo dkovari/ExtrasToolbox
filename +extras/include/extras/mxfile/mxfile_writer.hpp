@@ -32,7 +32,7 @@ on your system.
 A version of ZLIB is included with the ExtrasToolbox located in
 .../+extras/external_libs/zlib
 Look at that folder for build instructions.
-Alternatively, is you are using a *nix-type system, you might have 
+Alternatively, if you are using a *nix-type system, you might have 
 better luck using your package manager to install zlib.
 
 When building, be sure to include the location of zlib.h and to link to the 

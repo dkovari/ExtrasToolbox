@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\extras\Array.hpp" />
     <ClInclude Include="..\..\include\extras\ArrayBase.hpp" />
+    <ClInclude Include="..\..\include\extras\assert.hpp" />
     <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp" />
     <ClInclude Include="..\..\include\extras\async\AsyncProcessorWithWriter.hpp" />
     <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp" />
@@ -24,9 +25,13 @@
     <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
     <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
     <ClInclude Include="..\..\include\extras\MatlabTime.hpp" />
+    <ClInclude Include="..\..\include\extras\numeric.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
+    <ClInclude Include="..\..\include\extras\StackTraceGenerator.hpp" />
+    <ClInclude Include="..\..\include\extras\stacktrace_error.hpp" />
+    <ClInclude Include="..\..\include\extras\strhash.h" />
     <ClInclude Include="..\..\include\extras\string_extras.hpp" />
     <ClInclude Include="..\..\include\extras\traspose.hpp" />
   </ItemGroup>

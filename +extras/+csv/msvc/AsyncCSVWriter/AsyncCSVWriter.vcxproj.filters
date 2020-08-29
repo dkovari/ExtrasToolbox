@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Include\async">
+      <UniqueIdentifier>{3ae94b07-c521-4e87-bf73-1249947bb289}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\abstract">
+      <UniqueIdentifier>{9ad5522a-0343-4050-acc3-d6fe45bc8315}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\fileio">
+      <UniqueIdentifier>{d4f591b5-d8ad-49ac-a2af-32feb2f92f41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\cmex">
+      <UniqueIdentifier>{315833db-a325-4370-99e0-c33a9f64e95f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\include\extras\async\AsyncProcessor.hpp">
+      <Filter>Include\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\abstract\FileWriter.hpp">
+      <Filter>Include\abstract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\fileio\FileHandler.hpp">
+      <Filter>Include\fileio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\fileio\AsyncFile.hpp">
+      <Filter>Include\fileio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\mexextras.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\mxArrayGroup.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\MxCellArray.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\mxClassIDhelpers.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\mxobject.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\mxobject_old.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\mxparamparse.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\MxStruct.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\MxWrapper.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\NumericArray - Copy.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\NumericArray.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\NumericArray_orig.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\PersistentMxArray.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\PersistentMxMap.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\cmex\type2ClassID.hpp">
+      <Filter>Include\cmex</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
