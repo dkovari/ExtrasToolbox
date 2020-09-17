@@ -50,7 +50,7 @@ namespace extras {namespace fileio {
 			std::string function_name = cmex::getstring(args[0]);
 
 			switch (strhash(function_name.c_str())) {
-			case strhash("fprintf"): //Reproduce MATLAB fprintf behavior (i,e. do not error throws for mismatch between format and arguments)
+			case strhash("fprintf"): //Reproduce MATLAB fprintf behavior (i.e. do not throw error for mismatch between format and arguments)
 			{
 				if (args.size() < 2) {
 					throw(std::runtime_error("AsyncFile::fprintf() not enough input arguments."));
@@ -63,7 +63,6 @@ namespace extras {namespace fileio {
 				}
 				std::string format = cmex::getstring(args[1]); //get format string
 
-				
 				Result(0, "ftell_before") = ftell(_pFile); //get file position before we write
 				size_t ret_chars = 0; //number of characters printed to the file.
 
@@ -192,17 +191,44 @@ namespace extras {namespace fileio {
 							//if not more args, return
 							//if this argument is empty, skip
 							//if %s type, printout entire argument, otherwise just print single element
-							if (args.size() <= current_arg) {//no more args, return
+							if (current_arg >= args.size()) {//no more args, return
 								Result(0, "warning") = "Additional intems in format string but not enough arguments. End fprintf early.";
 								Result(0, "ftell_after") = ftell(_pFile);
 								return;
 							}
 							else if (thisCtrl.back() == 's') {
 
+
+								if (mxIsChar(args[current_arg])) {
+									fprintf(_pFile, thisCtrl.c_str(), &(cmex::getstring(args[current_arg]).c_str()[current_arg_element]));
+									current_arg_element = mxGetNumberOfElements(args[current_arg]) - 1;
+								}
+								else if (mxIsComplex(args[current_arg])) {
+									Result(0, "warning") = "fprintf of Complex data NOT SUPPORTED...YET.... End fprintf early.";
+									Result(0, "ftell_after") = ftell(_pFile);
+									return;
+								}
+								else {
+									throw(std::runtime_error("fprintf with %s control character and non-char data NOT SUPPORTED...DAN FIX ME"));
+								}
 							}
 							else {
-
+								if (mxIsComplex(args[current_arg])) {
+									Result(0, "warning") = "fprintf of Complex data NOT SUPPORTED...YET.... End fprintf early.";
+									Result(0, "ftell_after") = ftell(_pFile);
+									return;
+								}
 							}
+
+
+							//Increment element and/or arg
+							current_arg_element++;
+							if (current_arg_element >= mxGetNumberOfElements(args[current_arg]) ){
+								current_arg_element = 0;
+								current_arg++;
+							}
+							
+							cat_more = current_arg < args.size(); //still have more args to process
 
 						}
 					}

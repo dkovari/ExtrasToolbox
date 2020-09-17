@@ -56,7 +56,7 @@ classdef JenaPiezo < extras.hardware.abstract.ObjectiveScanner & extras.hardware
             this.Terminator = 'CR/LF';
             
             %% Subscribe to ByteAvailable Notifications
-            this.DataListener = addlistener(this,'DataRecieved',@(~,~) this.ParseMessage);
+            this.DataListener = addlistener(this,'DataReceived',@(~,~) this.ParseMessage);
             
             %% Subscribe to Connection changes
             this.ConnectListener = addlistener(this,'connected','PostSet', @(~,~) this.ConnectChange());

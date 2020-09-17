@@ -27,6 +27,8 @@ classdef ComSelectorUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox
         
         SerialDeleteListener
         ConnectedListener
+        
+        SerialDeviceNameListener;
     end
     
     %% Create
@@ -91,6 +93,11 @@ classdef ComSelectorUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox
             %look for parent specified in arguments
             varargin = this.CheckParentInput(varargin{:});
             
+            %% if created parent, set listener to change title when device title changes
+            if this.CreatedParent
+                this.SerialDeviceNameListener = addlistener(serialdevice,'DeviceName','PostSet',@(~,~) set(this.Parent,'Name',[serialdevice.DeviceName,' COM Selector']));
+            end
+            
             %% Set Serial Device
             this.serialdevice = serialdevice;
             %% Create GUI Elements
@@ -149,6 +156,7 @@ classdef ComSelectorUI < extras.GraphicsChild & extras.RequireGuiLayoutToolbox
         end
         
         function delete(this)
+            delete(this.SerialDeviceNameListener);
             delete(this.SerialDeleteListener);
             delete(this.ConnectedListener);
             

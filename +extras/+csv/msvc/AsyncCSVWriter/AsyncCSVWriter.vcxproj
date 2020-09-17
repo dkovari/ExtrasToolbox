@@ -47,14 +47,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ExtrasToolboxPath)\+csv</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+csv\</OutDir>
     <TargetName>$(ProjectName)_mex</TargetName>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <TargetExt>.mexw64</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ExtrasToolboxPath)\+csv</OutDir>
+    <OutDir>$(ExtrasToolboxPath)\+csv\</OutDir>
     <TargetName>$(ProjectName)_mex</TargetName>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <TargetExt>.mexw64</TargetExt>
@@ -63,7 +63,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MATLAB_DEFAULT_RELEASE=R2017b;USE_MEX_CMD;MATLAB_MEX_FILE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -78,7 +78,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MATLAB_DEFAULT_RELEASE=R2017b;USE_MEX_CMD;MATLAB_MEX_FILE;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -92,6 +92,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\include\extras\abstract\FileWriter.hpp" />
     <ClInclude Include="..\..\..\include\extras\async\AsyncProcessor.hpp" />
+    <ClInclude Include="..\..\..\include\extras\async\ParamProcessor_nowriter.hpp" />
     <ClInclude Include="..\..\..\include\extras\cmex\mexextras.hpp" />
     <ClInclude Include="..\..\..\include\extras\cmex\mxArrayGroup.hpp" />
     <ClInclude Include="..\..\..\include\extras\cmex\MxCellArray.hpp" />
@@ -107,8 +108,12 @@
     <ClInclude Include="..\..\..\include\extras\cmex\PersistentMxArray.hpp" />
     <ClInclude Include="..\..\..\include\extras\cmex\PersistentMxMap.hpp" />
     <ClInclude Include="..\..\..\include\extras\cmex\type2ClassID.hpp" />
+    <ClInclude Include="..\..\..\include\extras\fileio\AsyncCSVWriter.hpp" />
     <ClInclude Include="..\..\..\include\extras\fileio\AsyncFile.hpp" />
     <ClInclude Include="..\..\..\include\extras\fileio\FileHandler.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\AsyncCSVWriter_mex.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

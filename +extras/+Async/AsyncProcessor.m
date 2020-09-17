@@ -421,6 +421,12 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
         % cancel remaining tasks
             this.runMethod('cancelRemainingTasks');
         end
+        
+        function cancelNextTasks(this)
+        % cancel remaining tasks
+            this.runMethod('cancelNextTask');
+        end
+
     end
 
 

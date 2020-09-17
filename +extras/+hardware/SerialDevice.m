@@ -1,8 +1,39 @@
-classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
+classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName & matlab.mixin.CustomDisplay
 %% simple class for managing a single serial device
 % extend this class to add functionality
 %% Copyright 2019 Daniel T. Kovari, Emory University
-%   All rights reserved.   
+%   All rights reserved.
+        
+    %% Customize Object Display
+    methods (Access=protected)
+        function pg = getPropertyGroups(this)
+            if ~isscalar(this)
+                pg = getPropertyGroups@matlab.mixin.CustomDisplay(this);
+            else
+                %% Basic:
+                pg = getPropertyGroups@matlab.mixin.CustomDisplay(this);
+                [pg.Title] = deal(...
+                            sprintf(['\tProperties (Public Visible):',...
+                                   '\n\t----------------------------']));
+                %% Serial Interface Properties
+                titleTxt = sprintf(['\n\tSerial Interface Properties (Internal Use):',...
+                                    '\n\t-------------------------------------------']);
+                pg = [pg,matlab.mixin.util.PropertyGroup({...
+                    'BaudRate',...
+                    'DataBits',...
+                    'StopBits',...
+                    'Parity',...
+                    'Terminator',...
+                    'BytesAvailableFcnMode',...
+                    'BytesAvailableFcnCount',...
+                    'Timeout',...
+                    'ByteOrder',...
+                    'InputBufferSize',...
+                    'ReadAsyncMode',...
+                    'OutputBufferSize'},titleTxt)];
+            end
+        end
+    end
 
     %% Properties
     properties (SetAccess=protected)
@@ -11,12 +42,13 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
     
     %% scom properties
     properties (SetAccess=protected,Hidden=true)
-        scom = [];
-        
-        BaudRate (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 9600;
-        DataBits (1,1) double {mustBeMember(DataBits,[5,6,7,8])}= 8;
-        StopBits (1,1) double {mustBeMember(StopBits,[1,1.5,2])}= 1;
-        Parity (1,:) char {mustBeMember(Parity,{'none','odd','even','mark','space'})} = 'none';
+        scom = []; %internal serial com object, not pubically editable
+    end
+    properties (Hidden=true) %% SCOM interface props, should only be changed if you know what you're doing
+        BaudRate (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 9600; %Baud rate of serial connection
+        DataBits (1,1) double {mustBeMember(DataBits,[5,6,7,8])}= 8; %data bit length of serial connection
+        StopBits (1,1) double {mustBeMember(StopBits,[1,1.5,2])}= 1; %number of stop bits 
+        Parity (1,:) char {mustBeMember(Parity,{'none','odd','even','mark','space'})} = 'none'; %parity 
         Terminator (1,:) char = 'CR';
         
         BytesAvailableFcnMode (1,:) char {mustBeMember(BytesAvailableFcnMode,{'terminator','byte'})}= 'terminator';
@@ -114,7 +146,7 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
     end
     
     events
-        DataRecieved
+        DataReceived
     end
     
     properties (SetAccess=protected,SetObservable=true,AbortSet=true)
@@ -318,7 +350,7 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
                 warning('Error occured in serial callback, catching and throwing warning so that serial object does not disable callbacks');
             end
             
-            notify(this,'DataRecieved',extras.hardware.serialevent(so,evt))
+            notify(this,'DataReceived',extras.hardware.serialevent(so,evt))
             
         end
     end

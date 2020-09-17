@@ -13,7 +13,7 @@ classdef GenericEvent < event.EventData & dynamicprops
         %   GenericEvent(__,CELL_STR): construct event with properties
         %       specified by names in char arrays
         %   GenericEvent(__,'Name',Value,...): constuct event with
-        %       propertie names set by 'Name' fields and Values for those
+        %       property names set by 'Name' fields and Values for those
         %       properties set by the repective Value
         
             %% Handle no input

@@ -84,5 +84,16 @@
     <ClInclude Include="..\..\..\include\extras\cmex\type2ClassID.hpp">
       <Filter>Include\cmex</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\fileio\AsyncCSVWriter.hpp">
+      <Filter>Include\fileio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\extras\async\ParamProcessor_nowriter.hpp">
+      <Filter>Include\async</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\AsyncCSVWriter_mex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

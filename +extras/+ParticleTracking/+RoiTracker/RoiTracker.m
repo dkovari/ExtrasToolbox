@@ -5,7 +5,7 @@ classdef RoiTracker < extras.Async.ParameterProcessor
 %   ImageStruct.Time: scalar double indicating timestamp of image in MATLAB
 %                     datenum format
 %
-% RoiTracker uses Parameters (see setParameter) to determing tracking
+% RoiTracker uses Parameters (see setParameter) to determine tracking
 % regions.
 %   You should pass a struct array roiList specifying which regions in an
 %   image should be tracked. See extras.roi.roiObject for details

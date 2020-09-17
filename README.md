@@ -32,6 +32,12 @@ See .../+extras/external_libs/zlib/build_instructions.txt for details.
 
 Also see zlib site: https://www.zlib.net/
 
+Some of the MEX functions in this library also rely upon Boost C++ see(https://www.boost.org).
+On Linux/Unix/Mac, it is easiest to install the boost library using your package manager of choice.
+On windows, if you are planning to use the included Visual Studio projects, you will need to download boost and set an enviroment variable called:
+BOOST_DIR
+which points to the folder you placed library files (e.g. c:\boost\boost_1_74_0)
+
 ## Documentation
 Documentation for the entire toolbox should be found in ExtrasToolbox/docs. However, you can also build the documentation using extras.docgenerator().
 

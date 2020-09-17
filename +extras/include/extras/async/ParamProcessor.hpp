@@ -107,9 +107,9 @@ namespace extras {namespace async {
 
 		// add or replace persistent perameters
 		virtual void setParameters(size_t nrhs, const mxArray* prhs[]) {
-			if (nrhs % 2 != 0) {
+			/*if (nrhs % 2 != 0) {
 				throw(std::runtime_error("ParamProcessor::setParameters() number of args must be even (specified as Name,Value pairs)."));
-			}
+			}*/
 			std::shared_ptr<extras::cmex::ParameterMxMap> newMap = std::make_shared<extras::cmex::ParameterMxMap>(); // create new, empty parameter map;
 			if (_pMap) { //_pMap is not nullptr
 				newMap = std::make_shared<extras::cmex::ParameterMxMap>(*_pMap); // make a copy of the parametermap
