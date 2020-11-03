@@ -82,7 +82,7 @@ namespace extras{namespace async{
 			return true;
 		}
 
-        /** Method called in processing thread to execute tasks
+R        /** Method called in processing thread to execute tasks
 		* Calls ProceesLoopCore() and catches any errors thrown
 		* You probably don't need to overload this function
 		*
