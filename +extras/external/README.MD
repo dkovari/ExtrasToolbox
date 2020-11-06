@@ -1,8 +1,12 @@
 ## +extras/external
-This directory contains links/subtrees/submodules to other projects, this library depends on
+This directory contains links/subtrees/submodules to other projects, this library depends on.
+If you are cloning ExtrasToolbox from scratch, be sure to run:
+`git submodule init`
+`git submodule update`
+This will download the submodule files.
 # Dependencies
 * Extras: Submodule pointing to github.com/dkovari/Extras C++ extras library repository.
-	- Setup with Junctions to existing Extras .git repo:
+	- (Optional) Setup with Junctions to existing Extras .git repo:
 	1) after cloning the ExtrasToolbox, go to this directory and replace Extras folder with junction link to the path of the externally cloned Extras repo.
 	2) go to ExtrasToolbox/.git/modules/+extras/external/
 	3) remove ExtrasToolbox/.git/modules/+extras/external/Extras

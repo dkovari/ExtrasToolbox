@@ -33,7 +33,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsyncMxFileReader", "..\+mx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsyncMxFileWriter", "..\+mxfile\msvc\AsyncMxFileWriter.vcxproj", "{2C8D4DD0-1AC1-4822-A67D-B1540EF74B59}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StackWalker", "..\include\StackWalker\StackWalker.vcxproj", "{9225ED44-E82A-4E08-B7D5-553F3512FE21}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StackWalker", "..\external\Extras\external\StackWalker\StackWalker.vcxproj", "{9225ED44-E82A-4E08-B7D5-553F3512FE21}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RoiTracker3D", "..\+ParticleTracking\+RoiTracker\msvc\RoiTracker3D\RoiTracker3D.vcxproj", "{13C8E17C-7159-40C8-8C88-0A824A96FF21}"
 EndProject

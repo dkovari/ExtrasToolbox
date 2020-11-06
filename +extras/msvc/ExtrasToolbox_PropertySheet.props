@@ -2,15 +2,18 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-	<ExtrasToolboxPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))..\</ExtrasToolboxPath>
-    <ExtrasInclude>$(ExtrasToolboxPath)include</ExtrasInclude>
+	<ExtrasToolboxPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))..</ExtrasToolboxPath>
+    <ExtrasToolboxInclude>$(ExtrasToolboxPath)\include</ExtrasToolboxInclude>
+	<ExtrasPath>$(ExtrasToolboxPath)\external\Extras</ExtrasPath>
+	<ExtrasInclude>$(ExtrasToolboxPath)\external\Extras\include</ExtrasInclude>
+	<ExtrasLib>$(ExtrasToolboxPath)\external\Extras\lib</ExtrasLib>
   </PropertyGroup>
   <PropertyGroup>
-    <IncludePath>$(ExtrasInclude);$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasToolboxInclude);$(ExtrasInclude);$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalLibraryDirectories>$(ExtrasInclude)\StackWalker\$(Platform)\$(Configuration);$(MATLAB_ROOT)\extern\lib\win64\microsoft;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ExtrasPath)\external\StackWalker\$(Platform)\$(Configuration);$(MATLAB_ROOT)\extern\lib\win64\microsoft;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>StackWalker.lib;libmx.lib;libmex.lib;libmat.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
@@ -22,8 +25,20 @@
       <Value>$(ExtrasToolboxPath)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
-    <BuildMacro Include="ExtrasInclude">
+    <BuildMacro Include="ExtrasToolboxInclude">
+      <Value>$(ExtrasToolboxInclude)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+	<BuildMacro Include="ExtrasPath">
+      <Value>$(ExtrasPath)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+	<BuildMacro Include="ExtrasInclude">
       <Value>$(ExtrasInclude)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+	<BuildMacro Include="ExtrasLib">
+      <Value>$(ExtrasLib)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
   </ItemGroup>
