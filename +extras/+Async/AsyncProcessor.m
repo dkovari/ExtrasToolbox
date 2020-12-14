@@ -98,6 +98,20 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
             end
             this.clearError();
         end
+        
+        function tf = wasErrorThrown(this)
+        % T/F is error was thrown
+            tf = this.runMethod('wasErrorThrown');
+        end
+        function err = getError(this)
+        % Get error from processor, if no error was thrown err is empty
+        % clears the error buffer after calling
+            err = this.runMethod('getError');
+        end
+        function clearError(this)
+        % clear error flag and error struct from buffer
+            this.runMethod('clearError');
+        end
     end
     methods (Hidden) %ErrorCheckTimer callback
         function ErrorCheckTimerCallback(this)
@@ -327,20 +341,6 @@ classdef (Abstract) AsyncProcessor < extras.SessionManager.Session & extras.Queu
         function clearResults(this)
             this.runMethod('clearResults');
         end
-        function tf = wasErrorThrown(this)
-        % T/F is error was thrown
-            tf = this.runMethod('wasErrorThrown');
-        end
-        function err = getError(this)
-        % Get error from processor, if no error was thrown err is empty
-        % clears the error buffer after calling
-            err = this.runMethod('getError');
-        end
-        function clearError(this)
-        % clear error flag and error struct from buffer
-            this.runMethod('clearError');
-        end
-        
         function uiPromptToClearTasks(this)
             if this.RemainingTasks>0
             	this.resume(); %restart processor if it was stopped

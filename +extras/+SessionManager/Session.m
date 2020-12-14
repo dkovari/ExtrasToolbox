@@ -6,13 +6,25 @@ classdef Session < handle
 % Mex function should be written using the framework included in
 % mexDispatch.h and ObjectManager.h
 %
-% NOTE: Do not use Session objects in a diamon hierarchy.
-%       The destruct for every initialized Session object must be called,
-%       otherwise the c++ objects created by the mex file will not be
-%       destroyed and the mex file cannot be cleared.
-%       If a diamond is used, then multiple Session objects will
-%       be created, but only one may be deleted, meaning there will be an
-%       unreferenceable c++ object floating around.
+% NOTE: If using Session in a diamond inheritance structure, be sure to
+%  pass the constructor arguments to ONLY ONE of the parent classes
+%  inheriting from extras.SessionManager.Session.
+%  For example:
+%      classdef B < extras.SessionManager.Session
+%           ...
+%
+%       classdef C < extras.SessionManager.Session
+%           ...
+%
+%       classdef D < B & C
+%           methods
+%               function this = D()
+%                   this@C(); 
+%                   this@B(@YOUR_MEX_FUNCTION,...args...);
+%                   ...
+%               end
+%           end
+%       end
 %
 % Example C++ Code
 %=================================
@@ -59,8 +71,11 @@ classdef Session < handle
 
     
     properties(SetAccess=private,Hidden)
-        intPointer = 0;
-        MEX_function;
+        intPointer = 0; %UINT66_T value storing address (uint64_ptr) of the associated mex object
+        MEX_function; %function handle for mexFunction managing the mex object
+    end
+    properties(SetAccess=private)
+         SESSION_OBJECT_FULLY_CONSTRUCTED (1,1) logical = false; %flag indicating if mex object has been fully constructed.
     end
     
     %% Change MEX_function
@@ -88,6 +103,26 @@ classdef Session < handle
     %% Create/Delete
     methods
         function this = Session(MEX_NAME,varargin)
+        % SESSION Construct instance of this class, and creates
+        % corresponding mex object using the mexInterface function
+        % specified by MEX_NAME
+        % Input Arguments:
+        %   MEX_NAME - Funciton handle or char array
+        %   [...] - Additional arguments are passed to mex object
+        %   constructor
+        % NOTE:
+        %   DO NOT SPECIFY ARGUMENTS if inheriting in a diamond.
+        %   If you have a "diamond" inheritance structure (e.g. D<B,C; B<A; C<A), MATLAB creates
+        %   two instances of the initial base class (A in example);
+        %   however, it does not delete the initially created extra object.
+        %   To avoid problems with extra mex objects floating around,
+        %   constructing Session without any arguments does not set the
+        %   MEX_FUNCTION and DOES NOT create the mex object.
+        
+            if nargin<1
+                return;
+            end
+            
             assert(isa(MEX_NAME,'function_handle')||...
                 exist(MEX_NAME,'file')==3,...
                 'MEX_NAME must be a function handle to a mex function or the name of a mex function');
@@ -99,9 +134,14 @@ classdef Session < handle
             end
             
             this.intPointer = this.MEX_function('new',varargin{:});
+            
+            this.SESSION_OBJECT_FULLY_CONSTRUCTED = true;
         end
         
         function delete(this)
+            if ~this.SESSION_OBJECT_FULLY_CONSTRUCTED
+                return;
+            end
             this.MEX_function('delete',this.intPointer);
         end
     end
@@ -109,6 +149,10 @@ classdef Session < handle
     %% Run Method
     methods(Hidden)
         function varargout = runMethod(this,METHOD_NAME,varargin)
+            if(~this.SESSION_OBJECT_FULLY_CONSTRUCTED)
+                warning('Session Object has not been fully constructed. Cannot run method');
+                return;
+            end
             assert(ischar(METHOD_NAME),'METHOD_NAME should be a char array specifying method name');
             try
                 [varargout{1:nargout}] = this.MEX_function(METHOD_NAME,this.intPointer,varargin{:});
@@ -140,6 +184,7 @@ classdef Session < handle
             end
             
             this.intPointer = this.MEX_function('new',varargin{:});
+            this.SESSION_FULLY_CONSTRUCTED = true;
         end
     end
 end

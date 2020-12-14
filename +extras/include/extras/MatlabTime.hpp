@@ -9,7 +9,6 @@
 
 namespace extras{
     double matlab_now(){
-
         std::chrono::time_point<std::chrono::system_clock> p1, p2;
         std::time_t epoch_time = std::chrono::system_clock::to_time_t(p1);
         p2 = std::chrono::system_clock::now();
@@ -35,6 +34,30 @@ namespace extras{
     )/1000/(24*3600);
 
     return out;
+    }
+
+    template <class durationType>
+    double matlab_datenum(std::chrono::time_point < std::chrono::system_clock, durationType> tp) {
+        std::chrono::time_point < std::chrono::system_clock, durationType> p0;
+        std::time_t epoch_time = std::chrono::system_clock::to_time_t(p0);
+
+        std::tm* epoch_tm = std::localtime(&epoch_time);
+        double y_2001 = epoch_tm->tm_year - 101; //years since 2001
+        double out = double(
+            693961 //days from 0->1900
+            + 36524 + 366 // days from 1900->2001
+            + y_2001 * 365 + floor(y_2001 / 4.0) - floor(y_2001 / 100.0) + floor(y_2001 / 400.0) // days from 2001->start of current year
+            + ((double)epoch_tm->tm_yday) + 1 //days since jan 1, (including today)
+            + ((double)epoch_tm->tm_hour) / 24.0
+            + ((double)epoch_tm->tm_min) / (24.0 * 60.0)
+            + ((double)epoch_tm->tm_sec) / (24 * 3600)
+            );
+        //add milliseconds since epoch
+        out += double(
+            std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count()
+            ) / 1000 / (24 * 3600);
+
+        return out;
     }
 
     // Representation of standard (Gregorian) Date in Common Era (C.E. aka AD)

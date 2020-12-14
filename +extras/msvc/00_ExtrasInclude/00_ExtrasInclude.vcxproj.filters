@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox">
+      <UniqueIdentifier>{4c17cb6b-3a51-42bd-81c2-9efb09e1aa1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Extras">
+      <UniqueIdentifier>{c72c381c-f6eb-4642-8681-9b1623e7e536}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Extras\async">
+      <UniqueIdentifier>{a91fc55a-c77b-46b6-88ba-b0a49c59fb06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\abstract">
+      <UniqueIdentifier>{1fb9d4fc-6483-45f7-ae70-7bbc7dd8009c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\async">
+      <UniqueIdentifier>{c7fee63a-b023-4811-97ca-e92c1e34870e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\cmex">
+      <UniqueIdentifier>{ed61c6ba-2c73-49e5-8cfc-0393566c3bc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\fileio">
+      <UniqueIdentifier>{d358d647-5746-4cdb-9cb1-ec1bc58d44a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\mxfile">
+      <UniqueIdentifier>{38371c85-ebd2-4251-bfc0-5327a3abeaa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\SessionManager">
+      <UniqueIdentifier>{022beffc-7fe9-4f32-bb75-400d60561507}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\SessionManager\mixins">
+      <UniqueIdentifier>{004050c2-9def-4e73-b2b1-2abf9f5687ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\async\mixins">
+      <UniqueIdentifier>{c0a2cb62-8019-4260-a8d6-555963c1bd76}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\extras\MatlabTime.hpp">
+      <Filter>Header Files\ExtrasToolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\Array.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\ArrayBase.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\assert.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\CircularBuffer.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\exceptions.h">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\numeric.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\stacktrace_error.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\StackTraceGenerator.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\strhash.h">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\string_extras.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\traspose.hpp">
+      <Filter>Header Files\Extras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\async\AsyncProcessQueue.hpp">
+      <Filter>Header Files\Extras\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\external\Extras\include\extras\async\QueueProcessor.hpp">
+      <Filter>Header Files\Extras\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\abstract\FileWriter.hpp">
+      <Filter>Header Files\ExtrasToolbox\abstract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp">
+      <Filter>Header Files\ExtrasToolbox\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\AsyncProcessorWithWriter.hpp">
+      <Filter>Header Files\ExtrasToolbox\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\ParamProcessor.hpp">
+      <Filter>Header Files\ExtrasToolbox\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\ParamProcessor_nowriter.hpp">
+      <Filter>Header Files\ExtrasToolbox\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
+      <Filter>Header Files\ExtrasToolbox\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxobject_old.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\MxWrapper.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray - Copy.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\NumericArray_orig.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\PersistentMxMap.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp">
+      <Filter>Header Files\ExtrasToolbox\cmex</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\fileio\AsyncCSVWriter.hpp">
+      <Filter>Header Files\ExtrasToolbox\fileio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\fileio\AsyncFile.hpp">
+      <Filter>Header Files\ExtrasToolbox\fileio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\fileio\FileHandler.hpp">
+      <Filter>Header Files\ExtrasToolbox\fileio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\mxfile\mxfile_reader.hpp">
+      <Filter>Header Files\ExtrasToolbox\mxfile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\mxfile\mxfile_writer.hpp">
+      <Filter>Header Files\ExtrasToolbox\mxfile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h">
+      <Filter>Header Files\ExtrasToolbox\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp">
+      <Filter>Header Files\ExtrasToolbox\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterfaceManager.hpp">
+      <Filter>Header Files\ExtrasToolbox\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
+      <Filter>Header Files\ExtrasToolbox\SessionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\mixins\mexResultListInterface.hpp">
+      <Filter>Header Files\ExtrasToolbox\async\mixins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\mixins\mexTaskQueueInterface.hpp">
+      <Filter>Header Files\ExtrasToolbox\async\mixins</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\include\extras\SessionManager\mixins\ErrorHandlerInterface.hpp">
+      <Filter>Header Files\ExtrasToolbox\SessionManager\mixins</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

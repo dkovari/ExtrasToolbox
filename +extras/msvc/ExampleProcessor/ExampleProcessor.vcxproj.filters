@@ -99,6 +99,9 @@
     <ClInclude Include="..\..\include\extras\strhash.h">
       <Filter>Includes\extras</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterfaceManager.hpp">
+      <Filter>Includes\extras\SessionManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\+Async\+Example\ExampleProcessor.cpp">

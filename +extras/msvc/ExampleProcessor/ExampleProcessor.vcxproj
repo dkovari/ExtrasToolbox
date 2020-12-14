@@ -28,6 +28,7 @@
     <ClInclude Include="..\..\include\extras\numeric.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
+    <ClInclude Include="..\..\include\extras\SessionManager\mexInterfaceManager.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
     <ClInclude Include="..\..\include\extras\StackTraceGenerator.hpp" />
     <ClInclude Include="..\..\include\extras\stacktrace_error.hpp" />

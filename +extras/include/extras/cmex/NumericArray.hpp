@@ -247,7 +247,7 @@ namespace extras {namespace cmex {
 	//! Implements the ArrayBase<T> interface
 	//! NOTE: When creating integer type array be sure to specify the precision
 	//! e.g NumericArray<int32_t> because the type T=int is unsupported.
-	//! MATLAB does not have a default integet type therefore it does not make
+	//! MATLAB does not have a default integer type therefore it does not make
 	//! make sense to include it as an option.
 	//! NOTE:
 	//! If the

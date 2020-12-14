@@ -67,7 +67,8 @@ namespace extras {namespace cmex {
 			size_t oldNumel = numel();
 			size_t newNumel = extras::prod(dims);
 			
-			if (oldNumel >= newNumel) { //same size or smaller
+
+			if (oldNumel > newNumel) { //smaller
 				size_t elsz = mxGetElementSize(_mxptr);
 				void* newData = mxRealloc(mxGetData(_mxptr), newNumel*elsz);
 				mxSetData(_mxptr, newData);
@@ -75,6 +76,9 @@ namespace extras {namespace cmex {
 				if (_isPersistent) {
 					mexMakeMemoryPersistent(newData);
 				}
+			}
+			else if (oldNumel == newNumel) { //same size
+				mxSetDimensions(_mxptr, dims.data(), dims.size()); //change dim size
 			}
 			else { //bigger
 				mxArray* newPtr;
@@ -1252,6 +1256,19 @@ namespace extras {namespace cmex {
 			_managemxptr = true;
 
 			return *this;
+		}
+
+		//! construct from vector
+		template <typename T> MxObject(const std::vector<T>& vals) {
+			std::lock_guard<std::mutex> lock(_mxptrMutex); //lock _mxptr;
+			deletemxptr_nolock();
+
+			_mxptr = mxCreateNumericMatrix(vals.size(), 1, type2ClassID<T>(), mxREAL);
+			valueCopy((T*)mxGetData(_mxptr), vals.data(), vals.size());
+
+			_setFromConst = false;
+			_isPersistent = false;
+			_managemxptr = true;
 		}
 
 		//! assign from numeric vector

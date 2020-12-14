@@ -50,7 +50,7 @@ optimization_flags = {'-DNDEBUG -O2 -Oy -GL'};
 end
 
 %% Setup Include
-INCLUDE = {['-I',extras.IncludePath]};%
+INCLUDE = {['-I',extras.IncludePath],['-I',fullfile(extras.ToolboxPath,'external','Extras','include')]};%
 
 
 %% LIB
@@ -59,11 +59,14 @@ LIB_DIR = {};
 
 %% Add StackWalker Dependencies
 if ispc
-    if ~exist(fullfile(extras.IncludePath,'StackWalker','x64','Release','StackWalker.lib'),'file')
+	SW_path = fullfile(extras.ToolboxPath,'external','Extras','external','StackWalker');
+    INCLUDE
+    INCLUDE = [INCLUDE,['-I',fullfile(extras.ToolboxPath,'external','Extras','external')]];
+    if ~exist(fullfile(SW_path,'x64','Release','StackWalker.lib'),'file')
         %error('StackWalker.lib does not exist. You may need to build it.');
-        build_args.AuxSource = [build_args.AuxSource,fullfile(extras.IncludePath,'StackWalker','StackWalker.cpp')];
+        build_args.AuxSource = [build_args.AuxSource,fullfile(SW_path,'StackWalker.cpp')];
     else
-        LIB_DIR = [LIB_DIR,['-L',fullfile(extras.IncludePath,'StackWalker','x64','Release')]];
+        LIB_DIR = [LIB_DIR,['-L',fullfile(SW_path,'x64','Release')]];
         LIBS = [LIBS,'StackWalker.lib'];
     end
 end
