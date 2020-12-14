@@ -2,7 +2,7 @@
 Copyright 2019, Daniel T. Kovari, Emory University
 All rights reserved.
 ----------------------------------------------------*/
-#pragma once;
+#pragma once
 
 #include <extras/async/ParamProcessor.hpp>
 #include <extras/cmex/MxObject.hpp>
