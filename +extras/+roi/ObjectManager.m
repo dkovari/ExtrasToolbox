@@ -70,17 +70,17 @@ classdef (Abstract) ObjectManager < handle
     methods (Access=protected)
         
         function addToDeleteList(this,obj)
-            obj = unique(obj);
+            obj = unique(obj,'stable');
             for m=1:numel(this)
                 this(m).DeletableObjects(~isvalid(this(m).DeletableObjects)) = [];
-                this(m).DeletableObjects = union(this(m).DeletableObjects,obj);
+                this(m).DeletableObjects = union(this(m).DeletableObjects,obj,'stable');
             end
         end
         
         function removeFromDeleteList(this,obj)
-            obj = unique(obj);
+            obj = unique(obj,'stable');
             for m=1:numel(this)
-                this(m).DeletableObjects = setdiff(this(m).DeletableObjects,obj);
+                this(m).DeletableObjects = setdiff(this(m).DeletableObjects,obj,'stable');
             end
         end
         
@@ -102,7 +102,7 @@ classdef (Abstract) ObjectManager < handle
                 assert(all(size(obj) == size(DeleteObjs)),'DeleteObjs must logical and same size as obj');
             end
             
-            [obj,ia] = unique(obj);
+            [obj,ia] = unique(obj,'stable');
             DeleteObjs = DeleteObjs(ia);
             
             %% validate object types
@@ -115,10 +115,10 @@ classdef (Abstract) ObjectManager < handle
             end
             
             %% add
-            obj = unique(obj);
+            %obj = unique(obj,'stable');
             newObjs = obj;
             for m=1:numel(this)
-                [newObjs,ia] = setdiff(obj,this(m).ManagedObjects);
+                [newObjs,ia] = setdiff(obj,this(m).ManagedObjects,'stable');
                 newDeleteObjs = DeleteObjs(ia);
                 for n=1:numel(newObjs)
                     if isa(newObjs(n),'handle') %object is handle type, add listener for delete
@@ -126,7 +126,7 @@ classdef (Abstract) ObjectManager < handle
                         this(m).ObjectDeleteListeners = [this(m).ObjectDeleteListeners,lst];
                     end
                     if newDeleteObjs(n)
-                        this(m).DeletableObjects = union(this(m).DeletableObjects,newObjs(n));
+                        this(m).DeletableObjects = union(this(m).DeletableObjects,newObjs(n),'stable');
                     end
                 end
                 %add to list
@@ -141,9 +141,9 @@ classdef (Abstract) ObjectManager < handle
             % will be destroyed.
             
             obj = reshape(obj,1,[]);
-            obj = unique(obj);
+            obj = unique(obj,'stable');
             for m=1:numel(this)
-                this(m).ManagedObjects = setdiff(this(m).ManagedObjects,obj);
+                this(m).ManagedObjects = setdiff(this(m).ManagedObjects,obj,'stable');
                 
                 %% delete objects on the delete list
                 if ~isempty(this(m).DeletableObjects)

@@ -39,7 +39,10 @@ classdef roiManager < handle & extras.roi.ObjectManager
             
             %% Update ContextGenerators
             [~,id] = setdiff(oldList,newList);
-            delete(this.ContextGenerators(id)); %delete unused context generators;
+            try
+                delete(this.ContextGenerators(id)); %delete unused context generators;
+            catch
+            end
             CG = extras.roi.ContextGenerator.empty;
             CG(ib) = this.ContextGenerators(ia); %move existing context generators to new locations
             [~,ic] = setdiff(newList,oldList);
@@ -120,6 +123,12 @@ classdef roiManager < handle & extras.roi.ObjectManager
                 createdROI = true;
             end
             try
+                
+                if isnumeric(roi)
+                    roi = extras.roi.roiObject(roi);
+                    createdROI = true;
+                end
+                
                 roi(~isvalid(roi)) = [];
 
                 %% add

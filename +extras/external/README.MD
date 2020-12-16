@@ -11,4 +11,3 @@ This will download the submodule files.
 	2) go to ExtrasToolbox/.git/modules/+extras/external/
 	3) remove ExtrasToolbox/.git/modules/+extras/external/Extras
 	4) replace with a junction link to the location of the .git directory in the cloned Extras repo (e.g. mklink /J "[...]\ExtrasToolbox\.git\modules\+extras\external\Extras" "[...]\Extras\.git"
-Junction created for C:\Users\kovardx\OneDrive - Abbott\GitHub\ExtrasToolbox\.git\modules\+extras\external\Extras <<===>> C:\Users\kovardx\OneDrive - Abbott\GitHub\Extras\.git)
