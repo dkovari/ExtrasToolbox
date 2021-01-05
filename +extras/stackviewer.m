@@ -76,32 +76,41 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
         %XData
         %YData
     end
-    methods        
-        function val = get.CurrentImageData(this)
+    methods(Access=protected)
+        function val = getImageN(this,n)
+            %return n-th image in sequence
+            assert(isscalar(n)&&n>0&&n<=this.NumberOfFrames);
             
             if this.UseImageFiles
-                if isempty(this.StackData{this.CurrentFrame})
-                    if isfield(this.StackFileList,'folder')
-                        pth = fullfile(this.StackFileList(this.CurrentFrame).folder,this.StackFileList(this.CurrentFrame).name);
+                if isempty(this.StackData{n})
+                    if isfield(n,'folder')
+                        pth = fullfile(this.StackFileList(n).folder,this.StackFileList(n).name);
                     else
-                        pth = this.StackFileList(this.CurrentFrame).name;
+                        pth = this.StackFileList(n).name;
                     end
-                    this.StackData{this.CurrentFrame} = imread(pth);
+                    this.StackData{n} = imread(pth);
                 end
-                val = this.StackData{this.CurrentFrame};
+                val = this.StackData{n};
             elseif isempty(this.StackData)
                 val = [];
             elseif iscell(this.StackData)
-                val = this.StackData{this.CurrentFrame};
+                val = this.StackData{n};
             elseif isnumeric(this.StackData) && ndims(this.StackData)==3
-                val = this.StackData(:,:,this.CurrentFrame);
+                val = this.StackData(:,:,n);
             elseif isnumeric(this.StackData) && ndims(this.StackData)==4
-                val = this.StackData(:,:,:,this.CurrentFrame);
+                val = this.StackData(:,:,:,n);
             else
-                warning('StackData is not properly initialized, Current Frame cannot be returned');
+                warning('StackData is not properly initialized, Frame cannot be returned');
                 val = [];
             end
+            
         end
+    end
+    methods        
+        function val = get.CurrentImageData(this)
+            
+            val = this.getImageN(this.CurrentFrame);
+        end      
     end
     
     %% Internal Set
@@ -112,6 +121,61 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
         OuterVBox
         
         LevelsUI
+        
+    end
+    
+    %% COLOR LIM Properties
+    properties (Dependent)
+        CLim
+    end
+    properties (SetObservable=true)
+        CLimMode %Selection mode for axis CLIM. 'auto'==per-frame min/max, 'global'==per image set max/min, 'manual'==use axes CLimMode
+    end
+    properties (Access=protected)
+        CLimMode_Listener;
+    end
+    methods
+        function val = get.CLim(this)
+            val = this.ImageAxes.CLim;
+        end
+        function set.CLimMode(this,value)
+            value = validatestring(value,{'auto','global','manual'});
+            
+            % delete listener so that we don't call this when we change
+            % imageaxes climmode
+            try
+                delete(this.CLimMode_Listener);
+            catch
+            end
+            
+            if strcmpi(value,'global')
+                set(this.ImageAxes,'CLimMode','manual');
+                
+                %% compute global clim
+                if this.NumberOfFrames>0
+                    img_mn = Inf;
+                    img_mx = -Inf;
+                    for n = 1:this.NumberOfFrames
+                        img = this.getImageN(n);
+                        if(~ismatrix(img)) %rgb image
+                            img_mn = 0;
+                            img_mx = 1;
+                            set(this.ImageAxes,'CLimMode','auto');
+                            break;
+                        end
+                        img_mn = min(img_mn,min(img(:)));
+                        img_mx = max(img_mx,max(img(:)));
+                    end
+                    set(this.ImageAxes,'CLim',[img_mn,img_mx]);
+                end
+            else
+                set(this.ImageAxes,'CLimMode',value);
+            end
+            
+            this.CLimMode_Listener = addlistener(this.ImageAxes,'CLimMode','PostSet',@(h,~) set(this,'CLimMode',this.ImageAxes.CLimMode));
+            
+            this.CLimMode = value;
+        end
     end
     
     %% Create figure method
@@ -193,6 +257,8 @@ classdef stackviewer < extras.RequireGuiLayoutToolbox & extras.GraphicsChild
             end
             %Invert Y-axis for normal image display
             this.ImageAxes.YDir = 'reverse';
+            
+            this.CLimMode = this.ImageAxes.CLimMode;
 
             
             %Set heights

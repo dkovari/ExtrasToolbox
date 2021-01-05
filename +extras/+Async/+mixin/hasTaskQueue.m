@@ -52,6 +52,7 @@ classdef hasTaskQueue < extras.SessionManager.Session
         end
     end
     
+    
     methods(Access=protected)
         function uiPromptToClearTasks(this)
             if this.RemainingTasks>0

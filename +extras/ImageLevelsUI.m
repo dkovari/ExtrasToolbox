@@ -36,6 +36,8 @@ classdef ImageLevelsUI < extras.GraphicsChild & extras.uixDerivative
         CLICK_ON=false;
         orig_MouseMove
         orig_MouseUp
+        
+        IMAGELEVELS_INITIALIZED = false;
     end
     
     %% Dependent Properties
@@ -63,8 +65,11 @@ classdef ImageLevelsUI < extras.GraphicsChild & extras.uixDerivative
                     'NumberTitle','off',...
                     'MenuBar','none',...
                     'ToolBar','none'));
-            
+                
+            this.IMAGELEVELS_INITIALIZED = false;
+                
             this.ImageHandle = ImageHandle;
+            
             
             %% Validate Parent
             %look for parent specified in arguments
@@ -167,13 +172,16 @@ classdef ImageLevelsUI < extras.GraphicsChild & extras.uixDerivative
             this.ImageDeleteListener = addlistener(this.ImageHandle,'ObjectBeingDestroyed',@(~,~) delete(this));
             
             %% Set Default Limits
-            this.Min = this.ImageParent.CLim(1);
-            this.Max = this.ImageParent.CLim(2);
+            CL = this.ImageParent.CLim;
+            this.Min = CL(1);
+            this.Max = CL(2);
             
             %% CLim Listener
             this.CLimListener = addlistener(this.ImageParent,'CLim','PostSet',@(~,~) this.CLimChanged());
             
+            
             %% call update
+            this.IMAGELEVELS_INITIALIZED = true;
             this.ImageUpdated()
             
         end
@@ -327,9 +335,11 @@ classdef ImageLevelsUI < extras.GraphicsChild & extras.uixDerivative
             this.Min = val;
             this.MinLine.XData = [val,val];
             
-            this.CLimInternalSet = true; %locks so that we don't get an infinite event loop
-            this.ImageParent.CLim = [this.Min,this.Max];
-            this.CLimInternalSet = false; %locks so that we don't get an infinite event loop
+            if this.IMAGELEVELS_INITIALIZED
+                this.CLimInternalSet = true; %locks so that we don't get an infinite event loop
+                this.ImageParent.CLim = [this.Min,this.Max];
+                this.CLimInternalSet = false; %locks so that we don't get an infinite event loop
+            end
             
             this.hEdt_Min.String = num2str(val);
         end
@@ -347,9 +357,11 @@ classdef ImageLevelsUI < extras.GraphicsChild & extras.uixDerivative
             this.Max = val;
             this.MaxLine.XData = [val,val];
             
-            this.CLimInternalSet = true; %locks so that we don't get an infinite event loop
-            this.ImageParent.CLim = [this.Min,this.Max];
-            this.CLimInternalSet = false; %locks so that we don't get an infinite event loop
+            if this.IMAGELEVELS_INITIALIZED
+                this.CLimInternalSet = true; %locks so that we don't get an infinite event loop
+                this.ImageParent.CLim = [this.Min,this.Max];
+                this.CLimInternalSet = false; %locks so that we don't get an infinite event loop
+            end
             
             this.hEdt_Max.String = num2str(val);
         end

@@ -55,6 +55,11 @@ namespace extras {namespace SessionManager {
 	template<class ObjType>
 	class mexInterfaceManager: virtual protected ObjectManager<ObjType>{
         typedef std::unordered_map<std::string, std::function<void(int, mxArray* [], int, const mxArray* [])>> MapT_mexI; /// map type used in mexInterface
+    /*public:
+        struct memberGetSet {
+            std::function<void(int, mxArray* [], int, const mxArray* [])> set;
+            std::function<void(int, mxArray* [], int, const mxArray* [])> get;
+        };*/
     private:
         MapT_mexI functionMap; //maps method name to class function
     protected:
