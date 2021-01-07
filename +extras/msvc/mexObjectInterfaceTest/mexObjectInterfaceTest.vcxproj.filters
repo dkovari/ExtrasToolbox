@@ -3,92 +3,55 @@
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Header Files\ExtrasToolbox">
-      <UniqueIdentifier>{4c17cb6b-3a51-42bd-81c2-9efb09e1aa1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Extras">
-      <UniqueIdentifier>{c72c381c-f6eb-4642-8681-9b1623e7e536}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Extras\async">
-      <UniqueIdentifier>{a91fc55a-c77b-46b6-88ba-b0a49c59fb06}</UniqueIdentifier>
+      <UniqueIdentifier>{2edc2a2c-43d1-4c40-b803-c21e616d8b50}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ExtrasToolbox\abstract">
-      <UniqueIdentifier>{1fb9d4fc-6483-45f7-ae70-7bbc7dd8009c}</UniqueIdentifier>
+      <UniqueIdentifier>{13f240d9-4231-4fdd-bfd9-4574b1b5e3aa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ExtrasToolbox\async">
-      <UniqueIdentifier>{c7fee63a-b023-4811-97ca-e92c1e34870e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ExtrasToolbox\cmex">
-      <UniqueIdentifier>{ed61c6ba-2c73-49e5-8cfc-0393566c3bc9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ExtrasToolbox\fileio">
-      <UniqueIdentifier>{d358d647-5746-4cdb-9cb1-ec1bc58d44a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ExtrasToolbox\mxfile">
-      <UniqueIdentifier>{38371c85-ebd2-4251-bfc0-5327a3abeaa1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ExtrasToolbox\SessionManager">
-      <UniqueIdentifier>{022beffc-7fe9-4f32-bb75-400d60561507}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ExtrasToolbox\SessionManager\mixins">
-      <UniqueIdentifier>{004050c2-9def-4e73-b2b1-2abf9f5687ca}</UniqueIdentifier>
+      <UniqueIdentifier>{c039856d-498f-4bd0-8434-ed8e1a8dbb51}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ExtrasToolbox\async\mixins">
-      <UniqueIdentifier>{c0a2cb62-8019-4260-a8d6-555963c1bd76}</UniqueIdentifier>
+      <UniqueIdentifier>{f6e1e8fc-3854-44ad-bf42-bd15694e71e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\cmex">
+      <UniqueIdentifier>{9f9b1f8b-3fa2-4c37-bdbf-8e9905141a74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\fileio">
+      <UniqueIdentifier>{576dfbf4-a6c4-4da0-bfb9-a367c06ced65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\mxfile">
+      <UniqueIdentifier>{19a263fb-1b50-4fc2-8b13-2d647779f32a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\SessionManager">
+      <UniqueIdentifier>{37259e8f-f5cd-486d-9b22-d4147704d700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExtrasToolbox\SessionManager\mixins">
+      <UniqueIdentifier>{bda1349d-fa9e-4698-882b-677bd91eb5ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="mexObjectInterfaceTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\extras\SessionManager\mixins\ErrorHandlerInterface.hpp">
+      <Filter>Header Files\ExtrasToolbox\SessionManager\mixins</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\extras\MatlabTime.hpp">
       <Filter>Header Files\ExtrasToolbox</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\Array.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\ArrayBase.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\assert.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\CircularBuffer.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\exceptions.h">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\numeric.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\stacktrace_error.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\StackTraceGenerator.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\strhash.h">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\string_extras.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\traspose.hpp">
-      <Filter>Header Files\Extras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\async\AsyncProcessQueue.hpp">
-      <Filter>Header Files\Extras\async</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\external\Extras\include\extras\async\QueueProcessor.hpp">
-      <Filter>Header Files\Extras\async</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\extras\abstract\FileWriter.hpp">
       <Filter>Header Files\ExtrasToolbox\abstract</Filter>
@@ -107,6 +70,12 @@
     </ClInclude>
     <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp">
       <Filter>Header Files\ExtrasToolbox\async</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\mixins\mexResultListInterface.hpp">
+      <Filter>Header Files\ExtrasToolbox\async\mixins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\extras\async\mixins\mexTaskQueueInterface.hpp">
+      <Filter>Header Files\ExtrasToolbox\async\mixins</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp">
       <Filter>Header Files\ExtrasToolbox\cmex</Filter>
@@ -180,19 +149,8 @@
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h">
       <Filter>Header Files\ExtrasToolbox\SessionManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\extras\async\mixins\mexResultListInterface.hpp">
-      <Filter>Header Files\ExtrasToolbox\async\mixins</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\extras\async\mixins\mexTaskQueueInterface.hpp">
-      <Filter>Header Files\ExtrasToolbox\async\mixins</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\extras\SessionManager\mexObjectInterface.hpp">
       <Filter>Header Files\ExtrasToolbox\SessionManager</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\include\extras\SessionManager\mixins\ErrorHandlerInterface.hpp">
-      <Filter>Header Files\ExtrasToolbox\SessionManager\mixins</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

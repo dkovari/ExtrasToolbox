@@ -43,6 +43,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsyncCSVWriter", "..\+csv\m
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "00_ExtrasInclude", "00_ExtrasInclude\00_ExtrasInclude.vcxproj", "{BA4F9697-5570-4FAA-ACA2-8F04AFBFE210}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mexObjectInterfaceTest", "mexObjectInterfaceTest\mexObjectInterfaceTest.vcxproj", "{EDE8298B-B9A9-48DD-8C86-A2F5B0A4A533}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -177,6 +179,12 @@ Global
 		{BA4F9697-5570-4FAA-ACA2-8F04AFBFE210}.Release|x64.Build.0 = Release|x64
 		{BA4F9697-5570-4FAA-ACA2-8F04AFBFE210}.Release|x86.ActiveCfg = Release|Win32
 		{BA4F9697-5570-4FAA-ACA2-8F04AFBFE210}.Release|x86.Build.0 = Release|Win32
+		{EDE8298B-B9A9-48DD-8C86-A2F5B0A4A533}.Debug|x64.ActiveCfg = Debug|x64
+		{EDE8298B-B9A9-48DD-8C86-A2F5B0A4A533}.Debug|x64.Build.0 = Debug|x64
+		{EDE8298B-B9A9-48DD-8C86-A2F5B0A4A533}.Debug|x86.ActiveCfg = Debug|x64
+		{EDE8298B-B9A9-48DD-8C86-A2F5B0A4A533}.Release|x64.ActiveCfg = Release|x64
+		{EDE8298B-B9A9-48DD-8C86-A2F5B0A4A533}.Release|x64.Build.0 = Release|x64
+		{EDE8298B-B9A9-48DD-8C86-A2F5B0A4A533}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

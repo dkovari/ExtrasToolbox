@@ -188,6 +188,7 @@
     <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\mexInterfaceManager.hpp" />
+    <ClInclude Include="..\..\include\extras\SessionManager\mexObjectInterface.hpp" />
     <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
