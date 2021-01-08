@@ -77,7 +77,7 @@ namespace extras {namespace SessionManager {
 			virtual void execute(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
 			virtual void operator()(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
 
-			/// @brief execute member function
+			/// @brief implement cal(), executes member function
 			virtual void call(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const {
 				execute(nlhs, plhs, nrhs, prhs);
 			}
@@ -95,6 +95,11 @@ namespace extras {namespace SessionManager {
 			virtual void get(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
 			virtual void set(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
 
+			/// @brief Implementation of call(), responsible for determining if get or set should be executed
+			/// @param nlhs 
+			/// @param plhs 
+			/// @param nrhs 
+			/// @param prhs 
 			virtual void call(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const {
 				using extras::stacktrace_assert;
 				using extras::stacktrace_error;
