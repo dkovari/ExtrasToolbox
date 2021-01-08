@@ -27,6 +27,8 @@ public:
 		ss << (now->tm_year + 1900) << '-'
 			<< (now->tm_mon + 1) << '-'
 			<< now->tm_mday;
+
+		creation_time = ss.str();
 	}
 	const std::string& creationTime() const { return creation_time; }
 

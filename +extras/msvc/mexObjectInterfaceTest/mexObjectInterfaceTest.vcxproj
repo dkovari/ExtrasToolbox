@@ -13,43 +13,6 @@
   <ItemGroup>
     <ClCompile Include="mexObjectInterfaceTest.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\include\extras\abstract\FileWriter.hpp" />
-    <ClInclude Include="..\..\include\extras\async\AsyncProcessor.hpp" />
-    <ClInclude Include="..\..\include\extras\async\AsyncProcessorWithWriter.hpp" />
-    <ClInclude Include="..\..\include\extras\async\mixins\mexResultListInterface.hpp" />
-    <ClInclude Include="..\..\include\extras\async\mixins\mexTaskQueueInterface.hpp" />
-    <ClInclude Include="..\..\include\extras\async\ParamProcessor.hpp" />
-    <ClInclude Include="..\..\include\extras\async\ParamProcessor_nowriter.hpp" />
-    <ClInclude Include="..\..\include\extras\async\PersistentArgsProcessor.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mexextras.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxArrayGroup.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\MxCellArray.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxClassIDhelpers.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxobject.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxobject_old.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\mxparamparse.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\MxStruct.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\MxWrapper.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\NumericArray - Copy.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\NumericArray.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\NumericArray_orig.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\PersistentMxArray.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\PersistentMxMap.hpp" />
-    <ClInclude Include="..\..\include\extras\cmex\type2ClassID.hpp" />
-    <ClInclude Include="..\..\include\extras\fileio\AsyncCSVWriter.hpp" />
-    <ClInclude Include="..\..\include\extras\fileio\AsyncFile.hpp" />
-    <ClInclude Include="..\..\include\extras\fileio\FileHandler.hpp" />
-    <ClInclude Include="..\..\include\extras\MatlabTime.hpp" />
-    <ClInclude Include="..\..\include\extras\mxfile\mxfile_reader.hpp" />
-    <ClInclude Include="..\..\include\extras\mxfile\mxfile_writer.hpp" />
-    <ClInclude Include="..\..\include\extras\SessionManager\mexDispatch.h" />
-    <ClInclude Include="..\..\include\extras\SessionManager\mexInterface.hpp" />
-    <ClInclude Include="..\..\include\extras\SessionManager\mexInterfaceManager.hpp" />
-    <ClInclude Include="..\..\include\extras\SessionManager\mexObjectInterface.hpp" />
-    <ClCompile Include="..\..\include\extras\SessionManager\mixins\ErrorHandlerInterface.hpp" />
-    <ClInclude Include="..\..\include\extras\SessionManager\ObjectManager.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ede8298b-b9a9-48dd-8c86-a2f5b0a4a533}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -86,16 +49,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)</OutDir>
+    <OutDir>$(ProjectDir)</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_mex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)</OutDir>
+    <OutDir>$(ProjectDir)</OutDir>
     <TargetExt>.mexw64</TargetExt>
-    <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_mex</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -111,7 +72,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/export:mexFunction %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,7 +92,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/export:mexFunction %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

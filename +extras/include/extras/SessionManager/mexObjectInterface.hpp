@@ -8,6 +8,8 @@
 #include <extras/cmex/MxStruct.hpp>
 #include <cstring>
 #include <extras/string_extras.hpp>
+#include <memory>
+#include <extras/strhash.h>
 
 namespace extras {namespace SessionManager {
 
@@ -55,6 +57,13 @@ namespace extras {namespace SessionManager {
 			bool isFunction() const { return memberType == MemberType::member_function; }
 			bool isVariable() const { return memberType == MemberType::member_variable; }
 			bool isHidden() const { return memberVisibility == MemberVisibility::member_hidden; }
+
+			/// @brief function interface for executing member method or executing variable get/set methods
+			/// @param  nlhs number of mex output args
+			/// @param  plhs pointer to output args
+			/// @param  number of mex input args
+			/// @param  pointer to input args
+			virtual void call(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
 		};
 
 		/// @brief Interface class for all function type members
@@ -67,6 +76,11 @@ namespace extras {namespace SessionManager {
 
 			virtual void execute(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
 			virtual void operator()(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
+
+			/// @brief execute member function
+			virtual void call(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const {
+				execute(nlhs, plhs, nrhs, prhs);
+			}
 		};
 
 		/// @brief Interface class for member variables
@@ -80,6 +94,35 @@ namespace extras {namespace SessionManager {
 
 			virtual void get(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
 			virtual void set(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const = 0;
+
+			virtual void call(int nlhs, mxArray** plhs, int nrhs, const mxArray** prhs) const {
+				using extras::stacktrace_assert;
+				using extras::stacktrace_error;
+
+				stacktrace_assert(nrhs > 0, "Member property get/set method not specified");
+
+				
+				std::string propMethod;
+				try{
+					propMethod = extras::tolower(extras::cmex::getstring(prhs[0]));
+				}
+				catch (...) {
+					stacktrace_error("Expected 'get' or 'set' property method syntax. Could not interperet argument as valid char array.\nProper syntas:\n\tmexfn('prop','get',...) or mexfn('prop','set',...)");
+				}
+
+				switch (extras::strhash(propMethod.c_str())) {
+				case extras::strhash("get"):
+					get(nlhs, plhs, nrhs - 1, nrhs > 1 ? &(prhs[1]) : nullptr);
+					break;
+				case extras::strhash("set"):
+					stacktrace_assert(isSettable(), "Property is not settable, cannot execute set method");
+					set(nlhs, plhs, nrhs - 1, nrhs > 1 ? &(prhs[1]) : nullptr);
+					break;
+				default:
+					throw(stacktrace_error(std::string("Invalid property method: '") + propMethod + std::string("'\nMust be 'get' or 'set'")));
+				}
+
+			}
 
 		};
 	}
@@ -133,7 +176,7 @@ namespace extras {namespace SessionManager {
 		typedef std::function<void(std::shared_ptr<ObjType>, int, mxArray**, int, const mxArray**)> MEX_F; /// function object for mexFunction to nonstatic functions
 		typedef std::function<void(std::shared_ptr<ObjType>, int, mxArray**)> MEX_F_noRHS;/// function object for mexFunction to nonstatic functions not allowing rhs arguments
 
-		typedef std::unordered_map<std::string, Member::IMemberT> MemberMapT; /// map type used to store members
+		typedef std::unordered_map<std::string, std::shared_ptr<Member::IMemberT>> MemberMapT; /// map type used to store members
 
 		/// @brief Container for Static member function
 		class StaticMemberFunction : public virtual Member::IMemberFunctionT {
@@ -211,7 +254,7 @@ namespace extras {namespace SessionManager {
 		};
 
 	private:
-		std::unordered_map<std::string, Member::IMemberT> memberMap; //map of member variables and functions
+		MemberMapT memberMap; //map of member variables and functions
 	protected:
 		/// implement 'new' function interface
 		virtual void new_object(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
@@ -248,7 +291,7 @@ namespace extras {namespace SessionManager {
 			Member::IMemberT::MemberAccess a = Member::IMemberT::MemberAccess::member_public,
 			Member::IMemberT::MemberVisibility v = Member::IMemberT::MemberVisibility::member_nothidden)
 		{
-			memberMap.insert(MemberMapT::value_type(name, StaticMemberFunction(func, a, v)));
+			memberMap.insert(MemberMapT::value_type(name, std::make_shared<StaticMemberFunction>(func, a, v)));
 		}
 
 		/// @brief Add a (non-static) member function interface
@@ -260,7 +303,7 @@ namespace extras {namespace SessionManager {
 			Member::IMemberT::MemberAccess a = Member::IMemberT::MemberAccess::member_public,
 			Member::IMemberT::MemberVisibility v = Member::IMemberT::MemberVisibility::member_nothidden)
 		{
-			memberMap.insert(MemberMapT::value_type(name, NonStaticMemberFunction(this,func, a, v)));
+			memberMap.insert(MemberMapT::value_type(name, std::make_shared<NonStaticMemberFunction>(this,func, a, v)));
 		}
 
 		/// @brief Add static member variable interface
@@ -273,7 +316,7 @@ namespace extras {namespace SessionManager {
 			Member::IMemberT::MemberAccess a = Member::IMemberT::MemberAccess::member_public,
 			Member::IMemberT::MemberVisibility v = Member::IMemberT::MemberVisibility::member_nothidden)
 		{
-			memberMap.insert(MemberMapT::value_type(name, StaticMemberVariable(get_func, set_func, a, v)));
+			memberMap.insert(MemberMapT::value_type(name, std::make_shared<StaticMemberVariable>(get_func, set_func, a, v)));
 		}
 
 		/// @brief Add (non-static) member variable interface
@@ -286,7 +329,7 @@ namespace extras {namespace SessionManager {
 			Member::IMemberT::MemberAccess a = Member::IMemberT::MemberAccess::member_public,
 			Member::IMemberT::MemberVisibility v = Member::IMemberT::MemberVisibility::member_nothidden)
 		{
-			memberMap.insert(MemberMapT::value_type(name, NonStaticMemberVariable(this,get_func, set_func, a, v)));
+			memberMap.insert(MemberMapT::value_type(name, std::make_shared<NonStaticMemberVariable>(this,get_func, set_func, a, v)));
 		}
 
 		/// Exception handler for errors thrown when executing a method from matlab
@@ -328,17 +371,17 @@ namespace extras {namespace SessionManager {
 
 			for (auto& f : memberMap) {
 				outStruct(k, "Name") = f.first.c_str();
-				if (f.second.type() == Member::IMemberT::MemberType::member_function) {
+				if (f.second->type() == Member::IMemberT::MemberType::member_function) {
 					outStruct(k, "Type") = "method";
 				}
 				else {
 					outStruct(k, "Type") = "property";
 				}
 
-				outStruct(k, "Static") = mxCreateLogicalScalar(f.second.isStatic());
-				outStruct(k, "Hidden") = mxCreateLogicalScalar(f.second.isHidden());
+				outStruct(k, "Static") = mxCreateLogicalScalar(f.second->isStatic());
+				outStruct(k, "Hidden") = mxCreateLogicalScalar(f.second->isHidden());
 
-				switch (f.second.access()) {
+				switch (f.second->access()) {
 				case Member::IMemberT::MemberAccess::member_public:
 					outStruct(k, "Access") = "public";
 					break;
@@ -349,6 +392,7 @@ namespace extras {namespace SessionManager {
 					outStruct(k, "Access") = "private";
 					break;
 				}
+				k++;
 			}
 
 			plhs[0] = outStruct;
@@ -373,6 +417,8 @@ namespace extras {namespace SessionManager {
 		}
 
 		void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+			using extras::stacktrace_assert;
+
 			/// validate first arg
 			if (nrhs < 1 || !mxIsChar(prhs[0])) {
 				mexErrMsgIdAndTxt("mexInterfaceManager:argumentError", "Invalid argument: missing method name.");
@@ -381,54 +427,12 @@ namespace extras {namespace SessionManager {
 			try {
 				funcName = extras::cmex::getstring(prhs[0]);
 
-				size_t l = funcName.find('.');
-				if (l != std::string::npos) {//Found Property, use set/get
-					std::string propName = funcName.substr(0, l);
-					std::string propMethod = funcName.substr(l + 1, std::string::npos);
-					propMethod = extras::tolower(propMethod);
+				auto search = memberMap.find(funcName);
+				stacktrace_assert(search != memberMap.end(), std::string("'") + funcName + std::string("' method not found."));
 
-					//verify property method is get or set
-					if (strcmp(propMethod.c_str(), "get") != 0 || strcmp(propMethod.c_str(), "set") != 0) {
-						throw(extras::stacktrace_error(
-							std::string("'") + funcName + std::string("' is not a valid property and set/get method.\nSyntax should be: ") + propName + std::string(".get/set")
-						));
-					}
+				search->second->call(nlhs, plhs, nrhs - 1, nrhs > 1 ? &(prhs[1]) : nullptr);
 
 
-					auto search = memberMap.find(propName);
-					if (search != memberMap.end()) {
-						Member::IMemberVariableT& thisProp = dynamic_cast<Member::IMemberVariableT&>(search->second);
-							if (strcmp(propMethod.c_str(), "get") == 0) {//get
-								thisProp.get(nlhs, plhs, nrhs - 1, nrhs > 1 ? &(prhs[1]) : nullptr);
-							}
-							else { //set
-								if (!thisProp.isSettable()) {
-									throw(extras::stacktrace_error(
-										std::string("'") + propName + std::string("' is not settable (set method not defined in c++ code).")
-									));
-								}
-								thisProp.set(nlhs, plhs, nrhs - 1, nrhs > 1 ? &(prhs[1]) : nullptr);
-							}
-					}
-					else {
-
-						throw(extras::stacktrace_error(
-							std::string("'") + propName + std::string("' property not found.")
-						));
-					}
-
-				}
-				else {//use method lookup
-					auto search = memberMap.find(funcName);
-					if (search != memberMap.end()) {
-						Member::IMemberFunctionT& thisFunc = dynamic_cast<Member::IMemberFunctionT&>(search->second);
-						thisFunc(nlhs, plhs, nrhs - 1, &(prhs[1])); //execute command
-					}
-					else {
-						throw(extras::stacktrace_error(
-							std::string("'") + funcName + std::string("' method not found.")));
-					}
-				}
 			}
 			catch (...) {
 				handle_exception(std::current_exception(), funcName);

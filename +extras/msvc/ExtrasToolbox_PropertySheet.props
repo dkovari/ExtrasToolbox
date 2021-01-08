@@ -9,7 +9,7 @@
 	<ExtrasLib>$(ExtrasToolboxPath)\external\Extras\lib</ExtrasLib>
   </PropertyGroup>
   <PropertyGroup>
-    <IncludePath>$(ExtrasToolboxInclude);$(ExtrasInclude);$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ExtrasPath)\external;$(ExtrasToolboxInclude);$(ExtrasInclude);$(MATLAB_ROOT)\extern\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
