@@ -29,6 +29,11 @@ classdef DraggableLine < extras.GraphicsChild
         DragEndpoints (1,1) logical = false; %T/F if endpoints can be dragged(changes angle)
         
     end
+    properties (SetAccess=private,SetObservable,AbortSet = true)
+        LineXData = [NaN,NaN]; %actual x coordinates of the line
+        LineYData = [NaN,NaN]; %actual y coordinates of the line
+    end
+    
     methods
         function set.DragEndpoints(this,val)
             this.DragEndpoints = val;
@@ -291,9 +296,14 @@ classdef DraggableLine < extras.GraphicsChild
             
             set(this.LineHandle,'XData',x,'YData',y);
             
+%<<<<<<< Experimental_Reorg
             
             set(this.EndPointHandles(1),'XData',x(1),'YData',y(1));
             set(this.EndPointHandles(2),'XData',x(2),'YData',y(2));
+%=======
+            this.LineXData = this.LineHandle.XData;
+            this.LineYData = this.LineHandle.YData;
+%>>>>>>> master
             
         end
     end
