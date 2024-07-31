@@ -247,6 +247,10 @@ namespace extras{namespace cmex{
 		//FieldWrapper& operator=(const FieldWrapper& src) = default;
 		FieldWrapper& operator=(FieldWrapper&& src) = default;
 
+		operator const mxArray* () const {
+			return internalGet();
+		}
+
 	};
 
 	////////////////////////

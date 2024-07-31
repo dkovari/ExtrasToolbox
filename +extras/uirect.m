@@ -13,6 +13,8 @@ classdef uirect < extras.GraphicsChild
         %CreateParent = false; %Flag specifying if parent axes was created  
         RectangleDeleteListener;
         MarkerOrder = {'x1_y1','x1_y2','x2_y2','x2_y1'}; %clockwise order starting at x1,y1
+        
+        DisplayNameMarker = []; %handle to marker object used to create legend entry.
     end
     
     %%User Modifiable Parameters
@@ -38,6 +40,9 @@ classdef uirect < extras.GraphicsChild
         UIContextMenu = [];
         
         UserData = [];
+        
+        DisplayName char = '';
+        ShowInLegend (1,1) logical = false;
          
     end
     
@@ -495,6 +500,16 @@ classdef uirect < extras.GraphicsChild
                 end
             end
             
+            
+            %% update legend marker
+            if this.ShowInLegend
+                try
+                   set(this.DisplayNameMarker,'MarkerEdgeColor',val);
+                catch
+                end
+            end
+            
+            %% finish up
             this.EdgeColor = val;
         end
         
@@ -522,6 +537,14 @@ classdef uirect < extras.GraphicsChild
             end
             
             this.FaceColor = val;
+            
+            %% update legend marker
+            if this.ShowInLegend
+                try
+                   set(this.DisplayNameMarker,'MarkerFaceColor',val);
+                catch
+                end
+            end
             
         end
         
@@ -730,6 +753,36 @@ classdef uirect < extras.GraphicsChild
             for n=1:4
                 this.hMarkers(n).UIContextMenu = val;
             end
+        end
+        
+        function set.ShowInLegend(this,val)
+            this.ShowInLegend = val;
+            if this.ShowInLegend && (isempty(this.DisplayNameMarker)||~isvalid(this.DisplayNameMarker)) %marker doesn't exist and we need to create it
+                this.DisplayNameMarker = line(this.Parent,NaN,NaN,...
+                    'Marker','s',....
+                    'LineStyle','none',...
+                    'Color',this.EdgeColor,....
+                    'MarkerEdgeColor',this.EdgeColor,...
+                    'MarkerFaceColor',this.FaceColor,...
+                    'DisplayName',this.DisplayName,...
+                    'SelectionHighlight','off',...
+                    'HitTest','off','PickableParts','none');
+            elseif ~this.ShowInLegend
+                try
+                    delete(this.DisplayNameMarker);
+                catch
+                end
+            end
+                
+        end
+        
+        function set.DisplayName(this,val)
+            this.DisplayName = val;
+            try
+               set(this.DisplayNameMarker,'DisplayName',this.DisplayName);
+            catch
+            end
+            
         end
     end
 end

@@ -215,6 +215,8 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
                 %% fire callback
                 this.callCallback(Evt);
                 notify(this,'UserInteraction',Evt);
+            elseif strcmpi(this.ValueType,'integer')
+                this.Value = this.Value + 1;
             end
         end
         
@@ -233,6 +235,8 @@ classdef ValueControl < extras.RequireGuiLayoutToolbox & ...
                 %% fire callback
                 this.callCallback(Evt);
                 notify(this,'UserInteraction',Evt);
+            elseif strcmpi(this.ValueType,'integer')
+                this.Value = this.Value - 1;
             end
         end
 

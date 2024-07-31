@@ -16,12 +16,13 @@ All rights reserved.
 #include <extras/cmex/NumericArray.hpp>
 #include <radialcenter/source/radialcenter.hpp>
 #include <barycenter/source/barycenter_mex.hpp>
+#include <extras/MatlabTime.hpp>
 
 
 
 namespace extras { namespace ParticleTracking {
 
-	
+
 	/** Asynchronous Processor for particle tracking in ROIs.
 	 *	RoiTracker is intended to be used with the ParamProcessorInterface defined in ParamProcessor.hpp
 	 *	Currently, the tracker expects to recieve persistent parameters (via the setParameter() method);
@@ -36,7 +37,7 @@ namespace extras { namespace ParticleTracking {
 	 *	If you want to derive a class from RoiTracker (to add functionality)
 	 *	you will probably want to start by overriding the ProcessTask(...) method.
 	 *
-	 *  Parameters are passed to the ProcessTask() method via shared_ptr to a 
+	 *  Parameters are passed to the ProcessTask() method via shared_ptr to a
 	 *  specialized PersistentMxMap (RoiParameterMap).
 	 *	RoiParameterMaps allow the end user to pass any name,value argument pairs (like the standard PersistentMxMap)
 	 *  however, it intercepts the specialized parameters.
@@ -46,7 +47,7 @@ namespace extras { namespace ParticleTracking {
 	class RoiTracker : public extras::async::ParamProcessor {
 	protected:
 
-		std::atomic_bool _IncludeImageInResults = false;
+		std::atomic_bool _IncludeImageInResults;// = false;
 
 		//! Define ProcessTask method
 		extras::cmex::mxArrayGroup ProcessTask(const extras::cmex::mxArrayGroup& TaskArgs, std::shared_ptr<const extras::cmex::ParameterMxMap> Params) {
@@ -63,18 +64,24 @@ namespace extras { namespace ParticleTracking {
 
 			// Get Image
 			const mxArray* img = nullptr;
-			const mxArray* time = nullptr;
+			double time = NAN;
 			if (mxIsStruct(TaskArgs.getConstArray(0))) {
 				img = mxGetField(TaskArgs.getConstArray(0), 0, "ImageData");
-				time = mxGetField(TaskArgs.getConstArray(0), 0, "Time");
+				time = mxGetScalar(mxGetField(TaskArgs.getConstArray(0), 0, "Time"));
 			}
 			else {
 				img = TaskArgs.getConstArray(0);
+				time = extras::matlab_now();
 			}
+
+
 
 			//Copy Parameter Map into resultStruct
 			MxStruct resultsStruct = ParamMap->map2struct();
 			resultsStruct.makePersistent(); //make resultStruct persistent so that we don't have issued being in a thread
+
+			// add timestamp
+			resultsStruct(0, "Time") = time;
 
 			// if include image, add to struct
 			if (_IncludeImageInResults) {
@@ -89,7 +96,7 @@ namespace extras { namespace ParticleTracking {
 				}
 			}
 
-			
+
 			MxStruct roiList(resultsStruct(0, "roiList").getmxarray()); //alias to roiList inside resultStruct
 
 			/////////////////////////////
@@ -147,6 +154,7 @@ namespace extras { namespace ParticleTracking {
 
 		//! default constructor changes pMap to point to an RoiParameterMap
 		RoiTracker() {
+			_IncludeImageInResults = false;
 			_pMap = std::dynamic_pointer_cast<extras::cmex::ParameterMxMap>(std::make_shared<RoiParameterMap>());
 		}
 
@@ -215,12 +223,12 @@ namespace extras { namespace ParticleTracking {
 			extras::async::ParamProcessor::pushTask(nrhs, prhs);
 		}
 
-		
+
 	};
 
 	/** Extend the ParamProcessorInterface for use with RoiTracker type objects
 	 * Adds IncludeImageData method to the mexInterface
-	 * 
+	 *
 	 * Usage: template ObjManager should be a reference to a manager for RoiTracker-class.
 	*/
 	template<class ObjType, extras::SessionManager::ObjectManager<ObjType>& ObjManager>
@@ -241,7 +249,7 @@ namespace extras { namespace ParticleTracking {
 				plhs[0] = mxCreateLogicalScalar(res);
 			}
 		}
-		
+
 	public:
 		RoiTrackerInterface() {
 			using namespace std::placeholders;

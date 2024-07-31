@@ -1,7 +1,7 @@
 classdef (Abstract) HasEnable < handle & extras.widgets.mixin.AssignNV
     
     properties(SetObservable=true,AbortSet=true)
-        Enable
+        Enable %logical specifying is enabled or disabled
     end
     %% Get/Set methods
     methods

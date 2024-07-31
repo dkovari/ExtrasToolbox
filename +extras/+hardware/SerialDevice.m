@@ -1,26 +1,140 @@
-classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
+classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName & matlab.mixin.CustomDisplay
 %% simple class for managing a single serial device
 % extend this class to add functionality
 %% Copyright 2019 Daniel T. Kovari, Emory University
-%   All rights reserved.   
+%   All rights reserved.
+        
+    %% Customize Object Display
+    methods (Access=protected)
+        function pg = getPropertyGroups(this)
+            if ~isscalar(this)
+                pg = getPropertyGroups@matlab.mixin.CustomDisplay(this);
+            else
+                %% Basic:
+                pg = getPropertyGroups@matlab.mixin.CustomDisplay(this);
+                [pg.Title] = deal(...
+                            sprintf(['\tProperties (Public Visible):',...
+                                   '\n\t----------------------------']));
+                %% Serial Interface Properties
+                titleTxt = sprintf(['\n\tSerial Interface Properties (Internal Use):',...
+                                    '\n\t-------------------------------------------']);
+                pg = [pg,matlab.mixin.util.PropertyGroup({...
+                    'BaudRate',...
+                    'DataBits',...
+                    'StopBits',...
+                    'Parity',...
+                    'Terminator',...
+                    'BytesAvailableFcnMode',...
+                    'BytesAvailableFcnCount',...
+                    'Timeout',...
+                    'ByteOrder',...
+                    'InputBufferSize',...
+                    'ReadAsyncMode',...
+                    'OutputBufferSize'},titleTxt)];
+            end
+        end
+    end
 
     %% Properties
     properties (SetAccess=protected)
         Port = '';
     end
     
+    %% scom properties
     properties (SetAccess=protected,Hidden=true)
-        scom = [];
+        scom = []; %internal serial com object, not pubically editable
+    end
+    properties (Hidden=true) %% SCOM interface props, should only be changed if you know what you're doing
+        BaudRate (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 9600; %Baud rate of serial connection
+        DataBits (1,1) double {mustBeMember(DataBits,[5,6,7,8])}= 8; %data bit length of serial connection
+        StopBits (1,1) double {mustBeMember(StopBits,[1,1.5,2])}= 1; %number of stop bits 
+        Parity (1,:) char {mustBeMember(Parity,{'none','odd','even','mark','space'})} = 'none'; %parity 
+        Terminator (1,:) char = 'CR';
         
-        BaudRate = 9600;
-        DataBits = 8;
-        StopBits = 1;
-        Parity = 'none';
-        Terminator = 'CR';
+        BytesAvailableFcnMode (1,:) char {mustBeMember(BytesAvailableFcnMode,{'terminator','byte'})}= 'terminator';
+        BytesAvailableFcnCount (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 48;
+        Timeout (1,1) double {mustBePositive} = 10;
+        ByteOrder (1,:) char {mustBeMember(ByteOrder,{'littleEndian','bigEndian'})} = 'littleEndian';
         
-        BytesAvailableFcnMode = 'terminator';
-        Timeout = 10;
-        ByteOrder = 'littleEndian';
+        InputBufferSize (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 512;
+        ReadAsyncMode (1,:) char {mustBeMember(ReadAsyncMode,{'continuous','manual'})} = 'continuous';
+        
+        OutputBufferSize (1,1) double {mustBePositive,mustBeFinite,mustBeInteger}= 512;
+        
+    end
+    methods %set methods for scom properties
+        function set.BaudRate(this,value)
+            if ~isempty(this.scom)
+                this.scom.BaudRate = value;
+            end
+            this.BaudRate = value;
+        end
+        function set.DataBits(this,value)
+            if ~isempty(this.scom)
+                this.scom.DataBits = value;
+            end
+            this.DataBits = value;
+        end
+        function set.StopBits(this,value)
+            if ~isempty(this.scom)
+                this.scom.StopBits = value;
+            end
+            this.StopBits = value;
+        end
+        function set.Parity(this,value)
+            if ~isempty(this.scom)
+                this.scom.Parity = value;
+            end
+            this.Parity = value;
+        end
+        function set.Terminator(this,value)
+            if ~isempty(this.scom)
+                this.scom.Terminator = value;
+            end
+            this.Terminator = value;
+        end
+        function set.BytesAvailableFcnMode(this,value)
+            if ~isempty(this.scom)
+                this.scom.BytesAvailableFcnMode = value;
+            end
+            this.BytesAvailableFcnMode = value;
+        end
+        function set.BytesAvailableFcnCount(this,value)
+            if ~isempty(this.scom)
+                this.scom.BytesAvailableFcnCount = value;
+            end
+            this.BytesAvailableFcnCount = value;
+        end
+        function set.Timeout(this,value)
+            if ~isempty(this.scom)
+                this.scom.Timeout = value;
+            end
+            this.Timeout = value;
+        end
+        function set.ByteOrder(this,value)
+            if ~isempty(this.scom)
+                this.scom.ByteOrder = value;
+            end
+            this.ByteOrder = value;
+        end
+        function set.InputBufferSize(this,value)
+            if ~isempty(this.scom)
+                this.scom.InputBufferSize = value;
+            end
+            this.InputBufferSize = value;
+        end
+        function set.ReadAsyncMode(this,value)
+            if ~isempty(this.scom)
+                this.scom.ReadAsyncMode = value;
+            end
+            this.ReadAsyncMode = value;
+        end
+        function set.OutputBufferSize(this,value)
+            if ~isempty(this.scom)
+                this.scom.OutputBufferSize = value;
+            end
+            this.OutputBufferSize = value;
+        end
     end
     
     properties (Dependent)
@@ -29,11 +143,10 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
     
     properties (Access=protected)
         BytesAvailableFcn;
-        
     end
     
     events
-        DataRecieved
+        DataReceived
     end
     
     properties (SetAccess=protected,SetObservable=true,AbortSet=true)
@@ -161,10 +274,13 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
                 'StopBits',this.StopBits,...
                 'Parity',this.Parity,...
                 'Terminator',this.Terminator,...
-                'ReadAsyncMode','continuous',...
                 'BytesAvailableFcnMode',this.BytesAvailableFcnMode,...
+                'BytesAvailableFcnCount',this.BytesAvailableFcnCount,...
                 'Timeout',this.Timeout,...
                 'ByteOrder',this.ByteOrder,...
+                'InputBufferSize',this.InputBufferSize,...
+                'ReadAsyncMode',this.ReadAsyncMode,...
+                'OutputBufferSize',this.OutputBufferSize,...
                 'BytesAvailableFcn',@(so,evt) this.evalSerialCallback(so,evt));
 
             try
@@ -234,7 +350,7 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
                 warning('Error occured in serial callback, catching and throwing warning so that serial object does not disable callbacks');
             end
             
-            notify(this,'DataRecieved',extras.hardware.serialevent(so,evt))
+            notify(this,'DataReceived',extras.hardware.serialevent(so,evt))
             
         end
     end
@@ -303,6 +419,11 @@ classdef SerialDevice < matlab.mixin.SetGet & extras.widgets.mixin.HasDeviceName
     %% overload these functions to change behavior
     methods (Access=protected)
         function validateConnection(this)
+        % Called when ConnectCOM has successfully created com port
+        % connection, but before this.connected is set to true.
+        % overload this function to throw errors if there is a problem with
+        % the serial device (e.g. it doesn't respond to a certain command,
+        % etc.)
             %do nothing
         end
     end

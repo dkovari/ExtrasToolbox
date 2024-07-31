@@ -18,6 +18,7 @@ All rights reserved.
 namespace extras{namespace async{
 
     //! Abstract class defining an Asynchronous Processor object
+    //template< class TaskType = cmex::mxArrayGroup, class ResultsType = cmex::mxArrayGroup>
     class AsyncProcessor{
     protected:
 
@@ -124,10 +125,21 @@ namespace extras{namespace async{
 		bool _firstTask = true;
 
         virtual void StartProcessor() {
+            StopProcessor(); //call stop processor, just in case it is running. that way we force a join on any existing threads.
+
             ErrorFlag = false;
             StopProcessingNow = false;
             ProcessAndEnd = false;
+#ifdef _DEBUG
+            mexPrintf("\tLaunching AsyncProcessor::ProcessLoop thread...");
+            mexEvalString("pause(0.2)");
+#endif
             mThread = std::thread(&AsyncProcessor::ProcessLoop,this);
+
+#ifdef _DEBUG
+            mexPrintf("done\n");
+            mexEvalString("pause(0.2)");
+#endif
 
             ProcessRunning = true;
         };
@@ -217,15 +229,24 @@ namespace extras{namespace async{
 		}
 
         virtual void cancelRemainingTasks(){
+#ifdef _DEBUG
 			mexPrintf("Trying to cancel tasks...\n");
 			mexEvalString("pause(0.2)");
+#endif
             StopProcessor();
 
             std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
             TaskList.clear();
-
+#ifdef _DEBUG
             mexPrintf("\t\t Remaining tasks cleared.\n");
             mexEvalString("pause(0.2)");
+#endif
+        }
+
+        //! Cancel upcoming task on the task-list.
+        virtual void cancelNextTask() {
+            std::lock_guard<std::mutex> lock(TaskListMutex); //lock list
+            TaskList.pop_front();
         }
 
         virtual size_t remainingTasks() const {return TaskList.size();}
@@ -354,6 +375,9 @@ namespace extras{namespace async{
         void clearError(int nlhs,mxArray* plhs[],int nrhs, const mxArray* prhs[]){
             ParentType::getObjectPtr(nrhs,prhs)->clearError();
         }
+        void cancelNextTask(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[]) {
+            ParentType::getObjectPtr(nrhs, prhs)->cancelNextTask();
+        }
 
     public:
         AsyncMexInterface(){
@@ -371,6 +395,7 @@ namespace extras{namespace async{
             ParentType::addFunction("wasErrorThrown",std::bind(&AsyncMexInterface::wasErrorThrown,this,_1,_2,_3,_4));
             ParentType::addFunction("getError",std::bind(&AsyncMexInterface::getError,this,_1,_2,_3,_4));
             ParentType::addFunction("clearError",std::bind(&AsyncMexInterface::clearError,this,_1,_2,_3,_4));
+            ParentType::addFunction("cancelNextTask", std::bind(&AsyncMexInterface::cancelNextTask, this, _1, _2, _3, _4));
 		}
     };
 

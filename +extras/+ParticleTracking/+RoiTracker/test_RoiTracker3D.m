@@ -26,11 +26,14 @@ bessel_r = @(r) (rRange(1) + (rRange(2)-rRange(1))/nD*r);
 
 ProfileFn = @(z,r)  besselj(z,bessel_r(r)).*(1./(1+exp(r-nD)));
 
+IMAGE_BG_LEVEL = 50;
 
 ProfileData = zeros(numel(Zdata),nD+1);
 for n=1:numel(Zdata)
-    ProfileData(n,:) = ProfileFn(Zdata(n),Rdata);
+    ProfileData(n,:) = ProfileFn(Zdata(n),Rdata) + IMAGE_BG_LEVEL;
 end
+
+
 
 %imagesc(ProfileData)
 
@@ -65,7 +68,7 @@ Yc = reshape(Yc,[],1);
 
 Zc = (nu_max-nu_min)*rand(size(Xc))+nu_min;
 
-I = zeros(HEIGHT,WIDTH);
+I = IMAGE_BG_LEVEL*ones(HEIGHT,WIDTH);
 
 [xx,yy] = meshgrid(1:WIDTH,1:HEIGHT);
 
@@ -126,6 +129,8 @@ end
 %% define callback functions
 function CB(data,hPlt,ProfileFn,Zc)
 
+IMAGE_BG_LEVEL = evalin('base','IMAGE_BG_LEVEL');
+
 if ~iscell(data)
     res=data;
 else
@@ -141,12 +146,18 @@ try
     
     figure(99);
     cla;
-    plot(res.roiList(1).RadialAverage_rloc,res.roiList(1).RadialAverage,'*','DisplayName','RadialAvg');
+    RA = res.roiList(1).RadialAverage;
+    RA = RA/nanmean(RA(end-5:end));
+    plot(res.roiList(1).RadialAverage_rloc,RA,'*','DisplayName','RadialAvg');
     hold on;
-    plot(rr,ProfileFn(Z,rr),'--','DisplayName',sprintf('ProfileFn @ z=%g',Z));
+    PP = ProfileFn(Z,rr)+IMAGE_BG_LEVEL;
+    PP = PP/nanmean(PP(end-5:end));
+    plot(rr,PP,'--','DisplayName',sprintf('ProfileFn @ z=%g',Z));
     plot(rr,ppval(res.roiList(1).LUT(1).pp,Z)',':','DisplayName',sprintf('Spline @ z=%g',Z));
     
-    plot(rr,ProfileFn(Zc(1),rr),'--','DisplayName',sprintf('ProfileFn @ Zc_1=%g',Zc(1)));
+    PP = ProfileFn(Zc(1),rr)+IMAGE_BG_LEVEL;
+    PP = PP/nanmean(PP(end-5:end));
+    plot(rr,PP,'--','DisplayName',sprintf('ProfileFn @ Zc_1=%g',Zc(1)));
     legend show;
 
 catch
@@ -178,6 +189,7 @@ hdt.pushTask(I);
 end
 
 function createLUT(NewRoi,ProfileData,Zdata,Rdata)
+IMAGE_BG_LEVEL = evalin('base','IMAGE_BG_LEVEL');
 for n=1:numel(NewRoi)
     L = extras.roi.LUTobject();
     L.createLUT(Zdata,ProfileData,Rdata);

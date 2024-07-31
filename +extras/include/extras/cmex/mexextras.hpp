@@ -20,7 +20,13 @@ All rights reserved.
 
 namespace extras{ namespace cmex{
 
-	//! get dimensions of the mxArray* as a std::vector
+    //! Calculate the substript index for the array 
+    size_t substript(const mxArray* mxptr, size_t row, size_t col) {
+        size_t ss[] = { row,col };
+        return mxCalcSingleSubscript(mxptr, 2, ss);
+    }
+    
+    //! get dimensions of the mxArray* as a std::vector
     std::vector<size_t> size(const mxArray* mxptr){
         std::vector<size_t> out;
         if(mxptr==nullptr){

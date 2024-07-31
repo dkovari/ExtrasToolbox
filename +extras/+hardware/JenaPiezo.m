@@ -1,4 +1,4 @@
-classdef JenaPiezo < extras.hardware.TargetValueDevice & extras.hardware.SerialDevice
+classdef JenaPiezo < extras.hardware.abstract.ObjectiveScanner & extras.hardware.SerialDevice
 %% Class for interactfacing with a JenaSystems Piezo Objective scanner
 % Communication with the device is handeled entirely by MATLAB via the
 % serial port
@@ -11,7 +11,6 @@ classdef JenaPiezo < extras.hardware.TargetValueDevice & extras.hardware.SerialD
     end
     properties (SetAccess=protected,SetObservable=true,AbortSet=true)
         Value = NaN
-        UpdatedAfterTargetChange = false;
     end
     
     %%
@@ -39,12 +38,15 @@ classdef JenaPiezo < extras.hardware.TargetValueDevice & extras.hardware.SerialD
             %default serialdevice construction (do not connect yet)
             this@extras.hardware.SerialDevice();
             
+            this.UpdatedAfterTargetChange = false;
+            
             this.Port = Port;
             %% Device Info
             this.DeviceName = 'Jena Piezo';
             this.Units = 'µm';
             this.Limits = [0,99.99];
             this.ValueSize = [1,1];
+            this.Orientation = 'Negative';
             
             %% Serial Com parameters
             this.BaudRate = 9600;
@@ -54,7 +56,7 @@ classdef JenaPiezo < extras.hardware.TargetValueDevice & extras.hardware.SerialD
             this.Terminator = 'CR/LF';
             
             %% Subscribe to ByteAvailable Notifications
-            this.DataListener = addlistener(this,'DataRecieved',@(~,~) this.ParseMessage);
+            this.DataListener = addlistener(this,'DataReceived',@(~,~) this.ParseMessage);
             
             %% Subscribe to Connection changes
             this.ConnectListener = addlistener(this,'connected','PostSet', @(~,~) this.ConnectChange());
@@ -223,6 +225,18 @@ classdef JenaPiezo < extras.hardware.TargetValueDevice & extras.hardware.SerialD
         end
     end
     
+    
+    %% Override
+    methods
+        function S = struct(this)
+        %convert public properties inherited from TargetValueDevice Class
+        %into struct and include special feature of JenaPiezo
+            S = struct@extras.hardware.abstract.ObjectiveScanner(this);
+            for n=1:numel(this)
+                S(n).EnableSoftServo = this(n).EnableSoftServo;
+            end
+        end
+    end
     
     
 end

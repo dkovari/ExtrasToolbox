@@ -1,7 +1,7 @@
 % Build RoiTracker3D
 
 %% Build RoiTracker First
-extras.ParticleTracking.build_RoiTracker;
+extras.ParticleTracking.RoiTracker.build_RoiTracker;
 
 %% Setup File
 [THIS_PATH,~,~] =  fileparts(mfilename('fullpath'));

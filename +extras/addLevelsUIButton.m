@@ -16,7 +16,7 @@ addOptional(p,'graphicsobj',[],@(x) isscalar(x)&&ishghandle(x));
 addParameter(p,'FigureHandle',[],@(x) isscalar(x)&&isgraphics(x,'figure'));
 addParameter(p,'ImageHandle',[],@(x) isscalar(x)&&isgraphics(x,'image'));
 
-parse(p);
+parse(p,varargin{:});
 
 %% look for inputs
 hImg = [];
@@ -36,7 +36,7 @@ elseif ~isempty(p.Results.graphicsobj) && strcmp(p.Results.graphicsobj.Type,'ima
     if ~isempty(p.Results.ImageHandle)
         error('image handle specified in first argument and with Name,Value parameters. Only specify image handle once.');
     end
-    hImg = p.Results.graohicsobj;
+    hImg = p.Results.graphicsobj;
     if isempty(p.Results.FigureHandle)
         hFig = ancestor(hImg,'figure');
     else

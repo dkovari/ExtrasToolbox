@@ -41,7 +41,6 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
         PositionLimitExceeded = false;
         ExcessivePossitionError = false;
         IndexPulseRevieved = false;
-        CommandError = false;
         Busy = false;
         BreakpointReached = false;
         MotorLoopOff = false;
@@ -65,7 +64,7 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
         MotorScale = 1; %steps/unit
     end
     
-    %% Status Bits
+    %% Motor/Break Status Bits
     properties(Access=protected) %internal set flaggs
         Internal_MotorOn = false; %flag indicating internal function is setting value
         Internal_BrakeOn = false; %flag indicating internal function is setting value
@@ -105,6 +104,36 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
                 end
             end
         end
+    end
+    
+    %% Other Status Bits
+    properties (SetObservable=true,AbortSet=true,SetAccess=protected)
+        %% Byte 2F
+        EchoOn (1,1) logical = false; %Bit 0
+        WaitInProgress (1,1) logical = false; %bit `
+        CommandError (1,1) logical = false; %bit 2
+        LeadingZeroSuppressionActive (1,1) logical = false; %bit 3
+        MacroCommandCalled (1,1) logical = false; %bit 4
+        LeadingZeroSuppressionDisabled (1,1) logical = false; %bit 5
+        NumberModeInEffect (1,1) logical = false; %bit 6
+        BoardAddressed (1,1) logical = false; %bit 7
+        
+        %% Byte 3F
+        MoveDirectionPolarity (1,1) logical = false; %bit 2
+        MoveError_MF_Condition (1,1) logical =false;%bit3
+        MoveError_Excess_Following (1,1) logical = false;%bit6
+        InternalLMM629CommunicationInProgress (1,1) logical = false;%bit7
+        
+        %% Byte 4F
+        LimitSwitchOn (1,1) logical = false; %bit 0
+        LimitSwitchActiveHigh (1,1) logical = false; %bit1
+        FindEdgeOperationInProgress (1,1) logical = false; %bit 2
+        %BreakOn ---> In %% Motor/Break Status Bits %bit 3
+        
+        %% Byte 5F
+        ReferenceSignalInput (1,1) logical = false; %Status Byte 5F:Bit 1
+        PositiveLimitSignalInput (1,1) logial = false;%Status Byte 5F:Bit 2
+        NegativeLimitSignalInput (1,1) logical = false;%Status Byte 5F:Bit 3
     end
     
     %% create/delete
@@ -255,17 +284,32 @@ classdef MercuryDevice < extras.hardware.TargetValueDevice
                 this.Internal_MotorOn = false;
             
             %% 2F Internal operation flags
-            
+            this.EchoOn = logical(bitget(hex2dec(status{2}),1)); %Bit 0
+            this.WaitInProgress = logical(bitget(hex2dec(status{2}),2)); %bit 1
+            this.CommandError = logical(bitget(hex2dec(status{2}),3)); %bit 2
+            this.LeadingZeroSuppressionActive = logical(bitget(hex2dec(status{2}),4)); %bit 3
+            this.MacroCommandCalled = logical(bitget(hex2dec(status{2}),5)); %bit 4
+            this.LeadingZeroSuppressionDisabled = logical(bitget(hex2dec(status{2}),6)); %bit 5
+            this.NumberModeInEffect = logical(bitget(hex2dec(status{2}),7)); %bit 6
+            this.BoardAddressed = logical(bitget(hex2dec(status{2}),8)); %bit 7
             %% 3F Motor Loop Flags
-            
+            this.MoveDirectionPolarity = logical(bitget(hex2dec(status{3}),3)); %bit 2
+            this.MoveError_MF_Condition = logical(bitget(hex2dec(status{3}),4));%bit3
+            this.MoveError_Excess_Following = logical(bitget(hex2dec(status{3}),7));%bit6
+            this.InternalLMM629CommunicationInProgress = logical(bitget(hex2dec(status{3}),8));%bit7
             %% 4F Signal Lines Status
+            this.LimitSwitchOn = logical(bitget(hex2dec(status{4}),1)); %bit 0
+            this.LimitSwitchActiveHigh = logical(bitget(hex2dec(status{4}),2)); %bit1
+            this.FindEdgeOperationInProgress = logical(bitget(hex2dec(status{4}),3)); %bit 2
             %bit 3 Brake ON
                 this.Internal_BrakeOn = true;
                 this.BrakeOn = logical(bitget(hex2dec(status{4}),4));
                 this.Internal_BrakeOn = false;
             
             %% 5F Signal Lines Inputs
-            
+                this.ReferenceSignalInput = logical(bitget(hex2dec(status{4}),2)); %Status Byte 5F:Bit 1
+                this.PositiveLimitSignalInput  = logical(bitget(hex2dec(status{4}),3));%Status Byte 5F:Bit 2
+                this.NegativeLimitSignalInput  = logical(bitget(hex2dec(status{4}),4));%Status Byte 5F:Bit 3
             %% 6F Error Codes
 
         end

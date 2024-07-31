@@ -15,7 +15,10 @@ if ispc %use complied zlib
     LIBS = {'-lzlibstat'};
     LIB_DIR = {['-L',fullfile(extern_libs_dir,'lib','Win','x64')]};
 else % posix try to use system zlib
-    error('DAN YOU NEED TO IMPLEMENT MexArgsStruct_zlib on POSIX');
+    INCLUDE = {};
+    LIB_DIR = {};
+    LIBS = {'-lz'};
+    %error('DAN YOU NEED TO IMPLEMENT MexArgsStruct_zlib on POSIX');
 end
 
 

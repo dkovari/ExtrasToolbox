@@ -77,6 +77,11 @@ namespace extras{namespace cmex{
 			moveFrom(n, pArrays);
 		}
 
+		//! construct single element array by taking ownership of mxArray*
+		mxArrayGroup(mxArray* arr) {
+			moveFrom(1, &arr);
+		}
+
 		//! construct by making copy of array of const mxarray*
 		// makes copies of the arrays in prhs[]
 		mxArrayGroup(size_t n, const mxArray* prhs[]) {

@@ -37,49 +37,49 @@
        %% Constructor / Destructor
     methods
         
-        function obj = jSlider(varargin)
+        function this = jSlider(varargin)
             %% Construct the control
             %obj@uiw.abstract.JavaControl();
             
-            obj.Min = 0;
-            obj.Max = 100;
-            obj.Value = 0;
+            this.Min = 0;
+            this.Max = 100;
+            this.Value = 0;
             
             % Create the slider
-            obj.createJControl('javax.swing.JSlider');
-            obj.JControl.StateChangedCallback = @(h,e)onSliderMotion(obj,e);
-            obj.JControl.MouseReleasedCallback = @(h,e)onSliderChanged(obj,e);
-            obj.HGJContainer.Units = 'pixels';
-            obj.JControl.setOpaque(false);
+            this.createJControl('javax.swing.JSlider');
+            this.JControl.StateChangedCallback = @(h,e)onSliderMotion(this,e);
+            this.JControl.MouseReleasedCallback = @(h,e)onSliderChanged(this,e);
+            this.HGJContainer.Units = 'pixels';
+            this.JControl.setOpaque(false);
             
             % Use the default value
-            obj.Value = obj.JControl.getValue();
+            this.Value = this.JControl.getValue();
             
             %% parent as 1st arg
             if numel(varargin)>1 && ~ischar(varargin{1}) && isgraphics(varargin{1})
-                obj.Parent = varargin{1};
+                this.Parent = varargin{1};
                 varargin(1) = [];
             end
             
             %% Set properties from P-V pairs
-            obj.setPublicProperties(varargin{:});
+            this.setPublicProperties(varargin{:});
             
             % No new value is pending
-            obj.PendingValue = obj.Value;
+            this.PendingValue = this.Value;
             
             %% Min/Max Listener
-            addlistener(obj,'Min','PostSet',@(~,~) obj.updateSlider());
-            addlistener(obj,'Max','PostSet',@(~,~) obj.updateSlider());
+            addlistener(this,'Min','PostSet',@(~,~) this.updateSlider());
+            addlistener(this,'Max','PostSet',@(~,~) this.updateSlider());
             
             % Assign the construction flag
-            obj.jSlider_IsConstructed = true;
-            obj.IsConstructed = true;
+            this.jSlider_IsConstructed = true;
+            this.IsConstructed = true;
             
             %% Redraw the widget
-            obj.onResized();
-            obj.onEnableChanged();
-            obj.onStyleChanged();
-            obj.redraw();
+            this.onResized();
+            this.onEnableChanged();
+            this.onStyleChanged();
+            this.redraw();
             
         end % constructor
         

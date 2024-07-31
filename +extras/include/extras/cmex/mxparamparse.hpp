@@ -8,7 +8,7 @@ All rights reserved.
 #include "mxobject.hpp"
 #include <unordered_map>
 #include <string>
-#include "../string_extras.hpp"
+#include <extras/string_extras.hpp>
 
 namespace extras{namespace cmex{
 

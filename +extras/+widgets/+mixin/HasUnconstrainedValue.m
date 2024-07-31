@@ -7,7 +7,11 @@ classdef HasUnconstrainedValue < extras.widgets.mixin.HasValue
         function value = internal_setValue(this,value)
         % returns value that will be set to this.Value
         % calls value = this.validateValue(value)
+        
+            %'in HasUnconstrainedValue internal_setValue'
+            %value
             this.UnconstrainedValue = value;
+            %UV = this.UnconstrainedValue
             value = this.validateValue(value);
         end
     end

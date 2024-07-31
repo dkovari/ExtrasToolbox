@@ -108,24 +108,26 @@ namespace extras {namespace cmex {
 					throw(std::runtime_error("ParameterMxMap::setParameters(): a single mxArray* was passed, but is was not a struct."));
 				}
 
-				if (!mxGetNumberOfElements(prhs[0]) != 1) {
+				if (mxGetNumberOfElements(prhs[0]) != 1) {
 					throw(std::runtime_error("ParameterMxMap::setParameters(): struct array must be a scalar struct (i.e. numel==1)"));
 				}
 				
-				MxStruct thisStruct(prhs[0]);
+				const MxStruct thisStruct(prhs[0]); //we won't need to modify thisStruct so it can be const, that way then we reference the fields, we will directly got to const mxarray* instead of using FieldWrapper
 				auto fnames = thisStruct.fieldnames();
 				for (size_t n = 0; n < thisStruct.number_of_fields(); n++) {
 					(*this)[fnames[n]] = thisStruct(0, fnames[n].c_str());
 				}
+				
 			}
+			else {
+				if (nrhs % 2 != 0) {
+					throw(std::runtime_error("ParameterMxMap::setParameters() number of args must be even (specified as Name,Value pairs)."));
+				}
 
-			if (nrhs % 2 != 0) {
-				throw(std::runtime_error("ParameterMxMap::setParameters() number of args must be even (specified as Name,Value pairs)."));
-			}
-
-			 // loop over args and set parameters
-			for (size_t n = 0; n < nrhs - 1; n += 2) {
-				(*this)[extras::cmex::getstring(prhs[n])] = extras::cmex::persistentMxArray(prhs[n + 1]);
+				// loop over args and set parameters
+				for (size_t n = 0; n < nrhs - 1; n += 2) {
+					(*this)[extras::cmex::getstring(prhs[n])] = prhs[n + 1];//since prhs is const, this should automatically invoke a persistent copy operation //extras::cmex::persistentMxArray(prhs[n + 1]);
+				}
 			}
 
 		}

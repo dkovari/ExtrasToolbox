@@ -15,7 +15,9 @@ classdef HasAllowedValues < extras.widgets.mixin.HasUnconstrainedValue
         function set.AllowedValues(this,av)
             [this.AllowedValues,tf] = this.validateAllowedValues(av);
             if ~tf
-                warning('Value is not included in AllowedValues, suppressing constraint until next time Value is changed');
+                if this.HasValue_ValueHasBeenSet
+                    warning('Value is not included in AllowedValues, suppressing constraint until next time Value is changed');
+                end
             else
                 this.Value = this.UnconstrainedValue;
             end
@@ -64,6 +66,10 @@ classdef HasAllowedValues < extras.widgets.mixin.HasUnconstrainedValue
                 value = this.AllowedValues{idx};
             else %string/cellstr
                 try
+                    %'in has allowed values'
+                    %Allowed = this.AllowedValues
+                    %val = value
+                    
                     value = validatestring(value,this.AllowedValues);
                     [~,~,idx] = extras.redefined.intersect(value,this.AllowedValues);
                 catch
@@ -105,11 +111,19 @@ classdef HasAllowedValues < extras.widgets.mixin.HasUnconstrainedValue
             if iscell(value)
                 value = {value};
             end
+            
+               %'in HasAllowedValues checkAllowed'
+               %value
+               %allowed
                
             [C,~,IB] = extras.redefined.intersect(value,allowed);
             tf = ~isempty(IB);
             if tf
-                value = C;
+                if iscellstr(allowed)
+                    value = C{1};
+                else
+                    value = C;
+                end
             end
         end
         

@@ -114,8 +114,9 @@ if isempty(res)
     hPlt.XData = [];
     hPlt.YData = [];
 else
-    hPlt.XData = [res.roiList.CentroidResult.X];
-    hPlt.YData = [res.roiList.CentroidResult.Y];
+    s = [res.roiList.CentroidResult];
+    hPlt.XData = [s.X];
+    hPlt.YData = [s.Y];
 end
 persistent n;
 if isempty(n)

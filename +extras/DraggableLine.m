@@ -12,6 +12,9 @@ classdef DraggableLine < extras.GraphicsChild
         
         UIeditCallback %user defined callback fired after line is dragged by user
         
+        DragBodyCallback
+        DragEndpointsCallback
+        
         Color 
         LineStyle
         LineWidth
@@ -23,6 +26,8 @@ classdef DraggableLine < extras.GraphicsChild
         UserData; %variable to hold user data
         
         DragEnabled = true; %t/f if line is movable
+        DragEndpoints (1,1) logical = false; %T/F if endpoints can be dragged(changes angle)
+        
     end
     properties (SetAccess=private,SetObservable,AbortSet = true)
         LineXData = [NaN,NaN]; %actual x coordinates of the line
@@ -30,6 +35,15 @@ classdef DraggableLine < extras.GraphicsChild
     end
     
     methods
+        function set.DragEndpoints(this,val)
+            this.DragEndpoints = val;
+            if val
+                set(this.EndPointHandles,'Visible','on','PickableParts','all');
+            else
+                set(this.EndPointHandles,'Visible','off','PickableParts','none');
+            end
+        end
+        
         function set.DragLimitX(this,val)
             this.DragLimitX = sort(val);
         end
@@ -58,6 +72,11 @@ classdef DraggableLine < extras.GraphicsChild
         function set.Color(this,val)
             set(this.LineHandle,'Color',val);
             this.Color = this.LineHandle.Color;
+            
+            try
+                set(this.EndPointHandles,'MarkerEdgeColor',this.Color);
+            catch
+            end
         end
         function set.LineStyle(this,val)
             set(this.LineHandle,'LineStyle',val);
@@ -76,6 +95,11 @@ classdef DraggableLine < extras.GraphicsChild
         function set.MarkerSize(this,val)
             set(this.LineHandle,'MarkerSize',val);
             this.MarkerSize = this.LineHandle.MarkerSize;
+            
+            try
+                set(this.EndPointHandles,'MarkerSize',this.MarkerSize+2);
+            catch
+            end
         end
         
         function set.MarkerEdgeColor(this,val)
@@ -114,9 +138,11 @@ classdef DraggableLine < extras.GraphicsChild
         end
     end
     
-    properties (Access=protected)
+    properties (Hidden,SetAccess=protected)
         LineHandle
         DragAxis = 'X'
+        
+        EndPointHandles = gobjects(1,2);
         
         X_orig
         Y_orig
@@ -144,7 +170,7 @@ classdef DraggableLine < extras.GraphicsChild
         % Specify X=[NaN,NaN] to create a horizontal line which spans the
         % axes
         %
-        % or Y=[NaN,NaN to create a vertical line which spans the axes
+        % or Y=[NaN,NaN] to create a vertical line which spans the axes
         % 
         % By setting one of the Dimensions to [NaN,NaN] the line acts like
         % a slide and can only be dragged in the non-NaN direction
@@ -172,6 +198,31 @@ classdef DraggableLine < extras.GraphicsChild
             this.MarkerEdgeColor = this.LineHandle.MarkerEdgeColor;
             this.MarkerFaceColor = this.LineHandle.MarkerFaceColor;
             
+            %% Create Endpoint Handles
+            this.EndPointHandles(1) = line(this.Parent,NaN,NaN,...
+                'Visible','off',...
+                'MarkerEdgeColor',this.Color,...
+                'Marker','s',...
+                'MarkerFaceColor','none',...
+                'MarkerSize',this.MarkerSize+2,...
+                'HandleVisibility','callback',...
+                'SelectionHighlight','off',...
+                'PickableParts','none',...
+                'Interruptible','off',...
+                'ButtonDownFcn',@(~,~) this.MouseClick_EndHandle(1) );
+            
+            this.EndPointHandles(2) = line(this.Parent,NaN,NaN,...
+                'Visible','off',...
+                'MarkerEdgeColor',this.Color,...
+                'Marker','s',...
+                'MarkerFaceColor','none',...
+                'MarkerSize',this.MarkerSize+2,...
+                'HandleVisibility','callback',...
+                'SelectionHighlight','off',...
+                'PickableParts','none',...
+                'Interruptible','off',...
+                'ButtonDownFcn',@(~,~) this.MouseClick_EndHandle(2) );
+
             %% Get X and Y locations
             assert(numel(varargin)>=2,'X and Y line coordinates must be specified');
             
@@ -245,8 +296,14 @@ classdef DraggableLine < extras.GraphicsChild
             
             set(this.LineHandle,'XData',x,'YData',y);
             
+%<<<<<<< Experimental_Reorg
+            
+            set(this.EndPointHandles(1),'XData',x(1),'YData',y(1));
+            set(this.EndPointHandles(2),'XData',x(2),'YData',y(2));
+%=======
             this.LineXData = this.LineHandle.XData;
             this.LineYData = this.LineHandle.YData;
+%>>>>>>> master
             
         end
     end
@@ -305,7 +362,61 @@ classdef DraggableLine < extras.GraphicsChild
             %notify event listeners
             notify(this,'UIeditcomplete');
             
+            hgfeval(this.UIeditCallback,this,struct('Event','DragDone'));
             
+            
+        end
+        
+        function MouseClick_EndHandle(this,idx)
+            %called when user clicks end handle. 
+            %Idx specifies endpoint 1 or endpoint 2
+            if ~this.DragEndpoints
+                return;
+            end
+            
+            this.ClickPoint = get(this.Parent, 'CurrentPoint');
+            this.X_orig = this.X;
+            this.Y_orig = this.Y;
+            
+            %set ui callbacks
+            this.Orig_MouseMove = this.ParentFigure.WindowButtonMotionFcn;
+            this.Orig_MouseUp = this.ParentFigure.WindowButtonUpFcn;
+            this.ParentFigure.WindowButtonUpFcn = @(~,~) this.MouseUp_EndHandle(idx);
+            this.ParentFigure.WindowButtonMotionFcn = @(~,~) this.MouseMove_EndHandle(idx);
+            
+            this.EndPointHandles(idx).MarkerFaceColor = this.Color;
+            
+        end
+        function MouseUp_EndHandle(this,idx)
+            this.ParentFigure.WindowButtonUpFcn = this.Orig_MouseUp;
+            this.ParentFigure.WindowButtonMotionFcn = this.Orig_MouseMove;
+            
+            if ~this.DragEnabled
+                return;
+            end
+            
+            this.UpdateLine();
+            
+            this.EndPointHandles(idx).MarkerFaceColor = 'none';
+            
+            %fire uieditcallback
+            hgfeval(this.UIeditCallback,this,struct('Event','DragDone'));
+            
+            %notify event listeners
+            notify(this,'UIeditcomplete');
+            
+            hgfeval(this.DragBodyCallback,this,struct('Event','DragDone'));
+            
+        end
+        function MouseMove_EndHandle(this,idx)
+            if ~this.DragEndpoints
+                return;
+            end
+            pt = get(this.Parent, 'CurrentPoint');
+            dPt = pt-this.ClickPoint;
+            
+            this.X(idx) = max(this.DragLimitX(1),min(this.DragLimitX(2),this.X_orig(idx) + dPt(1,1)));
+            this.Y(idx) = max(this.DragLimitY(1),min(this.DragLimitY(2),this.Y_orig(idx) + dPt(1,2)));
         end
     end
 end

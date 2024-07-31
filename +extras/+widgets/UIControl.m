@@ -166,6 +166,13 @@ classdef UIControl < extras.RequireGuiLayoutToolbox &...
         end
     end
     
+    methods(Access=private)
+        function ui_callback(this,h,evt)
+            this.Value = h.Value;
+            this.String = h.String;
+            this.callCallback(evt);
+        end
+    end
     
     methods(Access=private)
         function setparentcallback(this)
@@ -179,7 +186,7 @@ classdef UIControl < extras.RequireGuiLayoutToolbox &...
             %% create control
             this.control = uicontrol('Parent',this,...
                 'HandleVisibility','callback',...
-                'Callback',@(h,e) this.callCallback(e));
+                'Callback',@(h,e) this.ui_callback(h,e));
             
             %% set control props
             try
